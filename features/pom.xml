@@ -65,44 +65,8 @@
         <executions>
           <execution>
             <configuration>
-              <sourceDirectory>${basedir}</sourceDirectory>
-              <sources>
-                <source>mocks/env.js</source>
-                <source>mocks/xhr.js</source>
-                <source>core/config.js</source>
-                <source>core/json.js</source>
-                <source>core/auth.js</source>
-                <source>core/util.js</source>
-                <source>core/prefs.js</source>
-                <source>core.io/io.js</source>
-                <source>views/views.js</source>
-                <source>opensocial-reference/opensocial.js</source>
-                <source>opensocial-reference/activity.js</source>
-                <source>opensocial-reference/address.js</source>
-                <source>opensocial-reference/bodytype.js</source>
-                <source>opensocial-reference/collection.js</source>
-                <source>opensocial-reference/container.js</source>
-                <source>opensocial-reference/datarequest.js</source>
-                <source>opensocial-reference/dataresponse.js</source>
-                <source>opensocial-reference/email.js</source>
-                <source>opensocial-reference/enum.js</source>
-                <source>opensocial-reference/environment.js</source>
-                <source>opensocial-reference/idspec.js</source>
-                <source>opensocial-reference/mediaitem.js</source>
-                <source>opensocial-reference/message.js</source>
-                <source>opensocial-reference/name.js</source>
-                <source>opensocial-reference/navigationparameters.js</source>
-                <source>opensocial-reference/organization.js</source>
-                <source>opensocial-reference/person.js</source>
-                <source>opensocial-reference/phone.js</source>
-                <source>opensocial-reference/responseitem.js</source>
-                <source>opensocial-reference/url.js</source>
-                <source>opensocial-base/jsonactivity.js</source>
-                <source>opensocial-base/jsonperson.js</source>
-                <source>opensocial-rest/restfulcontainer.js</source>
-                <source>opensocial-jsonrpc/jsonrpccontainer.js</source>
-              </sources>
-              <testSourceDirectory>${basedir}</testSourceDirectory>
+              <sourceDirectory>${basedir}/src/main/javascript/features</sourceDirectory>
+              <testSourceDirectory>${basedir}/src/test/javascript</testSourceDirectory>
               <testSuites>
                 <testSuite>
                   <name>GadgetsJSAPITests</name>
@@ -133,11 +97,7 @@
     <resources>
       <resource>
         <targetPath>/features</targetPath>
-        <directory>${basedir}</directory>
-        <excludes>
-          <exclude>pom.xml</exclude>
-          <exclude>target/**</exclude>
-        </excludes>
+        <directory>${basedir}/src/main/javascript</directory>
       </resource>
       <resource>
         <targetPath>META-INF</targetPath>
