@@ -17,23 +17,21 @@
  */
 package org.apache.shindig.gadgets.spec;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-
-import edu.emory.mathcs.backport.java.util.Collections;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 /**
  * Represents a Content section, but normalized into an individual
