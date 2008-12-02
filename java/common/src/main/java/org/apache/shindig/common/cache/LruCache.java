@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A basic LRU cache. Prefer using EhCache for most purposes to this class.
+ * A basic LRU cache.
  */
 public class LruCache<K, V> extends LinkedHashMap<K, V> implements Cache<K, V> {
   final int capacity;

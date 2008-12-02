@@ -31,7 +31,6 @@
       org.apache.shindig.gadgets.DefaultGuiceModule:
       org.apache.shindig.gadgets.servlet.AuthenticationModule:
       org.apache.shindig.gadgets.oauth.OAuthModule:
-      org.apache.shindig.common.cache.ehcache.EhCacheModule
     </param-value>
   </context-param>
 
@@ -39,7 +38,7 @@
     <filter-name>authFilter</filter-name>
     <filter-class>org.apache.shindig.auth.AuthenticationServletFilter</filter-class>
   </filter>
-  
+
   <filter-mapping>
     <filter-name>authFilter</filter-name>
     <url-pattern>/gadgets/ifr</url-pattern>
