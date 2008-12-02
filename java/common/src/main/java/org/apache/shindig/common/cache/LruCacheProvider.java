@@ -38,7 +38,6 @@ import java.util.logging.Logger;
  * The default value is expected under shindig.cache.lru.default.capacity
  *
  * An in memory LRU cache only scales so far. For a production-worthy cache, use
- * {@code EhCacheCacheProvider}.
  */
 public class LruCacheProvider implements CacheProvider {
   private static final Logger LOG = Logger.getLogger(LruCacheProvider.class.getName());
