@@ -19,6 +19,7 @@
 package org.apache.shindig.gadgets.rewrite;
 
 import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.Gadget;
@@ -77,7 +78,7 @@ public class LexerVsDomRewriteBenchmark {
     }
 
     Injector injector = Guice.createInjector(new PropertiesModule(), new OAuthModule(),
-        new DefaultGuiceModule());
+        new DefaultGuiceModule(), new DefaultCommonModule());
 
     // Lexer setup
     lexerRewriter = injector.getInstance(DefaultContentRewriter.class);

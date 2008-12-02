@@ -18,6 +18,7 @@
 package org.apache.shindig.gadgets.rewrite;
 
 import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.EasyMockTestCase;
 import org.apache.shindig.gadgets.Gadget;
@@ -65,7 +66,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
         SPEC_URL,
         defaultRewriterFeature,
         DEFAULT_PROXY_BASE);
-    injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
+    injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new DefaultCommonModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
     fakeResponse = new HttpResponseBuilder().setHeader("Content-Type", "unknown")
         .setResponse(new byte[]{ (byte)0xFE, (byte)0xFF}).create();

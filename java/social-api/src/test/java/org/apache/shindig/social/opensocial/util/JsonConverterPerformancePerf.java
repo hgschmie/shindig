@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.JsonLibTestsGuiceModule;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
 import org.apache.shindig.social.core.model.ActivityImpl;
@@ -74,7 +76,7 @@ public class JsonConverterPerformancePerf extends TestCase {
     beanJsonLibConverter = injector.getInstance(BeanJsonLibConverter.class);
 
     beanJsonConverter = new BeanJsonConverter(
-        Guice.createInjector(new SocialApiTestsGuiceModule()));
+        Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule()));
 
   }
 
