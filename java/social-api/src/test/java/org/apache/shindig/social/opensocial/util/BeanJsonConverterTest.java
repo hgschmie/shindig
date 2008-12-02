@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
 import org.apache.shindig.social.core.model.ActivityImpl;
 import org.apache.shindig.social.core.model.AddressImpl;
@@ -68,7 +70,7 @@ public class BeanJsonConverterTest extends TestCase {
         new MediaItemImpl("image/jpg", MediaItem.Type.IMAGE, "http://foo.bar")));
 
     beanJsonConverter = new BeanJsonConverter(
-        Guice.createInjector(new SocialApiTestsGuiceModule()));
+        Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule()));
   }
 
   public static class SpecialPerson extends PersonImpl {

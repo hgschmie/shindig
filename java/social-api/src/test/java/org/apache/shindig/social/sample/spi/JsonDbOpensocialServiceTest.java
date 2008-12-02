@@ -19,6 +19,8 @@
 package org.apache.shindig.social.sample.spi;
 
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.social.ResponseError;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -59,7 +61,7 @@ public class JsonDbOpensocialServiceTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
     db = injector.getInstance(JsonDbOpensocialService.class);
   }
 

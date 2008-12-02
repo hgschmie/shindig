@@ -24,6 +24,8 @@ import com.google.inject.Injector;
 
 import junit.framework.TestCase;
 
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.xml.XmlException;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -64,7 +66,7 @@ public class BeanXStreamAtomConverterTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
 
     johnDoe = new PersonImpl("johnDoeId", "Johnny", new NameImpl("John Doe"));
     johnDoe.setPhoneNumbers(Lists.<ListField> newArrayList(new ListFieldImpl(

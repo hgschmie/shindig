@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.xml.XmlException;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -71,8 +73,8 @@ public class BeanXStreamConverterTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
-    
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
+
     johnDoe = new PersonImpl("johnDoeId", "Johnny", new NameImpl("John Doe"));
     johnDoe.setPhoneNumbers(Lists.<ListField> newArrayList(new ListFieldImpl(
         "home", "+33H000000000"), new ListFieldImpl("mobile", "+33M000000000"),
@@ -88,11 +90,11 @@ public class BeanXStreamConverterTest extends TestCase {
 
     activity.setMediaItems(Lists.<MediaItem> newArrayList(new MediaItemImpl(
         "image/jpg", MediaItem.Type.IMAGE, "http://foo.bar")));
-    
+
 
     beanXmlConverter = new BeanXStreamConverter(new XStream081Configuration(injector));
   }
-  
+
 
   public static class SimplePerson {
     private String id;

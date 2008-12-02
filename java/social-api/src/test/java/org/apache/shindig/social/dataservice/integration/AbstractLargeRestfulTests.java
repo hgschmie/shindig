@@ -17,27 +17,6 @@
  */
 package org.apache.shindig.social.dataservice.integration;
 
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
-import junit.framework.TestCase;
-
-import org.apache.shindig.common.testing.FakeGadgetToken;
-import org.apache.shindig.social.SocialApiTestsGuiceModule;
-import org.apache.shindig.social.core.util.BeanJsonConverter;
-import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
-import org.apache.shindig.social.core.util.BeanXStreamConverter;
-import org.apache.shindig.social.core.util.xstream.GuiceBeanProvider;
-import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
-import org.apache.shindig.social.opensocial.service.DataServiceServlet;
-import org.apache.shindig.social.opensocial.service.HandlerDispatcher;
-
-import org.easymock.classextension.EasyMock;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,6 +36,27 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import junit.framework.TestCase;
+
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
+import org.apache.shindig.common.testing.FakeGadgetToken;
+import org.apache.shindig.social.SocialApiTestsGuiceModule;
+import org.apache.shindig.social.core.util.BeanJsonConverter;
+import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
+import org.apache.shindig.social.core.util.BeanXStreamConverter;
+import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
+import org.apache.shindig.social.opensocial.service.DataServiceServlet;
+import org.apache.shindig.social.opensocial.service.HandlerDispatcher;
+import org.easymock.classextension.EasyMock;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 public abstract class AbstractLargeRestfulTests extends TestCase {
   protected static final String XMLSCHEMA = " xmlns=\"http://ns.opensocial.org/2008/opensocial\" \n"
     + " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n"
@@ -74,7 +74,7 @@ public abstract class AbstractLargeRestfulTests extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
 
     servlet = new DataServiceServlet();
 
@@ -167,7 +167,7 @@ public abstract class AbstractLargeRestfulTests extends TestCase {
 
   /**
    * parse entry.content xml into a Map<> struct
-   * 
+   *
    * @param str
    *          input content string
    * @return the map<> of <name, value> pairs from the content xml
@@ -201,7 +201,7 @@ public abstract class AbstractLargeRestfulTests extends TestCase {
   /**
    * Converts a node which child nodes into a map keyed on element names
    * containing the text inside each child node.
-   * 
+   *
    * @param n
    *          the node to convert.
    * @return a map keyed on element name, containing the contents of each
@@ -228,9 +228,9 @@ public abstract class AbstractLargeRestfulTests extends TestCase {
    * Converts <entry> <key>k</key> <value> <entry> <key>count</key>
    * <value>val</value> </entry> <entry> <key>lastUpdate</key>
    * <value>val</value> </entry> </value> </entry>
-   * 
+   *
    * To map.get("k").get("count")
-   * 
+   *
    * @param result
    * @return
    */

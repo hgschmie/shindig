@@ -19,12 +19,10 @@
 
 package org.apache.shindig.common;
 
-import com.google.inject.ImplementedBy;
+import java.util.Collection;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.Collection;
 
 /**
  * Represents a container configuration.
@@ -36,7 +34,6 @@ import java.util.Collection;
  * The default container configuration implementation is intended to be shared with the code found
  * in the PHP implementation of Shindig. It uses a simple JSON format inteded for easy readability.
  */
-@ImplementedBy(JsonContainerConfig.class)
 public interface ContainerConfig {
   public static final String DEFAULT_CONTAINER = "default";
 
