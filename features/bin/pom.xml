@@ -17,9 +17,9 @@
   </description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/features</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/features</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating/features</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/0.8.1-x/features</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/0.8.1-x/features</developerConnection>
+    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/0.8.1-x/features</url>
   </scm>
 
   <build>
