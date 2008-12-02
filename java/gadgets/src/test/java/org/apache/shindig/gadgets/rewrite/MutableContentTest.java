@@ -19,6 +19,7 @@
 package org.apache.shindig.gadgets.rewrite;
 
 import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
 
@@ -35,31 +36,31 @@ import org.w3c.dom.Node;
 
 public class MutableContentTest {
   private MutableContent mhc;
-  
+
   @Before
   public void setUp() throws Exception {
     // Note dependency on CajaHtmlParser - this isn't particularly ideal but is
     // sufficient given that this test doesn't exercise the parser extensively at all,
     // instead focusing on the additional utility provided by MutableHtmlContent
-    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
+    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new DefaultCommonModule());
     mhc = new MutableContent(injector.getInstance(GadgetHtmlParser.class), "DEFAULT VIEW");
   }
-  
+
   @Test
   public void getContentAndParseTreeNoSets() throws Exception {
     String content = mhc.getContent();
     assertEquals("DEFAULT VIEW", content);
-  
+
     Document document = mhc.getDocument();
     assertEquals(2, document.getFirstChild().getChildNodes().getLength());
     assertTrue(document.getFirstChild().getChildNodes().item(1).getFirstChild().getNodeType() ==
         Node.TEXT_NODE);
     assertEquals(content, document.getFirstChild().getChildNodes().item(1).getTextContent());
-  
+
     assertSame(content, mhc.getContent());
     assertSame(document, mhc.getDocument());
   }
-  
+
   @Test
   public void modifyContentReflectedInTree() throws Exception {
     mhc.setContent("NEW CONTENT");
@@ -67,11 +68,11 @@ public class MutableContentTest {
     assertEquals(1, document.getChildNodes().getLength());
     assertEquals("NEW CONTENT", document.getChildNodes().item(0).getTextContent());
   }
-  
+
   @Test
   public void modifyTreeReflectedInContent() throws Exception {
     Document document = mhc.getDocument();
-  
+
     // First child should be text node per other tests. Modify it.
     document.getFirstChild().getFirstChild().setTextContent("FOO CONTENT");
     MutableContent.notifyEdit(document);
@@ -81,7 +82,7 @@ public class MutableContentTest {
     document.getFirstChild().getFirstChild().setTextContent("BAR CONTENT");
     MutableContent.notifyEdit(document);
     assertTrue(mhc.getContent().contains("BAR CONTENT"));
-  
+
     // GadgetHtmlNode hasn't changed because string hasn't changed
     assertSame(document, mhc.getDocument());
   }

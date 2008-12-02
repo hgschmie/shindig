@@ -19,7 +19,6 @@ package org.apache.shindig.common.cache;
 
 import com.google.inject.ImplementedBy;
 
-@ImplementedBy(LruCacheProvider.class)
 public interface CacheProvider {
   /**
    * Create a named single instance cache in this cache manager, if the cache

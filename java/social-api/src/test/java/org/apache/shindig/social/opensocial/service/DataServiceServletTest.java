@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
+import org.apache.shindig.common.PropertiesModule;
+import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.common.testing.FakeHttpServletRequest;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -204,7 +206,7 @@ public class DataServiceServletTest extends TestCase {
 
   public void testGetConverterForRequest() throws Exception {
 
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
     BeanJsonConverter json = new BeanJsonConverter(injector);
     BeanXStreamConverter xml = new BeanXStreamConverter(new XStream081Configuration(injector));
     BeanXStreamAtomConverter atom = new BeanXStreamAtomConverter(new XStream081Configuration(injector));
@@ -218,7 +220,7 @@ public class DataServiceServletTest extends TestCase {
   }
 
   public void testGetConverterForRequestContentType() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
     BeanJsonConverter json = new BeanJsonConverter(injector);
     BeanXStreamConverter xml = new BeanXStreamConverter(new XStream081Configuration(injector));
     BeanXStreamAtomConverter atom = new BeanXStreamAtomConverter(new XStream081Configuration(injector));
