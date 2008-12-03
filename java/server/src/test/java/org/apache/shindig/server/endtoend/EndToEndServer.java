@@ -105,8 +105,7 @@ public class EndToEndServer {
 
     Map<String, String> initParams = Maps.newHashMap();
     String modules = Join
-        .join(":", EndToEndModule.class.getName(), DefaultGuiceModule.class.getName(),
-        		DefaultCommonModule.class.getName(), OAuthModule.class.getName());
+        .join(":", EndToEndModule.class.getName(), DefaultGuiceModule.class.getName());
 
     initParams.put(GuiceServletContextListener.MODULES_ATTRIBUTE, modules);
     context.setInitParams(initParams);

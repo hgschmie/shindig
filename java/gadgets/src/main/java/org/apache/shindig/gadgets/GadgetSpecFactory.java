@@ -18,16 +18,11 @@
  */
 package org.apache.shindig.gadgets;
 
-import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import com.google.inject.ImplementedBy;
-
 import java.net.URI;
 
+import org.apache.shindig.gadgets.spec.GadgetSpec;
+
 /** Factory of gadget specs */
-
-@ImplementedBy(DefaultGadgetSpecFactory.class)
-
 public interface GadgetSpecFactory {
 
   /** Return a gadget spec for a context */

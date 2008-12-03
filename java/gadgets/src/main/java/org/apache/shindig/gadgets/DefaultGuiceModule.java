@@ -18,12 +18,27 @@
  */
 package org.apache.shindig.gadgets;
 
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.apache.shindig.common.guice.DefaultCommonModule;
+import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.DefaultHttpCache;
+import org.apache.shindig.gadgets.http.HttpCache;
+import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.parse.ParseModule;
+import org.apache.shindig.gadgets.preload.ConcurrentPreloaderService;
 import org.apache.shindig.gadgets.preload.HttpPreloader;
 import org.apache.shindig.gadgets.preload.Preloader;
+import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.render.RenderingContentRewriter;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
+import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
+import org.apache.shindig.gadgets.rewrite.DefaultContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.servlet.CajaContentRewriter;
 
@@ -32,11 +47,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
-
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Creates a module to supply all of the Basic* classes
@@ -51,7 +61,21 @@ public class DefaultGuiceModule extends AbstractModule {
     bind(Executor.class).toInstance(service);
     bind(ExecutorService.class).toInstance(service);
 
+    // Bind the configurable stuff
+    bind(HttpCache.class).to(DefaultHttpCache.class);
+    bind(HttpFetcher.class).to(BasicHttpFetcher.class);
+    bind(PreloaderService.class).to(ConcurrentPreloaderService.class);
+    bind(ContentRewriterRegistry.class).to(DefaultContentRewriterRegistry.class);
+    bind(GadgetBlacklist.class).to(BasicGadgetBlacklist.class);
+    bind(GadgetSpecFactory.class).to(DefaultGadgetSpecFactory.class);
+    bind(LockedDomainService.class).to(HashLockedDomainService.class);
+    bind(MessageBundleFactory.class).to(DefaultMessageBundleFactory.class);
+    bind(UrlGenerator.class).to(DefaultUrlGenerator.class);
+
+
     this.install(new ParseModule());
+    this.install(new DefaultCommonModule());
+    this.install(new OAuthModule());
 
     bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);
     bind(new TypeLiteral<List<Preloader>>(){}).toProvider(PreloaderProvider.class);

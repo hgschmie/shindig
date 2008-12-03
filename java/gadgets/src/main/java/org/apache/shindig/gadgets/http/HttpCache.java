@@ -17,15 +17,13 @@
  */
 package org.apache.shindig.gadgets.http;
 
-import com.google.inject.ImplementedBy;
 
 /**
  * Cache of HttpResponse.
- * 
+ *
  * Keys are made of more or less arbitrary name/value pairs (the HttpCacheKey)
  * and data about the HttpRequest.  The values are the HttpResponse.
  */
-@ImplementedBy(DefaultHttpCache.class)
 public interface HttpCache {
 
   public HttpResponse getResponse(HttpCacheKey key, HttpRequest request);

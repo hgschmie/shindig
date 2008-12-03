@@ -18,14 +18,11 @@
  */
 package org.apache.shindig.gadgets;
 
-import com.google.inject.ImplementedBy;
-
 import java.util.Collection;
 
 /**
  * Generates urls for various public entrypoints
  */
-@ImplementedBy(DefaultUrlGenerator.class)
 public interface UrlGenerator {
   /**
    * @param features The list of features that js is needed for.
