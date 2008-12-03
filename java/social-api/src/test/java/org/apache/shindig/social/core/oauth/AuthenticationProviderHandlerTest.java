@@ -17,8 +17,11 @@
  */
 package org.apache.shindig.social.core.oauth;
 
-import java.util.Collections;
-import java.util.List;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 import junit.framework.TestCase;
 
@@ -26,11 +29,8 @@ import org.apache.shindig.auth.AuthenticationHandler;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
+import java.util.Collections;
+import java.util.List;
 
 
 public class AuthenticationProviderHandlerTest extends TestCase {
@@ -39,8 +39,8 @@ public class AuthenticationProviderHandlerTest extends TestCase {
    * to injecting List<ProviderHandler>.
    */
   public void testCustomHandler() {
-    Injector injector = Guice.createInjector(new SocialApiGuiceModule(),
-        new CustomAuthHandlerProviderModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiGuiceModule(), new DefaultCommonModule(),
+        new CustomAuthHandlerProviderModule());
 
     AuthenticationHandlerProvider provider = injector.getInstance(
         AuthenticationHandlerProvider.class);

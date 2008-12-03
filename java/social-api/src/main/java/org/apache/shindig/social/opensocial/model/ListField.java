@@ -17,9 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.ListFieldImpl;
-
-import com.google.inject.ImplementedBy;
 
 
 /**
@@ -31,7 +28,6 @@ import com.google.inject.ImplementedBy;
  * Introduced in v0.8.1
  * </p>
  */
-@ImplementedBy(ListFieldImpl.class)
 @Exportablebean
 public interface ListField {
 

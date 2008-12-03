@@ -18,9 +18,6 @@
 
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.ActivityImpl;
-
-import com.google.inject.ImplementedBy;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +70,6 @@ import java.util.Map;
  * </pre></code>
  *
  */
-@ImplementedBy(ActivityImpl.class)
 @Exportablebean
 public interface Activity {
 

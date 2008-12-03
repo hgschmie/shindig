@@ -17,16 +17,13 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.xml.XmlException;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -43,13 +40,16 @@ import org.apache.shindig.social.opensocial.model.Address;
 import org.apache.shindig.social.opensocial.model.ListField;
 import org.apache.shindig.social.opensocial.model.MediaItem;
 import org.apache.shindig.social.opensocial.model.Person;
+
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class BeanXStreamAtomConverterTest extends TestCase {
   private static final String XMLSCHEMA = " xmlns=\"http://ns.opensocial.org/2008/opensocial\" \n"
@@ -64,7 +64,7 @@ public class BeanXStreamAtomConverterTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
 
     johnDoe = new PersonImpl("johnDoeId", "Johnny", new NameImpl("John Doe"));
     johnDoe.setPhoneNumbers(Lists.<ListField> newArrayList(new ListFieldImpl(

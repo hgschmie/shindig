@@ -17,11 +17,12 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
+import com.google.common.collect.Lists;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.JsonLibTestsGuiceModule;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
 import org.apache.shindig.social.core.model.ActivityImpl;
@@ -37,11 +38,10 @@ import org.apache.shindig.social.opensocial.model.Address;
 import org.apache.shindig.social.opensocial.model.ListField;
 import org.apache.shindig.social.opensocial.model.MediaItem;
 import org.apache.shindig.social.opensocial.model.Person;
-import org.json.JSONObject;
 
-import com.google.common.collect.Lists;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
 
 public class JsonConverterPerformancePerf extends TestCase {
 
@@ -76,7 +76,7 @@ public class JsonConverterPerformancePerf extends TestCase {
     beanJsonLibConverter = injector.getInstance(BeanJsonLibConverter.class);
 
     beanJsonConverter = new BeanJsonConverter(
-        Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule()));
+        Guice.createInjector(new SocialApiTestsGuiceModule()));
 
   }
 

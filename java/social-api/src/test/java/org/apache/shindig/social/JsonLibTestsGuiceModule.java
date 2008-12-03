@@ -18,18 +18,18 @@
  */
 package org.apache.shindig.social;
 
-import org.apache.shindig.social.core.util.BeanJsonLibConfig;
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 
 import net.sf.json.JsonConfig;
+
+import org.apache.shindig.social.core.config.DefaultOpenSocialObjectsModule;
+import org.apache.shindig.social.core.util.BeanJsonLibConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.name.Named;
-import com.google.inject.name.Names;
 
 /**
  * Provides social api component injection for all large tests
@@ -41,8 +41,9 @@ public class JsonLibTestsGuiceModule extends AbstractModule {
     bind(Map.class).to(HashMap.class);
     bind(List.class).to(ArrayList.class);
     bind(Map[].class).to(HashMap[].class);
-    bind(JsonConfig.class).annotatedWith(Names.named("ShindigJsonConfig")).to(
-        BeanJsonLibConfig.class);
+    bind(JsonConfig.class).annotatedWith(Names.named("ShindigJsonConfig")).to(BeanJsonLibConfig.class);
+
+    install(new DefaultOpenSocialObjectsModule());
   }
 
 }

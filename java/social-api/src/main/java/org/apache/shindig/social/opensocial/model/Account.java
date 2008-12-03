@@ -17,9 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.AccountImpl;
-
-import com.google.inject.ImplementedBy;
 
 /**
  * <p>
@@ -41,7 +38,6 @@ import com.google.inject.ImplementedBy;
  * Since V0.8.1
  * </p>
  */
-@ImplementedBy(AccountImpl.class)
 @Exportablebean
 public interface Account {
 

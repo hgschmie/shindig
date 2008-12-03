@@ -30,7 +30,6 @@
       org.apache.shindig.common.guice.DefaultCommonModule:
       org.apache.shindig.gadgets.DefaultGuiceModule:
       org.apache.shindig.social.core.config.SocialApiGuiceModule:
-      org.apache.shindig.gadgets.oauth.OAuthModule:
       org.apache.shindig.common.cache.ehcache.EhCacheModule
     </param-value>
   </context-param>
@@ -83,6 +82,7 @@
     </servlet-class>
   </servlet>
 
+  <!-- Concat -->
   <servlet>
     <servlet-name>concat</servlet-name>
     <servlet-class>

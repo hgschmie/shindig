@@ -17,16 +17,12 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.AddressImpl;
-
-import com.google.inject.ImplementedBy;
 
 /**
  * Base interface for all address objects
  * see http://code.google.com/apis/opensocial/docs/0.7/reference/opensocial.Address.Field.html.
  *
  */
-@ImplementedBy(AddressImpl.class)
 @Exportablebean
 public interface Address {
 

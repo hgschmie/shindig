@@ -17,15 +17,11 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.UrlImpl;
-
-import com.google.inject.ImplementedBy;
 
 
 /**
  * The base interface of all Url objects.
  */
-@ImplementedBy(UrlImpl.class)
 public interface Url extends ListField {
 
   /**

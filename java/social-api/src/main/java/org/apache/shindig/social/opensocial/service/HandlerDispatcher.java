@@ -18,7 +18,6 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
-import com.google.inject.ImplementedBy;
 
 /**
  * Dispatcher for DataRequestHandler requests.  The default implementation
@@ -26,7 +25,6 @@ import com.google.inject.ImplementedBy;
  * <p>
  * Add a custom binding of this interface to customize request handling.
  */
-@ImplementedBy(StandardHandlerDispatcher.class)
 public interface HandlerDispatcher {
 
   /**
