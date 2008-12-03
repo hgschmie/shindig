@@ -10,8 +10,6 @@ import com.thoughtworks.xstream.mapper.Mapper;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.common.PropertiesModule;
-import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 import org.apache.shindig.social.opensocial.model.Url;
 
 import java.util.HashMap;
@@ -27,9 +25,9 @@ public class InterfaceClassMapperTest extends TestCase {
 
     this.mockUrl = new CustomUrl();
 
-    this.injector = Guice.createInjector(new SocialApiGuiceModule(),
-        new PropertiesModule(), new Module() {
+    this.injector = Guice.createInjector(new Module() {
           public void configure(Binder binder) {
+            binder.bind(XStreamConfiguration.class).to(XStream081Configuration.class);
             binder.bind(Url.class).to(mockUrl.getClass());
           }
         });
@@ -42,7 +40,7 @@ public class InterfaceClassMapperTest extends TestCase {
   }
 
   public void testMapping() {
-    InterfaceClassMapper mapper = new InterfaceClassMapper(null,
+    InterfaceClassMapper mapper = new InterfaceClassMapper(injector, null,
         new DummyMapper(), null, null, null, null,
         new HashMap<String, Class<?>>());
 

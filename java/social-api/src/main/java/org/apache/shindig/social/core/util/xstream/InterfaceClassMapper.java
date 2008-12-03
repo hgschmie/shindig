@@ -17,9 +17,7 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.google.inject.Binding;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
@@ -298,11 +296,10 @@ public class InterfaceClassMapper extends MapperWrapper {
       return clazz;
     }
 
-    Binding<?> binding = injector.getBinding(Key.get(clazz));
-    if (binding != null) {
-      return binding.getProvider().get().getClass();
+    Object obj = injector.getInstance(clazz);
+    if (obj != null) {
+      return obj.getClass();
     }
-
     return clazz;
   }
 
