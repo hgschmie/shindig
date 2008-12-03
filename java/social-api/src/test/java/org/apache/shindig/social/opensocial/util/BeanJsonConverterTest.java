@@ -17,12 +17,12 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.inject.Guice;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
 import org.apache.shindig.social.core.model.ActivityImpl;
 import org.apache.shindig.social.core.model.AddressImpl;
@@ -36,12 +36,12 @@ import org.apache.shindig.social.opensocial.model.Address;
 import org.apache.shindig.social.opensocial.model.ListField;
 import org.apache.shindig.social.opensocial.model.MediaItem;
 import org.apache.shindig.social.opensocial.model.Person;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class BeanJsonConverterTest extends TestCase {
   private Person johnDoe;
@@ -70,7 +70,7 @@ public class BeanJsonConverterTest extends TestCase {
         new MediaItemImpl("image/jpg", MediaItem.Type.IMAGE, "http://foo.bar")));
 
     beanJsonConverter = new BeanJsonConverter(
-        Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule()));
+        Guice.createInjector(new SocialApiTestsGuiceModule()));
   }
 
   public static class SpecialPerson extends PersonImpl {

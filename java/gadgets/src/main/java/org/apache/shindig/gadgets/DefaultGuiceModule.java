@@ -74,7 +74,6 @@ public class DefaultGuiceModule extends AbstractModule {
 
 
     this.install(new ParseModule());
-    this.install(new DefaultCommonModule());
     this.install(new OAuthModule());
 
     bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);

@@ -17,8 +17,6 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.google.inject.ImplementedBy;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
@@ -30,7 +28,6 @@ import java.util.Map;
  * The configuration for the XStream converter, this class encapsulates the
  * lists and maps that define the how xstream converts the model.
  */
-@ImplementedBy(XStream081Configuration.class)
 public interface XStreamConfiguration {
   public static enum ConverterSet {
     MAP(), COLLECTION(), DEFAULT();
@@ -48,7 +45,7 @@ public interface XStreamConfiguration {
 
   /**
    * Generate the converter config.
-   * 
+   *
    * @param c
    *          which converter set.
    * @param rp

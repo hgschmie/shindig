@@ -17,16 +17,12 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.BodyTypeImpl;
-
-import com.google.inject.ImplementedBy;
 
 /**
  * Base interface for all body type objects. see
  * http://code.google.com/apis/opensocial/docs/0.8/reference/#opensocial.BodyType.Field_field_detail
  *
  */
-@ImplementedBy(BodyTypeImpl.class)
 @Exportablebean
 public interface BodyType {
 

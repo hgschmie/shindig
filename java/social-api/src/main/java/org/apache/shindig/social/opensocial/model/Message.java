@@ -17,9 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.MessageImpl;
-
-import com.google.inject.ImplementedBy;
 
 /**
  *
@@ -30,7 +27,6 @@ import com.google.inject.ImplementedBy;
  *
  */
 
-@ImplementedBy(MessageImpl.class)
 @Exportablebean
 public interface Message {
 

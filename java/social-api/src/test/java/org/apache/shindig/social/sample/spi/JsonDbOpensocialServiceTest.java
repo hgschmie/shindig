@@ -18,12 +18,14 @@
  */
 package org.apache.shindig.social.sample.spi;
 
-import java.util.Collections;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import junit.framework.TestCase;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.social.ResponseError;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -37,10 +39,7 @@ import org.apache.shindig.social.opensocial.spi.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.util.Collections;
 
 /**
  * Test the JSONOpensocialService
@@ -60,7 +59,7 @@ public class JsonDbOpensocialServiceTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
     db = injector.getInstance(JsonDbOpensocialService.class);
   }
 

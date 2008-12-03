@@ -17,12 +17,12 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.google.inject.ImplementedBy;
+import com.google.inject.Binding;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-
-import org.apache.shindig.social.opensocial.model.Person;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +48,9 @@ public class InterfaceClassMapper extends MapperWrapper {
    * A logger.
    */
   private static final Log log = LogFactory.getLog(InterfaceClassMapper.class);
+
+  private final Injector injector;
+
   /**
    * A map of element names to classes.
    */
@@ -82,9 +85,9 @@ public class InterfaceClassMapper extends MapperWrapper {
    * as it is shared over multiple threads.
    */
   private WriterStack writerStack;
-  
+
   /**
-   * A list of explicit mapping specifications. 
+   * A list of explicit mapping specifications.
    */
   private List<ImplicitCollectionFieldMapping> itemFieldMappings;
 
@@ -109,12 +112,14 @@ public class InterfaceClassMapper extends MapperWrapper {
    * @param elementClassMap
    *          a map of element names to class types.
    */
-  public InterfaceClassMapper(WriterStack writerStack, Mapper wrapped,
+  public InterfaceClassMapper(final Injector injector,
+      WriterStack writerStack, Mapper wrapped,
       List<ClassFieldMapping> elementMappingList,
       List<ClassFieldMapping> listElementMappingList,
       List<ImplicitCollectionFieldMapping> itemFieldMappings,
       Map<String, Class<?>[]> omitMap, Map<String, Class<?>> elementClassMap) {
     super(wrapped);
+    this.injector = injector;
     this.elementClassMap = elementClassMap;
     this.elementMappingList = elementMappingList;
     this.listElementMappingList = listElementMappingList;
@@ -288,32 +293,24 @@ public class InterfaceClassMapper extends MapperWrapper {
    * @return the class providing the default implementation.
    */
   private Class<?> getImplementation(Class<?> clazz) {
-    // get the guice default implementation on the class.
-    // we might use the injector to discover this
-    Class<?> cl = clazz;
-    ImplementedBy implementedBy = clazz.getAnnotation(ImplementedBy.class);
-    if (implementedBy != null) {
-      Class<?> c = implementedBy.value();
-      if (log.isDebugEnabled()) {
-        log.debug("===================Class " + clazz + " is implemented by "
-            + c);
-      }
-      cl = c;
-    } else {
-      if (log.isDebugEnabled()) {
-        log.debug("===================Class " + clazz
-            + " no implementation, assume concrete ");
-      }
+
+    if (!clazz.isInterface()) {
+      return clazz;
     }
-    return cl;
+
+    Binding<?> binding = injector.getBinding(Key.get(clazz));
+    if (binding != null) {
+      return binding.getProvider().get().getClass();
+    }
+
+    return clazz;
   }
 
   /*
    * (non-Javadoc)
-   * 
-   * @see
-   * com.thoughtworks.xstream.mapper.MapperWrapper#defaultImplementationOf(java
-   * .lang.Class)
+   *
+   * @see com.thoughtworks.xstream.mapper.MapperWrapper#defaultImplementationOf(java
+   *      .lang.Class)
    */
   @SuppressWarnings("unchecked")
   // API is not generic
@@ -325,22 +322,22 @@ public class InterfaceClassMapper extends MapperWrapper {
     }
     return clazz;
   }
-  
+
   /**
    * {@inheritDoc}
-   * @see com.thoughtworks.xstream.mapper.MapperWrapper#getImplicitCollectionDefForFieldName(java.lang.Class, java.lang.String)
+   *
+   * @see com.thoughtworks.xstream.mapper.MapperWrapper#getImplicitCollectionDefForFieldName(java.lang.Class,
+   *      java.lang.String)
    */
   @Override
   public ImplicitCollectionMapping getImplicitCollectionDefForFieldName(
       Class itemType, String fieldName) {
-    for ( ImplicitCollectionFieldMapping ifm : itemFieldMappings) {
-      if ( ifm.matches(itemType, fieldName) ) {
+    for (ImplicitCollectionFieldMapping ifm : itemFieldMappings) {
+      if (ifm.matches(itemType, fieldName)) {
         return ifm;
       }
     }
     return super.getImplicitCollectionDefForFieldName(itemType, fieldName);
   }
 
-
-  
 }
