@@ -27,7 +27,6 @@
   <context-param>
     <param-name>guice-modules</param-name>
     <param-value>
-      org.apache.shindig.common.PropertiesModule:
       org.apache.shindig.common.guice.DefaultCommonModule:
       org.apache.shindig.social.core.config.SocialApiGuiceModule
     </param-value>

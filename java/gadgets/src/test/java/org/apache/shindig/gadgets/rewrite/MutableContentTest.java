@@ -18,21 +18,20 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import org.apache.shindig.common.PropertiesModule;
-import org.apache.shindig.common.guice.DefaultCommonModule;
-import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
-import org.apache.shindig.gadgets.parse.ParseModule;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.shindig.common.guice.DefaultCommonModule;
+import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
+import org.apache.shindig.gadgets.parse.ParseModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class MutableContentTest {
   private MutableContent mhc;
@@ -42,7 +41,7 @@ public class MutableContentTest {
     // Note dependency on CajaHtmlParser - this isn't particularly ideal but is
     // sufficient given that this test doesn't exercise the parser extensively at all,
     // instead focusing on the additional utility provided by MutableHtmlContent
-    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule());
     mhc = new MutableContent(injector.getInstance(GadgetHtmlParser.class), "DEFAULT VIEW");
   }
 
