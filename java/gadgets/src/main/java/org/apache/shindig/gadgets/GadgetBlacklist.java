@@ -17,16 +17,11 @@
  */
 package org.apache.shindig.gadgets;
 
-import com.google.inject.ImplementedBy;
-
 import java.net.URI;
 
 /**
  * A blacklist for gadgets. Gadgets found to be blacklisted cannot be rendered.
  */
-
-@ImplementedBy(BasicGadgetBlacklist.class)
-
 public interface GadgetBlacklist {
 
   /**

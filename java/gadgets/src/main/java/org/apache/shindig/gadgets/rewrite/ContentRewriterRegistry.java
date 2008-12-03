@@ -17,7 +17,6 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import com.google.inject.ImplementedBy;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.http.HttpRequest;
@@ -27,7 +26,6 @@ import org.apache.shindig.gadgets.spec.View;
 /**
  * Performs rewriting operations by invoking one or more ContentRewriters.
  */
-@ImplementedBy(DefaultContentRewriterRegistry.class)
 public interface ContentRewriterRegistry {
 
   /**
