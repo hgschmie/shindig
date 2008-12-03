@@ -18,13 +18,14 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import org.apache.shindig.common.PropertiesModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
-import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.parse.caja.CajaHtmlParser;
@@ -33,9 +34,6 @@ import org.apache.shindig.gadgets.parse.nekohtml.NekoSimplifiedHtmlParser;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.HtmlTagTransformer;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 import org.apache.commons.io.IOUtils;
 
@@ -77,8 +75,7 @@ public class LexerVsDomRewriteBenchmark {
       System.exit(1);
     }
 
-    Injector injector = Guice.createInjector(new PropertiesModule(), new OAuthModule(),
-        new DefaultGuiceModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new DefaultGuiceModule(), new DefaultCommonModule());
 
     // Lexer setup
     lexerRewriter = injector.getInstance(DefaultContentRewriter.class);

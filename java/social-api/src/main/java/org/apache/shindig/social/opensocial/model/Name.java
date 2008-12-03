@@ -17,9 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.NameImpl;
-
-import com.google.inject.ImplementedBy;
 
 /**
  * Base interface for all name objects.
@@ -28,7 +25,6 @@ import com.google.inject.ImplementedBy;
  *
  */
 
-@ImplementedBy(NameImpl.class)
 @Exportablebean
 public interface Name {
 

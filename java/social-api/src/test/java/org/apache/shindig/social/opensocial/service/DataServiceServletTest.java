@@ -17,18 +17,13 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.collect.Maps;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.common.testing.FakeHttpServletRequest;
 import org.apache.shindig.common.util.ImmediateFuture;
@@ -39,12 +34,17 @@ import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
 import org.apache.shindig.social.core.util.BeanXStreamConverter;
 import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
+
 import org.easymock.classextension.EasyMock;
 
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+import java.util.concurrent.ExecutionException;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class DataServiceServletTest extends TestCase {
 
@@ -205,7 +205,7 @@ public class DataServiceServletTest extends TestCase {
 
   public void testGetConverterForRequest() throws Exception {
 
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
     BeanJsonConverter json = new BeanJsonConverter(injector);
     BeanXStreamConverter xml = new BeanXStreamConverter(new XStream081Configuration(injector));
     BeanXStreamAtomConverter atom = new BeanXStreamAtomConverter(new XStream081Configuration(injector));
@@ -219,7 +219,7 @@ public class DataServiceServletTest extends TestCase {
   }
 
   public void testGetConverterForRequestContentType() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule());
     BeanJsonConverter json = new BeanJsonConverter(injector);
     BeanXStreamConverter xml = new BeanXStreamConverter(new XStream081Configuration(injector));
     BeanXStreamAtomConverter atom = new BeanXStreamAtomConverter(new XStream081Configuration(injector));

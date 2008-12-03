@@ -17,10 +17,7 @@
  */
 package org.apache.shindig.social.opensocial.model;
 
-import org.apache.shindig.social.core.model.PersonImpl;
-
 import com.google.common.collect.Maps;
-import com.google.inject.ImplementedBy;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +30,6 @@ import java.util.Set;
  * This field is currently only in the RESTful spec.
  *
  */
-@ImplementedBy(PersonImpl.class)
 @Exportablebean
 public interface Person {
   /**
@@ -341,7 +337,7 @@ public interface Person {
    * @param birthday the person's data of birth
    */
   void setBirthday(Date birthday);
-  
+
   /**
    * Get the person's body characteristics, specified as an BodyType. Container support for this
    * field is OPTIONAL.
