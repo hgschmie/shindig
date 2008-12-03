@@ -17,7 +17,6 @@
  */
 package org.apache.shindig.common.cache;
 
-import com.google.inject.ImplementedBy;
 
 public interface CacheProvider {
   /**

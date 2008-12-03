@@ -18,12 +18,12 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.google.common.collect.Lists;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.TypeLiteral;
 
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.gadgets.http.BasicHttpFetcher;
 import org.apache.shindig.gadgets.http.DefaultHttpCache;
 import org.apache.shindig.gadgets.http.HttpCache;
@@ -42,11 +42,10 @@ import org.apache.shindig.gadgets.rewrite.DefaultContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.servlet.CajaContentRewriter;
 
-import com.google.common.collect.Lists;
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Creates a module to supply all of the Basic* classes

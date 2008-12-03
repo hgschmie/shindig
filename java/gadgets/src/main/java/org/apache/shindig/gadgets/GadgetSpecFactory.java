@@ -18,9 +18,9 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
-
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
+import java.net.URI;
 
 /** Factory of gadget specs */
 public interface GadgetSpecFactory {

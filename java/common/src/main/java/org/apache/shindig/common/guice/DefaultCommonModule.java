@@ -18,6 +18,9 @@
  */
 package org.apache.shindig.common.guice;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+
 import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
 import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.ContainerConfig;
@@ -25,9 +28,6 @@ import org.apache.shindig.common.JsonContainerConfig;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
 
 /**
  * Default configuration for everything that should be wired

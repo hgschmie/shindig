@@ -19,10 +19,10 @@
 
 package org.apache.shindig.common;
 
-import java.util.Collection;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.Collection;
 
 /**
  * Represents a container configuration.

@@ -17,20 +17,20 @@
  */
 package org.apache.shindig.gadgets.parse;
 
+import com.google.inject.Inject;
+
 import org.apache.shindig.common.cache.Cache;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.GadgetException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 
-import com.google.inject.Inject;
-
 /**
  * Parser for arbitrary HTML content
  */
-// ImplementedBy(NekoSimplifiedHtmlParser.class)
 public abstract class GadgetHtmlParser {
 
   public static final String PARSED_DOCUMENTS = "parsedDocuments";

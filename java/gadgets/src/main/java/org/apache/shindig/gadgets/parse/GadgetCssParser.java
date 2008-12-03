@@ -17,9 +17,9 @@
  */
 package org.apache.shindig.gadgets.parse;
 
-import java.util.List;
-
 import org.apache.shindig.gadgets.GadgetException;
+
+import java.util.List;
 
 /**
  * Parser for CSS content. Parsing may be done on a fully-formed
@@ -28,7 +28,6 @@ import org.apache.shindig.gadgets.GadgetException;
  * {@see ParsedCssRule} and {@see ParsedCssDeclaration} for additional
  * parsing requirements and semantics.
  */
-// ImplementedBy(CajaCssParser.class)
 public interface GadgetCssParser {
   public List<ParsedCssRule> parse(String css) throws GadgetException;
   public List<ParsedCssDeclaration> parseInline(String style) throws GadgetException;

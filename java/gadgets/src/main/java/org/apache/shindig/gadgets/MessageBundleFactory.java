@@ -18,10 +18,10 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.util.Locale;
-
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
+
+import java.util.Locale;
 
 /**
  * Factory of message bundles

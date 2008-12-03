@@ -22,16 +22,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class MutableContentTest {
   private MutableContent mhc;
