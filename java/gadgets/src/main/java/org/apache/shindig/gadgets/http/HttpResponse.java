@@ -112,10 +112,10 @@ public final class HttpResponse implements Externalizable {
 
   // TTL to use when an error response is fetched. This should be non-zero to
   // avoid high rates of requests to bad urls in high-traffic situations.
-  static final long DEFAULT_NEGATIVE_CACHE_TTL = 30 * 1000;
+  static final long DEFAULT_NEGATIVE_CACHE_TTL = 60 * 1000;
 
   // Default TTL for an entry in the cache that does not have any cache control headers.
-  static final long DEFAULT_TTL = 5L * 60L * 1000L;
+  static final long DEFAULT_TTL = 60L * 60L * 1000L;
 
   static final String DEFAULT_ENCODING = "UTF-8";
 

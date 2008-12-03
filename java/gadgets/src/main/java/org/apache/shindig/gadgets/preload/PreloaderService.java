@@ -20,13 +20,10 @@ package org.apache.shindig.gadgets.preload;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
-import com.google.inject.ImplementedBy;
-
 /**
  * Handles preloading operations, such as HTTP fetches, social data retrieval, or anything else that
  * would benefit from preloading on the server instead of incurring a network request for users.
  */
-@ImplementedBy(ConcurrentPreloaderService.class)
 public interface PreloaderService {
   /**
    * Begin all preload operations.

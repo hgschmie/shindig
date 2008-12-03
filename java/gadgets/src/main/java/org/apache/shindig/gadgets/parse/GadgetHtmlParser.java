@@ -21,19 +21,16 @@ import org.apache.shindig.common.cache.Cache;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.parse.nekohtml.NekoSimplifiedHtmlParser;
-
-import com.google.inject.ImplementedBy;
-import com.google.inject.Inject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 
+import com.google.inject.Inject;
+
 /**
  * Parser for arbitrary HTML content
  */
-@ImplementedBy(NekoSimplifiedHtmlParser.class)
+// ImplementedBy(NekoSimplifiedHtmlParser.class)
 public abstract class GadgetHtmlParser {
 
   public static final String PARSED_DOCUMENTS = "parsedDocuments";
@@ -56,7 +53,7 @@ public abstract class GadgetHtmlParser {
 
   public final Document parseDom(String source) throws GadgetException {
     Document document = null;
-    String key = null;  
+    String key = null;
     // Avoid checksum overhead if we arent caching
     boolean shouldCache = shouldCache();
     if (shouldCache) {

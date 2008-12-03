@@ -18,16 +18,14 @@
  */
 package org.apache.shindig.gadgets;
 
-import com.google.inject.ImplementedBy;
+import java.util.Locale;
+
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-
-import java.util.Locale;
 
 /**
  * Factory of message bundles
  */
-@ImplementedBy(DefaultMessageBundleFactory.class)
 public interface MessageBundleFactory {
   /**
    * Retrieves a messagMessageBundle for the provided GadgetSpec and Locale. Implementations must be
