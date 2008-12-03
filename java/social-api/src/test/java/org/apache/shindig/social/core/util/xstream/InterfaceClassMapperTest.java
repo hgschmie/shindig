@@ -42,7 +42,7 @@ public class InterfaceClassMapperTest extends TestCase {
   }
 
   public void testMapping() {
-    InterfaceClassMapper mapper = new InterfaceClassMapper(null,
+    InterfaceClassMapper mapper = new InterfaceClassMapper(injector, null,
         new DummyMapper(), null, null, null, null,
         new HashMap<String, Class<?>>());
 

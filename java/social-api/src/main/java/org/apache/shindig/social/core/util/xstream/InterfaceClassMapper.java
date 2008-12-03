@@ -17,12 +17,12 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.google.inject.ImplementedBy;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Provider;
 
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
-
-import org.apache.shindig.social.opensocial.model.Person;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -82,9 +82,14 @@ public class InterfaceClassMapper extends MapperWrapper {
    * as it is shared over multiple threads.
    */
   private WriterStack writerStack;
-  
+
   /**
-   * A list of explicit mapping specifications. 
+   * The Guice Injector used to find the implementation classes for the interfaces.
+   */
+  private final Injector injector;
+
+  /**
+   * A list of explicit mapping specifications.
    */
   private List<ImplicitCollectionFieldMapping> itemFieldMappings;
 
@@ -109,12 +114,13 @@ public class InterfaceClassMapper extends MapperWrapper {
    * @param elementClassMap
    *          a map of element names to class types.
    */
-  public InterfaceClassMapper(WriterStack writerStack, Mapper wrapped,
+  public InterfaceClassMapper(Injector injector, WriterStack writerStack, Mapper wrapped,
       List<ClassFieldMapping> elementMappingList,
       List<ClassFieldMapping> listElementMappingList,
       List<ImplicitCollectionFieldMapping> itemFieldMappings,
       Map<String, Class<?>[]> omitMap, Map<String, Class<?>> elementClassMap) {
     super(wrapped);
+    this.injector = injector;
     this.elementClassMap = elementClassMap;
     this.elementMappingList = elementMappingList;
     this.listElementMappingList = listElementMappingList;
@@ -288,29 +294,22 @@ public class InterfaceClassMapper extends MapperWrapper {
    * @return the class providing the default implementation.
    */
   private Class<?> getImplementation(Class<?> clazz) {
-    // get the guice default implementation on the class.
-    // we might use the injector to discover this
-    Class<?> cl = clazz;
-    ImplementedBy implementedBy = clazz.getAnnotation(ImplementedBy.class);
-    if (implementedBy != null) {
-      Class<?> c = implementedBy.value();
-      if (log.isDebugEnabled()) {
-        log.debug("===================Class " + clazz + " is implemented by "
-            + c);
-      }
-      cl = c;
-    } else {
-      if (log.isDebugEnabled()) {
-        log.debug("===================Class " + clazz
-            + " no implementation, assume concrete ");
-      }
+
+    if (!clazz.isInterface()) {
+      return clazz;
     }
-    return cl;
+
+    Provider<?> provider = injector.getProvider(Key.get(clazz));
+    if (provider != null) {
+      return provider.get().getClass();
+    }
+
+    return clazz;
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.thoughtworks.xstream.mapper.MapperWrapper#defaultImplementationOf(java
    * .lang.Class)
@@ -325,7 +324,7 @@ public class InterfaceClassMapper extends MapperWrapper {
     }
     return clazz;
   }
-  
+
   /**
    * {@inheritDoc}
    * @see com.thoughtworks.xstream.mapper.MapperWrapper#getImplicitCollectionDefForFieldName(java.lang.Class, java.lang.String)
@@ -342,5 +341,5 @@ public class InterfaceClassMapper extends MapperWrapper {
   }
 
 
-  
+
 }
