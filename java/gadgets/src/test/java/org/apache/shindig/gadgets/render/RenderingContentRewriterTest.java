@@ -37,7 +37,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.shindig.common.ContainerConfig;
-import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.xml.XmlUtil;
@@ -96,7 +95,7 @@ public class RenderingContentRewriterTest {
     featureRegistry = new FakeGadgetFeatureRegistry();
     rewriter
         = new RenderingContentRewriter(messageBundleFactory, config, featureRegistry, urlGenerator);
-    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
   }
 

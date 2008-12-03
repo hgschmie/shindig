@@ -23,7 +23,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.apache.shindig.auth.AuthenticationHandler;
-import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 
@@ -41,7 +40,7 @@ public class AuthenticationProviderHandlerTest extends TestCase {
    */
   public void testCustomHandler() {
     Injector injector = Guice.createInjector(new SocialApiGuiceModule(),
-        new CustomAuthHandlerProviderModule(), new PropertiesModule(), new DefaultCommonModule());
+        new CustomAuthHandlerProviderModule(), new DefaultCommonModule());
 
     AuthenticationHandlerProvider provider = injector.getInstance(
         AuthenticationHandlerProvider.class);

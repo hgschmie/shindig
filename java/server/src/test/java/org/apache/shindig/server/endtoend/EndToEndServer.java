@@ -17,26 +17,6 @@
  */
 package org.apache.shindig.server.endtoend;
 
-import org.apache.shindig.auth.AuthenticationServletFilter;
-import org.apache.shindig.common.PropertiesModule;
-import org.apache.shindig.common.guice.DefaultCommonModule;
-import org.apache.shindig.common.servlet.GuiceServletContextListener;
-import org.apache.shindig.gadgets.DefaultGuiceModule;
-import org.apache.shindig.gadgets.oauth.OAuthModule;
-import org.apache.shindig.gadgets.servlet.ConcatProxyServlet;
-import org.apache.shindig.gadgets.servlet.GadgetRenderingServlet;
-import org.apache.shindig.social.opensocial.service.DataServiceServlet;
-import org.apache.shindig.social.opensocial.service.JsonRpcServlet;
-
-import com.google.common.base.Join;
-import com.google.common.collect.Maps;
-
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
-import org.mortbay.resource.Resource;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -47,6 +27,24 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shindig.auth.AuthenticationServletFilter;
+import org.apache.shindig.common.guice.DefaultCommonModule;
+import org.apache.shindig.common.servlet.GuiceServletContextListener;
+import org.apache.shindig.gadgets.DefaultGuiceModule;
+import org.apache.shindig.gadgets.oauth.OAuthModule;
+import org.apache.shindig.gadgets.servlet.ConcatProxyServlet;
+import org.apache.shindig.gadgets.servlet.GadgetRenderingServlet;
+import org.apache.shindig.social.opensocial.service.DataServiceServlet;
+import org.apache.shindig.social.opensocial.service.JsonRpcServlet;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.handler.ResourceHandler;
+import org.mortbay.jetty.servlet.Context;
+import org.mortbay.jetty.servlet.ServletHolder;
+import org.mortbay.resource.Resource;
+
+import com.google.common.base.Join;
+import com.google.common.collect.Maps;
 
 /**
  * Suite for running the end-to-end tests. The suite is responsible for starting up and shutting
@@ -107,8 +105,8 @@ public class EndToEndServer {
 
     Map<String, String> initParams = Maps.newHashMap();
     String modules = Join
-        .join(":", EndToEndModule.class.getName(), DefaultGuiceModule.class.getName(), DefaultCommonModule.class.getName(),
-            PropertiesModule.class.getName(), OAuthModule.class.getName());
+        .join(":", EndToEndModule.class.getName(), DefaultGuiceModule.class.getName(),
+        		DefaultCommonModule.class.getName(), OAuthModule.class.getName());
 
     initParams.put(GuiceServletContextListener.MODULES_ATTRIBUTE, modules);
     context.setInitParams(initParams);

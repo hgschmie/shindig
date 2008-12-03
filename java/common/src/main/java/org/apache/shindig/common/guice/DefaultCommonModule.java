@@ -22,6 +22,7 @@ import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
 import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.JsonContainerConfig;
+import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
 
@@ -40,5 +41,7 @@ public class DefaultCommonModule extends AbstractModule {
 	  bind(SecurityTokenDecoder.class).to(DefaultSecurityTokenDecoder.class).in(Singleton.class);
 	  bind(CacheProvider.class).to(LruCacheProvider.class);
 	  bind(ContainerConfig.class).to(JsonContainerConfig.class);
+
+	  install(new PropertiesModule());
   }
 }

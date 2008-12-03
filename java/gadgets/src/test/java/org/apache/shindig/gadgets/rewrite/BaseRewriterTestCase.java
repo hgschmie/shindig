@@ -17,7 +17,10 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import org.apache.shindig.common.PropertiesModule;
+import java.net.URI;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.EasyMockTestCase;
@@ -33,11 +36,6 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.net.URI;
-import java.util.Set;
 
 /**
  * Base class for testing content rewriting functionality
@@ -66,7 +64,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
         SPEC_URL,
         defaultRewriterFeature,
         DEFAULT_PROXY_BASE);
-    injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new DefaultCommonModule());
+    injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
     fakeResponse = new HttpResponseBuilder().setHeader("Content-Type", "unknown")
         .setResponse(new byte[]{ (byte)0xFE, (byte)0xFF}).create();

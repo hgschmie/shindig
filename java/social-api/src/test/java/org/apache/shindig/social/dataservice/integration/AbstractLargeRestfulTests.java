@@ -38,7 +38,6 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.social.SocialApiTestsGuiceModule;
@@ -74,7 +73,7 @@ public abstract class AbstractLargeRestfulTests extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new PropertiesModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new SocialApiTestsGuiceModule(), new DefaultCommonModule());
 
     servlet = new DataServiceServlet();
 
