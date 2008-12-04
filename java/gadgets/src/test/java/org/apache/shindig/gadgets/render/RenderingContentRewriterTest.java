@@ -34,6 +34,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import org.apache.shindig.common.ContainerConfig;
+import org.apache.shindig.common.cache.LruCacheModule;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.xml.XmlUtil;
@@ -103,7 +104,7 @@ public class RenderingContentRewriterTest {
     featureRegistry = new FakeGadgetFeatureRegistry();
     rewriter
         = new RenderingContentRewriter(messageBundleFactory, config, featureRegistry, urlGenerator);
-    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule(), new LruCacheModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
   }
 

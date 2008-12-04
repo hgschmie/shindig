@@ -16,29 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.shindig.common.guice;
+package org.apache.shindig.common.cache;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-
-import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
-import org.apache.shindig.auth.SecurityTokenDecoder;
-import org.apache.shindig.common.ContainerConfig;
-import org.apache.shindig.common.JsonContainerConfig;
-import org.apache.shindig.common.PropertiesModule;
+import com.google.inject.Scopes;
 
 /**
- * Default configuration for everything that should be wired
- * up in the common module.
+ * Creates a module to supply a LruCache Provider
  */
-public class DefaultCommonModule extends AbstractModule {
-
-  /** {@inheritDoc} */
+public class LruCacheModule extends AbstractModule {
   @Override
   protected void configure() {
-	  bind(SecurityTokenDecoder.class).to(DefaultSecurityTokenDecoder.class).in(Singleton.class);
-	  bind(ContainerConfig.class).to(JsonContainerConfig.class);
-
-	  install(new PropertiesModule());
+    bind(CacheProvider.class).to(LruCacheProvider.class).in(Scopes.SINGLETON);
   }
 }

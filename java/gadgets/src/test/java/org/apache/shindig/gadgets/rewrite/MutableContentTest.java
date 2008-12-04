@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
+import org.apache.shindig.common.cache.LruCacheModule;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
@@ -42,7 +43,7 @@ public class MutableContentTest {
     // Note dependency on CajaHtmlParser - this isn't particularly ideal but is
     // sufficient given that this test doesn't exercise the parser extensively at all,
     // instead focusing on the additional utility provided by MutableHtmlContent
-    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule());
+    Injector injector = Guice.createInjector(new ParseModule(), new DefaultCommonModule(), new LruCacheModule());
     mhc = new MutableContent(injector.getInstance(GadgetHtmlParser.class), "DEFAULT VIEW");
   }
 

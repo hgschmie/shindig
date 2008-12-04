@@ -21,12 +21,9 @@ import com.google.common.base.Join;
 import com.google.common.collect.Maps;
 
 import org.apache.shindig.auth.AuthenticationServletFilter;
-import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.servlet.GuiceServletContextListener;
-import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.servlet.ConcatProxyServlet;
 import org.apache.shindig.gadgets.servlet.GadgetRenderingServlet;
-import org.apache.shindig.social.core.config.SocialApiGuiceModule;
 import org.apache.shindig.social.opensocial.service.DataServiceServlet;
 import org.apache.shindig.social.opensocial.service.JsonRpcServlet;
 
@@ -106,7 +103,7 @@ public class EndToEndServer {
 
     Map<String, String> initParams = Maps.newHashMap();
     String modules = Join
-        .join(":", SocialApiGuiceModule.class.getName(), DefaultGuiceModule.class.getName(), DefaultCommonModule.class.getName());
+        .join(":", EndToEndModule.class.getName());
 
     initParams.put(GuiceServletContextListener.MODULES_ATTRIBUTE, modules);
     context.setInitParams(initParams);
