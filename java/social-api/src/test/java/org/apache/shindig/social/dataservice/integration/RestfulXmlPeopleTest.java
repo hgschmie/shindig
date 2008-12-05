@@ -228,9 +228,9 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
     // Currently, for Shindig {pid}/@all/{uid} == {uid}/@self
     String resp = getResponse("/people/canonical/@self", "GET", extraParams,
         "xml", "application/xml");
-    
+
     XSDValidator.validate(resp, XMLSCHEMA, XSDRESOURCE,false);
-    
+
     XPath xp = xpathFactory.newXPath();
     NodeList resultNodeList = (NodeList) xp.evaluate("/response/person",
         new InputSource(new StringReader(resp)), XPathConstants.NODESET);
@@ -447,7 +447,7 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
       t = "";
     } else {
       t = v.get(0);
-    } 
+    }
     assertEquals(expected, t);
   }
 
@@ -503,9 +503,9 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
     // Currently, for Shindig @all == @friends
     String resp = getResponse("/people/john.doe/@friends", "GET", extraParams,
         "xml", "application/xml");
-    
+
     XSDValidator.validate(resp, XMLSCHEMA, XSDRESOURCE,false);
-   
+
     XPath xp = xpathFactory.newXPath();
     NodeList resultNodeList = (NodeList) xp.evaluate("/response",
         new InputSource(new StringReader(resp)), XPathConstants.NODESET);
@@ -520,10 +520,10 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
 
     // The users should be in alphabetical order
     Map<String, List<Node>> entryOne = childNodesToNodeMap(resultNodes.get("entry").get(0));
-    
+
     assertPerson(childNodesToNodeMap(entryOne.get("person").get(0)),
         "george.doe", "George Doe");
-    
+
     Map<String, List<Node>> entryTwo = childNodesToNodeMap(resultNodes.get("entry").get(1));
     assertPerson(childNodesToNodeMap(entryTwo.get("person").get(0)),
         "jane.doe", "Jane Doe");
@@ -557,7 +557,7 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
     assertEquals("0", result.get("startIndex").get(0));
 
     Map<String, List<Node>> entryOne = childNodesToNodeMap(resultNodes.get("entry").get(0));
-    
+
     assertPerson(childNodesToNodeMap(entryOne.get("person").get(0)),
         "george.doe", "George Doe");
 
@@ -565,7 +565,7 @@ public class RestfulXmlPeopleTest extends AbstractLargeRestfulTests {
     extraParams.put("startIndex", "1");
     resp = getResponse("/people/john.doe/@friends", "GET", extraParams, "xml",
         "application/xml");
-    
+
     XSDValidator.validate(resp, XMLSCHEMA, XSDRESOURCE,false);
 
     xp = xpathFactory.newXPath();
