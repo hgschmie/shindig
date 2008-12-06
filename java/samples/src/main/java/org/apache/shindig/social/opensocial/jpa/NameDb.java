@@ -76,7 +76,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
@@ -85,7 +85,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
@@ -94,7 +94,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
@@ -103,7 +103,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
@@ -112,7 +112,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
@@ -121,29 +121,29 @@ public class NameDb implements Name, DbObject {
 
   /**
    * model field.
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name
    */
   @Basic
-  @Column(name = "unstructured", length = 255)
-  private String unstructured;
+  @Column(name = "formatted", length = 255)
+  private String formatted;
 
   /**
-   *
+   * 
    */
   public NameDb() {
   }
 
   /**
-   * @param unstructured
+   * @param formatted
    */
-  public NameDb(String unstructured) {
-    this.unstructured = unstructured;
+  public NameDb(String formatted) {
+    this.formatted = formatted;
   }
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#getAdditionalName()
    */
   public String getAdditionalName() {
@@ -152,7 +152,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#setAdditionalName(java.lang.String)
    */
   public void setAdditionalName(String additionalName) {
@@ -161,7 +161,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#getFamilyName()
    */
   public String getFamilyName() {
@@ -170,7 +170,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#setFamilyName(java.lang.String)
    */
   public void setFamilyName(String familyName) {
@@ -179,7 +179,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#getGivenName()
    */
   public String getGivenName() {
@@ -188,7 +188,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#setGivenName(java.lang.String)
    */
   public void setGivenName(String givenName) {
@@ -197,7 +197,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#getHonorificPrefix()
    */
   public String getHonorificPrefix() {
@@ -206,7 +206,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#setHonorificPrefix(java.lang.String)
    */
   public void setHonorificPrefix(String honorificPrefix) {
@@ -215,7 +215,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#getHonorificSuffix()
    */
   public String getHonorificSuffix() {
@@ -224,7 +224,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.model.Name#setHonorificSuffix(java.lang.String)
    */
   public void setHonorificSuffix(String honorificSuffix) {
@@ -233,7 +233,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   *
+   * 
    * @see org.apache.shindig.social.opensocial.jpa.api.DbObject#getObjectId()
    */
   public long getObjectId() {
@@ -242,7 +242,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * A list of people who have this name
-   *
+   * 
    * @return the persons
    */
   public List<Person> getPersons() {
@@ -251,7 +251,7 @@ public class NameDb implements Name, DbObject {
 
   /**
    * Set the list of people who have this name
-   *
+   * 
    * @param persons the persons to set
    */
   public void setPersons(List<Person> persons) {
@@ -261,17 +261,19 @@ public class NameDb implements Name, DbObject {
 
   /**
    * {@inheritDoc}
-   * @see org.apache.shindig.social.opensocial.model.Name#getUnstructured()
+   * 
+   * @see org.apache.shindig.social.opensocial.model.Name#getFormatted()
    */
-  public String getUnstructured() {
-    return unstructured;
+  public String getFormatted() {
+    return formatted;
   }
 
   /**
    * {@inheritDoc}
-   * @see org.apache.shindig.social.opensocial.model.Name#setUnstructured(java.lang.String)
+   * 
+   * @see org.apache.shindig.social.opensocial.model.Name#setFormatted(java.lang.String)
    */
-  public void setUnstructured(String unstructured) {
-    this.unstructured = unstructured;
+  public void setFormatted(String formatted) {
+    this.formatted = formatted;
   }
 }

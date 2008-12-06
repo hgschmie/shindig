@@ -61,7 +61,7 @@ public class PersonPopulate {
   private EntityManager entityManager;
 
   /**
-   *
+   * 
    */
   public PersonPopulate(EntityManager entityManager) {
     this.entityManager = entityManager;
@@ -150,7 +150,7 @@ public class PersonPopulate {
     person.setSports(getList("Sports"));
     person.setStatus("Status");
     person.setTags(getList("tags"));
-
+    
     List<ListField> photos = new ArrayList<ListField>();
     photos.add(getNewPhoto(i));
     photos.add(getNewPhoto(i * 3));
@@ -183,7 +183,7 @@ public class PersonPopulate {
 
   private Url getNewUrl(int i) {
     String targetUrl = "http://sdfsdfsd.sdfdsf/" + String.valueOf(i % 33);
-    List<?> l = find(UrlDb.FINDBY_URL,
+    List<?> l = find(UrlDb.FINDBY_URL, 
         new String[] { UrlDb.PARAM_URL }, new Object[] { targetUrl });
     if (l.size() == 0) {
       Url url = new UrlDb();
@@ -207,7 +207,7 @@ public class PersonPopulate {
     }
     return phone;
   }
-
+  
   private PhotoDb getNewPhoto(int i) {
     String targetPhoto = String.valueOf(i % 33);
     PhotoDb photo = findOne(PhotoDb.FINDBY_PHOTO,
@@ -230,7 +230,7 @@ public class PersonPopulate {
       name.setGivenName("GivenName");
       name.setHonorificPrefix("Hprefix");
       name.setHonorificSuffix("HSufix");
-      name.setUnstructured("unstructured");
+      name.setFormatted("formatted");
       name.setAdditionalName("Additional Names");
     }
     return name;
@@ -347,7 +347,7 @@ public class PersonPopulate {
     }
     return address;
   }
-
+  
   private Address getNewOrganizationAddress(int i) {
     Address address = findOne(AddressDb.FINDBY_POSTCODE, new String[] { AddressDb.PARAM_POSTCODE },
         new Object[] { String.valueOf(i % 10) });
@@ -367,7 +367,7 @@ public class PersonPopulate {
     }
     return address;
   }
-
+  
   private Address getNewPersonAddress(int i) {
     Address address = findOne(AddressDb.FINDBY_POSTCODE, new String[] { AddressDb.PARAM_POSTCODE },
         new Object[] { String.valueOf(i % 10) });
