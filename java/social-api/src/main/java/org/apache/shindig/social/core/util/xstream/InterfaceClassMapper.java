@@ -17,20 +17,17 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.google.inject.Binding;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-
-import com.thoughtworks.xstream.mapper.Mapper;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.google.inject.Injector;
+import com.thoughtworks.xstream.mapper.Mapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 /**
  * The InterfaceClassMapper provides the central mapping of the XStream bean
@@ -280,23 +277,6 @@ public class InterfaceClassMapper extends MapperWrapper {
     Class<?> clazz = elementClassMap.get(elementName);
     if (clazz == null) {
       clazz = super.realClass(elementName);
-    }
-    return clazz;
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see com.thoughtworks.xstream.mapper.MapperWrapper#defaultImplementationOf(java
-   *      .lang.Class)
-   */
-  @SuppressWarnings("unchecked")
-  // API is not generic
-  @Override
-  public Class defaultImplementationOf(Class type) {
-    Class<?> clazz = getImplementation(super.defaultImplementationOf(type));
-    if (log.isDebugEnabled()) {
-      log.debug("====defaultImplementationOf==Class " + type + " is " + clazz);
     }
     return clazz;
   }

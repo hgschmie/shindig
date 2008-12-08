@@ -18,7 +18,7 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_HEAD_CONTENT;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
 import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
 import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
 import static org.easymock.EasyMock.expect;
