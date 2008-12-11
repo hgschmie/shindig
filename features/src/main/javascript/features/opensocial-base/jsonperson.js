@@ -17,6 +17,8 @@
  * under the License.
  */
 
+/*global opensocial */
+
 /**
  * Base interface for json based person objects.
  *
@@ -58,7 +60,7 @@ JsonPerson.constructEnum = function(map, fieldName) {
   if (fieldValue) {
     map[fieldName] = new opensocial.Enum(fieldValue.key, fieldValue.displayValue);
   }
-}
+};
 
 // Converts the fieldName into an array of instances of an opensocial.Enum
 JsonPerson.constructEnumArray = function(map, fieldName) {
@@ -68,7 +70,7 @@ JsonPerson.constructEnumArray = function(map, fieldName) {
       fieldValue[i] = new opensocial.Enum(fieldValue[i].key, fieldValue[i].displayValue);
     }
   }
-}
+};
 
 // Converts the fieldName into an instance of the specified object
 JsonPerson.constructObject = function(map, fieldName, className) {
@@ -76,7 +78,7 @@ JsonPerson.constructObject = function(map, fieldName, className) {
   if (fieldValue) {
     map[fieldName] = new className(fieldValue);
   }
-}
+};
 
 JsonPerson.constructArrayObject = function(map, fieldName, className) {
   var fieldValue = map[fieldName];
@@ -85,8 +87,8 @@ JsonPerson.constructArrayObject = function(map, fieldName, className) {
       fieldValue[i] = new className(fieldValue[i]);
     }
   }
-}
+};
 
 JsonPerson.prototype.getDisplayName = function() {
   return this.getField("displayName");
-}
+};

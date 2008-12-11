@@ -17,6 +17,9 @@
  * under the License.
  */
 
+/*global ActiveXObject, DOMParser */
+/*global shindig */
+
 var gadgets = gadgets || {};
 
 /**
@@ -81,56 +84,6 @@ gadgets.io = function() {
     return false;
   }
 
-  /**
-   * Handles non-proxied XHR callback processing.
-   *
-   * @param {String} url
-   * @param {Function} callback
-   * @param {Object} params
-   * @param {Object} xobj
-   */
-  function processNonProxiedResponse(url, callback, params, xobj) {
-    if (hadError(xobj, callback)) {
-      return;
-    }
-    var data = {
-      body: xobj.responseText
-    };
-    callback(transformResponseData(params, data));
-  }
-
-  var UNPARSEABLE_CRUFT = "throw 1; < don't be evil' >";
-
-  /**
-   * Handles XHR callback processing.
-   *
-   * @param {String} url
-   * @param {Function} callback
-   * @param {Object} params
-   * @param {Object} xobj
-   */
-  function processResponse(url, callback, params, xobj) {
-    if (hadError(xobj, callback)) {
-      return;
-    }
-    var txt = xobj.responseText;
-    // remove unparseable cruft used to prevent cross-site script inclusion
-    txt = txt.substr(UNPARSEABLE_CRUFT.length);
-    // We are using eval directly here because the outer response comes from a
-    // trusted source, and json parsing is slow in IE.
-    var data = eval("(" + txt + ")");
-    data = data[url];
-    // Save off any transient OAuth state the server wants back later.
-    if (data.oauthState) {
-      oauthState = data.oauthState;
-    }
-    // Update the security token if the server sent us a new one
-    if (data.st) {
-      shindig.auth.updateSecurityToken(data.st);
-    }
-    callback(transformResponseData(params, data));
-  }
-
   function transformResponseData(params, data) {
     var resp = {
      text: data.body,
@@ -182,6 +135,56 @@ gadgets.io = function() {
   }
 
   /**
+   * Handles non-proxied XHR callback processing.
+   *
+   * @param {String} url
+   * @param {Function} callback
+   * @param {Object} params
+   * @param {Object} xobj
+   */
+  function processNonProxiedResponse(url, callback, params, xobj) {
+    if (hadError(xobj, callback)) {
+      return;
+    }
+    var data = {
+      body: xobj.responseText
+    };
+    callback(transformResponseData(params, data));
+  }
+
+  var UNPARSEABLE_CRUFT = "throw 1; < don't be evil' >";
+
+  /**
+   * Handles XHR callback processing.
+   *
+   * @param {String} url
+   * @param {Function} callback
+   * @param {Object} params
+   * @param {Object} xobj
+   */
+  function processResponse(url, callback, params, xobj) {
+    if (hadError(xobj, callback)) {
+      return;
+    }
+    var txt = xobj.responseText;
+    // remove unparseable cruft used to prevent cross-site script inclusion
+    txt = txt.substr(UNPARSEABLE_CRUFT.length);
+    // We are using eval directly here because the outer response comes from a
+    // trusted source, and json parsing is slow in IE.
+    var data = eval("(" + txt + ")");
+    data = data[url];
+    // Save off any transient OAuth state the server wants back later.
+    if (data.oauthState) {
+      oauthState = data.oauthState;
+    }
+    // Update the security token if the server sent us a new one
+    if (data.st) {
+      shindig.auth.updateSecurityToken(data.st);
+    }
+    callback(transformResponseData(params, data));
+  }
+
+  /**
    * Sends an XHR post or get request
    *
    * @param realUrl The url to fetch data from that was requested by the gadget
@@ -201,7 +204,7 @@ gadgets.io = function() {
       xhr.onreadystatechange = gadgets.util.makeClosure(
           null, processResponseFunction, realUrl, callback, params, xhr);
     }
-    if (paramData != null) {
+    if (paramData !== null) {
       xhr.setRequestHeader('Content-Type', opt_contentType || 'application/x-www-form-urlencoded');
       xhr.send(paramData);
     } else {
@@ -225,7 +228,7 @@ gadgets.io = function() {
   function respondWithPreload(postData, params, callback) {
     if (gadgets.io.preloaded_ && gadgets.io.preloaded_[postData.url]) {
       var preload = gadgets.io.preloaded_[postData.url];
-      if (postData.httpMethod == "GET") {
+      if (postData.httpMethod === "GET") {
         delete gadgets.io.preloaded_[postData.url];
         if (preload.rc !== 200) {
           callback({errors : ["Error " + preload.rc]});
@@ -241,7 +244,7 @@ gadgets.io = function() {
             oauthError: preload.oauthError,
             oauthErrorText: preload.oauthErrorText,
             errors: []
-          }
+          };
           callback(transformResponseData(params, resp));
         }
         return true;
@@ -347,9 +350,11 @@ gadgets.io = function() {
       if (auth === "oauth" || auth === "signed") {
         paramData.oauthState = oauthState || "";
         // Just copy the OAuth parameters into the req to the server
-        for (opt in params) if (params.hasOwnProperty(opt)) {
-          if (opt.indexOf("OAUTH_") === 0) {
-            paramData[opt] = params[opt];
+        for (var opt in params) {
+	  if (params.hasOwnProperty(opt)) {
+            if (opt.indexOf("OAUTH_") === 0) {
+              paramData[opt] = params[opt];
+	    }
           }
         }
       }
@@ -360,8 +365,7 @@ gadgets.io = function() {
         if (httpMethod === "GET" && refreshInterval > 0) {
           // this content should be cached
           // Add paramData to the URL
-          var extraparams = "?refresh=" + refreshInterval + '&'
-              + gadgets.io.encodeValues(paramData);
+          var extraparams = "?refresh=" + refreshInterval + '&' + gadgets.io.encodeValues(paramData);
 
           makeXhrRequest(url, proxyUrl + extraparams, callback,
               null, "GET", params, processResponse);
@@ -408,15 +412,17 @@ gadgets.io = function() {
 
       var buf = [];
       var first = false;
-      for (var i in fields) if (fields.hasOwnProperty(i)) {
-        if (!first) {
-          first = true;
-        } else {
-          buf.push("&");
-        }
-        buf.push(escape ? encodeURIComponent(i) : i);
-        buf.push("=");
-        buf.push(escape ? encodeURIComponent(fields[i]) : fields[i]);
+      for (var i in fields) {
+	if (fields.hasOwnProperty(i)) {
+	  if (!first) {
+            first = true;
+	  } else {
+            buf.push("&");
+          }
+          buf.push(escape ? encodeURIComponent(i) : i);
+          buf.push("=");
+          buf.push(escape ? encodeURIComponent(fields[i]) : fields[i]);
+	}
       }
       return buf.join("");
     },
@@ -440,7 +446,7 @@ gadgets.io = function() {
       if (refresh === undefined) {
         refresh = "3600";
       }
-      
+
       var urlParams = gadgets.util.getUrlParameters();
 
       return config.proxyUrl.replace("%url%", encodeURIComponent(url)).

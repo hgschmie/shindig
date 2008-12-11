@@ -16,6 +16,9 @@
  * specific language governing permissions and limitations under the License.
  */
 
+/*global opensocial, gadgets, shindig */
+/*global JsonPerson, JsonActivity, JsonMediaItem, FieldTranslations */
+
 /**
  * @fileoverview JSON-RPC based opensocial container.
  */
@@ -41,6 +44,20 @@ var JsonRpcContainer = function(baseUrl, domain, supportedFieldsArray) {
 };
 JsonRpcContainer.inherits(opensocial.Container);
 
+var JsonRpcRequestItem = function(rpc, opt_processData) {
+  this.rpc = rpc;
+  this.processData = opt_processData ||
+                     function (rawJson) {
+                       return rawJson;
+                     };
+
+  this.processResponse = function(originalDataRequest, rawJson, error, errorMessage) {
+    var errorCode = error ? JsonRpcContainer.translateHttpError("Error " + error['code']) : null;
+    return new opensocial.ResponseItem(originalDataRequest,
+        error ? null : this.processData(rawJson), errorCode, errorMessage);
+  };
+};
+
 JsonRpcContainer.prototype.getEnvironment = function() {
   return this.environment_;
 };
@@ -63,14 +80,14 @@ JsonRpcContainer.prototype.requestData = function(dataRequest, callback) {
   var requestObjects = dataRequest.getRequestObjects();
   var totalRequests = requestObjects.length;
 
-  if (totalRequests == 0) {
+  if (totalRequests === 0) {
     window.setTimeout(function() {
       callback(new opensocial.DataResponse({}, true));
     }, 0);
     return;
   }
 
-  var jsonBatchData = new Array(totalRequests);
+  var jsonBatchData = [];
 
   for (var j = 0; j < totalRequests; j++) {
     var requestObject = requestObjects[j];
@@ -101,7 +118,7 @@ JsonRpcContainer.prototype.requestData = function(dataRequest, callback) {
       var request = requestObjects[k];
       var response = result[k];
 
-      if (request.key && response.id != request.key) {
+      if (request.key && response.id !== request.key) {
         throw "Request key(" + request.key +
             ") and response id(" + response.id + ") do not match";
       }
@@ -146,14 +163,11 @@ JsonRpcContainer.prototype.requestData = function(dataRequest, callback) {
 
 JsonRpcContainer.prototype.sendRequest = function(relativeUrl, callback, params, contentType) {
   gadgets.io.makeNonProxiedRequest(relativeUrl, callback, params, contentType);
-}
+};
 
 JsonRpcContainer.generateErrorResponse = function(result, requestObjects,
     callback) {
-  var globalErrorCode =
-          JsonRpcContainer.translateHttpError(result.errors[0]
-                  || result.data.error)
-                  || opensocial.ResponseItem.Error.INTERNAL_ERROR;
+  var globalErrorCode = JsonRpcContainer.translateHttpError(result.errors[0] || result.data.error) || opensocial.ResponseItem.Error.INTERNAL_ERROR;
 
   var errorResponseMap = {};
   for (var i = 0; i < requestObjects.length; i++) {
@@ -164,19 +178,19 @@ JsonRpcContainer.generateErrorResponse = function(result, requestObjects,
 };
 
 JsonRpcContainer.translateHttpError = function(httpError) {
-  if (httpError == "Error 501") {
+  if (httpError === "Error 501") {
     return opensocial.ResponseItem.Error.NOT_IMPLEMENTED;
-  } else if (httpError == "Error 401") {
+  } else if (httpError === "Error 401") {
     return opensocial.ResponseItem.Error.UNAUTHORIZED;
-  } else if (httpError == "Error 403") {
+  } else if (httpError === "Error 403") {
     return opensocial.ResponseItem.Error.FORBIDDEN;
-  } else if (httpError == "Error 400") {
+  } else if (httpError === "Error 400") {
     return opensocial.ResponseItem.Error.BAD_REQUEST;
-  } else if (httpError == "Error 500") {
+  } else if (httpError === "Error 500") {
     return opensocial.ResponseItem.Error.INTERNAL_ERROR;
-  } else if (httpError == "Error 404") {
+  } else if (httpError === "Error 404") {
     return opensocial.ResponseItem.Error.BAD_REQUEST;
-  } else if (httpError == "Error 417") {
+  } else if (httpError === "Error 417") {
     return opensocial.ResponseItem.Error.LIMIT_EXCEEDED;
   }
 };
@@ -195,16 +209,16 @@ JsonRpcContainer.prototype.translateIdSpec = function(newIdSpec) {
   }
 
   for (var i = 0; i < userIds.length; i++) {
-    if (userIds[i] == 'OWNER') {
+    if (userIds[i] === 'OWNER') {
       userIds[i] = '@owner';
-    } else if (userIds[i] == 'VIEWER') {
+    } else if (userIds[i] === 'VIEWER') {
       userIds[i] = '@viewer';
     }
   }
 
-  if (groupId == 'FRIENDS') {
+  if (groupId === 'FRIENDS') {
     groupId = "@friends";
-  } else if (groupId == 'SELF' || !groupId) {
+  } else if (groupId === 'SELF' || !groupId) {
     groupId = "@self";
   }
 
@@ -282,13 +296,13 @@ JsonRpcContainer.prototype.getFieldsList = function(keys) {
 };
 
 JsonRpcContainer.prototype.hasNoKeys = function(keys) {
-  return !keys || keys.length == 0;
+  return !keys || keys.length === 0;
 };
 
 JsonRpcContainer.prototype.isWildcardKey = function(key) {
   // Some containers support * to mean all keys in the js apis.
   // This allows the RESTful apis to be compatible with them.
-  return key == "*";
+  return key === "*";
 };
 
 JsonRpcContainer.prototype.newFetchPersonAppDataRequest = function(idSpec, keys,
@@ -371,19 +385,3 @@ JsonRpcContainer.prototype.newCreateActivityRequest = function(idSpec,
   return new JsonRpcRequestItem(rpc);
 };
 
-var JsonRpcRequestItem = function(rpc, opt_processData) {
-  this.rpc = rpc;
-  this.processData = opt_processData ||
-                     function (rawJson) {
-                       return rawJson;
-                     };
-
-  this.processResponse = function(originalDataRequest, rawJson, error,
-      errorMessage) {
-    var errorCode = error
-      ? JsonRpcContainer.translateHttpError("Error " + error['code'])
-      : null;
-    return new opensocial.ResponseItem(originalDataRequest,
-        error ? null : this.processData(rawJson), errorCode, errorMessage);
-  }
-};

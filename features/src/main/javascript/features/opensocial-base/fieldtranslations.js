@@ -51,8 +51,8 @@ FieldTranslations.translateServerPersonToJsPerson = function(serverJson) {
   }
 
   if (serverJson.gender) {
-    var key = serverJson.gender == 'male' ? 'MALE' :
-              (serverJson.gender == 'female') ? 'FEMALE' :
+    var key = serverJson.gender === 'male' ? 'MALE' :
+              (serverJson.gender === 'female') ? 'FEMALE' :
               null;
     serverJson.gender = {key : key, displayValue : serverJson.gender};
   }
@@ -77,9 +77,9 @@ FieldTranslations.translateServerPersonToJsPerson = function(serverJson) {
 
     for (var o = 0; o < serverJson.organizations.length; o++) {
       var org = serverJson.organizations[o];
-      if (org.type == 'job') {
+      if (org.type === 'job') {
         serverJson.jobs.push(org);
-      } else if (org.type == 'school') {
+      } else if (org.type === 'school') {
         serverJson.schools.push(org);
       }
     }
@@ -89,26 +89,26 @@ FieldTranslations.translateServerPersonToJsPerson = function(serverJson) {
     serverJson.name.unstructured = serverJson.name.formatted;
   }
 
-}
+};
 
 FieldTranslations.translateEnumJson = function(enumJson) {
   if (enumJson) {
     enumJson.key = enumJson.value;
   }
-}
+};
 
 FieldTranslations.translateUrlJson = function(urlJson) {
   if (urlJson) {
     urlJson.address = urlJson.value;
   }
-}
+};
 
 
 FieldTranslations.translateJsPersonFieldsToServerFields = function(fields) {
   for (var i = 0; i < fields.length; i++) {
-    if (fields[i] == 'dateOfBirth') {
+    if (fields[i] === 'dateOfBirth') {
       fields[i] = 'birthday';
-    } else if (fields[i] == 'timeZone') {
+    } else if (fields[i] === 'timeZone') {
       fields[i] = 'utcOffset';
     }
   }
@@ -116,5 +116,5 @@ FieldTranslations.translateJsPersonFieldsToServerFields = function(fields) {
   // displayName and id always need to be requested
   fields.push("id");
   fields.push("displayName");
-}
+};
 

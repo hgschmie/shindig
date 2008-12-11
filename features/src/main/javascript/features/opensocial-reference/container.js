@@ -17,6 +17,9 @@
  * under the License.
  */
 
+/*global opensocial, gadgets */
+/*global HtmlEmitter */
+
 /**
  * @fileoverview Interface for containers of people functionality.
  */
@@ -501,7 +504,7 @@ opensocial.Container.getField = function(fields, key, opt_params) {
 };
 
 opensocial.Container.escape = function(value, opt_params, opt_escapeObjects) {
-  if (opt_params && opt_params['escapeType'] == 'none') {
+  if (opt_params && opt_params['escapeType'] === 'none') {
     return value;
   } else {
     return gadgets.util.escape(value, opt_escapeObjects);
@@ -510,9 +513,10 @@ opensocial.Container.escape = function(value, opt_params, opt_escapeObjects) {
 
 
 /**
- * Caja Support.  See features/caja/*.js
+ * Caja Support.  See features/caja...
  */
 var cajita;
+var valijaMaker;
 var ___;
 var attachDocumentStub;
 // See features/caja/domita.js for uriCallback's contract.
@@ -553,7 +557,7 @@ opensocial.Container.prototype.enableCaja = function() {
   imports.$v = ___.asSimpleFunc(valijaMaker)(imports);
   ___.getNewModuleHandler().setImports(imports);
 
-  
+
   attachDocumentStub('-g___', uriCallback, imports);
   var gadgetRoot = document.createElement('div');
   gadgetRoot.className = 'g___';

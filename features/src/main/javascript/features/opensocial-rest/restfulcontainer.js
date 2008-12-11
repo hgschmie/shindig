@@ -16,6 +16,9 @@
  * specific language governing permissions and limitations under the License.
  */
 
+/*global opensocial,gadgets,shindig */
+/*global RestfulRequestItem, JsonPerson, JsonActivity, JsonMediaItem, FieldTranslations */
+
 /**
  * @fileoverview RESTful based opensocial container.
  *
@@ -65,7 +68,7 @@ RestfulContainer.prototype.requestData = function(dataRequest, callback) {
   var requestObjects = dataRequest.getRequestObjects();
   var totalRequests = requestObjects.length;
 
-  if (totalRequests == 0) {
+  if (totalRequests === 0) {
     window.setTimeout(function () {
       callback(new opensocial.DataResponse({}, true));
     }, 0);
@@ -139,8 +142,7 @@ RestfulContainer.prototype.requestData = function(dataRequest, callback) {
 };
 
 RestfulContainer.generateErrorResponse = function(result, requestObjects, callback) {
-  var globalErrorCode = RestfulContainer.translateHttpError(result.errors[0] || result.data.error)
-      || opensocial.ResponseItem.Error.INTERNAL_ERROR;
+  var globalErrorCode = RestfulContainer.translateHttpError(result.errors[0] || result.data.error) || opensocial.ResponseItem.Error.INTERNAL_ERROR;
 
   var errorResponseMap = {};
   for (var i = 0; i < requestObjects.length; i++) {
@@ -151,17 +153,17 @@ RestfulContainer.generateErrorResponse = function(result, requestObjects, callba
 };
 
 RestfulContainer.translateHttpError = function(httpError) {
-  if (httpError == "Error 501") {
+  if (httpError === "Error 501") {
     return opensocial.ResponseItem.Error.NOT_IMPLEMENTED;
-  } else if (httpError == "Error 401") {
+  } else if (httpError === "Error 401") {
     return opensocial.ResponseItem.Error.UNAUTHORIZED;
-  } else if (httpError == "Error 403") {
+  } else if (httpError === "Error 403") {
     return opensocial.ResponseItem.Error.FORBIDDEN;
-  } else if (httpError == "Error 400") {
+  } else if (httpError === "Error 400") {
     return opensocial.ResponseItem.Error.BAD_REQUEST;
-  } else if (httpError == "Error 500") {
+  } else if (httpError === "Error 500") {
     return opensocial.ResponseItem.Error.INTERNAL_ERROR;
-  } else if (httpError == "Error 404") {
+  } else if (httpError === "Error 404") {
     return opensocial.ResponseItem.Error.BAD_REQUEST;
   // TODO: Which one should the limit exceeded error be?
     // } else if (httpError == "Error ???") {
@@ -177,9 +179,9 @@ RestfulContainer.prototype.translateIdSpec = function(newIdSpec) {
   var userId = newIdSpec.getField('userId');
   var groupId = newIdSpec.getField('groupId');
 
-  if (userId == 'OWNER') {
+  if (userId === 'OWNER') {
     userId = '@owner';
-  } else if (userId == 'VIEWER') {
+  } else if (userId === 'VIEWER') {
     userId = '@viewer';
   } else if (opensocial.Container.isArray(newIdSpec)) {
     for (var i = 0; i < newIdSpec.length; i++) {
@@ -188,9 +190,9 @@ RestfulContainer.prototype.translateIdSpec = function(newIdSpec) {
     }
   }
 
-  if (groupId == 'FRIENDS') {
+  if (groupId === 'FRIENDS') {
     groupId = "@friends";
-  } else if (groupId == 'SELF' || !groupId) {
+  } else if (groupId === 'SELF' || !groupId) {
     groupId = "@self";
   }
 
@@ -200,7 +202,7 @@ RestfulContainer.prototype.translateIdSpec = function(newIdSpec) {
 RestfulContainer.prototype.getNetworkDistance = function(idSpec) {
   var networkDistance = idSpec.getField('networkDistance') || '';
   return "networkDistance=" + networkDistance;
-}
+};
 
 RestfulContainer.prototype.newFetchPersonRequest = function(id, opt_params) {
   var peopleRequest = this.newFetchPeopleRequest(
@@ -218,7 +220,7 @@ RestfulContainer.prototype.newFetchPeopleRequest = function(idSpec,
   var url = "/people/" + this.translateIdSpec(idSpec);
 
   FieldTranslations.translateJsPersonFieldsToServerFields(opt_params['profileDetail']);
-  url += "?fields=" + (opt_params['profileDetail'].join(','));
+  url += "?fields=" + opt_params['profileDetail'].join(',');
   url += "&startIndex=" + (opt_params['first'] || 0);
   url += "&count=" + (opt_params['max'] || 20);
   url += "&orderBy=" + (opt_params['sortOrder'] || 'topFriends');
@@ -262,19 +264,18 @@ RestfulContainer.prototype.getFieldsList = function(keys) {
 };
 
 RestfulContainer.prototype.hasNoKeys = function(keys) {
-  return !keys || keys.length == 0;
+  return !keys || keys.length === 0;
 };
 
 RestfulContainer.prototype.isWildcardKey = function(key) {
   // Some containers support * to mean all keys in the js apis.
   // This allows the RESTful apis to be compatible with them.
-  return key == "*";
+  return key === "*";
 };
 
 RestfulContainer.prototype.newFetchPersonAppDataRequest = function(idSpec,
     keys, opt_params) {
-  var url = "/appdata/" + this.translateIdSpec(idSpec) + "/@app"
-      + "?" + this.getNetworkDistance(idSpec) + "&" + this.getFieldsList(keys);
+  var url = "/appdata/" + this.translateIdSpec(idSpec) + "/@app" + "?" + this.getNetworkDistance(idSpec) + "&" + this.getFieldsList(keys);
   return new RestfulRequestItem(url, "GET", null,
       function (appData) {
         return opensocial.Container.escape(appData['entry'], opt_params, true);
@@ -283,23 +284,20 @@ RestfulContainer.prototype.newFetchPersonAppDataRequest = function(idSpec,
 
 RestfulContainer.prototype.newUpdatePersonAppDataRequest = function(id, key,
     value) {
-  var url = "/appdata/" + this.translateIdSpec(this.makeIdSpec(id))
-      + "/@app?fields=" + key;
+  var url = "/appdata/" + this.translateIdSpec(this.makeIdSpec(id)) + "/@app?fields=" + key;
   var data = {};
   data[key] = value;
   return new RestfulRequestItem(url, "POST", data);
 };
 
 RestfulContainer.prototype.newRemovePersonAppDataRequest = function(id, keys) {
-  var url = "/appdata/" + this.translateIdSpec(this.makeIdSpec(id))
-      + "/@app?" + this.getFieldsList(keys);
+  var url = "/appdata/" + this.translateIdSpec(this.makeIdSpec(id)) + "/@app?" + this.getFieldsList(keys);
   return new RestfulRequestItem(url, "DELETE");
 };
 
 RestfulContainer.prototype.newFetchActivitiesRequest = function(idSpec,
     opt_params) {
-  var url = "/activities/" + this.translateIdSpec(idSpec)
-      + "?appId=@app&" + this.getNetworkDistance(idSpec); // TODO: Handle appId correctly
+  var url = "/activities/" + this.translateIdSpec(idSpec) + "?appId=@app&" + this.getNetworkDistance(idSpec); // TODO: Handle appId correctly
   return new RestfulRequestItem(url, "GET", null,
       function(rawJson) {
         rawJson = rawJson['entry'];
@@ -324,8 +322,7 @@ RestfulContainer.prototype.newMediaItem = function(mimeType, url, opt_params) {
 
 RestfulContainer.prototype.newCreateActivityRequest = function(idSpec,
     activity) {
-  var url = "/activities/" + this.translateIdSpec(idSpec)
-      + "/@app?" + this.getNetworkDistance(idSpec); // TODO: Handle appId correctly
+  var url = "/activities/" + this.translateIdSpec(idSpec) + "/@app?" + this.getNetworkDistance(idSpec); // TODO: Handle appId correctly
   return new RestfulRequestItem(url, "POST", activity.toJsonObject());
 };
 
@@ -343,5 +340,5 @@ var RestfulRequestItem = function(url, method, opt_postData, opt_processData) {
 
     return new opensocial.ResponseItem(originalDataRequest,
         error ? null : this.processData(rawJson), error, errorMessage);
-  }
+  };
 };

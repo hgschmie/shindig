@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations under the License.
  */
 
+/*global ActiveXObject */
+
 /**
  * @fileoverview This library provides a standard and convenient way to embed
  * Flash content into gadgets.
@@ -51,14 +53,14 @@ gadgets.flash.getMajorVersion = function() {
     // "ShockwaveFlash.ShockwaveFlash.{majorVersion}".
     for (var version = 9; version > 0; version--) {
       try {
-        new ActiveXObject("ShockwaveFlash.ShockwaveFlash." + version);
+        var dummy = new ActiveXObject("ShockwaveFlash.ShockwaveFlash." + version);
         return version;
       } catch (e) {
       }
     }
   }
   return flashMajorVersion;
-}
+};
 
 /**
  * Injects a Flash file into the DOM tree.
@@ -79,7 +81,7 @@ gadgets.flash.embedFlash = function(swfUrl, swfContainer, swfVersion,
     case 'string':
       swfContainer = document.getElementById(swfContainer);
     case 'object':
-      if (swfContainer && (typeof swfContainer.innerHTML == 'string')) {
+      if (swfContainer && (typeof swfContainer.innerHTML === 'string')) {
         break;
       }
     default:
@@ -110,13 +112,13 @@ gadgets.flash.embedFlash = function(swfUrl, swfContainer, swfVersion,
         opt_params.height = '100%';
       }
       // Set the default "base" attribute
-      if (typeof opt_params.base != 'string') {
+      if (typeof opt_params.base !== 'string') {
         opt_params.base = swfUrl.match(/^[^?#]+\//)[0];
       }
       // Set wmode to "opaque" if it's not defined. The default value
       // "window" is undesirable because browsers will render Flash
       // on top of other html elements.
-      if (typeof opt_params.wmode != 'string') {
+      if (typeof opt_params.wmode !== 'string') {
         opt_params.wmode = 'opaque';
       }
       // Prepare html snippet

@@ -119,7 +119,7 @@ gadgets.TabSet = function(opt_moduleId, opt_defaultTab, opt_container) {
   this.rightNavContainer_ = null;
   this.navTable_ = null;
   this.tabsContainer_ = null;
-  this.rtl_ = document.body.dir == 'rtl';
+  this.rtl_ = document.body.dir === 'rtl';
   this.mainContainer_ = this.createMainContainer_(opt_container);
   this.tabTable_ = this.createTabTable_();
   this.displayTabs(false);
@@ -213,8 +213,7 @@ gadgets.TabSet.prototype.addTab = function(tabName, opt_params) {
     filler.className = this.cascade_('tablib_spacerTab');
     filler.appendChild(document.createTextNode(' '));
 
-    var ref = tabIndex < 0 ? tr.cells[tr.cells.length - 1]
-                           : this.tabs_[tabIndex].td_;
+    var ref = tabIndex < 0 ? tr.cells[tr.cells.length - 1] : this.tabs_[tabIndex].td_;
     tr.insertBefore(filler, ref);
     tr.insertBefore(tab.td_, tabIndex < 0 ? ref : filler);
   } else {
@@ -228,8 +227,7 @@ gadgets.TabSet.prototype.addTab = function(tabName, opt_params) {
     this.tabs_.splice(tabIndex, 0, tab);
   }
 
-  if (tabName == this.defaultTabName_ || (!this.defaultTabName_
-      && tabIndex == 0)) {
+  if (tabName === this.defaultTabName_ || (!this.defaultTabName_ && tabIndex === 0)) {
     this.selectTab_(tab);
   }
 
@@ -247,7 +245,7 @@ gadgets.TabSet.prototype.addTab = function(tabName, opt_params) {
 gadgets.TabSet.prototype.removeTab = function(tabIndex) {
   var tab = this.tabs_[tabIndex];
   if (tab) {
-    if (tab == this.selectedTab_) {
+    if (tab === this.selectedTab_) {
       var maxIndex = this.tabs_.length - 1;
       if (maxIndex > 0) {
         this.selectTab_(tabIndex < maxIndex ?
@@ -263,7 +261,7 @@ gadgets.TabSet.prototype.removeTab = function(tabIndex) {
     this.mainContainer_.removeChild(tab.contentContainer_);
     this.tabs_.splice(tabIndex, 1);
     this.adjustNavigation_();
-    if (this.tabs_.length == 0) {
+    if (this.tabs_.length === 0) {
       this.displayTabs(false);
       this.selectedTab_ = null;
     }
@@ -329,8 +327,8 @@ gadgets.TabSet.prototype.alignTabs = function(align, opt_offset) {
   var left = tr.cells[0];
   var right = tr.cells[tr.cells.length - 1];
   var offset = isNaN(opt_offset) ? '3px' : opt_offset + 'px';
-  left.style.width = align == 'left' ? offset : '';
-  right.style.width = align == 'right' ? offset : '';
+  left.style.width = align === 'left' ? offset : '';
+  right.style.width = align === 'right' ? offset : '';
   // In Opera and potentially some other browsers, changes to the width of
   // table cells aren't rendered.  To fix this, we force to re-render the
   // table by hiding and showing it again.
@@ -477,7 +475,6 @@ gadgets.TabSet.prototype.createTabTable_ = function() {
     this.mainContainer_.replaceChild(navTable, this.navTable_);
   } else {
     this.mainContainer_.insertBefore(navTable, this.mainContainer_.firstChild);
-    var me = this;
     var adjustNavigationFn = function() {
       me.adjustNavigation_();
     };
@@ -494,7 +491,7 @@ gadgets.TabSet.prototype.createTabTable_ = function() {
   this.tabsContainer_ = wrapper;
 
   return table;
-}
+};
 
 /**
  * Helper method that shows or hides the navigation elements.
@@ -602,7 +599,7 @@ gadgets.TabSet.prototype.createTab_ = function(tabName, params) {
  * @return {Function} Callback function to select the tab.
  */
 gadgets.TabSet.prototype.setSelectedTabGenerator_ = function(tab) {
-  return function() { tab.handle_.selectTab_(tab); }
+  return function() { tab.handle_.selectTab_(tab); };
 };
 
 /**
@@ -611,7 +608,7 @@ gadgets.TabSet.prototype.setSelectedTabGenerator_ = function(tab) {
  * @param {gadgets.Tab} tab The tab to select.
  */
 gadgets.TabSet.prototype.selectTab_ = function(tab) {
-  if (this.selectedTab_ == tab) {
+  if (this.selectedTab_ === tab) {
     return;
   }
 
@@ -627,7 +624,7 @@ gadgets.TabSet.prototype.selectTab_ = function(tab) {
   tab.contentContainer_.style.display = 'block';
   this.selectedTab_ = tab;
 
-  if (typeof tab.callback_ == 'function') {
+  if (typeof tab.callback_ === 'function') {
     tab.callback_(tab.contentContainer_.id);
   }
 };

@@ -36,16 +36,16 @@ gadgets.rpc = function() {
   // Consts for FrameElement.
   var FE_G2C_CHANNEL = '__g2c_rpc';
   var FE_C2G_CHANNEL = '__c2g_rpc';
- 
+
   // Consts for NIX. VBScript doesn't
   // allow items to start with _ for some reason,
-  // so we need to make these names quite unique, as 
+  // so we need to make these names quite unique, as
   // they will go into the global namespace.
   var NIX_WRAPPER = 'GRPC____NIXVBS_wrapper';
   var NIX_GET_WRAPPER = 'GRPC____NIXVBS_get_wrapper';
   var NIX_HANDLE_MESSAGE = 'GRPC____NIXVBS_handle_message';
   var NIX_CREATE_CHANNEL = 'GRPC____NIXVBS_create_channel';
- 
+
   // JavaScript reference to the NIX VBScript wrappers.
   // Gadgets will have but a single channel under
   // nix_channels['..'] while containers will have a channel
@@ -71,6 +71,9 @@ gadgets.rpc = function() {
 
   authToken['..'] = params.rpctoken || params.ifpctok || 0;
 
+  // Pick the most efficient RPC relay mechanism
+  var relayChannel = getRelayChannel();
+
   /*
    * Return a short code representing the best available cross-domain
    * message transport available to the browser.
@@ -78,7 +81,7 @@ gadgets.rpc = function() {
    * + For those browsers that support native messaging (various implementations
    *   of the HTML5 postMessage method), use that. Officially defined at
    *   http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html.
-   *   
+   *
    *   postMessage is a native implementation of XDC. A page registers that
    *   it would like to receive messages by listening the the "message" event
    *   on the window (document in DPM) object. In turn, another page can
@@ -88,7 +91,7 @@ gadgets.rpc = function() {
    *   the message. The target page will then have its "message" event raised
    *   if the domain matches and can, in turn, check the origin of the message
    *   and process the data contained within.
-   *  
+   *
    *     wpm: postMessage on the window object.
    *        - Internet Explorer 8+
    *        - Safari (latest nightlies as of 26/6/2008)
@@ -101,8 +104,8 @@ gadgets.rpc = function() {
    * + For Internet Explorer before version 8, the security model allows anyone
    *   parent to set the value of the "opener" property on another window,
    *   with only the receiving window able to read it.
-   *   This method is dubbed "Native IE XDC" (NIX). 
-   *   
+   *   This method is dubbed "Native IE XDC" (NIX).
+   *
    *   This method works by placing a handler object in the "opener" property
    *   of a gadget when the container sets up the authentication information
    *   for that gadget (by calling setAuthToken(...)). At that point, a NIX
@@ -126,7 +129,7 @@ gadgets.rpc = function() {
    *   domain C passes object obj to gadget on domain G. Then the gadget can
    *   access C's global context using:
    *   var parentWindow = (new obj.toString.constructor("return window;"))();
-   *   Nulling out all of obj's properties doesn't fix this, since IE helpfully 
+   *   Nulling out all of obj's properties doesn't fix this, since IE helpfully
    *   restores them to their original values if you do something like:
    *   delete obj.toString; delete obj.toString;
    *   Thus, we wrap the necessary functions and information inside a VBScript
@@ -178,7 +181,7 @@ gadgets.rpc = function() {
   function getRelayChannel() {
     return typeof window.postMessage === 'function' ? 'wpm' :
            typeof document.postMessage === 'function' ? 'dpm' :
-           window.ActiveXObject ? 'nix' : 
+           window.ActiveXObject ? 'nix' :
            navigator.product === 'Gecko' ? 'fe' :
            'ifpc';
   }
@@ -214,13 +217,13 @@ gadgets.rpc = function() {
         window[NIX_CREATE_CHANNEL] = function(name, channel, token) {
           // Verify the authentication token of the gadget trying
           // to create a channel for us.
-          if (authToken[name] == token) {
+          if (authToken[name] === token) {
             nix_channels[name] = channel;
           }
         };
 
         // Inject the VBScript code needed.
-        var vbscript = 
+        var vbscript =
           // We create a class to act as a wrapper for
           // a Javascript call, to prevent a break in of
           // the context.
@@ -246,7 +249,7 @@ gadgets.rpc = function() {
           + 'If isEmpty(m_Intended) Then\n'
           + 'm_Intended = name\n'
           + 'End If\n'
-          + 'End Sub\n' 
+          + 'End Sub\n'
 
           // Method for internally setting the value of the m_Auth property.
           + 'Public Sub SetAuth(auth)\n '
@@ -255,11 +258,11 @@ gadgets.rpc = function() {
           + 'End If\n'
           + 'End Sub\n'
 
-          // A wrapper method which actually causes a 
+          // A wrapper method which actually causes a
           // message to be sent to the other context.
           + 'Public Sub SendMessage(data)\n '
           + NIX_HANDLE_MESSAGE + '(data)\n'
-          + 'End Sub\n' 
+          + 'End Sub\n'
 
           // Returns the auth token to the gadget, so it can
           // confirm a match before initiating the connection
@@ -298,9 +301,6 @@ gadgets.rpc = function() {
     }
   }
 
-  // Pick the most efficient RPC relay mechanism
-  var relayChannel = getRelayChannel();
-
   // Conduct any setup necessary for the chosen channel.
   setupChannel();
 
@@ -326,17 +326,18 @@ gadgets.rpc = function() {
    * of the channel once they send their first messages.
    */
   function setupFrame(frameId, token) {
+    var frame;
     if (setup[frameId]) {
       return;
     }
 
     if (relayChannel === 'fe') {
       try {
-        var frame = document.getElementById(frameId);
+        frame = document.getElementById(frameId);
         frame[FE_G2C_CHANNEL] = function(args) {
           process(gadgets.json.parse(args));
         };
-      } catch (e) {
+      } catch (e1) {
         // Something went wrong. System will fallback to
         // IFPC.
       }
@@ -344,10 +345,10 @@ gadgets.rpc = function() {
 
     if (relayChannel === 'nix') {
       try {
-        var frame = document.getElementById(frameId);
+        frame = document.getElementById(frameId);
         var wrapper = window[NIX_GET_WRAPPER](frameId, token);
         frame.contentWindow.opener = wrapper;
-      } catch (e) {
+      } catch (e2) {
         // Something went wrong. System will fallback to
         // IFPC.
       }
@@ -391,7 +392,7 @@ gadgets.rpc = function() {
       // Validate auth token.
       if (authToken[rpc.f]) {
         // We allow type coercion here because all the url params are strings.
-        if (authToken[rpc.f] != rpc.t) {
+        if (authToken[rpc.f] !== rpc.t) {
           throw new Error("Invalid auth token.");
         }
       }
@@ -426,7 +427,7 @@ gadgets.rpc = function() {
       // If the rpc request handler returns a value, immediately pass it back
       // to the callback. Otherwise, do nothing, assuming that the rpc handler
       // will make an asynchronous call later.
-      if (rpc.c && typeof result != 'undefined') {
+      if (rpc.c && typeof result !== 'undefined') {
         gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
       }
     }
@@ -445,7 +446,7 @@ gadgets.rpc = function() {
    */
   function callNix(targetId, serviceName, from, rpcData) {
     try {
-      if (from != '..') {
+      if (from !== '..') {
         // Call from gadget to the container.
         var handler = nix_channels['..'];
 
@@ -454,7 +455,7 @@ gadgets.rpc = function() {
         // typeof(window.opener.GetAuthToken) check here
         // because it means accessing that field on the COM object, which,
         // being an internal function reference, is not allowed.
-        // "in" works because it merely checks for the prescence of 
+        // "in" works because it merely checks for the prescence of
         // the key, rather than actually accessing the object's property.
         // This is just a sanity check, not a validity check.
         if (!handler && window.opener && "GetAuthToken" in window.opener) {
@@ -463,7 +464,7 @@ gadgets.rpc = function() {
           // Create the channel to the parent/container.
           // First verify that it knows our auth token to ensure it's not
           // an impostor.
-          if (handler.GetAuthToken() == authToken['..']) {
+          if (handler.GetAuthToken() === authToken['..']) {
             // Auth match - pass it back along with our wrapper to finish.
             // own wrapper and our authentication token for co-verification.
             var token = authToken['..'];
@@ -512,10 +513,10 @@ gadgets.rpc = function() {
    */
   function callFrameElement(targetId, serviceName, from, rpcData, callArgs) {
     try {
-      if (from != '..') {
+      if (from !== '..') {
         // Call from gadget to the container.
         var fe = window.frameElement;
-      
+
         if (typeof fe[FE_G2C_CHANNEL] === 'function') {
           // Complete the setup of the FE channel if need be.
           if (typeof fe[FE_G2C_CHANNEL][FE_C2G_CHANNEL] !== 'function') {
@@ -689,7 +690,7 @@ gadgets.rpc = function() {
         // the fragment.
         var params = document.location.search.substring(0).split("&");
         var parentParam = "";
-        for (var i = 0, param; param = params[i]; ++i) {
+        for (var i = 0, param; (param = params[i]); ++i) {
           // Only the first parent can be validated.
           if (param.indexOf("parent=") === 0) {
             parentParam = decodeURIComponent(param.substring(7));
@@ -716,13 +717,12 @@ gadgets.rpc = function() {
      * @member gadgets.rpc
      */
     register: function(serviceName, handler) {
-      if (serviceName == CALLBACK_NAME) {
+      if (serviceName === CALLBACK_NAME) {
         throw new Error("Cannot overwrite callback service");
       }
 
-      if (serviceName == DEFAULT_NAME) {
-        throw new Error("Cannot overwrite default service:"
-                        + " use registerDefault");
+      if (serviceName === DEFAULT_NAME) {
+        throw new Error("Cannot overwrite default service: use registerDefault");
       }
 
       services[serviceName] = handler;
@@ -735,13 +735,12 @@ gadgets.rpc = function() {
      * @member gadgets.rpc
      */
     unregister: function(serviceName) {
-      if (serviceName == CALLBACK_NAME) {
+      if (serviceName === CALLBACK_NAME) {
         throw new Error("Cannot delete callback service");
       }
 
-      if (serviceName == DEFAULT_NAME) {
-        throw new Error("Cannot delete default service:"
-                        + " use unregisterDefault");
+      if (serviceName === DEFAULT_NAME) {
+        throw new Error("Cannot delete default service: use unregisterDefault");
       }
 
       delete services[serviceName];
@@ -918,7 +917,7 @@ gadgets.rpc = function() {
     receiveSameDomain: function(rpc) {
       // Pass through to local process method but converting to a local Array
       rpc.a = Array.prototype.slice.call(rpc.a);
-      window.setTimeout(function() { process(rpc) }, 0);
+      window.setTimeout(function() { process(rpc); }, 0);
     }
   };
 }();

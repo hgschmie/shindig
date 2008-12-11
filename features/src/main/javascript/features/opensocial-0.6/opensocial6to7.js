@@ -17,6 +17,8 @@
  * under the License.
  */
 
+/*global gadgets, opensocial */
+
 // If a gadget was written for the opensocial 0.6 apis and it wants to run in a
 // container that only supports 0.7, including this file should allow the gadget
 // to run without making any changes.
@@ -60,20 +62,19 @@ opensocial.ContentRequestParameters.AuthenticationType = {
 opensocial.Person.prototype.getField_v07 = opensocial.Person.prototype.getField;
 
 opensocial.Person.prototype.getField = function(fieldname) {
-  if (fieldname == opensocial.Person.Field.NAME) {
+  if (fieldname === opensocial.Person.Field.NAME) {
     return this.getField_v07(opensocial.Person.Field.NAME)
         .getField(opensocial.Name.Field.UNSTRUCTURED);
   } else {
     return this.getField_v07(fieldname);
   }
-}
+};
 
-opensocial.Person.prototype.getDisplayName_v07
-    = opensocial.Person.getDisplayName;
+opensocial.Person.prototype.getDisplayName_v07 = opensocial.Person.getDisplayName;
 opensocial.Person.prototype.getDisplayName = function() {
   return this.getField_v07(opensocial.Person.Field.NAME)
       .getField(opensocial.Name.Field.UNSTRUCTURED);
-}
+};
 
 opensocial.newActivity_v07 = opensocial.newActivity;
 opensocial.newActivity = function(title, opt_params) {
@@ -114,7 +115,7 @@ opensocial.DataRequest.prototype.newUpdateInstanceAppDataRequest = function(key,
 // same.
 gadgets.views.View.prototype.isPrimaryContent = function() {
   return this.isOnlyVisibleGadget();
-}
+};
 
 // Note: The names of views may have changed in a container between 0.6 and 0.7
 // but that is container specific
