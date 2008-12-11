@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project name="jslint" default="validate" basedir=".">
+
+  <path id="lint.classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+
+  <taskdef name="jslint"
+             classname="net.happygiraffe.jslint.ant.JSLintTask"
+             classpathref="lint.classpath" />
+
+  <target name="validate">
+    <jslint encoding="iso-8859-1" haltOnFailure="false" options="browser,eqeqeq,undef,sub" >
+      <formatter type="plain" destfile="target/jslint.report" />
+      <fileset dir="src/main/javascript" includes="**/*.js" />
+    </jslint>
+  </target>
+</project>
+
