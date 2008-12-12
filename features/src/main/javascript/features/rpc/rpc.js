@@ -62,6 +62,7 @@ gadgets.rpc = function() {
   var setup = {};
   var sameDomain = {};
   var params = {};
+  var relayChannel;
 
   // Load the authentication token for speaking to the container
   // from the gadget's parameters, or default to '0' if not found.
@@ -70,9 +71,6 @@ gadgets.rpc = function() {
   }
 
   authToken['..'] = params.rpctoken || params.ifpctok || 0;
-
-  // Pick the most efficient RPC relay mechanism
-  var relayChannel = getRelayChannel();
 
   /*
    * Return a short code representing the best available cross-domain
@@ -184,6 +182,67 @@ gadgets.rpc = function() {
            window.ActiveXObject ? 'nix' :
            navigator.product === 'Gecko' ? 'fe' :
            'ifpc';
+  }
+
+  /**
+   * Helper function to process an RPC request
+   * @param {Object} rpc RPC request object
+   * @private
+   */
+  function process(rpc) {
+    //
+    // RPC object contents:
+    //   s: Service Name
+    //   f: From
+    //   c: The callback ID or 0 if none.
+    //   a: The arguments for this RPC call.
+    //   t: The authentication token.
+    //
+    if (rpc && typeof rpc.s === 'string' && typeof rpc.f === 'string' &&
+        rpc.a instanceof Array) {
+
+      // Validate auth token.
+      if (authToken[rpc.f]) {
+        // We allow type coercion here because all the url params are strings.
+        if (authToken[rpc.f] !== rpc.t) {
+          throw new Error("Invalid auth token.");
+        }
+      }
+
+      // If there is a callback for this service, attach a callback function
+      // to the rpc context object for asynchronous rpc services.
+      //
+      // Synchronous rpc request handlers should simply ignore it and return a
+      // value as usual.
+      // Asynchronous rpc request handlers, on the other hand, should pass its
+      // result to this callback function and not return a value on exit.
+      //
+      // For example, the following rpc handler passes the first parameter back
+      // to its rpc client with a one-second delay.
+      //
+      // function asyncRpcHandler(param) {
+      //   var me = this;
+      //   setTimeout(function() {
+      //     me.callback(param);
+      //   }, 1000);
+      // }
+      if (rpc.c) {
+        rpc.callback = function(result) {
+          gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
+        };
+      }
+
+      // Call the requested RPC service.
+      var result = (services[rpc.s] ||
+                    services[DEFAULT_NAME]).apply(rpc, rpc.a);
+
+      // If the rpc request handler returns a value, immediately pass it back
+      // to the callback. Otherwise, do nothing, assuming that the rpc handler
+      // will make an asynchronous call later.
+      if (rpc.c && typeof result !== 'undefined') {
+        gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
+      }
+    }
   }
 
   /**
@@ -301,6 +360,9 @@ gadgets.rpc = function() {
     }
   }
 
+  // Pick the most efficient RPC relay mechanism
+  relayChannel = getRelayChannel();
+
   // Conduct any setup necessary for the chosen channel.
   setupChannel();
 
@@ -373,65 +435,88 @@ gadgets.rpc = function() {
   }
 
   /**
-   * Helper function to process an RPC request
-   * @param {Object} rpc RPC request object
+   * Helper function to emit an invisible IFrame.
+   * @param {String} src SRC attribute of the IFrame to emit.
    * @private
    */
-  function process(rpc) {
-    //
-    // RPC object contents:
-    //   s: Service Name
-    //   f: From
-    //   c: The callback ID or 0 if none.
-    //   a: The arguments for this RPC call.
-    //   t: The authentication token.
-    //
-    if (rpc && typeof rpc.s === 'string' && typeof rpc.f === 'string' &&
-        rpc.a instanceof Array) {
-
-      // Validate auth token.
-      if (authToken[rpc.f]) {
-        // We allow type coercion here because all the url params are strings.
-        if (authToken[rpc.f] !== rpc.t) {
-          throw new Error("Invalid auth token.");
+  function emitInvisibleIframe(src) {
+    var iframe;
+    // Recycle IFrames
+    for (var i = iframePool.length - 1; i >=0; --i) {
+      var ifr = iframePool[i];
+      try {
+        if (ifr && (ifr.recyclable || ifr.readyState === 'complete')) {
+          ifr.parentNode.removeChild(ifr);
+          if (window.ActiveXObject) {
+            // For MSIE, delete any iframes that are no longer being used. MSIE
+            // cannot reuse the IFRAME because a navigational click sound will
+            // be triggered when we set the SRC attribute.
+            // Other browsers scan the pool for a free iframe to reuse.
+            iframePool[i] = ifr = null;
+            iframePool.splice(i, 1);
+          } else {
+            ifr.recyclable = false;
+            iframe = ifr;
+            break;
+          }
         }
-      }
-
-      // If there is a callback for this service, attach a callback function
-      // to the rpc context object for asynchronous rpc services.
-      //
-      // Synchronous rpc request handlers should simply ignore it and return a
-      // value as usual.
-      // Asynchronous rpc request handlers, on the other hand, should pass its
-      // result to this callback function and not return a value on exit.
-      //
-      // For example, the following rpc handler passes the first parameter back
-      // to its rpc client with a one-second delay.
-      //
-      // function asyncRpcHandler(param) {
-      //   var me = this;
-      //   setTimeout(function() {
-      //     me.callback(param);
-      //   }, 1000);
-      // }
-      if (rpc.c) {
-        rpc.callback = function(result) {
-          gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
-        };
-      }
-
-      // Call the requested RPC service.
-      var result = (services[rpc.s] ||
-                    services[DEFAULT_NAME]).apply(rpc, rpc.a);
-
-      // If the rpc request handler returns a value, immediately pass it back
-      // to the callback. Otherwise, do nothing, assuming that the rpc handler
-      // will make an asynchronous call later.
-      if (rpc.c && typeof result !== 'undefined') {
-        gadgets.rpc.call(rpc.f, CALLBACK_NAME, null, rpc.c, result);
+      } catch (e) {
+        // Ignore; IE7 throws an exception when trying to read readyState and
+        // readyState isn't set.
       }
     }
+    // Create IFrame if necessary
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.style.border = iframe.style.width = iframe.style.height = '0px';
+      iframe.style.visibility = 'hidden';
+      iframe.style.position = 'absolute';
+      iframe.onload = function() { this.recyclable = true; };
+      iframePool.push(iframe);
+    }
+    iframe.src = src;
+    setTimeout(function() { document.body.appendChild(iframe); }, 0);
   }
+
+  /**
+   * Conducts an RPC call to the specified
+   * target with the specified data via the IFPC
+   * method.
+   *
+   * @param {String} targetId Module Id of the RPC service provider.
+   * @param {String} serviceName Service name to call.
+   * @param {String} from Module Id of the calling provider.
+   * @param {Object} rpcData The RPC data for this call.
+   * @param {Array.<Object>} callArgs Original arguments to call()
+   */
+  function callIfpc(targetId, serviceName, from, rpcData, callArgs) {
+    // Retrieve the relay file used by IFPC. Note that
+    // this must be set before the call, and so we conduct
+    // an extra check to ensure it is not blank.
+    var relay = gadgets.rpc.getRelayUrl(targetId);
+
+    if (!relay) {
+      throw new Error('No relay file assigned for IFPC');
+    }
+
+    // The RPC mechanism supports two formats for IFPC (legacy and current).
+    var src = null;
+    if (useLegacyProtocol[targetId]) {
+      // Format: #iframe_id&callId&num_packets&packet_num&block_of_data
+      src = [relay, '#', encodeLegacyData([from, callId, 1, 0,
+             encodeLegacyData([from, serviceName, '', '', from].concat(
+               callArgs))])].join('');
+    } else {
+      // Format: #targetId & sourceId@callId & packetNum & packetId & packetData
+      src = [relay, '#', targetId, '&', from, '@', callId,
+             '&1&0&', encodeURIComponent(rpcData)].join('');
+    }
+
+    // Conduct the IFPC call by creating the Iframe with
+    // the relay URL and appended message.
+    emitInvisibleIframe(src);
+  }
+
 
   /**
    * Attempts to conduct an RPC call to the specified
@@ -551,90 +636,6 @@ gadgets.rpc = function() {
   }
 
   /**
-   * Conducts an RPC call to the specified
-   * target with the specified data via the IFPC
-   * method.
-   *
-   * @param {String} targetId Module Id of the RPC service provider.
-   * @param {String} serviceName Service name to call.
-   * @param {String} from Module Id of the calling provider.
-   * @param {Object} rpcData The RPC data for this call.
-   * @param {Array.<Object>} callArgs Original arguments to call()
-   */
-  function callIfpc(targetId, serviceName, from, rpcData, callArgs) {
-    // Retrieve the relay file used by IFPC. Note that
-    // this must be set before the call, and so we conduct
-    // an extra check to ensure it is not blank.
-    var relay = gadgets.rpc.getRelayUrl(targetId);
-
-    if (!relay) {
-      throw new Error('No relay file assigned for IFPC');
-    }
-
-    // The RPC mechanism supports two formats for IFPC (legacy and current).
-    var src = null;
-    if (useLegacyProtocol[targetId]) {
-      // Format: #iframe_id&callId&num_packets&packet_num&block_of_data
-      src = [relay, '#', encodeLegacyData([from, callId, 1, 0,
-             encodeLegacyData([from, serviceName, '', '', from].concat(
-               callArgs))])].join('');
-    } else {
-      // Format: #targetId & sourceId@callId & packetNum & packetId & packetData
-      src = [relay, '#', targetId, '&', from, '@', callId,
-             '&1&0&', encodeURIComponent(rpcData)].join('');
-    }
-
-    // Conduct the IFPC call by creating the Iframe with
-    // the relay URL and appended message.
-    emitInvisibleIframe(src);
-  }
-
-
-  /**
-   * Helper function to emit an invisible IFrame.
-   * @param {String} src SRC attribute of the IFrame to emit.
-   * @private
-   */
-  function emitInvisibleIframe(src) {
-    var iframe;
-    // Recycle IFrames
-    for (var i = iframePool.length - 1; i >=0; --i) {
-      var ifr = iframePool[i];
-      try {
-        if (ifr && (ifr.recyclable || ifr.readyState === 'complete')) {
-          ifr.parentNode.removeChild(ifr);
-          if (window.ActiveXObject) {
-            // For MSIE, delete any iframes that are no longer being used. MSIE
-            // cannot reuse the IFRAME because a navigational click sound will
-            // be triggered when we set the SRC attribute.
-            // Other browsers scan the pool for a free iframe to reuse.
-            iframePool[i] = ifr = null;
-            iframePool.splice(i, 1);
-          } else {
-            ifr.recyclable = false;
-            iframe = ifr;
-            break;
-          }
-        }
-      } catch (e) {
-        // Ignore; IE7 throws an exception when trying to read readyState and
-        // readyState isn't set.
-      }
-    }
-    // Create IFrame if necessary
-    if (!iframe) {
-      iframe = document.createElement('iframe');
-      iframe.style.border = iframe.style.width = iframe.style.height = '0px';
-      iframe.style.visibility = 'hidden';
-      iframe.style.position = 'absolute';
-      iframe.onload = function() { this.recyclable = true; };
-      iframePool.push(iframe);
-    }
-    iframe.src = src;
-    setTimeout(function() { document.body.appendChild(iframe); }, 0);
-  }
-
-  /**
    * Attempts to make an rpc by calling the target's receive method directly.
    * This works when gadgets are rendered on the same domain as their container,
    * a potentially useful optimization for trusted content which keeps
@@ -678,7 +679,7 @@ gadgets.rpc = function() {
     /**
      * Initializes RPC from the provided configuration.
      */
-    function init(config) {
+    var init_ = function init(config) {
       // Allow for wild card parent relay files as long as it's from a
       // white listed domain. This is enforced by the rendering servlet.
       if (config.rpc.parentRelayUrl.substring(0, 7) === 'http://') {
@@ -700,12 +701,12 @@ gadgets.rpc = function() {
         relayUrl['..'] = parentParam + config.rpc.parentRelayUrl;
       }
       useLegacyProtocol['..'] = !!config.rpc.useLegacyProtocol;
-    }
+    };
 
     var requiredConfig = {
       parentRelayUrl : gadgets.config.NonEmptyStringValidator
     };
-    gadgets.config.register("rpc", requiredConfig, init);
+    gadgets.config.register("rpc", requiredConfig, init_);
   }
 
   return /** @scope gadgets.rpc */ {
