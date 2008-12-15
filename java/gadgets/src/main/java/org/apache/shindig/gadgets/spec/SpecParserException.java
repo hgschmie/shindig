@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.gadgets.spec;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.xml.XmlException;
 import org.apache.shindig.gadgets.GadgetException;
 
@@ -31,12 +33,19 @@ public class SpecParserException extends GadgetException {
     super(GadgetException.Code.MALFORMED_XML_DOCUMENT, message);
   }
 
+  public SpecParserException(XMLStreamException e) {
+      super(GadgetException.Code.MALFORMED_XML_DOCUMENT, e);
+    }
+
   public SpecParserException(XmlException e) {
     super(GadgetException.Code.MALFORMED_XML_DOCUMENT, e);
   }
-  
+
   public SpecParserException(String message, XmlException e) {
     super(GadgetException.Code.MALFORMED_XML_DOCUMENT, message, e);
   }
-  
+
+  public SpecParserException(String message, XMLStreamException e) {
+      super(GadgetException.Code.MALFORMED_XML_DOCUMENT, message, e);
+    }
 }
