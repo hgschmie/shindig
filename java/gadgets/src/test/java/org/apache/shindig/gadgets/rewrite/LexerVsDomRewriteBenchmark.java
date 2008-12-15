@@ -18,9 +18,12 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URI;
+import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
@@ -33,14 +36,11 @@ import org.apache.shindig.gadgets.parse.nekohtml.NekoHtmlParser;
 import org.apache.shindig.gadgets.parse.nekohtml.NekoSimplifiedHtmlParser;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.HtmlTagTransformer;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URI;
-import java.util.Map;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Compare performance of lexer rewriter and dom rewriter.
@@ -87,7 +87,7 @@ public class LexerVsDomRewriteBenchmark {
     // End DOM setup
 
     final Uri url = Uri.parse("http://www.example.org/dummy.xml");
-    GadgetSpec spec = new GadgetSpec(url,
+    GadgetSpec spec = new DefaultGadgetSpec(url,
         "<Module><ModulePrefs title=''/><Content><![CDATA[]]></Content></Module>");
 
     GadgetContext context = new GadgetContext() {

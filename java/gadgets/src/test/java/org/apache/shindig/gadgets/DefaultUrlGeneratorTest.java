@@ -22,18 +22,6 @@ import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 
-import org.apache.shindig.common.ContainerConfig;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import com.google.common.collect.Maps;
-
-import junitx.framework.StringAssert;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +29,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import junitx.framework.StringAssert;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.shindig.common.ContainerConfig;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
+import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.common.collect.Maps;
 
 /**
  * Tests for DefaultUrlGenerator.
@@ -141,7 +141,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='html'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new GadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
     replay();
 
     Gadget gadget = new Gadget()
@@ -165,7 +165,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='html'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new GadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
 
     expect(lockedDomainService.getLockedDomainForGadget(isA(GadgetSpec.class), eq(CONTAINER)))
         .andReturn("locked.example.org");
@@ -193,7 +193,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='url' href='" + StringEscapeUtils.escapeHtml(TYPE_URL_HREF) + "'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new GadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
     replay();
 
     Gadget gadget = new Gadget()

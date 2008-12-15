@@ -24,11 +24,12 @@ import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 
+import java.util.Arrays;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import java.util.Arrays;
 
 public class HashLockedDomainServiceTest extends EasyMockTestCase {
   private HashLockedDomainService lockedDomainService;
@@ -49,7 +50,7 @@ public class HashLockedDomainServiceTest extends EasyMockTestCase {
     }
 
     try {
-      return new GadgetSpec(Uri.parse(url), gadgetXml);
+      return new DefaultGadgetSpec(Uri.parse(url), gadgetXml);
     } catch (GadgetException e) {
       return null;
     }

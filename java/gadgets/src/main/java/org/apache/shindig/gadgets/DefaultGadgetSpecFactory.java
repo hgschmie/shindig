@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.Inject;
@@ -41,6 +42,6 @@ public class DefaultGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
     }
 
     protected GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
-        return new GadgetSpec(uri, xml);
+        return new DefaultGadgetSpec(uri, xml);
     }
 }

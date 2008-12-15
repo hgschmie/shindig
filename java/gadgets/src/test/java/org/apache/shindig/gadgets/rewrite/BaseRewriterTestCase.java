@@ -17,9 +17,10 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import java.net.URI;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
@@ -31,12 +32,11 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
-import org.apache.commons.lang.StringUtils;
-
-import java.net.URI;
-import java.util.Set;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 /**
  * Base class for testing content rewriting functionality
@@ -84,7 +84,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new GadgetSpec(SPEC_URL, xml);
+    return new DefaultGadgetSpec(SPEC_URL, xml);
   }
 
   public static GadgetSpec createSpecWithoutRewrite() throws GadgetException {
@@ -93,7 +93,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new GadgetSpec(SPEC_URL, xml);
+    return new DefaultGadgetSpec(SPEC_URL, xml);
   }
 
   ContentRewriterFeatureFactory mockContentRewriterFeatureFactory(
@@ -119,7 +119,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
       throws Exception {
     MutableContent mc = new MutableContent(parser, s);
 
-    GadgetSpec spec = new GadgetSpec(SPEC_URL,
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL,
         "<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>");
 
     GadgetContext context = new GadgetContext() {

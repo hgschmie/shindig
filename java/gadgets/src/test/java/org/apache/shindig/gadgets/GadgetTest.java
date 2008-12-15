@@ -21,9 +21,8 @@ package org.apache.shindig.gadgets;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
-
 import org.junit.Test;
 
 /**
@@ -50,7 +49,7 @@ public class GadgetTest {
   public void getLocale() throws Exception {
     Gadget gadget = new Gadget()
         .setContext(context)
-        .setSpec(new GadgetSpec(Uri.parse(SPEC_URL), SPEC_XML));
+        .setSpec(new DefaultGadgetSpec(Uri.parse(SPEC_URL), SPEC_XML));
 
     LocaleSpec localeSpec = gadget.getLocale();
     assertEquals("VALUE", localeSpec.getMessageBundle().getMessages().get("name"));

@@ -17,19 +17,19 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import com.google.common.collect.Lists;
-
 import org.easymock.classextension.EasyMock;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.Lists;
 
 public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
@@ -47,7 +47,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   public void testRewriteGadget() throws Exception {
     String body = "Hello, world";
     String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
-    GadgetSpec spec = new GadgetSpec(SPEC_URL, xml);
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL, xml);
     GadgetContext context = new GadgetContext();
     Gadget gadget = new Gadget()
         .setContext(context)
@@ -77,7 +77,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   public void testRewriteView() throws Exception {
     String body = "Hello, world";
     String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
-    GadgetSpec spec = new GadgetSpec(SPEC_URL, xml);
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL, xml);
     GadgetContext context = new GadgetContext();
     Gadget gadget = new Gadget()
         .setContext(context)
@@ -88,7 +88,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
     assertTrue("First rewriter invoked.", rewriters.get(0).viewWasRewritten());
     assertTrue("Second rewriter invoked.", rewriters.get(1).viewWasRewritten());
 
-    assertEquals(body, rewritten); 
+    assertEquals(body, rewritten);
   }
 
   /**
