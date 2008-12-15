@@ -40,8 +40,6 @@ import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.DefaultContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.servlet.CajaContentRewriter;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
-import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
@@ -69,7 +67,7 @@ public class DefaultGuiceModule extends AbstractModule {
     bind(ContentRewriterRegistry.class).to(DefaultContentRewriterRegistry.class);
     bind(GadgetBlacklist.class).to(BasicGadgetBlacklist.class);
     bind(GadgetSpecFactory.class).to(DefaultGadgetSpecFactory.class);
-    bind(GadgetSpec.class).to(DefaultGadgetSpec.class);
+    // bind(GadgetSpec.class).to(DefaultGadgetSpec.class);
     bind(LockedDomainService.class).to(HashLockedDomainService.class);
     bind(MessageBundleFactory.class).to(DefaultMessageBundleFactory.class);
     bind(UrlGenerator.class).to(DefaultUrlGenerator.class);
