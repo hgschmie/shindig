@@ -28,7 +28,7 @@
 
   <groupId>org.apache.shindig</groupId>
   <artifactId>shindig-project</artifactId>
-  <version>ning-20081208.2-SNAPSHOT</version>
+  <version>ning-20081211.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Shindig Project</name>
@@ -885,27 +885,27 @@
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-features</artifactId>
-        <version>ning-20081208.2-SNAPSHOT</version>
+        <version>ning-20081211.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-common</artifactId>
-        <version>ning-20081208.2-SNAPSHOT</version>
+        <version>ning-20081211.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-gadgets</artifactId>
-        <version>ning-20081208.2-SNAPSHOT</version>
+        <version>ning-20081211.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-server</artifactId>
-        <version>ning-20081208.2-SNAPSHOT</version>
+        <version>ning-20081211.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-social-api</artifactId>
-        <version>ning-20081208.2-SNAPSHOT</version>
+        <version>ning-20081211.1-SNAPSHOT</version>
       </dependency>
 
       <!-- external dependencies -->
