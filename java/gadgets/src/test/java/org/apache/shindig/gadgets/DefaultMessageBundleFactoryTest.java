@@ -25,6 +25,9 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.shindig.common.cache.Cache;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
@@ -34,14 +37,11 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
-
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Tests for DefaultMessageBundleFactory
@@ -96,7 +96,7 @@ public class DefaultMessageBundleFactoryTest {
 
   public DefaultMessageBundleFactoryTest() {
     try {
-      gadgetSpec = new GadgetSpec(SPEC_URI, BASIC_SPEC);
+      gadgetSpec = new DefaultGadgetSpec(SPEC_URI, BASIC_SPEC);
     } catch (GadgetException e) {
       throw new RuntimeException(e);
     }

@@ -22,7 +22,14 @@ import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.*;
+import org.apache.shindig.gadgets.Gadget;
+import org.apache.shindig.gadgets.GadgetContext;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.GadgetFeature;
+import org.apache.shindig.gadgets.GadgetFeatureRegistry;
+import org.apache.shindig.gadgets.JsLibrary;
+import org.apache.shindig.gadgets.MessageBundleFactory;
+import org.apache.shindig.gadgets.UrlGenerator;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.preload.NullPreloads;
@@ -31,6 +38,7 @@ import org.apache.shindig.gadgets.preload.PreloadedData;
 import org.apache.shindig.gadgets.preload.Preloads;
 import static org.apache.shindig.gadgets.render.RenderingContentRewriter.*;
 import org.apache.shindig.gadgets.rewrite.MutableContent;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
@@ -89,7 +97,7 @@ public class RenderingContentRewriterTest {
   }
 
   private Gadget makeGadgetWithSpec(String gadgetXml) throws GadgetException {
-    GadgetSpec spec = new GadgetSpec(SPEC_URL, gadgetXml);
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL, gadgetXml);
     return new Gadget()
         .setContext(new GadgetContext())
         .setPreloads(new NullPreloads())

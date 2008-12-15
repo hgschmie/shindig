@@ -22,6 +22,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+
 import org.apache.shindig.common.testing.TestExecutorService;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
@@ -30,21 +35,16 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.UrlGenerator;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.View;
-
-import com.google.common.collect.Maps;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 public class JsonRpcHandlerTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
@@ -243,7 +243,7 @@ public class JsonRpcHandlerTest {
       }
 
       try {
-        GadgetSpec spec = new GadgetSpec(Uri.parse("#"), gadgets.get(context.getUrl()));
+        GadgetSpec spec = new DefaultGadgetSpec(Uri.parse("#"), gadgets.get(context.getUrl()));
         View view = spec.getView(context.getView());
         return new Gadget()
             .setContext(context)

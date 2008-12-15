@@ -18,7 +18,13 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import com.google.common.collect.Maps;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.uri.Uri;
@@ -33,15 +39,12 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.View;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 /**
  * Tests for HtmlRenderer
@@ -66,7 +69,7 @@ public class HtmlRendererTest {
   private final HtmlRenderer renderer = new HtmlRenderer(fetcher, preloaderService, rewriter);
 
   private Gadget makeGadget(String content) throws GadgetException {
-    GadgetSpec spec = new GadgetSpec(SPEC_URL,
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL,
         "<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>");
 
     return new Gadget()

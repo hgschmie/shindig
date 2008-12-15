@@ -18,11 +18,12 @@
  */
 package org.apache.shindig.gadgets;
 
+import java.net.URI;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-
-import java.net.URI;
 
 /**
  * Fakes out a gadget spec factory
@@ -43,18 +44,18 @@ public class FakeGadgetSpecFactory implements GadgetSpecFactory {
     if (gadget.contains("nokey")) {
       // For testing key lookup failures
       String nokeySpec = baseSpec.replace(SERVICE_NAME, SERVICE_NAME_NO_KEY);
-      return new GadgetSpec(uri, nokeySpec);
+      return new DefaultGadgetSpec(uri, nokeySpec);
     } else if (gadget.contains("header")) {
       // For testing oauth data in header
       String headerSpec = baseSpec.replace("uri-query", "auth-header");
-      return new GadgetSpec(uri, headerSpec);
+      return new DefaultGadgetSpec(uri, headerSpec);
     } else if (gadget.contains("body")) {
       // For testing oauth data in body
       String bodySpec = baseSpec.replace("uri-query", "post-body");
       bodySpec = bodySpec.replace("'GET'", "'POST'");
-      return new GadgetSpec(uri, bodySpec);
+      return new DefaultGadgetSpec(uri, bodySpec);
     } else {
-      return new GadgetSpec(uri, baseSpec);
+      return new DefaultGadgetSpec(uri, baseSpec);
     }
   }
 }

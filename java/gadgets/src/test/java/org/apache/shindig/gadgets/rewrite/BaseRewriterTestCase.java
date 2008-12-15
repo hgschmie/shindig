@@ -27,7 +27,7 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
-import org.apache.shindig.gadgets.parse.ParseModule;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.Guice;
@@ -84,7 +84,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new GadgetSpec(SPEC_URL, xml);
+    return new DefaultGadgetSpec(SPEC_URL, xml);
   }
 
   public static GadgetSpec createSpecWithoutRewrite() throws GadgetException {
@@ -93,7 +93,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new GadgetSpec(SPEC_URL, xml);
+    return new DefaultGadgetSpec(SPEC_URL, xml);
   }
 
   ContentRewriterFeatureFactory mockContentRewriterFeatureFactory(
@@ -119,7 +119,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
       throws Exception {
     MutableContent mc = new MutableContent(parser, s);
 
-    GadgetSpec spec = new GadgetSpec(SPEC_URL,
+    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL,
         "<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>");
 
     GadgetContext context = new GadgetContext() {

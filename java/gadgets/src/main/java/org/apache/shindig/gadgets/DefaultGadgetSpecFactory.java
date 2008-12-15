@@ -26,6 +26,7 @@ import org.apache.shindig.common.util.Check;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.Inject;

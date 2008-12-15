@@ -20,27 +20,27 @@ package org.apache.shindig.gadgets.variables;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Locale;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.UserPrefs;
+import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-
-import com.google.common.collect.Maps;
-
 import org.junit.Test;
 
-import java.util.Locale;
+import com.google.common.collect.Maps;
 
 public class VariableSubstituterTest {
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
   private final VariableSubstituter substituter = new VariableSubstituter(messageBundleFactory);
 
   private GadgetSpec substitute(String xml) throws Exception {
-    return substituter.substitute(new GadgetContext(), new GadgetSpec(Uri.parse("#"), xml));
+    return substituter.substitute(new GadgetContext(), new DefaultGadgetSpec(Uri.parse("#"), xml));
   }
 
   @Test
@@ -82,7 +82,7 @@ public class VariableSubstituterTest {
     		         "<UserPref name='foo'/>" +
     		         "<Content/>" +
     		         "</Module>";
-    GadgetSpec spec = new GadgetSpec(Uri.parse("#"), xml);
+    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse("#"), xml);
     GadgetContext context = new GadgetContext() {
       @Override
       public UserPrefs getUserPrefs() {
