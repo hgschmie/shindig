@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class Locale extends AbstractSpecElement {
+public class Locale extends SpecElement {
 
   public Locale(final QName name) {
     super(name);
@@ -37,7 +37,7 @@ public class Locale extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Locale> {
+  public static class Parser extends SpecElement.Parser<Locale> {
     public Parser() {
       this(new QName("Locale"));
     }
@@ -53,7 +53,7 @@ public class Locale extends AbstractSpecElement {
     }
 
     @Override
-    protected void addChild(final XMLStreamReader reader, final Locale element, final AbstractSpecElement child) {
+    protected void addChild(final XMLStreamReader reader, final Locale element, final SpecElement child) {
     }
 
     @Override

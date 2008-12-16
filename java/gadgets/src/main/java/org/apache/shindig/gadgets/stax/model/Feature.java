@@ -23,7 +23,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import javax.xml.namespace.QName;
 
-public abstract class Feature extends AbstractSpecElement {
+public abstract class Feature extends SpecElement {
 
   private final boolean required;
 

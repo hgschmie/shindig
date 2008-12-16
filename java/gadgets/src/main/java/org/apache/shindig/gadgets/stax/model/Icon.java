@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class Icon extends AbstractSpecElement {
+public class Icon extends SpecElement {
 
   public Icon(final QName name) {
     super(name);
@@ -36,7 +36,7 @@ public class Icon extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Icon> {
+  public static class Parser extends SpecElement.Parser<Icon> {
     public Parser() {
       this(new QName("Icon"));
     }

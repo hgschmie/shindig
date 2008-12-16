@@ -36,7 +36,7 @@ import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.OAuthSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class ModulePrefs extends AbstractSpecElement {
+public class ModulePrefs extends SpecElement {
 
   private final List<Preload> preloads = new ArrayList<Preload>();
   private final Map<String, Feature> features = new HashMap<String, Feature>();
@@ -112,7 +112,7 @@ public class ModulePrefs extends AbstractSpecElement {
      */
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<ModulePrefs> {
+  public static class Parser extends SpecElement.Parser<ModulePrefs> {
     public Parser() {
       this(new QName("ModulePrefs"));
     }
@@ -135,7 +135,7 @@ public class ModulePrefs extends AbstractSpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final ModulePrefs prefs,
-        final AbstractSpecElement child) {
+        final SpecElement child) {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
       } else if (child instanceof Preload) {
