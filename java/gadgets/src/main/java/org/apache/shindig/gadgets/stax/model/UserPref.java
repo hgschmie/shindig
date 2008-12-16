@@ -22,7 +22,10 @@ package org.apache.shindig.gadgets.stax.model;
 
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class UserPref extends AbstractSpecElement {
 
@@ -33,5 +36,33 @@ public class UserPref extends AbstractSpecElement {
     @Override
     protected void addXml(XMLStreamWriter writer)
     {
+    }
+
+    public static class Parser extends SpecElement.Parser<UserPref>
+    {
+        public Parser() {
+            this(new QName("UserPref"));
+            register(new EnumValue.Parser());
+        }
+
+        public Parser(final QName name) {
+            super(name);
+        }
+
+        @Override
+        protected UserPref newElement()
+        {
+            return new UserPref(getName());
+        }
+
+        @Override
+        protected void addChild(XMLStreamReader reader, UserPref prefs, SpecElement child)
+        {
+        }
+
+        @Override
+        public void validate(UserPref element) throws SpecParserException
+        {
+        }
     }
 }
