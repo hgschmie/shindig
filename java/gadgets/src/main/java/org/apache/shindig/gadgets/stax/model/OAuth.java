@@ -22,7 +22,10 @@ package org.apache.shindig.gadgets.stax.model;
 
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuth extends AbstractSpecElement {
 
@@ -33,5 +36,33 @@ public class OAuth extends AbstractSpecElement {
     @Override
     protected void addXml(XMLStreamWriter writer)
     {
+    }
+
+    public static class Parser extends SpecElement.Parser<OAuth>
+    {
+        public Parser() {
+            this(new QName("OAuth"));
+            register(new OAuthService.Parser());
+        }
+
+        public Parser(final QName name) {
+            super(name);
+        }
+
+        @Override
+        protected OAuth newElement()
+        {
+            return new OAuth(getName());
+        }
+
+        @Override
+        protected void addChild(XMLStreamReader reader, OAuth prefs, SpecElement child)
+        {
+        }
+
+        @Override
+        public void validate(OAuth element) throws SpecParserException
+        {
+        }
     }
 }

@@ -30,8 +30,8 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.GadgetSpecParser;
 import org.apache.shindig.gadgets.stax.model.GadgetSpec;
+import org.apache.shindig.gadgets.stax.model.SpecElement;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -45,7 +45,7 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
 
     private static final Logger LOG = Logger.getLogger(StaxGadgetSpecFactory.class.getName());
 
-    private final GadgetSpecParser parser = new GadgetSpecParser();
+    private final SpecElement.Parser<GadgetSpec> parser = new GadgetSpec.Parser();
 
     @Inject
     public StaxGadgetSpecFactory(final HttpFetcher fetcher,
