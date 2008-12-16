@@ -23,6 +23,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.shindig.common.util.ArrayListProvider;
 import org.apache.shindig.gadgets.http.BasicHttpFetcher;
 import org.apache.shindig.gadgets.http.DefaultHttpCache;
 import org.apache.shindig.gadgets.http.HttpCache;
@@ -34,7 +35,10 @@ import org.apache.shindig.gadgets.preload.ConcurrentPreloaderService;
 import org.apache.shindig.gadgets.preload.HttpPreloader;
 import org.apache.shindig.gadgets.preload.Preloader;
 import org.apache.shindig.gadgets.preload.PreloaderService;
+import org.apache.shindig.gadgets.render.ConfigContributor;
+import org.apache.shindig.gadgets.render.CoreUtilContributor;
 import org.apache.shindig.gadgets.render.RenderingContentRewriter;
+import org.apache.shindig.gadgets.render.ShindigAuthContributor;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.DefaultContentRewriterRegistry;
@@ -78,6 +82,11 @@ public class DefaultGuiceModule extends AbstractModule {
 
     bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);
     bind(new TypeLiteral<List<Preloader>>(){}).toProvider(PreloaderProvider.class);
+
+    bind(new TypeLiteral<List<ConfigContributor>>() {})
+      .toProvider(new ArrayListProvider<ConfigContributor>()
+          .add(CoreUtilContributor.class)
+          .add(ShindigAuthContributor.class));
 
     // We perform static injection on HttpResponse for cache TTLs.
     requestStaticInjection(HttpResponse.class);
