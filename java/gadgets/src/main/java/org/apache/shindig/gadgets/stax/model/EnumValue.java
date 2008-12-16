@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class EnumValue extends AbstractSpecElement {
+public class EnumValue extends SpecElement {
 
   public EnumValue(final QName name) {
     super(name);
@@ -36,7 +36,7 @@ public class EnumValue extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<EnumValue> {
+  public static class Parser extends SpecElement.Parser<EnumValue> {
     public Parser() {
       this(new QName("EnumValue"));
     }

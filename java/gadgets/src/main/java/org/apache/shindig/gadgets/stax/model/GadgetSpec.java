@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class GadgetSpec extends AbstractSpecElement {
+public class GadgetSpec extends SpecElement {
 
   private ModulePrefs modulePrefs = null;
 
@@ -80,7 +80,7 @@ public class GadgetSpec extends AbstractSpecElement {
     }
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<GadgetSpec> {
+  public static class Parser extends SpecElement.Parser<GadgetSpec> {
     public Parser() {
       this(new QName("Module"));
     }
@@ -99,7 +99,7 @@ public class GadgetSpec extends AbstractSpecElement {
 
     @Override
     protected void addChild(final XMLStreamReader reader, final GadgetSpec spec,
-        final AbstractSpecElement child) {
+        final SpecElement child) {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {

@@ -27,7 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class OAuth extends AbstractSpecElement {
+public class OAuth extends SpecElement {
 
   public OAuth(final QName name) {
     super(name);
@@ -37,7 +37,7 @@ public class OAuth extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<OAuth> {
+  public static class Parser extends SpecElement.Parser<OAuth> {
     public Parser() {
       this(new QName("OAuth"));
     }
@@ -54,7 +54,7 @@ public class OAuth extends AbstractSpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, OAuth oauth,
-        AbstractSpecElement child) {
+        SpecElement child) {
     }
 
     @Override

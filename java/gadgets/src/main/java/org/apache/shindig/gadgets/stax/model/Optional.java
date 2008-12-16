@@ -40,7 +40,7 @@ public class Optional extends Feature {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Optional> {
+  public static class Parser extends SpecElement.Parser<Optional> {
     public Parser() {
       this(new QName("Optional"));
     }

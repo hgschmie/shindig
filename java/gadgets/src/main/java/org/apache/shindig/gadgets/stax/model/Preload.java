@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class Preload extends AbstractSpecElement {
+public class Preload extends SpecElement {
 
   public Preload(final QName name) {
     super(name);
@@ -36,7 +36,7 @@ public class Preload extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Preload> {
+  public static class Parser extends SpecElement.Parser<Preload> {
     public Parser() {
       this(new QName("Preload"));
     }

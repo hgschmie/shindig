@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class Link extends AbstractSpecElement {
+public class Link extends SpecElement {
 
   public Link(final QName name) {
     super(name);
@@ -36,7 +36,7 @@ public class Link extends AbstractSpecElement {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Link> {
+  public static class Parser extends SpecElement.Parser<Link> {
     public Parser() {
       this(new QName("Link"));
     }

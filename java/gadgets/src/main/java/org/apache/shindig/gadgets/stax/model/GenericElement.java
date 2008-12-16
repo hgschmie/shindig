@@ -31,30 +31,30 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class GenericElement extends AbstractSpecElement {
+public class GenericElement extends SpecElement {
 
-  private List<AbstractSpecElement> children = new ArrayList<AbstractSpecElement>();
+  private List<SpecElement> children = new ArrayList<SpecElement>();
 
   public GenericElement(final QName name) {
     super(name);
   }
 
-  protected void addChild(final AbstractSpecElement child) {
+  protected void addChild(final SpecElement child) {
     this.children.add(child);
   }
 
-  public List<AbstractSpecElement> getChildren() {
+  public List<SpecElement> getChildren() {
     return children;
   }
 
   @Override
   protected void addXml(final XMLStreamWriter writer) throws XMLStreamException {
-    for (AbstractSpecElement child : children) {
+    for (SpecElement child : children) {
       child.toXml(writer);
     }
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<GenericElement> {
+  public static class Parser extends SpecElement.Parser<GenericElement> {
     public Parser(final QName name) {
       super(name);
     }
@@ -66,7 +66,7 @@ public class GenericElement extends AbstractSpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader,
-        final GenericElement element, AbstractSpecElement child) {
+        final GenericElement element, SpecElement child) {
       element.addChild(child);
     }
 

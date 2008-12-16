@@ -37,7 +37,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public abstract class AbstractSpecElement {
+public abstract class SpecElement {
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
@@ -45,11 +45,11 @@ public abstract class AbstractSpecElement {
 
   protected final Map<String, String> namespaces = new HashMap<String, String>();
 
-  protected final List<AbstractSpecElement> children = new ArrayList<AbstractSpecElement>();
+  protected final List<SpecElement> children = new ArrayList<SpecElement>();
 
   private final QName name;
 
-  protected AbstractSpecElement(final QName name) {
+  protected SpecElement(final QName name) {
     this.name = name;
   }
 
@@ -57,7 +57,7 @@ public abstract class AbstractSpecElement {
     attributes.put(name, value);
   }
 
-  protected void addChild(final AbstractSpecElement child) {
+  protected void addChild(final SpecElement child) {
     children.add(child);
   }
 
@@ -87,7 +87,7 @@ public abstract class AbstractSpecElement {
 
     addXml(writer);
 
-    for (AbstractSpecElement child : children) {
+    for (SpecElement child : children) {
       child.toXml(writer);
     }
     writer.writeEndElement();
@@ -126,11 +126,11 @@ public abstract class AbstractSpecElement {
     }
   }
 
-  public static abstract class Parser<T extends AbstractSpecElement> {
+  public static abstract class Parser<T extends SpecElement> {
 
-    private static final Logger LOG = Logger.getLogger(AbstractSpecElement.class.getName());
+    private static final Logger LOG = Logger.getLogger(SpecElement.class.getName());
 
-    private final Map<QName, Parser<? extends AbstractSpecElement>> children = new HashMap<QName, Parser<? extends AbstractSpecElement>>();
+    private final Map<QName, Parser<? extends SpecElement>> children = new HashMap<QName, Parser<? extends SpecElement>>();
 
     private final QName name;
 
@@ -142,7 +142,7 @@ public abstract class AbstractSpecElement {
       return name;
     }
 
-    protected void register(Parser<? extends AbstractSpecElement> parseElement) {
+    protected void register(Parser<? extends SpecElement> parseElement) {
       children.put(parseElement.getName(), parseElement);
     }
 
@@ -168,12 +168,12 @@ public abstract class AbstractSpecElement {
         case XMLStreamConstants.START_ELEMENT:
           final QName elementName = reader.getName();
           if (children.containsKey(elementName)) {
-            final AbstractSpecElement child = children.get(elementName).parse(reader);
+            final SpecElement child = children.get(elementName).parse(reader);
             addChild(reader, element, child);
           } else {// Ignore non-defined children. TODO: Does that make sense?
             LOG.warning("No idea what to do with " + elementName
                 + ", ignoring!");
-            final AbstractSpecElement child = new GenericElement.Parser(elementName)
+            final SpecElement child = new GenericElement.Parser(elementName)
                 .parse(reader);
 
             element.addChild(child);
@@ -204,7 +204,7 @@ public abstract class AbstractSpecElement {
     protected abstract T newElement();
 
     protected void addChild(final XMLStreamReader reader,
-        final T element, final AbstractSpecElement child) {
+        final T element, final SpecElement child) {
       throw new IllegalStateException("The element" + element.name() + " does not accept any nested elements, saw " + child.name());
     }
   }

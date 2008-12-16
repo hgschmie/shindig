@@ -40,7 +40,7 @@ public class Require extends Feature {
   protected void addXml(XMLStreamWriter writer) {
   }
 
-  public static class Parser extends AbstractSpecElement.Parser<Require> {
+  public static class Parser extends SpecElement.Parser<Require> {
     public Parser() {
       this(new QName("Require"));
     }
