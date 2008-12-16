@@ -45,7 +45,7 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
 
     private static final Logger LOG = Logger.getLogger(StaxGadgetSpecFactory.class.getName());
 
-    private final SpecElement.Parser<GadgetSpec> parser = new GadgetSpec.Parser();
+    private final GadgetSpec.Parser parser = new GadgetSpec.Parser();
 
     @Inject
     public StaxGadgetSpecFactory(final HttpFetcher fetcher,

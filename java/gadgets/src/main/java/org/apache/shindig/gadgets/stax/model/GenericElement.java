@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,7 +21,6 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,52 +33,45 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class GenericElement extends AbstractSpecElement {
 
-    private List<SpecElement> children = new ArrayList<SpecElement>();
+  private List<AbstractSpecElement> children = new ArrayList<AbstractSpecElement>();
 
-    public GenericElement(final QName name) {
-        super(name);
+  public GenericElement(final QName name) {
+    super(name);
+  }
+
+  protected void addChild(final AbstractSpecElement child) {
+    this.children.add(child);
+  }
+
+  public List<AbstractSpecElement> getChildren() {
+    return children;
+  }
+
+  @Override
+  protected void addXml(final XMLStreamWriter writer) throws XMLStreamException {
+    for (AbstractSpecElement child : children) {
+      child.toXml(writer);
     }
+  }
 
-    public void addChild(final SpecElement child)
-    {
-        if (!isSealed()) {
-            this.children.add(child);
-        }
-    }
-
-    public List<SpecElement> getChildren() {
-        return children;
+  public static class Parser extends AbstractSpecElement.Parser<GenericElement> {
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(final XMLStreamWriter writer) throws XMLStreamException
-    {
-        for (SpecElement child : children) {
-            child.toXml(writer);
-        }
+    protected GenericElement newElement() {
+      return new GenericElement(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<GenericElement>
-    {
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected GenericElement newElement()
-        {
-            return new GenericElement(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, final GenericElement element, SpecElement child)
-        {
-            element.addChild(child);
-        }
-
-        @Override
-        public void validate(GenericElement element) throws SpecParserException
-        {
-        }
+    @Override
+    protected void addChild(XMLStreamReader reader,
+        final GenericElement element, AbstractSpecElement child) {
+      element.addChild(child);
     }
+
+    @Override
+    public void validate(GenericElement element) throws SpecParserException {
+    }
+  }
 }

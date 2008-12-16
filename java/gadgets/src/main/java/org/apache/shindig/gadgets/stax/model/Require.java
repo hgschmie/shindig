@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,53 +21,42 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Require extends Feature {
 
-    public Require(final QName name) {
-        super(name, true);
+  public Require(final QName name) {
+    super(name, true);
+  }
+
+  public String getName() {
+    return attribute("feature");
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<Require> {
+    public Parser() {
+      this(new QName("Require"));
     }
 
-    public String getName() {
-        return attribute("feature");
+    public Parser(final QName name) {
+      super(name);
+      register(new FeatureParam.Parser());
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected Require newElement() {
+      return new Require(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<Require>
-    {
-        public Parser() {
-            this(new QName("Require"));
-            register(new FeatureParam.Parser());
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected Require newElement()
-        {
-            return new Require(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, Require prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(Require element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(Require element) throws SpecParserException {
     }
+  }
 }

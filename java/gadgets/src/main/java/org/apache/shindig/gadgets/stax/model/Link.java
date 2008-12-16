@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Link extends AbstractSpecElement {
 
-    public Link(final QName name) {
-        super(name);
+  public Link(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<Link> {
+    public Parser() {
+      this(new QName("Link"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected Link newElement() {
+      return new Link(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<Link>
-    {
-        public Parser() {
-            this(new QName("Link"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected Link newElement()
-        {
-            return new Link(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, Link prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(Link element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(Link element) throws SpecParserException {
     }
+  }
 }

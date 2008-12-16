@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,7 +21,6 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,101 +33,92 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class GadgetSpec extends AbstractSpecElement {
 
-    private ModulePrefs modulePrefs = null;
+  private ModulePrefs modulePrefs = null;
 
-    private List<UserPref> userPrefs = new ArrayList<UserPref>();
+  private List<UserPref> userPrefs = new ArrayList<UserPref>();
 
-    private Content content = null;
+  private Content content = null;
 
-    public GadgetSpec(final QName name) {
-        super(name);
+  public GadgetSpec(final QName name) {
+    super(name);
+  }
+
+  public ModulePrefs getModulePrefs() {
+    return modulePrefs;
+  }
+
+  public List<UserPref> getUserPrefs() {
+    return userPrefs;
+  }
+
+  public Content getContent() {
+    return content;
+  }
+
+  private void setModulePrefs(final ModulePrefs modulePrefs) {
+    this.modulePrefs = modulePrefs;
+  }
+
+  private void addUserPref(final UserPref userPref) {
+    this.userPrefs.add(userPref);
+  }
+
+  private void setContent(final Content content) {
+    this.content = content;
+  }
+
+  @Override
+  protected void addXml(final XMLStreamWriter writer) throws XMLStreamException {
+    if (modulePrefs != null) {
+      modulePrefs.toXml(writer);
+    }
+    for (UserPref pref : userPrefs) {
+      pref.toXml(writer);
+    }
+    if (content != null) {
+      content.toXml(writer);
+    }
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<GadgetSpec> {
+    public Parser() {
+      this(new QName("Module"));
     }
 
-    public void setModulePrefs(final ModulePrefs modulePrefs)
-    {
-        if (!isSealed()) {
-            this.modulePrefs = modulePrefs;
-        }
-    }
-
-    public void addUserPref(final UserPref userPref)
-    {
-        if (!isSealed()) {
-            this.userPrefs.add(userPref);
-        }
-    }
-
-    public void setContent(final Content content)
-    {
-        if (!isSealed()) {
-            this.content = content;
-        }
-    }
-
-    public ModulePrefs getModulePrefs() {
-        return modulePrefs;
-    }
-
-    public List<UserPref> getUserPrefs() {
-        return userPrefs;
-    }
-
-    public Content getContent() {
-        return content;
+    public Parser(final QName name) {
+      super(name);
+      register(new ModulePrefs.Parser());
+      register(new UserPref.Parser());
+      register(new Content.Parser());
     }
 
     @Override
-    protected void addXml(final XMLStreamWriter writer) throws XMLStreamException
-    {
-        if (modulePrefs != null) {
-            modulePrefs.toXml(writer);
-        }
-        for (UserPref pref: userPrefs) {
-            pref.toXml(writer);
-        }
-        if (content != null) {
-            content.toXml(writer);
-        }
+    protected GadgetSpec newElement() {
+      return new GadgetSpec(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<GadgetSpec>
-    {
-        public Parser() {
-            super(new QName("Module"));
-            register(new ModulePrefs.Parser());
-            register(new UserPref.Parser());
-            register(new Content.Parser());
-        }
-
-        @Override
-        protected GadgetSpec newElement()
-        {
-            return new GadgetSpec(getName());
-        }
-
-        @Override
-        protected void addChild(final XMLStreamReader reader, GadgetSpec spec, SpecElement child)
-        {
-            if (child instanceof ModulePrefs) {
-                spec.setModulePrefs((ModulePrefs) child);
-            } else if (child instanceof UserPref) {
-                spec.addUserPref((UserPref) child);
-            } else if (child instanceof Content) {
-                spec.setContent((Content) child);
-            } else {
-                throw new IllegalArgumentException("Can not add " + child.getClass().getName() + " to " + spec.getClass().getName());
-            }
-        }
-
-        @Override
-        public void validate(final GadgetSpec element) throws SpecParserException
-        {
-            if (element.getModulePrefs() == null) {
-                throw new SpecParserException("No <ModulePrefs> section found!");
-            }
-            if (element.getContent() == null) {
-                throw new SpecParserException("No <Content> section found!");
-            }
-        }
+    @Override
+    protected void addChild(final XMLStreamReader reader, final GadgetSpec spec,
+        final AbstractSpecElement child) {
+      if (child instanceof ModulePrefs) {
+        spec.setModulePrefs((ModulePrefs) child);
+      } else if (child instanceof UserPref) {
+        spec.addUserPref((UserPref) child);
+      } else if (child instanceof Content) {
+        spec.setContent((Content) child);
+      } else {
+        super.addChild(reader, spec, child);
+      }
     }
+
+    @Override
+    public void validate(final GadgetSpec element) throws SpecParserException {
+      if (element.getModulePrefs() == null) {
+        throw new SpecParserException("No <ModulePrefs> section found!");
+      }
+      if (element.getContent() == null) {
+        throw new SpecParserException("No <Content> section found!");
+      }
+    }
+  }
 }

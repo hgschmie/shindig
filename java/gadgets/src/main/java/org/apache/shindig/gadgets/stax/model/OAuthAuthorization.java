@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,39 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthAuthorization extends AbstractSpecElement {
 
-    public OAuthAuthorization(final QName name) {
-        super(name);
+  public OAuthAuthorization(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends
+      AbstractSpecElement.Parser<OAuthAuthorization> {
+    public Parser() {
+      this(new QName("OAuthAuthorization"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected OAuthAuthorization newElement() {
+      return new OAuthAuthorization(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<OAuthAuthorization>
-    {
-        public Parser() {
-            this(new QName("OAuthAuthorization"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected OAuthAuthorization newElement()
-        {
-            return new OAuthAuthorization(getName());
-        }
-
-        @Override
-        protected void addChild(final XMLStreamReader reader, final OAuthAuthorization prefs, final SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(final OAuthAuthorization element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(final OAuthAuthorization element)
+        throws SpecParserException {
     }
+  }
 }
