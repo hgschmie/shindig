@@ -18,11 +18,31 @@
  */
 package org.apache.shindig.gadgets;
 
+<<<<<<< HEAD:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
+=======
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.apache.shindig.common.util.ArrayListProvider;
+import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.DefaultHttpCache;
+import org.apache.shindig.gadgets.http.HttpCache;
+import org.apache.shindig.gadgets.http.HttpFetcher;
+>>>>>>> 6a3493f... ConfigContributor patch, slated to go to Apache as soon as mgt approves.:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.preload.HttpPreloader;
 import org.apache.shindig.gadgets.preload.Preloader;
+<<<<<<< HEAD:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
+=======
+import org.apache.shindig.gadgets.preload.PreloaderService;
+import org.apache.shindig.gadgets.render.ConfigContributor;
+import org.apache.shindig.gadgets.render.CoreUtilContributor;
+>>>>>>> 6a3493f... ConfigContributor patch, slated to go to Apache as soon as mgt approves.:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
 import org.apache.shindig.gadgets.render.RenderingContentRewriter;
+import org.apache.shindig.gadgets.render.ShindigAuthContributor;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.servlet.CajaContentRewriter;
@@ -55,6 +75,11 @@ public class DefaultGuiceModule extends AbstractModule {
 
     bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);
     bind(new TypeLiteral<List<Preloader>>(){}).toProvider(PreloaderProvider.class);
+
+    bind(new TypeLiteral<List<ConfigContributor>>() {})
+      .toProvider(new ArrayListProvider<ConfigContributor>()
+          .add(CoreUtilContributor.class)
+          .add(ShindigAuthContributor.class));
 
     // We perform static injection on HttpResponse for cache TTLs.
     requestStaticInjection(HttpResponse.class);

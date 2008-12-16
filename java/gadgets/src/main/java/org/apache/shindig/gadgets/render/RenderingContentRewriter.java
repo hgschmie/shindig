@@ -18,7 +18,15 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import org.apache.shindig.auth.SecurityToken;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.xml.DomUtil;
@@ -43,14 +51,8 @@ import org.apache.shindig.gadgets.spec.Feature;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.UserPref;
 import org.apache.shindig.gadgets.spec.View;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -59,14 +61,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * Produces a valid HTML document for the gadget output, automatically inserting appropriate HTML
@@ -99,6 +96,7 @@ public class RenderingContentRewriter implements ContentRewriter {
   private final ContainerConfig containerConfig;
   private final GadgetFeatureRegistry featureRegistry;
   private final UrlGenerator urlGenerator;
+  private final List<ConfigContributor> configContributors;
 
   /**
    * @param messageBundleFactory Used for injecting message bundles into gadget output.
@@ -107,11 +105,13 @@ public class RenderingContentRewriter implements ContentRewriter {
   public RenderingContentRewriter(MessageBundleFactory messageBundleFactory,
                                   ContainerConfig containerConfig,
                                   GadgetFeatureRegistry featureRegistry,
-                                  UrlGenerator urlGenerator) {
+                                  UrlGenerator urlGenerator,
+                                  List<ConfigContributor> configContributorsProviders) {
     this.messageBundleFactory = messageBundleFactory;
     this.containerConfig = containerConfig;
     this.featureRegistry = featureRegistry;
     this.urlGenerator = urlGenerator;
+    this.configContributors = configContributorsProviders;
   }
 
   public RewriterResults rewrite(HttpRequest req, HttpResponse resp, MutableContent content) {
@@ -342,8 +342,6 @@ public class RenderingContentRewriter implements ContentRewriter {
 
     JSONObject features = containerConfig.getJsonObject(context.getContainer(), FEATURES_KEY);
 
-    try {
-      // Discard what we don't care about.
       JSONObject config;
       if (features == null) {
         config = new JSONObject();
@@ -353,37 +351,18 @@ public class RenderingContentRewriter implements ContentRewriter {
         for (GadgetFeature feature : reqs) {
           properties[i++] = feature.getName();
         }
-        config = new JSONObject(features, properties);
-      }
-
-      // Add gadgets.util support. This is calculated dynamically based on request inputs.
-      ModulePrefs prefs = gadget.getSpec().getModulePrefs();
-      JSONObject featureMap = new JSONObject();
-
-      for (Feature feature : prefs.getFeatures().values()) {
-        featureMap.put(feature.getName(), feature.getParams());
-      }
-      config.put("core.util", featureMap);
-
-      // Add authentication token config
-      SecurityToken authToken = context.getToken();
-      if (authToken != null) {
-        JSONObject authConfig = new JSONObject();
-        String updatedToken = authToken.getUpdatedToken();
-        if (updatedToken != null) {
-          authConfig.put("authToken", updatedToken);
+        try {
+          config = new JSONObject(features, properties);
+        } catch (JSONException e) {
+          throw new RuntimeException(e);
         }
-        String trustedJson = authToken.getTrustedJson();
-        if (trustedJson != null) {
-          authConfig.put("trustedJson", trustedJson);
-        }
-        config.put("shindig.auth", authConfig);
       }
+
+      for (ConfigContributor contributor: configContributors) {
+          contributor.contribute(config, gadget);
+      }
+
       return "gadgets.config.init(" + config.toString() + ");\n";
-    } catch (JSONException e) {
-      // Shouldn't be possible.
-      throw new RuntimeException(e);
-    }
   }
 
   /**
