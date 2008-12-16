@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Icon extends AbstractSpecElement {
 
-    public Icon(final QName name) {
-        super(name);
+  public Icon(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<Icon> {
+    public Parser() {
+      this(new QName("Icon"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected Icon newElement() {
+      return new Icon(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<Icon>
-    {
-        public Parser() {
-            this(new QName("Icon"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected Icon newElement()
-        {
-            return new Icon(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, Icon prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(Icon element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(Icon element) throws SpecParserException {
     }
+  }
 }

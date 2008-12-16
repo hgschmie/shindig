@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class LocaleMsg extends AbstractSpecElement {
 
-    public LocaleMsg(final QName name) {
-        super(name);
+  public LocaleMsg(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<LocaleMsg> {
+    public Parser() {
+      this(new QName("msg"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected LocaleMsg newElement() {
+      return new LocaleMsg(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<LocaleMsg>
-    {
-        public Parser() {
-            this(new QName("msg"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected LocaleMsg newElement()
-        {
-            return new LocaleMsg(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, LocaleMsg prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(LocaleMsg element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(LocaleMsg element) throws SpecParserException {
     }
+  }
 }

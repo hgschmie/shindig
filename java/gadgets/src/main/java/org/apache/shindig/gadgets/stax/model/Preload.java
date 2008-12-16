@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Preload extends AbstractSpecElement {
 
-    public Preload(final QName name) {
-        super(name);
+  public Preload(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<Preload> {
+    public Parser() {
+      this(new QName("Preload"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected Preload newElement() {
+      return new Preload(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<Preload>
-    {
-        public Parser() {
-            this(new QName("Preload"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected Preload newElement()
-        {
-            return new Preload(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, Preload prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(Preload element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(Preload element) throws SpecParserException {
     }
+  }
 }

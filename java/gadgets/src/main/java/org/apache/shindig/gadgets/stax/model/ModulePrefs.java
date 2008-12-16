@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,7 +21,6 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,151 +38,125 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class ModulePrefs extends AbstractSpecElement {
 
-    private final List<Preload> preloads = new ArrayList<Preload>();
-    private final Map<String, Feature> features = new HashMap<String, Feature>();
-    private final List<Icon> icons = new ArrayList<Icon>();
-    private final Map<Locale, LocaleSpec> locales = new HashMap<Locale, LocaleSpec>();
-    private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
-    private OAuthSpec oauthSpec = null;
+  private final List<Preload> preloads = new ArrayList<Preload>();
+  private final Map<String, Feature> features = new HashMap<String, Feature>();
+  private final List<Icon> icons = new ArrayList<Icon>();
+  private final Map<Locale, LocaleSpec> locales = new HashMap<Locale, LocaleSpec>();
+  private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
+  private OAuthSpec oauthSpec = null;
 
-    public ModulePrefs(final QName name) {
-        super(name);
+  public ModulePrefs(final QName name) {
+    super(name);
+  }
+
+  public List<Preload> getPreloads() {
+    return preloads;
+  }
+
+  public Map<String, Feature> getFeatures() {
+    return features;
+  }
+
+  public List<Icon> getIcons() {
+    return icons;
+  }
+
+  public Map<Locale, LocaleSpec> getLocales() {
+    return locales;
+  }
+
+  public Map<String, LinkSpec> getLinks() {
+    return links;
+  }
+
+  public OAuthSpec getOauthSpec() {
+    return oauthSpec;
+  }
+
+  private void addPreload(final Preload preload) {
+    preloads.add(preload);
+  }
+
+  private void addFeature(final Feature feature) {
+    features.put(feature.getName(), feature);
+  }
+
+  private void addIcon(final Icon icon) {
+    icons.add(icon);
+  }
+
+  private void addLocale(final Locale locale) {
+  }
+
+  private void addLink(final Link link) {
+  }
+
+  private void setOAuth(final OAuth oauth) {
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) throws XMLStreamException {
+    for (Preload preload : preloads) {
+      preload.toXml(writer);
+    }
+    for (Feature feature : features.values()) {
+      feature.toXml(writer);
+    }
+    for (Icon icon : icons) {
+      icon.toXml(writer);
+    }
+    /*
+     * for (Locale locale : locales.values()) { locale.toXml(writer); } for
+     * (Link link : links) { links.toXml(writer); } if (oauth != null) {
+     * oauth.toXml(writer); }
+     */
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<ModulePrefs> {
+    public Parser() {
+      this(new QName("ModulePrefs"));
     }
 
-    public List<Preload> getPreloads()
-    {
-        return preloads;
+    public Parser(final QName name) {
+      super(name);
+      register(new Require.Parser());
+      register(new Optional.Parser());
+      register(new Preload.Parser());
+      register(new Icon.Parser());
+      register(new Locale.Parser());
+      register(new Link.Parser());
+      register(new OAuth.Parser());
     }
-
-    public Map<String, Feature> getFeatures()
-    {
-        return features;
-    }
-
-    public List<Icon> getIcons()
-    {
-        return icons;
-    }
-
-    public Map<Locale, LocaleSpec> getLocales()
-    {
-        return locales;
-    }
-
-    public Map<String, LinkSpec> getLinks()
-    {
-        return links;
-    }
-
-    public OAuthSpec getOauthSpec()
-    {
-        return oauthSpec;
-    }
-
-    public void addPreload(final Preload preload) {
-        if (!isSealed()) {
-            preloads.add(preload);
-        }
-    }
-
-    public void addFeature(final Feature feature) {
-        if (!isSealed()) {
-            features.put(feature.getName(), feature);
-        }
-    }
-
-    public void addIcon(final Icon icon) {
-        if (!isSealed()) {
-            icons.add(icon);
-        }
-    }
-
-    public void addLocale(final Locale locale) {
-        if (!isSealed()) {
-        }
-    }
-
-    public void addLink(final Link link) {
-        if (!isSealed()) {
-        }
-    }
-
-    public void setOAuth(final OAuth oauth) {
-    }
-
 
     @Override
-    protected void addXml(XMLStreamWriter writer) throws XMLStreamException
-    {
-        for (Preload preload : preloads) {
-            preload.toXml(writer);
-        }
-        for (Feature feature: features.values()) {
-            feature.toXml(writer);
-        }
-        for (Icon icon : icons) {
-            icon.toXml(writer);
-        }
-/*        for (Locale locale : locales.values()) {
-            locale.toXml(writer);
-        }
-        for (Link link : links) {
-            links.toXml(writer);
-        }
-        if (oauth != null) {
-            oauth.toXml(writer);
-        }
-        */
+    protected ModulePrefs newElement() {
+      return new ModulePrefs(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<ModulePrefs>
-    {
-        public Parser() {
-            this(new QName("ModulePrefs"));
-            register(new Require.Parser());
-            register(new Optional.Parser());
-            register(new Preload.Parser());
-            register(new Icon.Parser());
-            register(new Locale.Parser());
-            register(new Link.Parser());
-            register(new OAuth.Parser());
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected ModulePrefs newElement()
-        {
-            return new ModulePrefs(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, ModulePrefs prefs, SpecElement child)
-        {
-            if (child instanceof Feature) {
-                prefs.addFeature((Feature) child);
-            } else if (child instanceof Feature) {
-                prefs.addFeature((Feature) child);
-            } else if (child instanceof Preload) {
-                prefs.addPreload((Preload) child);
-            } else if (child instanceof Icon) {
-                prefs.addIcon((Icon) child);
-            } else if (child instanceof Locale) {
-                prefs.addLocale((Locale) child);
-            } else if (child instanceof OAuth) {
-                prefs.setOAuth((OAuth) child);
-            } else {
-                throw new IllegalArgumentException("Can not add " + child.getClass().getName() + " to " + prefs.getClass().getName());
-            }
-        }
-
-        @Override
-        public void validate(ModulePrefs element) throws SpecParserException
-        {
-            // TODO - add validation
-        }
-
+    @Override
+    protected void addChild(XMLStreamReader reader, final ModulePrefs prefs,
+        final AbstractSpecElement child) {
+      if (child instanceof Feature) {
+        prefs.addFeature((Feature) child);
+      } else if (child instanceof Preload) {
+        prefs.addPreload((Preload) child);
+      } else if (child instanceof Icon) {
+        prefs.addIcon((Icon) child);
+      } else if (child instanceof Locale) {
+        prefs.addLocale((Locale) child);
+      } else if (child instanceof Link) {
+        prefs.addLink((Link) child);
+      } else if (child instanceof OAuth) {
+        prefs.setOAuth((OAuth) child);
+      } else {
+        super.addChild(reader, prefs, child);
+      }
     }
+
+    @Override
+    public void validate(ModulePrefs element) throws SpecParserException {
+      // TODO - add validation
+    }
+
+  }
 }

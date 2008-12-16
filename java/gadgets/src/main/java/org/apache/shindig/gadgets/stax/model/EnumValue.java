@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class EnumValue extends AbstractSpecElement {
 
-    public EnumValue(final QName name) {
-        super(name);
+  public EnumValue(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<EnumValue> {
+    public Parser() {
+      this(new QName("EnumValue"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected EnumValue newElement() {
+      return new EnumValue(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<EnumValue>
-    {
-        public Parser() {
-            this(new QName("EnumValue"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected EnumValue newElement()
-        {
-            return new EnumValue(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, EnumValue prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(EnumValue element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(EnumValue element) throws SpecParserException {
     }
+  }
 }

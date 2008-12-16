@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.stax.model;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,48 +21,37 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class FeatureParam extends AbstractSpecElement {
 
-    public FeatureParam(final QName name) {
-        super(name);
+  public FeatureParam(final QName name) {
+    super(name);
+  }
+
+  @Override
+  protected void addXml(XMLStreamWriter writer) {
+  }
+
+  public static class Parser extends AbstractSpecElement.Parser<FeatureParam> {
+    public Parser() {
+      this(new QName("Param"));
+    }
+
+    public Parser(final QName name) {
+      super(name);
     }
 
     @Override
-    protected void addXml(XMLStreamWriter writer)
-    {
+    protected FeatureParam newElement() {
+      return new FeatureParam(getName());
     }
 
-    public static class Parser extends SpecElement.Parser<FeatureParam>
-    {
-        public Parser() {
-            this(new QName("Param"));
-        }
-
-        public Parser(final QName name) {
-            super(name);
-        }
-
-        @Override
-        protected FeatureParam newElement()
-        {
-            return new FeatureParam(getName());
-        }
-
-        @Override
-        protected void addChild(XMLStreamReader reader, FeatureParam prefs, SpecElement child)
-        {
-        }
-
-        @Override
-        public void validate(FeatureParam element) throws SpecParserException
-        {
-        }
+    @Override
+    public void validate(FeatureParam element) throws SpecParserException {
     }
+  }
 }
