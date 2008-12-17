@@ -53,7 +53,9 @@ public abstract class SpecElement {
     this.name = name;
   }
 
-  private void setAttribute(final QName name, final String value) {
+  // ======================================================================================================================================
+
+  protected void setAttribute(final QName name, final String value) {
     attributes.put(name, value);
   }
 
@@ -65,12 +67,19 @@ public abstract class SpecElement {
     namespaces.put(prefix, uri);
   }
 
+  // ======================================================================================================================================
+
   protected QName name() {
     return name;
   }
 
   protected String attribute(final String key) {
     return attributes.get(new QName(name.getNamespaceURI(), key));
+  }
+
+  public void validate() throws SpecParserException
+  {
+    // Nothing to validate.
   }
 
   // ======================================================================================================================================
@@ -80,12 +89,14 @@ public abstract class SpecElement {
       writer.setPrefix(namespace.getKey(), namespace.getValue());
     }
     writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+
+    writeAttributes(writer);
+
     for (Map.Entry<QName, String> attribute : attributes.entrySet()) {
-      writer.writeAttribute(attribute.getKey().getNamespaceURI(), attribute
-          .getKey().getLocalPart(), attribute.getValue());
+      writeAttribute(writer, attribute.getKey(), attribute.getValue());
     }
 
-    addXml(writer);
+    writeChildren(writer);
 
     for (SpecElement child : children) {
       child.toXml(writer);
@@ -93,8 +104,15 @@ public abstract class SpecElement {
     writer.writeEndElement();
   }
 
-  protected abstract void addXml(final XMLStreamWriter writer)
-      throws XMLStreamException;
+  protected void writeAttribute(final XMLStreamWriter writer, final QName name, final String value) throws XMLStreamException {
+    writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
+  }
+
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  }
+
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  }
 
   // ======================================================================================================================================
 
@@ -117,7 +135,7 @@ public abstract class SpecElement {
     return sw.toString();
   }
 
-  private void closeQuietly(final XMLStreamWriter writer) {
+  private static void closeQuietly(final XMLStreamWriter writer) {
     if (writer != null) {
       try {
         writer.close();
@@ -163,20 +181,20 @@ public abstract class SpecElement {
           break;
         case XMLStreamConstants.END_ELEMENT:
         case XMLStreamConstants.END_DOCUMENT:
+          element.validate();
           return element;
 
         case XMLStreamConstants.START_ELEMENT:
           final QName elementName = reader.getName();
           if (children.containsKey(elementName)) {
-            final SpecElement child = children.get(elementName).parse(reader);
-            addChild(reader, element, child);
-          } else {// Ignore non-defined children. TODO: Does that make sense?
-            LOG.warning("No idea what to do with " + elementName
-                + ", ignoring!");
-            final SpecElement child = new GenericElement.Parser(elementName)
-                .parse(reader);
+            Parser<? extends SpecElement> parser = children.get(elementName);
+            if (parser == null) {
+              LOG.warning("No idea what to do with " + elementName + ", ignoring!");
+              parser = new GenericElement.Parser(elementName);
+            }
 
-            element.addChild(child);
+            SpecElement child = parser.parse(reader);
+            addChild(reader, element, child);
           }
           break;
         default:
@@ -187,8 +205,7 @@ public abstract class SpecElement {
 
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
-        element.setAttribute(reader.getAttributeName(i), reader
-            .getAttributeValue(i));
+        setAttribute(element, reader.getAttributeName(i), reader.getAttributeValue(i));
       }
     }
 
@@ -199,13 +216,19 @@ public abstract class SpecElement {
       }
     }
 
-    public abstract void validate(final T element) throws SpecParserException;
-
     protected abstract T newElement();
+
+    protected void setAttribute(final T element, final QName attributeName, final String value) {
+      element.setAttribute(name, value);
+    }
 
     protected void addChild(final XMLStreamReader reader,
         final T element, final SpecElement child) {
       throw new IllegalStateException("The element" + element.name() + " does not accept any nested elements, saw " + child.name());
     }
+  }
+
+  protected static QName buildQName(final QName name, final String localName) {
+    return new QName(name.getNamespaceURI(), localName);
   }
 }

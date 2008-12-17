@@ -21,37 +21,13 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class GenericElement extends SpecElement {
 
-  private List<SpecElement> children = new ArrayList<SpecElement>();
-
   public GenericElement(final QName name) {
     super(name);
-  }
-
-  protected void addChild(final SpecElement child) {
-    this.children.add(child);
-  }
-
-  public List<SpecElement> getChildren() {
-    return children;
-  }
-
-  @Override
-  protected void addXml(final XMLStreamWriter writer) throws XMLStreamException {
-    for (SpecElement child : children) {
-      child.toXml(writer);
-    }
   }
 
   public static class Parser extends SpecElement.Parser<GenericElement> {
@@ -68,10 +44,6 @@ public class GenericElement extends SpecElement {
     protected void addChild(XMLStreamReader reader,
         final GenericElement element, SpecElement child) {
       element.addChild(child);
-    }
-
-    @Override
-    public void validate(GenericElement element) throws SpecParserException {
     }
   }
 }

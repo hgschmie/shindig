@@ -68,7 +68,7 @@ public class GadgetSpec extends SpecElement {
   }
 
   @Override
-  protected void addXml(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     if (modulePrefs != null) {
       modulePrefs.toXml(writer);
     }
@@ -77,6 +77,16 @@ public class GadgetSpec extends SpecElement {
     }
     if (content != null) {
       content.toXml(writer);
+    }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (getModulePrefs() == null) {
+      throw new SpecParserException("No <ModulePrefs> section found!");
+    }
+    if (getContent() == null) {
+      throw new SpecParserException("No <Content> section found!");
     }
   }
 
@@ -108,16 +118,6 @@ public class GadgetSpec extends SpecElement {
         spec.setContent((Content) child);
       } else {
         super.addChild(reader, spec, child);
-      }
-    }
-
-    @Override
-    public void validate(final GadgetSpec element) throws SpecParserException {
-      if (element.getModulePrefs() == null) {
-        throw new SpecParserException("No <ModulePrefs> section found!");
-      }
-      if (element.getContent() == null) {
-        throw new SpecParserException("No <Content> section found!");
       }
     }
   }
