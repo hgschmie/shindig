@@ -34,14 +34,14 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
-public class ModulePrefsLocale extends SpecElement {
+public class LocaleSpec extends SpecElement {
 
   private static final String ATTR_LANG = "lang";
   private static final String ATTR_COUNTRY = "country";
   private static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
   private static final String ATTR_MESSAGES = "messages";
 
-  public ModulePrefsLocale(final QName name) {
+  public LocaleSpec(final QName name) {
     super(name);
   }
 
@@ -121,7 +121,7 @@ public class ModulePrefsLocale extends SpecElement {
   public void validate() throws SpecParserException {
   }
 
-  public static class Parser extends SpecElement.Parser<ModulePrefsLocale> {
+  public static class Parser extends SpecElement.Parser<LocaleSpec> {
     private final QName attrLang;
     private final QName attrCountry;
     private final QName attrLanguageDirection;
@@ -141,12 +141,12 @@ public class ModulePrefsLocale extends SpecElement {
     }
 
     @Override
-    protected ModulePrefsLocale newElement() {
-      return new ModulePrefsLocale(getName());
+    protected LocaleSpec newElement() {
+      return new LocaleSpec(getName());
     }
 
     @Override
-    protected void setAttribute(final ModulePrefsLocale locale, final QName name, final String value) {
+    protected void setAttribute(final LocaleSpec locale, final QName name, final String value) {
       if (name.equals(attrLang)) {
         locale.setLanguage(value);
       } else if (name.equals(attrCountry)) {
@@ -161,7 +161,7 @@ public class ModulePrefsLocale extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final ModulePrefsLocale locale, final SpecElement child) {
+    protected void addChild(XMLStreamReader reader, final LocaleSpec locale, final SpecElement child) {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {

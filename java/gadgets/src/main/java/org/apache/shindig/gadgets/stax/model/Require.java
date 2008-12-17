@@ -22,9 +22,6 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Require extends Feature {
 
@@ -34,10 +31,6 @@ public class Require extends Feature {
 
   public String getName() {
     return attribute("feature");
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<Require> {
@@ -53,10 +46,6 @@ public class Require extends Feature {
     @Override
     protected Require newElement() {
       return new Require(getName());
-    }
-
-    @Override
-    public void validate(Require element) throws SpecParserException {
     }
   }
 }

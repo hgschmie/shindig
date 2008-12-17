@@ -22,18 +22,11 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class FeatureParam extends SpecElement {
 
   public FeatureParam(final QName name) {
     super(name);
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<FeatureParam> {
@@ -48,10 +41,6 @@ public class FeatureParam extends SpecElement {
     @Override
     protected FeatureParam newElement() {
       return new FeatureParam(getName());
-    }
-
-    @Override
-    public void validate(FeatureParam element) throws SpecParserException {
     }
   }
 }

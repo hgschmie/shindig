@@ -22,18 +22,11 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Content extends SpecElement {
 
   public Content(final QName name) {
     super(name);
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<Content> {
@@ -50,8 +43,5 @@ public class Content extends SpecElement {
       return new Content(getName());
     }
 
-    @Override
-    public void validate(Content element) throws SpecParserException {
-    }
   }
 }
