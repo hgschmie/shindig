@@ -72,7 +72,7 @@ public class ModulePrefs extends SpecElement {
   private final List<Preload> preloads = new ArrayList<Preload>();
   private final Map<String, Feature> features = new HashMap<String, Feature>();
   private final List<Icon> icons = new ArrayList<Icon>();
-  private final Map<Locale, ModulePrefsLocale> locales = new HashMap<Locale, ModulePrefsLocale>();
+  private final Map<Locale, LocaleSpec> locales = new HashMap<Locale, LocaleSpec>();
   private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
   private OAuth oauth = null;
 
@@ -92,7 +92,7 @@ public class ModulePrefs extends SpecElement {
     return icons;
   }
 
-  public Map<Locale, ModulePrefsLocale> getLocales() {
+  public Map<Locale, LocaleSpec> getLocales() {
     return locales;
   }
 
@@ -211,7 +211,7 @@ public class ModulePrefs extends SpecElement {
     icons.add(icon);
   }
 
-  private void addLocale(final ModulePrefsLocale locale) {
+  private void addLocale(final LocaleSpec locale) {
     locales.put(new Locale(locale.getLanguage(), locale.getCountry()), locale);
   }
 
@@ -242,7 +242,7 @@ public class ModulePrefs extends SpecElement {
     for (Icon icon : icons) {
       icon.toXml(writer);
     }
-    for (ModulePrefsLocale locale : locales.values()) {
+    for (LocaleSpec locale : locales.values()) {
       locale.toXml(writer);
     }
     for (LinkSpec link : links.values()) {
@@ -290,7 +290,7 @@ public class ModulePrefs extends SpecElement {
       register(new Optional.Parser());
       register(new Preload.Parser());
       register(new Icon.Parser());
-      register(new ModulePrefsLocale.Parser());
+      register(new LocaleSpec.Parser());
       register(new LinkSpec.Parser());
       register(new OAuth.Parser());
     }
@@ -319,8 +319,8 @@ public class ModulePrefs extends SpecElement {
         prefs.addPreload((Preload) child);
       } else if (child instanceof Icon) {
         prefs.addIcon((Icon) child);
-      } else if (child instanceof ModulePrefsLocale) {
-        prefs.addLocale((ModulePrefsLocale) child);
+      } else if (child instanceof LocaleSpec) {
+        prefs.addLocale((LocaleSpec) child);
       } else if (child instanceof LinkSpec) {
         prefs.addLink((LinkSpec) child);
       } else if (child instanceof OAuth) {

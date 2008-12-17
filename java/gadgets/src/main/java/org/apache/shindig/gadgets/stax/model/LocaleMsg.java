@@ -22,27 +22,54 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class LocaleMsg extends SpecElement {
+
+  private static final String ATTR_NAME = "name";
+
+  private String name = null;
 
   public LocaleMsg(final QName name) {
     super(name);
   }
 
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
+  public String getName() {
+    return StringUtils.defaultString(name);
   }
 
+  private void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (name != null) {
+      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+    }
+  }
+
+    @Override
+    public void validate() throws SpecParserException {
+    }
+
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
+
+    private final QName attrName;
+
     public Parser() {
       this(new QName("msg"));
     }
 
     public Parser(final QName name) {
       super(name);
+      this.attrName = buildQName(name, ATTR_NAME);
     }
 
     @Override
@@ -51,7 +78,12 @@ public class LocaleMsg extends SpecElement {
     }
 
     @Override
-    public void validate(LocaleMsg element) throws SpecParserException {
+    protected void setAttribute(final LocaleMsg msg, final QName name, final String value) {
+      if (name.equals(attrName)) {
+          msg.setName(value);
+      } else {
+        super.setAttribute(msg, name, value);
+      }
     }
   }
 }

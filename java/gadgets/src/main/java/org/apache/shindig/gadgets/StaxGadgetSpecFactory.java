@@ -80,7 +80,6 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
             throw new SpecParserException("Could not parse GadgetSpec: ", xse);
         }
 
-        parser.validate(gadgetSpec);
         LOG.info("Spec is " + gadgetSpec);
         return null;
     }

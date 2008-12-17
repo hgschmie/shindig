@@ -22,18 +22,11 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class EnumValue extends SpecElement {
 
   public EnumValue(final QName name) {
     super(name);
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<EnumValue> {
@@ -48,10 +41,6 @@ public class EnumValue extends SpecElement {
     @Override
     protected EnumValue newElement() {
       return new EnumValue(getName());
-    }
-
-    @Override
-    public void validate(EnumValue element) throws SpecParserException {
     }
   }
 }

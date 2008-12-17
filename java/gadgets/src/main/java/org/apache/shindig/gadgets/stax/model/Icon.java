@@ -22,18 +22,11 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Icon extends SpecElement {
 
   public Icon(final QName name) {
     super(name);
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<Icon> {
@@ -48,10 +41,6 @@ public class Icon extends SpecElement {
     @Override
     protected Icon newElement() {
       return new Icon(getName());
-    }
-
-    @Override
-    public void validate(Icon element) throws SpecParserException {
     }
   }
 }

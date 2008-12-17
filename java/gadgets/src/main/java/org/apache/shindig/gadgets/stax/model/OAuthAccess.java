@@ -22,18 +22,11 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthAccess extends SpecElement {
 
   public OAuthAccess(final QName name) {
     super(name);
-  }
-
-  @Override
-  protected void addXml(XMLStreamWriter writer) {
   }
 
   public static class Parser extends SpecElement.Parser<OAuthAccess> {
@@ -48,10 +41,6 @@ public class OAuthAccess extends SpecElement {
     @Override
     protected OAuthAccess newElement() {
       return new OAuthAccess(getName());
-    }
-
-    @Override
-    public void validate(OAuthAccess element) throws SpecParserException {
     }
   }
 }
