@@ -22,25 +22,106 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
-public class Icon extends SpecElement {
+import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
-  public Icon(final QName name) {
+public class LocaleMsg extends SpecElement {
+
+  private static final String ATTR_MODE = "name";
+  private static final String ATTR_TYPE = "type";
+
+  private String mode = null;
+  private String type = null;
+
+  private String text = "";
+
+  public LocaleMsg(final QName name) {
     super(name);
   }
 
-  public static class Parser extends SpecElement.Parser<Icon> {
+  public String getMode() {
+    return StringUtils.defaultString(name);
+  }
+
+  public String getType() {
+    return StringUtils.defaultString(name);
+  }
+
+  public String getText() {
+    return text;
+  }
+
+  private void setMode(final String mode) {
+      this.mode = mode;
+  }
+
+  private void setType(final String type) {
+      this.type = type;
+  }
+
+  private void setText(final String text) {
+    this.text = StringUtils.trim(text);
+  }
+
+  @Override
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (mode != null) {
+      writer.writeAttribute(modespaceURI, ATTR_MODE, getMode());
+    }
+    if (type != null) {
+      writer.writeAttribute(typespaceURI, ATTR_TYPE, getType());
+    }
+  }
+
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+    if (StringUtils.isNotEmpty(text)) {
+      writer.writeCharacters(text);
+    }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (mode != null && !mode.equals("base64")) {
+      throw new SpecParserException("All msg elements must have a name attribute.");
+    }
+  }
+
+  public static class Parser extends SpecElement.Parser<LocaleMsg> {
+
+    private final QName attrName;
+
     public Parser() {
-      this(new QName("Icon"));
+      this(new QName("msg"));
     }
 
     public Parser(final QName name) {
       super(name);
+      this.attrName = buildQName(name, ATTR_NAME);
     }
 
     @Override
-    protected Icon newElement() {
-      return new Icon(getName());
+    protected LocaleMsg newElement() {
+      return new LocaleMsg(getName());
+    }
+
+    @Override
+    protected void setAttribute(final LocaleMsg msg, final QName name, final String value) {
+      if (name.equals(attrName)) {
+        msg.setName(value);
+      } else {
+        super.setAttribute(msg, name, value);
+      }
+    }
+
+    @Override
+    protected void setText(final LocaleMsg msg, final String value) {
+      msg.setText(value);
     }
   }
 }

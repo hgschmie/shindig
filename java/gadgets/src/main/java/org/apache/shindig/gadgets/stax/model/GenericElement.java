@@ -22,12 +22,29 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.lang.StringUtils;
 
 public class GenericElement extends SpecElement {
 
+  private String text = "";
+
   public GenericElement(final QName name) {
     super(name);
+  }
+
+  private void setText(final String text) {
+    this.text = text;
+  }
+
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+    if (StringUtils.isNotEmpty(text)) {
+      writer.writeCharacters(text);
+    }
   }
 
   public static class Parser extends SpecElement.Parser<GenericElement> {
@@ -41,8 +58,12 @@ public class GenericElement extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader,
-        final GenericElement element, SpecElement child) {
+    protected void setText(final GenericElement element, final String value) {
+      element.setText(value);
+    }
+
+    @Override
+    protected void addChild(XMLStreamReader reader, final GenericElement element, SpecElement child) {
       element.addChild(child);
     }
   }

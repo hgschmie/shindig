@@ -77,8 +77,7 @@ public abstract class SpecElement {
     return attributes.get(new QName(name.getNamespaceURI(), key));
   }
 
-  public void validate() throws SpecParserException
-  {
+  public void validate() throws SpecParserException {
     // Nothing to validate.
   }
 
@@ -101,6 +100,7 @@ public abstract class SpecElement {
     for (SpecElement child : children) {
       child.toXml(writer);
     }
+
     writer.writeEndElement();
   }
 
@@ -164,8 +164,7 @@ public abstract class SpecElement {
       children.put(parseElement.getName(), parseElement);
     }
 
-    public T parse(final XMLStreamReader reader) throws IllegalStateException,
-        XMLStreamException, SpecParserException {
+    public T parse(final XMLStreamReader reader) throws IllegalStateException, XMLStreamException, SpecParserException {
 
       // This assumes, that parse it at the right element.
       T element = newElement();
@@ -211,8 +210,7 @@ public abstract class SpecElement {
 
     private void addNamespaces(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getNamespaceCount(); i++) {
-        element.addNamespace(reader.getNamespacePrefix(i), reader
-            .getNamespaceURI(i));
+        element.addNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
       }
     }
 
@@ -222,10 +220,14 @@ public abstract class SpecElement {
       element.setAttribute(name, value);
     }
 
-    protected void addChild(final XMLStreamReader reader,
-        final T element, final SpecElement child) {
+    protected void setText(final T element, final String value) {
+      throw new IllegalStateException("The element" + element.name() + " does not accept any nested text");
+    }
+
+    protected void addChild(final XMLStreamReader reader, final T element, final SpecElement child) {
       throw new IllegalStateException("The element" + element.name() + " does not accept any nested elements, saw " + child.name());
     }
+
   }
 
   protected static QName buildQName(final QName name, final String localName) {
