@@ -29,11 +29,7 @@ public class Require extends Feature {
     super(name, true);
   }
 
-  public String getName() {
-    return attribute("feature");
-  }
-
-  public static class Parser extends SpecElement.Parser<Require> {
+  public static class Parser extends Feature.Parser {
     public Parser() {
       this(new QName("Require"));
     }

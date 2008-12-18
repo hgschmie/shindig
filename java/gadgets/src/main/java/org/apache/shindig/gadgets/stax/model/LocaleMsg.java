@@ -34,6 +34,8 @@ public class LocaleMsg extends SpecElement {
 
   private String name = null;
 
+  private String text = "";
+
   public LocaleMsg(final QName name) {
     super(name);
   }
@@ -42,8 +44,16 @@ public class LocaleMsg extends SpecElement {
     return StringUtils.defaultString(name);
   }
 
-  private void setName(String name) {
+  public String getText() {
+    return text;
+  }
+
+  private void setName(final String name) {
     this.name = name;
+  }
+
+  private void setText(final String text) {
+    this.text = StringUtils.trim(text);
   }
 
   @Override
@@ -55,9 +65,19 @@ public class LocaleMsg extends SpecElement {
     }
   }
 
-    @Override
-    public void validate() throws SpecParserException {
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+    if (StringUtils.isNotEmpty(text)) {
+      writer.writeCharacters(text);
     }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (name == null) {
+      throw new SpecParserException("All msg elements must have a name attribute.");
+    }
+  }
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
@@ -80,10 +100,15 @@ public class LocaleMsg extends SpecElement {
     @Override
     protected void setAttribute(final LocaleMsg msg, final QName name, final String value) {
       if (name.equals(attrName)) {
-          msg.setName(value);
+        msg.setName(value);
       } else {
         super.setAttribute(msg, name, value);
       }
+    }
+
+    @Override
+    protected void setText(final LocaleMsg msg, final String value) {
+      msg.setText(value);
     }
   }
 }

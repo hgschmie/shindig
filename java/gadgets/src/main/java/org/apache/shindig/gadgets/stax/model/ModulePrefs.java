@@ -204,7 +204,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   private void addFeature(final Feature feature) {
-    features.put(feature.getName(), feature);
+    features.put(feature.getFeature(), feature);
   }
 
   private void addIcon(final Icon icon) {
