@@ -18,32 +18,9 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
-import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.PropertiesModule;
-import org.apache.shindig.common.cache.CacheProvider;
-import org.apache.shindig.common.cache.LruCacheProvider;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.util.ArrayListProvider;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.gadgets.*;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
@@ -63,12 +40,20 @@ import com.google.caja.util.Join;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
+import static org.easymock.EasyMock.expect;
+import org.easymock.classextension.EasyMock;
+import org.easymock.classextension.IMocksControl;
+import org.json.JSONException;
+import org.json.JSONObject;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Tests for RenderingContentRewriter.
@@ -77,11 +62,13 @@ public class RenderingContentRewriterTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
   private static final String BODY_CONTENT = "Some body content";
   private final IMocksControl control = EasyMock.createNiceControl();
+  private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
+  private final ContainerConfig config = control.createMock(ContainerConfig.class);
+  private final UrlGenerator urlGenerator = new FakeUrlGenerator();
 
-  private ContainerConfig config;
   private FakeGadgetFeatureRegistry featureRegistry;
-  private GadgetHtmlParser parser;
   private RenderingContentRewriter rewriter;
+  private GadgetHtmlParser parser;
 
   static final Pattern DOCUMENT_SPLIT_PATTERN = Pattern.compile(
       "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)", Pattern.DOTALL |
@@ -94,13 +81,11 @@ public class RenderingContentRewriterTest {
 
   @Before
   public void setUp() throws Exception {
-    config = control.createMock(ContainerConfig.class);
     featureRegistry = new FakeGadgetFeatureRegistry();
     rewriter
         = new RenderingContentRewriter(messageBundleFactory, config, featureRegistry, urlGenerator);
     Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
-    rewriter = injector.getInstance(RenderingContentRewriter.class);
   }
 
   private Gadget makeGadgetWithSpec(String gadgetXml) throws GadgetException {
