@@ -1,0 +1,9 @@
+./features/bin/
+./features/target/
+./java/common/target/
+./java/gadgets/target/
+./java/server/src/main/webapp/WEB-INF/classes/
+./java/server/target/
+./java/social-api/target/
+./java/target/
+./target/
