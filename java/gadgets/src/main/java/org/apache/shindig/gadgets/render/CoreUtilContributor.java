@@ -1,6 +1,6 @@
 package org.apache.shindig.gadgets.render;
 /*
- * 
+ *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -8,26 +8,36 @@ package org.apache.shindig.gadgets.render;
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- * 
+ *
  */
 
 
 import org.apache.shindig.gadgets.Gadget;
+import org.apache.shindig.gadgets.GadgetFeatureRegistry;
 import org.apache.shindig.gadgets.spec.Feature;
 import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.inject.Inject;
+
 public class CoreUtilContributor implements ConfigContributor {
+
+    private final GadgetFeatureRegistry registry;
+
+    @Inject
+    public CoreUtilContributor(final GadgetFeatureRegistry registry) {
+        this.registry = registry;
+    }
 
     /**
      * Add gadgets.util support. This is calculated dynamically based on request inputs.
@@ -39,7 +49,9 @@ public class CoreUtilContributor implements ConfigContributor {
 
         try {
             for (final Feature feature : prefs.getFeatures().values()) {
-                featureMap.put(feature.getName(), feature.getParams());
+                if (registry.hasFeature(feature.getName())) {
+                    featureMap.put(feature.getName(), feature.getParams());
+                }
             }
             config.put("core.util", featureMap);
         } catch (JSONException e) {

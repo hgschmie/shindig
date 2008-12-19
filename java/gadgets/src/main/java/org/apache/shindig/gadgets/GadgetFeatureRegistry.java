@@ -110,6 +110,13 @@ public class GadgetFeatureRegistry {
   }
 
   /**
+   * Returns true if a requested feature actually exists in the registry.
+   */
+  public boolean hasFeature(final String feature) {
+      return features.containsKey(feature);
+  }
+
+  /**
    * @return All {@code GadgetFeature} objects necessary for {@code needed} in
    *     graph-dependent order.
    */
