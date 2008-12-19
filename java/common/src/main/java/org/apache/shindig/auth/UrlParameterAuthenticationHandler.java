@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.inject.Inject;
 
 /**
@@ -52,7 +54,7 @@ public class UrlParameterAuthenticationHandler implements AuthenticationHandler 
   public SecurityToken getSecurityTokenFromRequest(HttpServletRequest request) {
     try {
       Map<String, String> parameters = getMappedParameters(request);
-      if (parameters.get(SecurityTokenDecoder.SECURITY_TOKEN_NAME) == null) {
+      if (StringUtils.isEmpty(parameters.get(SecurityTokenDecoder.SECURITY_TOKEN_NAME))) {
         return null;
       }
       return securityTokenDecoder.createToken(parameters);
