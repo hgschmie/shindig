@@ -786,6 +786,11 @@ public class RenderingContentRewriterTest {
     }
 
     @Override
+    public boolean hasFeature(final String featureName) {
+        return features.containsKey(featureName);
+    }
+
+    @Override
     public Collection<GadgetFeature> getFeatures(Collection<String> needed) {
       return getFeatures(needed, new HashSet<String>());
     }
