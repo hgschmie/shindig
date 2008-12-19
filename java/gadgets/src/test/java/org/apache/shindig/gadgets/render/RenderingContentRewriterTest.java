@@ -96,28 +96,9 @@ public class RenderingContentRewriterTest {
   public void setUp() throws Exception {
     config = control.createMock(ContainerConfig.class);
     featureRegistry = new FakeGadgetFeatureRegistry();
-<<<<<<< HEAD:java/gadgets/src/test/java/org/apache/shindig/gadgets/render/RenderingContentRewriterTest.java
     rewriter
         = new RenderingContentRewriter(messageBundleFactory, config, featureRegistry, urlGenerator);
     Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
-=======
-    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule(), new Module() {
-
-      @Override
-      public void configure(Binder binder) {
-        binder.bind(SecurityTokenDecoder.class).to(DefaultSecurityTokenDecoder.class).in(Singleton.class);
-        binder.bind(CacheProvider.class).to(LruCacheProvider.class);
-        binder.bind(new TypeLiteral<List<ConfigContributor>>() {})
-        .toProvider(new ArrayListProvider<ConfigContributor>()
-                        .add(CoreUtilContributor.class)
-                        .add(ShindigAuthContributor.class));
-
-        binder.bind(MessageBundleFactory.class).to(FakeMessageBundleFactory.class);
-        binder.bind(ContainerConfig.class).toInstance(config);
-        binder.bind(GadgetFeatureRegistry.class).toInstance(featureRegistry);
-        binder.bind(UrlGenerator.class).to(FakeUrlGenerator.class);
-      } });
->>>>>>> 6a3493f... ConfigContributor patch, slated to go to Apache as soon as mgt approves.:java/gadgets/src/test/java/org/apache/shindig/gadgets/render/RenderingContentRewriterTest.java
     parser = injector.getInstance(GadgetHtmlParser.class);
     rewriter = injector.getInstance(RenderingContentRewriter.class);
   }
