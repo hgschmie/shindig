@@ -28,9 +28,9 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class LocaleMsg extends SpecElement {
+public class Icon extends SpecElement {
 
-  private static final String ATTR_MODE = "name";
+  private static final String ATTR_MODE = "mode";
   private static final String ATTR_TYPE = "type";
 
   private String mode = null;
@@ -38,16 +38,16 @@ public class LocaleMsg extends SpecElement {
 
   private String text = "";
 
-  public LocaleMsg(final QName name) {
+  public Icon(final QName name) {
     super(name);
   }
 
   public String getMode() {
-    return StringUtils.defaultString(name);
+    return StringUtils.defaultString(mode);
   }
 
   public String getType() {
-    return StringUtils.defaultString(name);
+    return StringUtils.defaultString(type);
   }
 
   public String getText() {
@@ -71,10 +71,10 @@ public class LocaleMsg extends SpecElement {
     final String namespaceURI = name().getNamespaceURI();
 
     if (mode != null) {
-      writer.writeAttribute(modespaceURI, ATTR_MODE, getMode());
+      writer.writeAttribute(namespaceURI, ATTR_MODE, getMode());
     }
     if (type != null) {
-      writer.writeAttribute(typespaceURI, ATTR_TYPE, getType());
+      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType());
     }
   }
 
@@ -92,36 +92,40 @@ public class LocaleMsg extends SpecElement {
     }
   }
 
-  public static class Parser extends SpecElement.Parser<LocaleMsg> {
+  public static class Parser extends SpecElement.Parser<Icon> {
 
-    private final QName attrName;
+    private final QName attrMode;
+    private final QName attrType;
 
     public Parser() {
-      this(new QName("msg"));
+      this(new QName("icon"));
     }
 
     public Parser(final QName name) {
       super(name);
-      this.attrName = buildQName(name, ATTR_NAME);
+      this.attrMode = buildQName(name, ATTR_MODE);
+      this.attrType = buildQName(name, ATTR_TYPE);
     }
 
     @Override
-    protected LocaleMsg newElement() {
-      return new LocaleMsg(getName());
+    protected Icon newElement() {
+      return new Icon(getName());
     }
 
     @Override
-    protected void setAttribute(final LocaleMsg msg, final QName name, final String value) {
-      if (name.equals(attrName)) {
-        msg.setName(value);
+    protected void setAttribute(final Icon icon, final QName name, final String value) {
+      if (name.equals(attrMode)) {
+        icon.setMode(value);
+      } else if (name.equals(attrType)) {
+        icon.setType(value);
       } else {
-        super.setAttribute(msg, name, value);
+        super.setAttribute(icon, name, value);
       }
     }
 
     @Override
-    protected void setText(final LocaleMsg msg, final String value) {
-      msg.setText(value);
+    protected void setText(final Icon icon, final String value) {
+      icon.setText(value);
     }
   }
 }
