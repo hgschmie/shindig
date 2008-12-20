@@ -79,7 +79,7 @@ public class JsonConversionUtil {
 
     if (current instanceof JSONObject) {
       JSONObject json = (JSONObject) current;
-      Iterator keys = json.keys();
+      Iterator<?> keys = json.keys();
       while (keys.hasNext()) {
         String key = (String) keys.next();
         if (json.isNull(key)) {

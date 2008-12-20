@@ -17,17 +17,16 @@
  */
 package org.apache.shindig.social.core.util.xstream;
 
-import com.thoughtworks.xstream.mapper.FieldAliasingMapper;
-import com.thoughtworks.xstream.mapper.Mapper;
-import com.thoughtworks.xstream.mapper.MapperWrapper;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.thoughtworks.xstream.mapper.Mapper;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
+
 /**
- * 
+ *
  */
 public class InterfaceFieldAliasingMapper extends MapperWrapper {
 
@@ -63,7 +62,7 @@ public class InterfaceFieldAliasingMapper extends MapperWrapper {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.thoughtworks.xstream.mapper.MapperWrapper#realMember(java.lang.Class,
    *      java.lang.String)
    */
@@ -85,7 +84,7 @@ public class InterfaceFieldAliasingMapper extends MapperWrapper {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.thoughtworks.xstream.mapper.MapperWrapper#serializedMember(java.lang.Class,
    *      java.lang.String)
    */

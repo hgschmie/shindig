@@ -312,9 +312,8 @@ public class JsonDbOpensocialService implements ActivityService, PersonService, 
         }
 
         // TODO: We can use the converter here to do this for us
-        Iterator keys = personData.keys();
         Map<String, String> data = Maps.newHashMap();
-        while (keys.hasNext()) {
+        for(Iterator<?> keys = personData.keys(); keys.hasNext(); ) {
           String key = (String) keys.next();
           data.put(key, personData.getString(key));
         }
@@ -335,8 +334,7 @@ public class JsonDbOpensocialService implements ActivityService, PersonService, 
       }
       JSONObject newPersonData = new JSONObject();
       JSONObject oldPersonData = db.getJSONObject(DATA_TABLE).getJSONObject(user);
-      Iterator keys = oldPersonData.keys();
-      while (keys.hasNext()) {
+      for(Iterator<?> keys = oldPersonData.keys(); keys.hasNext(); ) {
         String key = (String) keys.next();
         if (!fields.contains(key)) {
           newPersonData.put(key, oldPersonData.getString(key));

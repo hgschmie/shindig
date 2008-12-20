@@ -17,16 +17,11 @@
  */
 package org.apache.shindig.social.core.util;
 
-import com.google.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
-import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.XppDriver;
-import com.thoughtworks.xstream.mapper.DefaultMapper;
-import com.thoughtworks.xstream.mapper.Mapper;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.social.core.util.xstream.StackDriver;
 import org.apache.shindig.social.core.util.xstream.ThreadSafeWriterStack;
 import org.apache.shindig.social.core.util.xstream.WriterStack;
@@ -36,11 +31,13 @@ import org.apache.shindig.social.opensocial.service.BeanConverter;
 import org.apache.shindig.social.opensocial.spi.DataCollection;
 import org.apache.shindig.social.opensocial.spi.RestfulCollection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
+import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
+import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import com.thoughtworks.xstream.mapper.DefaultMapper;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 public class BeanXStreamConverter implements BeanConverter {
   public static final String XML_DECL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -66,7 +63,7 @@ public class BeanXStreamConverter implements BeanConverter {
      * matter unless the class is extended.
      */
     writerStack = new ThreadSafeWriterStack();
-        
+
 
     /*
      * create a driver that wires into a standard driver, and updates the stack

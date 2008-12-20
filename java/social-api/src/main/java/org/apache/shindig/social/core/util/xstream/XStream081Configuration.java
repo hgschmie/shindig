@@ -413,7 +413,7 @@ public class XStream081Configuration implements XStreamConfiguration {
 
     InterfaceFieldAliasingMapper emapper = new InterfaceFieldAliasingMapper(
         dmapper, writerStack, getFieldAliasMappingList(c));
-    InterfaceClassMapper fmapper = new InterfaceClassMapper(injector, writerStack, emapper,
+    InterfaceClassMapper fmapper = new InterfaceClassMapper(writerStack, emapper,
         getElementMappingList(c), getListElementMappingList(c),
         getItemFieldMappings(c), getOmitMap(c), getElementClassMap(c));
     AttributeMapper amapper = new AttributeMapper(fmapper);

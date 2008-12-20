@@ -17,21 +17,6 @@
  */
 package org.apache.shindig.social.core.util;
 
-import org.apache.shindig.social.core.model.EnumImpl;
-import org.apache.shindig.social.opensocial.model.Enum;
-import org.apache.shindig.social.opensocial.service.BeanConverter;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
-import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -40,11 +25,23 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.shindig.social.core.model.EnumImpl;
+import org.apache.shindig.social.opensocial.model.Enum;
+import org.apache.shindig.social.opensocial.service.BeanConverter;
+import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 /**
  * Converts pojos to json objects.
@@ -198,7 +195,7 @@ public class BeanJsonConverter implements BeanConverter {
 
       String fieldName = name.substring(prefixlen, prefixlen+1).toLowerCase() +
           name.substring(prefixlen + 1);
-      
+
       if (EXCLUDED_FIELDS.contains(fieldName.toLowerCase())) {
         continue;
       }

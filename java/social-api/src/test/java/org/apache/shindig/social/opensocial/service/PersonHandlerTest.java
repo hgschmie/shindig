@@ -17,6 +17,12 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import junit.framework.TestCase;
+
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.common.util.ImmediateFuture;
 import org.apache.shindig.social.ResponseError;
@@ -26,19 +32,13 @@ import org.apache.shindig.social.opensocial.spi.CollectionOptions;
 import org.apache.shindig.social.opensocial.spi.GroupId;
 import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.RestfulCollection;
-import org.apache.shindig.social.opensocial.spi.UserId;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
+import org.apache.shindig.social.opensocial.spi.UserId;
+import org.easymock.classextension.EasyMock;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 public class PersonHandlerTest extends TestCase {
   private PersonService personService;

@@ -32,7 +32,7 @@ import java.util.Map.Entry;
 
 /**
  * This converter changes the way in which a collection is serialized
- * 
+ *
  */
 public class DataCollectionConverter extends AbstractCollectionConverter {
 
@@ -45,7 +45,7 @@ public class DataCollectionConverter extends AbstractCollectionConverter {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#canConvert(java.lang.Class)
    */
   @Override
@@ -56,7 +56,7 @@ public class DataCollectionConverter extends AbstractCollectionConverter {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#marshal(java.lang.Object,
    *      com.thoughtworks.xstream.io.HierarchicalStreamWriter,
    *      com.thoughtworks.xstream.converters.MarshallingContext)
@@ -106,7 +106,7 @@ public class DataCollectionConverter extends AbstractCollectionConverter {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter#unmarshal(com.thoughtworks.xstream.io.HierarchicalStreamReader,
    *      com.thoughtworks.xstream.converters.UnmarshallingContext)
    */

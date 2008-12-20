@@ -17,17 +17,14 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
-import static org.junit.Assert.*;
-
-import org.apache.shindig.social.core.util.JsonLibConverterUtils;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.shindig.social.core.util.JsonLibConverterUtils;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class JsonLibConverterUtilsTest {
 

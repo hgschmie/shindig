@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.google.inject.Injector;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
 
@@ -45,8 +44,6 @@ public class InterfaceClassMapper extends MapperWrapper {
    * A logger.
    */
   private static final Log log = LogFactory.getLog(InterfaceClassMapper.class);
-
-  private final Injector injector;
 
   /**
    * A map of element names to classes.
@@ -109,14 +106,12 @@ public class InterfaceClassMapper extends MapperWrapper {
    * @param elementClassMap
    *          a map of element names to class types.
    */
-  public InterfaceClassMapper(final Injector injector,
-      WriterStack writerStack, Mapper wrapped,
+  public InterfaceClassMapper(WriterStack writerStack, Mapper wrapped,
       List<ClassFieldMapping> elementMappingList,
       List<ClassFieldMapping> listElementMappingList,
       List<ImplicitCollectionFieldMapping> itemFieldMappings,
       Map<String, Class<?>[]> omitMap, Map<String, Class<?>> elementClassMap) {
     super(wrapped);
-    this.injector = injector;
     this.elementClassMap = elementClassMap;
     this.elementMappingList = elementMappingList;
     this.listElementMappingList = listElementMappingList;

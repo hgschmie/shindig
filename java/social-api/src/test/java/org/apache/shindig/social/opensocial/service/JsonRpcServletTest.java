@@ -17,30 +17,29 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
-import org.apache.shindig.common.testing.FakeGadgetToken;
-import org.apache.shindig.common.util.ImmediateFuture;
-import org.apache.shindig.social.core.util.BeanAtomConverter;
-import org.apache.shindig.social.core.util.BeanJsonConverter;
-import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
-import org.apache.shindig.social.core.util.BeanXStreamConverter;
-import org.apache.shindig.social.core.util.BeanXmlConverter;
-
-import com.google.common.collect.Maps;
-import com.google.inject.Provider;
-
-import junit.framework.TestCase;
-import org.easymock.classextension.EasyMock;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.concurrent.Future;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import junit.framework.TestCase;
+
+import org.apache.shindig.common.testing.FakeGadgetToken;
+import org.apache.shindig.common.util.ImmediateFuture;
+import org.apache.shindig.social.core.util.BeanJsonConverter;
+import org.apache.shindig.social.core.util.BeanXStreamAtomConverter;
+import org.apache.shindig.social.core.util.BeanXStreamConverter;
+import org.easymock.classextension.EasyMock;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.google.common.collect.Maps;
+import com.google.inject.Provider;
 
 /**
  *

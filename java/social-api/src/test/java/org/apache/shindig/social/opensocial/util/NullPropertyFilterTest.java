@@ -17,19 +17,14 @@
  */
 package org.apache.shindig.social.opensocial.util;
 
+import junit.framework.Assert;
 import net.sf.json.JSONArray;
 import net.sf.json.util.PropertyFilter;
 
 import org.apache.shindig.social.core.util.NullPropertyFilter;
-
-import com.google.common.collect.Lists;
-
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.Assert;
+import com.google.common.collect.Lists;
 
 /**
  * Test the NullPropertyFilter.
