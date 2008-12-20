@@ -1,4 +1,3 @@
-package org.apache.shindig.gadgets.render;
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +18,7 @@ package org.apache.shindig.gadgets.render;
  * under the License.
  *
  */
-
+package org.apache.shindig.gadgets.render;
 
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetFeatureRegistry;
@@ -32,31 +31,31 @@ import com.google.inject.Inject;
 
 public class CoreUtilContributor implements ConfigContributor {
 
-    private final GadgetFeatureRegistry registry;
+  private final GadgetFeatureRegistry registry;
 
-    @Inject
-    public CoreUtilContributor(final GadgetFeatureRegistry registry) {
-        this.registry = registry;
-    }
+  @Inject
+  public CoreUtilContributor(final GadgetFeatureRegistry registry) {
+    this.registry = registry;
+  }
 
-    /**
-     * Add gadgets.util support. This is calculated dynamically based on request inputs.
-     */
-    public void contribute(final JSONObject config, final Gadget gadget) {
+  /**
+   * Add gadgets.util support. This is calculated dynamically based on request inputs.
+   */
+  public void contribute(final JSONObject config, final Gadget gadget) {
 
-        final ModulePrefs prefs = gadget.getSpec().getModulePrefs();
-        final JSONObject featureMap = new JSONObject();
+    final ModulePrefs prefs = gadget.getSpec().getModulePrefs();
+    final JSONObject featureMap = new JSONObject();
 
-        try {
-            for (final Feature feature : prefs.getFeatures().values()) {
-                if (registry.hasFeature(feature.getName())) {
-                    featureMap.put(feature.getName(), feature.getParams());
-                }
-            }
-            config.put("core.util", featureMap);
-        } catch (JSONException e) {
-            // Shouldn't be possible.
-            throw new RuntimeException(e);
+    try {
+      for (final Feature feature : prefs.getFeatures().values()) {
+        if (registry.hasFeature(feature.getName())) {
+          featureMap.put(feature.getName(), feature.getParams());
         }
+      }
+      config.put("core.util", featureMap);
+    } catch (JSONException e) {
+      // Shouldn't be possible.
+      throw new RuntimeException(e);
     }
+  }
 }

@@ -35,12 +35,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Maintains a registry of all {@code GadgetFeature} types supported by
- * a given Gadget Server installation.
+ * Maintains a registry of all {@code GadgetFeature} types supported by a given
+ * Gadget Server installation.
  *
- * To register a feature:
- * GadgetFeatureRegistry registry = // get your global registry
- * registry.register("my-feature", null, new MyFeatureFactory());
+ * To register a feature: GadgetFeatureRegistry registry = // get your global
+ * registry registry.register("my-feature", null, new MyFeatureFactory());
  */
 @Singleton
 public class GadgetFeatureRegistry {
@@ -48,12 +47,13 @@ public class GadgetFeatureRegistry {
   private final Map<String, GadgetFeature> core;
 
   // Caches the transitive dependencies to enable faster lookups.
-  final Map<Set<String>, Collection<GadgetFeature>> cache = Maps.newConcurrentHashMap();
+  final Map<Set<String>, Collection<GadgetFeature>> cache = Maps
+      .newConcurrentHashMap();
 
   private boolean graphComplete = false;
 
-  private final static Logger logger
-      = Logger.getLogger("org.apache.shindig.gadgets");
+  private final static Logger logger = Logger
+      .getLogger("org.apache.shindig.gadgets");
 
   /**
    * Creates a new feature registry and loads the specified features.
@@ -63,8 +63,8 @@ public class GadgetFeatureRegistry {
    * @throws GadgetException
    */
   @Inject
-  public GadgetFeatureRegistry(@Named("shindig.features.default") String featureFiles,
-      HttpFetcher httpFetcher) throws GadgetException {
+  public GadgetFeatureRegistry(@Named("shindig.features.default")
+  String featureFiles, HttpFetcher httpFetcher) throws GadgetException {
     features = new HashMap<String, GadgetFeature>();
     core = new HashMap<String, GadgetFeature>();
     if (featureFiles != null) {
@@ -76,12 +76,13 @@ public class GadgetFeatureRegistry {
   /**
    * Register a {@code GadgetFeature}.
    *
-   * @param feature Class implementing the feature.
+   * @param feature
+   *          Class implementing the feature.
    */
   public void register(GadgetFeature feature) {
     if (graphComplete) {
-      throw new IllegalStateException("register should never be " +
-          "invoked after calling getLibraries");
+      throw new IllegalStateException("register should never be "
+          + "invoked after calling getLibraries");
     }
     logger.info("Registering feature: " + feature.getName());
     if (isCore(feature)) {
@@ -113,25 +114,27 @@ public class GadgetFeatureRegistry {
    * Returns true if a requested feature actually exists in the registry.
    */
   public boolean hasFeature(final String feature) {
-      return features.containsKey(feature);
+    return features.containsKey(feature);
   }
 
   /**
    * @return All {@code GadgetFeature} objects necessary for {@code needed} in
-   *     graph-dependent order.
+   *         graph-dependent order.
    */
   public Collection<GadgetFeature> getFeatures(Collection<String> needed) {
     return getFeatures(needed, null);
   }
 
   /**
-   * @param needed All features requested by the gadget.
-   * @param unsupported Populated with any unsupported features.
+   * @param needed
+   *          All features requested by the gadget.
+   * @param unsupported
+   *          Populated with any unsupported features.
    * @return All {@code GadgetFeature} objects necessary for {@code needed} in
-   *     graph-dependent order.
+   *         graph-dependent order.
    */
   public Collection<GadgetFeature> getFeatures(Collection<String> needed,
-                                               Collection<String> unsupported) {
+      Collection<String> unsupported) {
     graphComplete = true;
 
     Set<String> neededSet;
