@@ -22,6 +22,7 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -37,12 +38,12 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
 import com.google.common.collect.ImmutableSet;
 
 public class ModulePrefs extends SpecElement {
+  public static final String ELEMENT_NAME = "ModulePrefs";
 
   private static final String ATTR_TITLE = "title";
   private static final String ATTR_TITLE_URL = "title_url";
@@ -81,23 +82,23 @@ public class ModulePrefs extends SpecElement {
   }
 
   public List<Preload> getPreloads() {
-    return preloads;
+    return Collections.unmodifiableList(preloads);
   }
 
   public Map<String, Feature> getFeatures() {
-    return features;
+    return Collections.unmodifiableMap(features);
   }
 
   public List<Icon> getIcons() {
-    return icons;
+    return Collections.unmodifiableList(icons);
   }
 
   public Map<Locale, LocaleSpec> getLocales() {
-    return locales;
+    return Collections.unmodifiableMap(locales);
   }
 
   public Map<String, LinkSpec> getLinks() {
-    return links;
+    return Collections.unmodifiableMap(links);
   }
 
   public OAuth getOauth() {
@@ -191,12 +192,12 @@ public class ModulePrefs extends SpecElement {
     return NumberUtils.toInt(attributes.get(ATTR_HEIGHT));
   }
 
-  public boolean getRenderInline() {
+  public boolean isRenderInline() {
     return BooleanUtils.toBoolean(attributes.get(ATTR_RENDER_INLINE));
   }
 
   public List<String> getCategories() {
-    return categories;
+    return Collections.unmodifiableList(categories);
   }
 
   private void addPreload(final Preload preload) {
@@ -216,7 +217,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   private void addLink(final LinkSpec link) {
-    links.put(link.getRel(), link);
+    links.put(link.getRel().toString(), link);
   }
 
   private void setOAuth(final OAuth oauth) {
@@ -232,7 +233,8 @@ public class ModulePrefs extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     for (Preload preload : preloads) {
       preload.toXml(writer);
     }
@@ -254,37 +256,151 @@ public class ModulePrefs extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
-    for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-      writer.writeAttribute(name().getNamespaceURI(), attribute.getKey(), attribute.getValue());
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (attributes.get(ATTR_TITLE) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_TITLE, getTitle());
+    }
+
+    if (attributes.get(ATTR_TITLE_URL) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_TITLE_URL, getTitleUrl()
+          .toString());
+    }
+
+    if (attributes.get(ATTR_DESCRIPTION) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_DESCRIPTION, getDescription());
+    }
+
+    if (attributes.get(ATTR_AUTHOR) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR, getAuthor());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_EMAIL) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_EMAIL, getAuthorEmail());
+    }
+
+    if (attributes.get(ATTR_SCREENSHOT) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SCREENSHOT, getScreenshot()
+          .toString());
+    }
+
+    if (attributes.get(ATTR_THUMBNAIL) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_THUMBNAIL, getThumbnail()
+          .toString());
+    }
+
+    if (attributes.get(ATTR_DIRECTORY_TITLE) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_DIRECTORY_TITLE,
+          getDirectoryTitle());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_AFFILIATION) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_AFFILIATION,
+          getAuthorAffiliation());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_LOCATION) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LOCATION,
+          getAuthorLocation());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_PHOTO) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_PHOTO, getAuthorPhoto()
+          .toString());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_ABOUTME) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_ABOUTME,
+          getAuthorAboutme());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_QUOTE) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_QUOTE, getAuthorQuote());
+    }
+
+    if (attributes.get(ATTR_AUTHOR_LINK) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LINK, getAuthorLink()
+          .toString());
+    }
+
+    if (attributes.get(ATTR_SHOW_STATS) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SHOW_STATS, String
+          .valueOf(isShowStats()));
+    }
+
+    if (attributes.get(ATTR_SHOW_IN_DIRECTORY) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SHOW_IN_DIRECTORY, String
+          .valueOf(isShowInDirectory()));
+    }
+
+    if (attributes.get(ATTR_SINGLETON) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SINGLETON, String
+          .valueOf(isSingleton()));
+    }
+
+    if (attributes.get(ATTR_SCALING) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SCALING, String
+          .valueOf(isScaling()));
+    }
+
+    if (attributes.get(ATTR_SCROLLING) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SCROLLING, String
+          .valueOf(isScrolling()));
+    }
+
+    if (attributes.get(ATTR_WIDTH) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_WIDTH, String
+          .valueOf(getWidth()));
+    }
+
+    if (attributes.get(ATTR_HEIGHT) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_HEIGHT, String
+          .valueOf(getHeight()));
+    }
+
+    if (attributes.get(ATTR_RENDER_INLINE) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_RENDER_INLINE, String
+          .valueOf(isRenderInline()));
+    }
+
+    if (categories.size() > 0) {
+      writer.writeAttribute(namespaceURI, ATTR_CATEGORY, categories.get(0));
+      if (categories.size() > 1) {
+        writer.writeAttribute(namespaceURI, ATTR_CATEGORY2, categories.get(1));
+      }
     }
   }
 
-  @Override
-  public void validate() throws SpecParserException {
-    // TODO - add validation
-  }
-
   public static class Parser extends SpecElement.Parser<ModulePrefs> {
-
     private final Set<QName> knownAttributes;
     private final Set<QName> categories;
 
     public Parser() {
-      this(new QName("ModulePrefs"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
 
-      this.knownAttributes = ImmutableSet.of(buildQName(name, ATTR_TITLE), buildQName(name, ATTR_TITLE_URL), buildQName(name, ATTR_DESCRIPTION), buildQName(
-          name, ATTR_AUTHOR), buildQName(name, ATTR_AUTHOR_EMAIL), buildQName(name, ATTR_SCREENSHOT), buildQName(name, ATTR_THUMBNAIL), buildQName(name,
-          ATTR_DIRECTORY_TITLE), buildQName(name, ATTR_AUTHOR_AFFILIATION), buildQName(name, ATTR_AUTHOR_LOCATION), buildQName(name, ATTR_AUTHOR_PHOTO),
-          buildQName(name, ATTR_AUTHOR_ABOUTME), buildQName(name, ATTR_AUTHOR_QUOTE), buildQName(name, ATTR_AUTHOR_LINK), buildQName(name, ATTR_SHOW_STATS),
-          buildQName(name, ATTR_SHOW_IN_DIRECTORY), buildQName(name, ATTR_SINGLETON), buildQName(name, ATTR_SCALING), buildQName(name, ATTR_SCROLLING),
-          buildQName(name, ATTR_WIDTH), buildQName(name, ATTR_HEIGHT), buildQName(name, ATTR_RENDER_INLINE));
+      this.knownAttributes = ImmutableSet.of(buildQName(name, ATTR_TITLE),
+          buildQName(name, ATTR_TITLE_URL), buildQName(name, ATTR_DESCRIPTION),
+          buildQName(name, ATTR_AUTHOR), buildQName(name, ATTR_AUTHOR_EMAIL),
+          buildQName(name, ATTR_SCREENSHOT), buildQName(name, ATTR_THUMBNAIL),
+          buildQName(name, ATTR_DIRECTORY_TITLE), buildQName(name,
+              ATTR_AUTHOR_AFFILIATION), buildQName(name, ATTR_AUTHOR_LOCATION),
+          buildQName(name, ATTR_AUTHOR_PHOTO), buildQName(name,
+              ATTR_AUTHOR_ABOUTME), buildQName(name, ATTR_AUTHOR_QUOTE),
+          buildQName(name, ATTR_AUTHOR_LINK),
+          buildQName(name, ATTR_SHOW_STATS), buildQName(name,
+              ATTR_SHOW_IN_DIRECTORY), buildQName(name, ATTR_SINGLETON),
+          buildQName(name, ATTR_SCALING), buildQName(name, ATTR_SCROLLING),
+          buildQName(name, ATTR_WIDTH), buildQName(name, ATTR_HEIGHT),
+          buildQName(name, ATTR_RENDER_INLINE));
 
-      this.categories = ImmutableSet.of(buildQName(name, ATTR_CATEGORY), buildQName(name, ATTR_CATEGORY2));
+      this.categories = ImmutableSet.of(buildQName(name, ATTR_CATEGORY),
+          buildQName(name, ATTR_CATEGORY2));
 
       register(new Require.Parser());
       register(new Optional.Parser());
@@ -301,7 +417,8 @@ public class ModulePrefs extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final ModulePrefs modulePrefs, final QName name, final String value) {
+    protected void setAttribute(final ModulePrefs modulePrefs,
+        final QName name, final String value) {
       if (knownAttributes.contains(name)) {
         modulePrefs.setAttribute(name.getLocalPart(), value);
       } else if (categories.contains(name)) {
@@ -312,7 +429,8 @@ public class ModulePrefs extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final ModulePrefs prefs, final SpecElement child) {
+    protected void addChild(final XMLStreamReader reader,
+        final ModulePrefs prefs, final SpecElement child) {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
       } else if (child instanceof Preload) {

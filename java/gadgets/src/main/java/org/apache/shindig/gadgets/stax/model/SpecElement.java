@@ -41,11 +41,11 @@ public abstract class SpecElement {
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
-  protected final Map<QName, String> attributes = new HashMap<QName, String>();
+  private final Map<QName, String> attributes = new HashMap<QName, String>();
 
-  protected final Map<String, String> namespaces = new HashMap<String, String>();
+  private final Map<String, String> namespaces = new HashMap<String, String>();
 
-  protected final List<SpecElement> children = new ArrayList<SpecElement>();
+  private final List<SpecElement> children = new ArrayList<SpecElement>();
 
   private final QName name;
 
@@ -104,14 +104,17 @@ public abstract class SpecElement {
     writer.writeEndElement();
   }
 
-  protected void writeAttribute(final XMLStreamWriter writer, final QName name, final String value) throws XMLStreamException {
+  protected void writeAttribute(final XMLStreamWriter writer, final QName name,
+      final String value) throws XMLStreamException {
     writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
   }
 
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
   }
 
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
   }
 
   // ======================================================================================================================================
@@ -146,7 +149,8 @@ public abstract class SpecElement {
 
   public static abstract class Parser<T extends SpecElement> {
 
-    private static final Logger LOG = Logger.getLogger(SpecElement.class.getName());
+    private static final Logger LOG = Logger.getLogger(SpecElement.class
+        .getName());
 
     private final Map<QName, Parser<? extends SpecElement>> children = new HashMap<QName, Parser<? extends SpecElement>>();
 
@@ -164,7 +168,8 @@ public abstract class SpecElement {
       children.put(parseElement.getName(), parseElement);
     }
 
-    public T parse(final XMLStreamReader reader) throws IllegalStateException, XMLStreamException, SpecParserException {
+    public T parse(final XMLStreamReader reader) throws IllegalStateException,
+        XMLStreamException, SpecParserException {
 
       // This assumes, that parse it at the right element.
       T element = newElement();
@@ -188,7 +193,8 @@ public abstract class SpecElement {
           if (children.containsKey(elementName)) {
             Parser<? extends SpecElement> parser = children.get(elementName);
             if (parser == null) {
-              LOG.warning("No idea what to do with " + elementName + ", ignoring!");
+              LOG.warning("No idea what to do with " + elementName
+                  + ", ignoring!");
               parser = new GenericElement.Parser(elementName);
             }
 
@@ -204,28 +210,34 @@ public abstract class SpecElement {
 
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
-        setAttribute(element, reader.getAttributeName(i), reader.getAttributeValue(i));
+        setAttribute(element, reader.getAttributeName(i), reader
+            .getAttributeValue(i));
       }
     }
 
     private void addNamespaces(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getNamespaceCount(); i++) {
-        element.addNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
+        element.addNamespace(reader.getNamespacePrefix(i), reader
+            .getNamespaceURI(i));
       }
     }
 
     protected abstract T newElement();
 
-    protected void setAttribute(final T element, final QName attributeName, final String value) {
+    protected void setAttribute(final T element, final QName attributeName,
+        final String value) {
       element.setAttribute(name, value);
     }
 
     protected void setText(final T element, final String value) {
-      throw new IllegalStateException("The element" + element.name() + " does not accept any nested text");
+      throw new IllegalStateException("The element" + element.name()
+          + " does not accept any nested text");
     }
 
-    protected void addChild(final XMLStreamReader reader, final T element, final SpecElement child) {
-      throw new IllegalStateException("The element" + element.name() + " does not accept any nested elements, saw " + child.name());
+    protected void addChild(final XMLStreamReader reader, final T element,
+        final SpecElement child) {
+      throw new IllegalStateException("The element" + element.name()
+          + " does not accept any nested elements, saw " + child.name());
     }
 
   }

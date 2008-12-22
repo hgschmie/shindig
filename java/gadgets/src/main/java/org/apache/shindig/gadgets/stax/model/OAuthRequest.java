@@ -23,15 +23,17 @@ package org.apache.shindig.gadgets.stax.model;
 
 import javax.xml.namespace.QName;
 
-public class OAuthRequest extends SpecElement {
+public class OAuthRequest extends OAuthElement {
+
+  public static final String ELEMENT_NAME = "Request";
 
   public OAuthRequest(final QName name) {
-    super(name);
+    super(name, true);
   }
 
-  public static class Parser extends SpecElement.Parser<OAuthRequest> {
+  public static class Parser extends OAuthElement.Parser {
     public Parser() {
-      this(new QName("OAuthRequest"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {

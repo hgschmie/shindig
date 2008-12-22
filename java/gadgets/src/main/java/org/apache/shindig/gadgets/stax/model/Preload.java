@@ -38,6 +38,8 @@ import com.google.common.collect.ImmutableSet;
 
 public class Preload extends SpecElement {
 
+  public static final String ELEMENT_NAME = "Preload";
+
   private static final String ATTR_HREF = "href";
   private static final String ATTR_AUTHZ = "authz";
   private static final String ATTR_SIGN_OWNER = "sign_owner";
@@ -53,64 +55,50 @@ public class Preload extends SpecElement {
   }
 
   private String href;
-  private String authType = AuthType.NONE.toString();
-  private String signOwner = "true";
-  private String signViewer = "true";
+  private String authType;
+  private String signOwner = "true"; // Default is true, according to spec
+  private String signViewer = "true"; // Default is true, according to spec
   private String views;
   private String oAuthServiceName;
   private String oAuthTokenName;
   private String oAuthRequestToken;
   private String oAuthRequestTokenSecret;
 
-  /**
-   * Preload@href
-   */
   public Uri getHref() {
     return StaxUtils.toUri(href);
   }
 
-  /**
-   * Preload@auth
-   */
   public AuthType getAuthType() {
     return AuthType.parse(authType);
   }
 
-  /**
-   * Preload/@sign_owner
-   */
   public boolean isSignOwner() {
     return BooleanUtils.toBoolean(signOwner);
   }
 
-  /**
-   * Preload/@sign_viewer
-   */
   public boolean isSignViewer() {
     return BooleanUtils.toBoolean(signViewer);
   }
 
-  /**
-   * Preload@views
-   */
   public Set<String> getViews() {
-    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils.defaultString(views), ',')));
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
+        .defaultString(views), ',')));
   }
 
   public String getOAuthServiceName() {
-    return oAuthServiceName;
+    return StringUtils.defaultString(oAuthServiceName);
   }
 
   public String getOAuthTokenName() {
-    return oAuthTokenName;
+    return StringUtils.defaultString(oAuthTokenName);
   }
 
   public String getOAuthRequestToken() {
-    return oAuthRequestToken;
+    return StringUtils.defaultString(oAuthRequestToken);
   }
 
   public String getOAuthRequestTokenSecret() {
-    return oAuthRequestTokenSecret;
+    return StringUtils.defaultString(oAuthRequestTokenSecret);
   }
 
   private void setHref(final String href) {
@@ -150,49 +138,58 @@ public class Preload extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
     if (href != null) {
-        writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
+      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
     if (authType != null) {
-        writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
+      writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
     }
 
     if (signOwner != null) {
-        writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String.valueOf(isSignOwner()));
+      writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String
+          .valueOf(isSignOwner()));
     }
 
     if (signViewer != null) {
-        writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String.valueOf(isSignViewer()));
+      writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String
+          .valueOf(isSignViewer()));
     }
 
     if (views != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VIEWS, StringUtils.join(getViews(), ','));
+      writer.writeAttribute(namespaceURI, ATTR_VIEWS, StringUtils.join(
+          getViews(), ','));
     }
 
     if (oAuthServiceName != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_SERVICE_NAME, getOAuthServiceName());
+      writer.writeAttribute(namespaceURI, ATTR_OAUTH_SERVICE_NAME,
+          getOAuthServiceName());
     }
 
     if (oAuthTokenName != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_TOKEN_NAME, getOAuthTokenName());
+      writer.writeAttribute(namespaceURI, ATTR_OAUTH_TOKEN_NAME,
+          getOAuthTokenName());
     }
 
     if (oAuthRequestToken != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN, getOAuthRequestToken());
+      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN,
+          getOAuthRequestToken());
     }
 
     if (oAuthRequestTokenSecret != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN_SECRET, getOAuthRequestTokenSecret());
+      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
+          getOAuthRequestTokenSecret());
     }
 
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (getHref() == null) {
-      throw new SpecParserException("Preload/@href is missing or invalid.");
+    if (href == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@href must be set!");
     }
   }
 
@@ -208,7 +205,7 @@ public class Preload extends SpecElement {
     private final QName attrOAuthRequestTokenSecret;
 
     public Parser() {
-      this(new QName("Preload"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -221,7 +218,8 @@ public class Preload extends SpecElement {
       this.attrOAuthServiceName = buildQName(name, ATTR_OAUTH_SERVICE_NAME);
       this.attrOAuthTokenName = buildQName(name, ATTR_OAUTH_TOKEN_NAME);
       this.attrOAuthRequestToken = buildQName(name, ATTR_OAUTH_REQUEST_TOKEN);
-      this.attrOAuthRequestTokenSecret = buildQName(name, ATTR_OAUTH_REQUEST_TOKEN_SECRET);
+      this.attrOAuthRequestTokenSecret = buildQName(name,
+          ATTR_OAUTH_REQUEST_TOKEN_SECRET);
     }
 
     @Override
@@ -230,7 +228,8 @@ public class Preload extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final Preload preload, final QName name, final String value) {
+    protected void setAttribute(final Preload preload, final QName name,
+        final String value) {
       if (name.equals(attrHref)) {
         preload.setHref(value);
       } else if (name.equals(attrAuthz)) {

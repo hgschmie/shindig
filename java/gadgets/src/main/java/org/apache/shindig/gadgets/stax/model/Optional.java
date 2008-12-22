@@ -25,17 +25,15 @@ import javax.xml.namespace.QName;
 
 public class Optional extends Feature {
 
+  public static final String ELEMENT_NAME = "Optional";
+
   public Optional(final QName name) {
     super(name, false);
   }
 
-  public String getName() {
-    return attribute("feature");
-  }
-
-  public static class Parser extends SpecElement.Parser<Optional> {
+  public static class Parser extends Feature.Parser {
     public Parser() {
-      this(new QName("Optional"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {

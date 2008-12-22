@@ -21,23 +21,85 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuth extends SpecElement {
+
+  public static final String ELEMENT_NAME = "OAuth";
+
+  private static final String ATTR_NAME = "name";
+
+  private String name = null;
+
+  private List<OAuthService> oAuthServices = new ArrayList<OAuthService>();
 
   public OAuth(final QName name) {
     super(name);
   }
 
+  public String getName() {
+    return StringUtils.defaultString(name);
+  }
+
+  public List<OAuthService> getOAuthServices() {
+    return oAuthServices;
+  }
+
+  private void setName(final String name) {
+    this.name = name;
+  }
+
+  private void addOAuthService(final OAuthService oAuthService) {
+    this.oAuthServices.add(oAuthService);
+  }
+
+  @Override
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (name != null) {
+      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+    }
+  }
+
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    for (OAuthService oAuthService : oAuthServices) {
+      oAuthService.toXml(writer);
+    }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (oAuthServices.size() == 0) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must contain at least one 'service' element!");
+    }
+  }
+
   public static class Parser extends SpecElement.Parser<OAuth> {
+
+    private final QName attrName;
+
     public Parser() {
-      this(new QName("OAuth"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
       register(new OAuthService.Parser());
+      this.attrName = buildQName(name, ATTR_NAME);
     }
 
     @Override
@@ -46,8 +108,23 @@ public class OAuth extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, OAuth oauth,
-        SpecElement child) {
+    protected void setAttribute(final OAuth oAuth, final QName name,
+        final String value) {
+      if (name.equals(attrName)) {
+        oAuth.setName(value);
+      } else {
+        super.setAttribute(oAuth, name, value);
+      }
+    }
+
+    @Override
+    protected void addChild(XMLStreamReader reader, final OAuth oAuth,
+        final SpecElement child) {
+      if (child instanceof OAuthService) {
+        oAuth.addOAuthService((OAuthService) child);
+      } else {
+        super.addChild(reader, oAuth, child);
+      }
     }
   }
 }
