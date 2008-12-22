@@ -26,20 +26,15 @@ public enum AuthType {
   /**
    * @return The parsed value (defaults to NONE)
    */
-  public static AuthType parse(String value) {
-    if (value != null) {
-      value = value.trim();
-      if (value.length() == 0) {
-        return NONE;
+  public static AuthType parse(final String value) {
+      for (AuthType authType : AuthType.values())
+      {
+          if (authType.toString().compareToIgnoreCase(value) == 0)
+          {
+              return authType;
+          }
       }
-      try {
-        return valueOf(value.toUpperCase());
-      } catch (IllegalArgumentException iae) {
-        return NONE;
-      }
-    } else {
       return NONE;
-    }
   }
 
   /**
