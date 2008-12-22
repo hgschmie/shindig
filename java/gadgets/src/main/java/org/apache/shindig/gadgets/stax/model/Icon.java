@@ -26,9 +26,10 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class Icon extends SpecElement {
+
+  public static final String ELEMENT_NAME = "Icon";
 
   private static final String ATTR_MODE = "mode";
   private static final String ATTR_TYPE = "type";
@@ -46,8 +47,8 @@ public class Icon extends SpecElement {
     return StringUtils.defaultString(mode);
   }
 
-  public String getType() {
-    return StringUtils.defaultString(type);
+  public Type getType() {
+    return Type.parse(type);
   }
 
   public String getText() {
@@ -55,11 +56,11 @@ public class Icon extends SpecElement {
   }
 
   private void setMode(final String mode) {
-      this.mode = mode;
+    this.mode = mode;
   }
 
   private void setType(final String type) {
-      this.type = type;
+    this.type = type;
   }
 
   private void setText(final String text) {
@@ -67,28 +68,36 @@ public class Icon extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (mode != null) {
       writer.writeAttribute(namespaceURI, ATTR_MODE, getMode());
     }
     if (type != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType());
+      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType().toString());
     }
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (StringUtils.isNotEmpty(text)) {
       writer.writeCharacters(text);
     }
   }
 
-  @Override
-  public void validate() throws SpecParserException {
-    if (mode != null && !mode.equals("base64")) {
-      throw new SpecParserException("All msg elements must have a name attribute.");
+  public static enum Type {
+    BASE64;
+
+    public static Type parse(String value) {
+      for (Type type : Type.values()) {
+        if (type.toString().compareToIgnoreCase(value) == 0) {
+          return type;
+        }
+      }
+      return BASE64;
     }
   }
 
@@ -98,7 +107,7 @@ public class Icon extends SpecElement {
     private final QName attrType;
 
     public Parser() {
-      this(new QName("icon"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -113,7 +122,8 @@ public class Icon extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final Icon icon, final QName name, final String value) {
+    protected void setAttribute(final Icon icon, final QName name,
+        final String value) {
       if (name.equals(attrMode)) {
         icon.setMode(value);
       } else if (name.equals(attrType)) {

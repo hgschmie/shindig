@@ -25,12 +25,13 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
 public class LinkSpec extends SpecElement {
+
+  public static final String ELEMENT_NAME = "Link";
 
   private static final String ATTR_REL = "rel";
   private static final String ATTR_HREF = "href";
@@ -42,8 +43,8 @@ public class LinkSpec extends SpecElement {
   private String rel = null;
   private String href = null;
 
-  public String getRel() {
-    return StringUtils.defaultString(rel);
+  public Rel getRel() {
+    return Rel.parse(rel);
   }
 
   public Uri getHref() {
@@ -59,11 +60,12 @@ public class LinkSpec extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (rel != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REL, getRel());
+      writer.writeAttribute(namespaceURI, ATTR_REL, getRel().toString());
     }
     if (href != null) {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
@@ -72,6 +74,48 @@ public class LinkSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
+    if (rel == null) {
+      throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
+    }
+    if (href == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@href must be set!");
+    }
+  }
+
+  public static enum Rel {
+    GADGETS_HELP("gadgets.help"), GADGETS_SUPPORT("gadgets.support"), ICON(
+        "icon");
+
+    private final String value;
+
+    private Rel(final String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return getValue();
+    }
+
+    /**
+     * Parses a data rel from the input string.
+     * 
+     * @param value
+     * @return The data rel of the given value.
+     */
+    public static Rel parse(String value) {
+      for (Rel rel : Rel.values()) {
+        if (rel.getValue().compareToIgnoreCase(value) == 0) {
+          return rel;
+        }
+      }
+      return ICON;
+    }
   }
 
   public static class Parser extends SpecElement.Parser<LinkSpec> {
@@ -80,7 +124,7 @@ public class LinkSpec extends SpecElement {
     private final QName attrHref;
 
     public Parser() {
-      this(new QName("Link"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -95,7 +139,8 @@ public class LinkSpec extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final LinkSpec link, final QName name, final String value) {
+    protected void setAttribute(final LinkSpec link, final QName name,
+        final String value) {
       if (name.equals(attrRel)) {
         link.setRel(value);
       } else if (name.equals(attrHref)) {

@@ -25,18 +25,19 @@ import javax.xml.namespace.QName;
 
 public class Require extends Feature {
 
+  public static final String ELEMENT_NAME = "Require";
+
   public Require(final QName name) {
     super(name, true);
   }
 
   public static class Parser extends Feature.Parser {
     public Parser() {
-      this(new QName("Require"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      register(new FeatureParam.Parser());
     }
 
     @Override

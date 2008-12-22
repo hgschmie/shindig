@@ -22,16 +22,81 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthService extends SpecElement {
+
+  public static final String ELEMENT_NAME = "Service";
+
+  private OAuthRequest oAuthRequest = null;
+  private OAuthAccess oAuthAccess = null;
+  private OAuthAuthorization oAuthAuthorization = null;
 
   public OAuthService(final QName name) {
     super(name);
   }
 
+  public OAuthRequest getRequest() {
+    return oAuthRequest;
+  }
+
+  public OAuthAccess getAccess() {
+    return oAuthAccess;
+  }
+
+  public OAuthAuthorization getAuthorization() {
+    return oAuthAuthorization;
+  }
+
+  private void setOAuthRequest(final OAuthRequest oAuthRequest) {
+    this.oAuthRequest = oAuthRequest;
+  }
+
+  private void setOAuthAccess(final OAuthAccess oAuthAccess) {
+    this.oAuthAccess = oAuthAccess;
+  }
+
+  private void setOAuthAuthorization(final OAuthAuthorization oAuthAuthorization) {
+    this.oAuthAuthorization = oAuthAuthorization;
+  }
+
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    if (oAuthRequest != null) {
+      oAuthRequest.toXml(writer);
+    }
+    if (oAuthAccess != null) {
+      oAuthAccess.toXml(writer);
+    }
+    if (oAuthAuthorization != null) {
+      oAuthAuthorization.toXml(writer);
+    }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (oAuthRequest == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must contain a 'Request' element!");
+    }
+    if (oAuthAccess == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must contain an 'Access' element!");
+    }
+    if (oAuthAuthorization == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must contain an 'Authorization' element!");
+    }
+  }
+
   public static class Parser extends SpecElement.Parser<OAuthService> {
     public Parser() {
-      this(new QName("Service"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -44,6 +109,20 @@ public class OAuthService extends SpecElement {
     @Override
     protected OAuthService newElement() {
       return new OAuthService(getName());
+    }
+
+    @Override
+    protected void addChild(XMLStreamReader reader,
+        final OAuthService oAuthService, final SpecElement child) {
+      if (child instanceof OAuthRequest) {
+        oAuthService.setOAuthRequest((OAuthRequest) child);
+      } else if (child instanceof OAuthAccess) {
+        oAuthService.setOAuthAccess((OAuthAccess) child);
+      } else if (child instanceof OAuthAuthorization) {
+        oAuthService.setOAuthAuthorization((OAuthAuthorization) child);
+      } else {
+        super.addChild(reader, oAuthService, child);
+      }
     }
   }
 }

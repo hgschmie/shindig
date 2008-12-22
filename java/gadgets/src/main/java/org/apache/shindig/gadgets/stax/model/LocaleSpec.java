@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,8 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
 public class LocaleSpec extends SpecElement {
+
+  public static final String ELEMENT_NAME = "Locale";
 
   private static final String ATTR_LANG = "lang";
   private static final String ATTR_COUNTRY = "country";
@@ -60,8 +63,8 @@ public class LocaleSpec extends SpecElement {
     return StringUtils.defaultString(country, "ALL");
   }
 
-  public String getLanguageDirection() {
-    return StringUtils.defaultString(languageDirection, "ltr");
+  public Direction getLanguageDirection() {
+    return Direction.parse(languageDirection);
   }
 
   public Uri getMessages() {
@@ -69,7 +72,7 @@ public class LocaleSpec extends SpecElement {
   }
 
   public Set<LocaleMsg> getLocalMsgs() {
-    return localeMsgs;
+    return Collections.unmodifiableSet(localeMsgs);
   }
 
   private void addLocaleMsg(final LocaleMsg localeMsg) {
@@ -93,7 +96,8 @@ public class LocaleSpec extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (language != null) {
@@ -103,15 +107,18 @@ public class LocaleSpec extends SpecElement {
       writer.writeAttribute(namespaceURI, ATTR_COUNTRY, getCountry());
     }
     if (languageDirection != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION, getLanguageDirection());
+      writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
+          getLanguageDirection().toString());
     }
     if (messages != null) {
-      writer.writeAttribute(namespaceURI, ATTR_MESSAGES, getMessages().toString());
+      writer.writeAttribute(namespaceURI, ATTR_MESSAGES, getMessages()
+          .toString());
     }
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     for (LocaleMsg localeMsg : localeMsgs) {
       localeMsg.toXml(writer);
     }
@@ -119,6 +126,28 @@ public class LocaleSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
+    if (messages == null && localeMsgs.size() == 0) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must either contain a @messages attribute or <msg> elements!");
+    }
+  }
+
+  public static enum Direction {
+    LTR, RTL;
+
+    public static Direction parse(String value) {
+      for (Direction direction : Direction.values()) {
+        if (direction.toString().compareToIgnoreCase(value) == 0) {
+          return direction;
+        }
+      }
+      return LTR;
+    }
+
+    @Override
+    public String toString() {
+      return name().toLowerCase();
+    }
   }
 
   public static class Parser extends SpecElement.Parser<LocaleSpec> {
@@ -128,7 +157,7 @@ public class LocaleSpec extends SpecElement {
     private final QName attrMessages;
 
     public Parser() {
-      this(new QName("Locale"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -146,7 +175,8 @@ public class LocaleSpec extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final LocaleSpec locale, final QName name, final String value) {
+    protected void setAttribute(final LocaleSpec locale, final QName name,
+        final String value) {
       if (name.equals(attrLang)) {
         locale.setLanguage(value);
       } else if (name.equals(attrCountry)) {
@@ -161,7 +191,8 @@ public class LocaleSpec extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final LocaleSpec locale, final SpecElement child) {
+    protected void addChild(XMLStreamReader reader, final LocaleSpec locale,
+        final SpecElement child) {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {

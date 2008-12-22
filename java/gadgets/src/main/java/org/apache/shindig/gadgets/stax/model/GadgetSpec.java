@@ -33,6 +33,8 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class GadgetSpec extends SpecElement {
 
+  public static final String ELEMENT_NAME = "Module";
+
   private ModulePrefs modulePrefs = null;
 
   private List<UserPref> userPrefs = new ArrayList<UserPref>();
@@ -68,7 +70,8 @@ public class GadgetSpec extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (modulePrefs != null) {
       modulePrefs.toXml(writer);
     }
@@ -82,17 +85,20 @@ public class GadgetSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (getModulePrefs() == null) {
-      throw new SpecParserException("No <ModulePrefs> section found!");
+    // TODO - according to the spec, this is actually wrong.
+    if (modulePrefs == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + " needs a ModulePrefs section!");
     }
-    if (getContent() == null) {
-      throw new SpecParserException("No <Content> section found!");
+    if (content == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + " needs a Content section!");
     }
   }
 
   public static class Parser extends SpecElement.Parser<GadgetSpec> {
     public Parser() {
-      this(new QName("Module"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -108,8 +114,8 @@ public class GadgetSpec extends SpecElement {
     }
 
     @Override
-    protected void addChild(final XMLStreamReader reader, final GadgetSpec spec,
-        final SpecElement child) {
+    protected void addChild(final XMLStreamReader reader,
+        final GadgetSpec spec, final SpecElement child) {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {

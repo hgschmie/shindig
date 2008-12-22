@@ -30,6 +30,8 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class FeatureParam extends SpecElement {
 
+  public static final String ELEMENT_NAME = "Param";
+
   private static final String ATTR_NAME = "name";
 
   private String name = null;
@@ -57,7 +59,8 @@ public class FeatureParam extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (name != null) {
@@ -66,7 +69,8 @@ public class FeatureParam extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (StringUtils.isNotEmpty(text)) {
       writer.writeCharacters(text);
     }
@@ -75,7 +79,8 @@ public class FeatureParam extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (name == null) {
-      throw new SpecParserException("Required name attribute missing!");
+      throw new SpecParserException(name().getLocalPart()
+          + "@name must be set!");
     }
   }
 
@@ -84,7 +89,7 @@ public class FeatureParam extends SpecElement {
     private final QName attrName;
 
     public Parser() {
-      this(new QName("Param"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -98,7 +103,8 @@ public class FeatureParam extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final FeatureParam msg, final QName name, final String value) {
+    protected void setAttribute(final FeatureParam msg, final QName name,
+        final String value) {
       if (name.equals(attrName)) {
         msg.setName(value);
       } else {

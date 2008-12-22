@@ -30,6 +30,8 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class LocaleMsg extends SpecElement {
 
+  public static final String ELEMENT_NAME = "msg";
+
   private static final String ATTR_NAME = "name";
 
   private String name = null;
@@ -57,7 +59,8 @@ public class LocaleMsg extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (name != null) {
@@ -66,7 +69,8 @@ public class LocaleMsg extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (StringUtils.isNotEmpty(text)) {
       writer.writeCharacters(text);
     }
@@ -75,7 +79,8 @@ public class LocaleMsg extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (name == null) {
-      throw new SpecParserException("All msg elements must have a name attribute.");
+      throw new SpecParserException(name().getLocalPart()
+          + "@name must be set!");
     }
   }
 
@@ -84,7 +89,7 @@ public class LocaleMsg extends SpecElement {
     private final QName attrName;
 
     public Parser() {
-      this(new QName("msg"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
@@ -98,7 +103,8 @@ public class LocaleMsg extends SpecElement {
     }
 
     @Override
-    protected void setAttribute(final LocaleMsg msg, final QName name, final String value) {
+    protected void setAttribute(final LocaleMsg msg, final QName name,
+        final String value) {
       if (name.equals(attrName)) {
         msg.setName(value);
       } else {

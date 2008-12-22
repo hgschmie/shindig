@@ -22,6 +22,7 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -29,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public abstract class Feature extends SpecElement {
@@ -41,7 +43,7 @@ public abstract class Feature extends SpecElement {
 
   private List<FeatureParam> params = new ArrayList<FeatureParam>();
 
-  public Feature(final QName name, final boolean required) {
+  protected Feature(final QName name, final boolean required) {
     super(name);
     this.required = required;
   }
@@ -51,11 +53,11 @@ public abstract class Feature extends SpecElement {
   }
 
   public String getFeature() {
-    return feature;
+    return StringUtils.defaultString(feature);
   }
 
   public List<FeatureParam> getParams() {
-    return params;
+    return Collections.unmodifiableList(params);
   }
 
   private void setFeature(final String feature) {
@@ -67,7 +69,8 @@ public abstract class Feature extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
     if (feature != null) {
       writer.writeAttribute(namespaceURI, ATTR_FEATURE, getFeature());
@@ -75,7 +78,8 @@ public abstract class Feature extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     for (final FeatureParam param : params) {
       param.toXml(writer);
     }
@@ -84,7 +88,8 @@ public abstract class Feature extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (feature == null) {
-      throw new SpecParserException("feature attribute must be set!");
+      throw new SpecParserException(name().getLocalPart()
+          + "@feature must be set!");
     }
   }
 
@@ -101,8 +106,9 @@ public abstract class Feature extends SpecElement {
     protected abstract Feature newElement();
 
     @Override
-    protected void setAttribute(final Feature feature, final QName name, final String value) {
-      if(name.equals(attrFeature)) {
+    protected void setAttribute(final Feature feature, final QName name,
+        final String value) {
+      if (name.equals(attrFeature)) {
         feature.setFeature(value);
       } else {
         super.setAttribute(feature, name, value);
@@ -110,7 +116,8 @@ public abstract class Feature extends SpecElement {
     }
 
     @Override
-    protected void addChild(final XMLStreamReader reader, final Feature feature, final SpecElement child) {
+    protected void addChild(final XMLStreamReader reader,
+        final Feature feature, final SpecElement child) {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

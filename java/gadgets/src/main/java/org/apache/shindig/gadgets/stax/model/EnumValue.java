@@ -22,25 +22,93 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class EnumValue extends SpecElement {
+  public static final String ELEMENT_NAME = "EnumValue";
+
+  private static final String ATTR_VALUE = "value";
+  private static final String ATTR_DEFAULT_VALUE = "default_value";
+
+  private String value = null;
+  private String defaultValue = null;
 
   public EnumValue(final QName name) {
     super(name);
   }
 
+  public String getValue() {
+    return StringUtils.defaultString(value);
+  }
+
+  public String getDefaultValue() {
+    return StringUtils.defaultString(defaultValue);
+  }
+
+  private void setValue(final String value) {
+    this.value = value;
+  }
+
+  private void setDefaultValue(final String defaultValue) {
+    this.defaultValue = defaultValue;
+  }
+
+  @Override
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (value != null) {
+      writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
+    }
+    if (defaultValue != null) {
+      writer
+          .writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
+    }
+  }
+
+  @Override
+  public void validate() throws SpecParserException {
+    if (value == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@value must be set!");
+    }
+  }
+
   public static class Parser extends SpecElement.Parser<EnumValue> {
+
+    private final QName attrValue;
+    private final QName attrDefaultValue;
+
     public Parser() {
-      this(new QName("EnumValue"));
+      this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
+      this.attrValue = buildQName(name, ATTR_VALUE);
+      this.attrDefaultValue = buildQName(name, ATTR_DEFAULT_VALUE);
     }
 
     @Override
     protected EnumValue newElement() {
       return new EnumValue(getName());
+    }
+
+    @Override
+    protected void setAttribute(final EnumValue enumValue, final QName name,
+        final String value) {
+      if (name.equals(attrValue)) {
+        enumValue.setValue(value);
+      } else if (name.equals(attrDefaultValue)) {
+        enumValue.setDefaultValue(value);
+      } else {
+        super.setAttribute(enumValue, name, value);
+      }
     }
   }
 }

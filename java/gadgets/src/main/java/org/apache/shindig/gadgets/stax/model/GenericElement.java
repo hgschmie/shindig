@@ -41,7 +41,8 @@ public class GenericElement extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (StringUtils.isNotEmpty(text)) {
       writer.writeCharacters(text);
     }
@@ -63,7 +64,8 @@ public class GenericElement extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final GenericElement element, SpecElement child) {
+    protected void addChild(XMLStreamReader reader,
+        final GenericElement element, SpecElement child) {
       element.addChild(child);
     }
   }
