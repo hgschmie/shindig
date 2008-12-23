@@ -23,6 +23,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +37,7 @@ public class FeatureParam extends SpecElement {
 
   private String name = null;
 
-  private String text = "";
+  private StringBuilder text = new StringBuilder();
 
   public FeatureParam(final QName name) {
     super(name);
@@ -47,15 +48,15 @@ public class FeatureParam extends SpecElement {
   }
 
   public String getText() {
-    return text;
+    return text.toString();
   }
 
   private void setName(final String name) {
     this.name = name;
   }
 
-  private void setText(final String text) {
-    this.text = StringUtils.trim(text);
+  private void addText(final String text) {
+    this.text.append(text);
   }
 
   @Override
@@ -65,14 +66,6 @@ public class FeatureParam extends SpecElement {
 
     if (name != null) {
       writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
-    }
-  }
-
-  @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
-    if (StringUtils.isNotEmpty(text)) {
-      writer.writeCharacters(text);
     }
   }
 
@@ -113,8 +106,11 @@ public class FeatureParam extends SpecElement {
     }
 
     @Override
-    protected void setText(final FeatureParam msg, final String value) {
-      msg.setText(value);
+    protected void addText(final XMLStreamReader reader,
+        final FeatureParam param) {
+      if (!reader.isWhiteSpace()) {
+        param.addText(reader.getText());
+      }
     }
   }
 }
