@@ -95,6 +95,9 @@ public abstract class OAuthElement extends SpecElement {
     if (url == null) {
       throw new SpecParserException(name().getLocalPart() + "@url must be set!");
     }
+    if ((getMethod() == Method.GET) && (getParamLocation() == Location.BODY)) {
+        throw new SpecParserException(name().getLocalPart() + "@method is GET but parameter location is body!");
+    }
   }
 
   public static enum Method {
@@ -111,7 +114,12 @@ public abstract class OAuthElement extends SpecElement {
   }
 
   public static enum Location {
-    header, url, body;
+    HEADER, URL, BODY;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 
     public static Location parse(String value) {
       for (Location location : Location.values()) {
@@ -119,7 +127,7 @@ public abstract class OAuthElement extends SpecElement {
           return location;
         }
       }
-      return header;
+      return HEADER;
     }
   }
 

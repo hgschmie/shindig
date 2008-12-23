@@ -52,6 +52,7 @@ public class Icon extends SpecElement {
     return Type.parse(type);
   }
 
+  @Override
   public String getText() {
     return text.toString();
   }

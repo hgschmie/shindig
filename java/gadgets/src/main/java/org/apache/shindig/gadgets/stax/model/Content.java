@@ -74,6 +74,7 @@ public class Content extends SpecElement {
       return NumberUtils.toInt(preferredWidth, -1);
   }
 
+  @Override
   public String getText() {
     return text.toString();
   }

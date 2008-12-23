@@ -18,8 +18,6 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
@@ -29,11 +27,13 @@ import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+
+import static org.junit.Assert.assertEquals;
 
 public class VariableSubstituterTest {
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();

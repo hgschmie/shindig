@@ -47,6 +47,7 @@ public class LocaleMsg extends SpecElement {
     return StringUtils.defaultString(name);
   }
 
+  @Override
   public String getText() {
     return text.toString();
   }

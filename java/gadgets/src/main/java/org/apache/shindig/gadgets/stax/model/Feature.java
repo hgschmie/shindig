@@ -21,9 +21,9 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -41,7 +41,7 @@ public abstract class Feature extends SpecElement {
 
   private String feature = null;
 
-  private List<FeatureParam> params = new ArrayList<FeatureParam>();
+  private Map<String, FeatureParam> params = new HashMap<String, FeatureParam>();
 
   protected Feature(final QName name, final boolean required) {
     super(name);
@@ -56,8 +56,8 @@ public abstract class Feature extends SpecElement {
     return StringUtils.defaultString(feature);
   }
 
-  public List<FeatureParam> getParams() {
-    return Collections.unmodifiableList(params);
+  public Map<String, FeatureParam> getParams() {
+    return Collections.unmodifiableMap(params);
   }
 
   private void setFeature(final String feature) {
@@ -65,7 +65,7 @@ public abstract class Feature extends SpecElement {
   }
 
   private void addParam(final FeatureParam param) {
-    this.params.add(param);
+    this.params.put(param.getName(), param);
   }
 
   @Override
@@ -80,7 +80,7 @@ public abstract class Feature extends SpecElement {
   @Override
   protected void writeChildren(final XMLStreamWriter writer)
       throws XMLStreamException {
-    for (final FeatureParam param : params) {
+    for (final FeatureParam param : params.values()) {
       param.toXml(writer);
     }
   }
@@ -117,7 +117,7 @@ public abstract class Feature extends SpecElement {
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final Feature feature, final SpecElement child) {
+        final Feature feature, final SpecElement child) throws SpecParserException {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

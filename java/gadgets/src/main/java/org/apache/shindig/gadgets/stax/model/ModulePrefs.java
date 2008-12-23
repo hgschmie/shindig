@@ -38,6 +38,8 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
 import com.google.common.collect.ImmutableSet;
@@ -75,7 +77,7 @@ public class ModulePrefs extends SpecElement {
   private final List<Icon> icons = new ArrayList<Icon>();
   private final Map<Locale, LocaleSpec> locales = new HashMap<Locale, LocaleSpec>();
   private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
-  private OAuth oauth = null;
+  private OAuthSpec oauth = null;
 
   public ModulePrefs(final QName name) {
     super(name);
@@ -101,7 +103,7 @@ public class ModulePrefs extends SpecElement {
     return Collections.unmodifiableMap(links);
   }
 
-  public OAuth getOauth() {
+  public OAuthSpec getOauth() {
     return oauth;
   }
 
@@ -200,6 +202,22 @@ public class ModulePrefs extends SpecElement {
     return Collections.unmodifiableList(categories);
   }
 
+  public LocaleSpec getLocale(final Locale locale) {
+      if (locales.isEmpty()) {
+          return null;
+      }
+
+      LocaleSpec localeSpec = locales.get(locale);
+      if (localeSpec == null) {
+          Locale allLocale = new Locale(locale.getLanguage(), "ALL");
+          localeSpec = locales.get(allLocale);
+          if (allLocale == null) {
+              localeSpec = locales.get(GadgetSpec.DEFAULT_LOCALE);
+          }
+      }
+      return localeSpec;
+  }
+
   private void addPreload(final Preload preload) {
     preloads.add(preload);
   }
@@ -220,7 +238,7 @@ public class ModulePrefs extends SpecElement {
     links.put(link.getRel().toString(), link);
   }
 
-  private void setOAuth(final OAuth oauth) {
+  private void setOAuth(final OAuthSpec oauth) {
     this.oauth = oauth;
   }
 
@@ -408,7 +426,7 @@ public class ModulePrefs extends SpecElement {
       register(new Icon.Parser());
       register(new LocaleSpec.Parser());
       register(new LinkSpec.Parser());
-      register(new OAuth.Parser());
+      register(new OAuthSpec.Parser());
     }
 
     @Override
@@ -430,7 +448,7 @@ public class ModulePrefs extends SpecElement {
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final ModulePrefs prefs, final SpecElement child) {
+        final ModulePrefs prefs, final SpecElement child) throws SpecParserException  {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
       } else if (child instanceof Preload) {
@@ -441,8 +459,8 @@ public class ModulePrefs extends SpecElement {
         prefs.addLocale((LocaleSpec) child);
       } else if (child instanceof LinkSpec) {
         prefs.addLink((LinkSpec) child);
-      } else if (child instanceof OAuth) {
-        prefs.setOAuth((OAuth) child);
+      } else if (child instanceof OAuthSpec) {
+        prefs.setOAuth((OAuthSpec) child);
       } else {
         super.addChild(reader, prefs, child);
       }

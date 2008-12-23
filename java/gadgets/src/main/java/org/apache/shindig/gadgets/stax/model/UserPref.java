@@ -93,7 +93,7 @@ public class UserPref extends SpecElement {
     return required;
   }
 
-  public DataType getDatatype() {
+  public DataType getDataType() {
     return DataType.parse(datatype);
   }
 
@@ -161,7 +161,7 @@ public class UserPref extends SpecElement {
     this.required = required;
   }
 
-  private void setDatatype(final String datatype) {
+  private void setDataType(final String datatype) {
     this.datatype = datatype;
   }
 
@@ -236,7 +236,7 @@ public class UserPref extends SpecElement {
     }
 
     if (datatype != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDatatype()
+      writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDataType()
           .toString());
     }
 
@@ -317,7 +317,7 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */
@@ -393,7 +393,7 @@ public class UserPref extends SpecElement {
       } else if (name.equals(attrRequired)) {
         userPref.setRequired(value);
       } else if (name.equals(attrDatatype)) {
-        userPref.setDatatype(value);
+        userPref.setDataType(value);
       } else if (name.equals(attrUrlparam)) {
         userPref.setUrlparam(value);
       } else if (name.equals(attrAutocompleteUrl)) {
@@ -423,7 +423,7 @@ public class UserPref extends SpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final UserPref userPref,
-        final SpecElement child) {
+        final SpecElement child) throws SpecParserException {
       if (child instanceof EnumValue) {
         userPref.addEnumValue((EnumValue) child);
       } else {

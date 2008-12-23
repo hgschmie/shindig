@@ -17,6 +17,12 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import net.oauth.OAuthServiceProvider;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
@@ -25,19 +31,12 @@ import org.apache.shindig.gadgets.oauth.AccessorInfo.OAuthParamLocation;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.OAuthService;
-import org.apache.shindig.gadgets.spec.OAuthSpec;
-import org.apache.shindig.gadgets.spec.OAuthService.Location;
-import org.apache.shindig.gadgets.spec.OAuthService.Method;
+import org.apache.shindig.gadgets.stax.model.OAuthService;
+import org.apache.shindig.gadgets.stax.model.OAuthSpec;
+import org.apache.shindig.gadgets.stax.model.OAuthElement.Location;
+import org.apache.shindig.gadgets.stax.model.OAuthElement.Method;
 
 import com.google.inject.Inject;
-
-import net.oauth.OAuthServiceProvider;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * Higher-level interface that allows callers to store and retrieve
@@ -112,7 +111,7 @@ public class GadgetOAuthTokenStore {
   private OAuthServiceProvider lookupSpecInfo(SecurityToken securityToken, OAuthArguments arguments,
       AccessorInfoBuilder accessorBuilder) throws GadgetException {
     GadgetSpec spec = findSpec(securityToken, arguments);
-    OAuthSpec oauthSpec = spec.getModulePrefs().getOAuthSpec();
+    OAuthSpec oauthSpec = spec.getModulePrefs().getOauth();
     if (oauthSpec == null) {
       throw oauthNotFoundEx(securityToken);
     }
@@ -123,12 +122,12 @@ public class GadgetOAuthTokenStore {
     // In theory some one could specify different parameter locations for request token and
     // access token requests, but that's probably not useful.  We just use the request token
     // rules for everything.
-    accessorBuilder.setParameterLocation(getStoreLocation(service.getRequestUrl().location));
-    accessorBuilder.setMethod(getStoreMethod(service.getRequestUrl().method));
+    accessorBuilder.setParameterLocation(getStoreLocation(service.getRequest().getParamLocation()));
+    accessorBuilder.setMethod(getStoreMethod(service.getRequest().getMethod()));
     OAuthServiceProvider provider = new OAuthServiceProvider(
-        service.getRequestUrl().url.toJavaUri().toASCIIString(),
-        service.getAuthorizationUrl().toJavaUri().toASCIIString(),
-        service.getAccessUrl().url.toJavaUri().toASCIIString());
+        service.getRequest().getUrl().toJavaUri().toASCIIString(),
+        service.getAuthorization().getUrl().toJavaUri().toASCIIString(),
+        service.getAccess().getUrl().toJavaUri().toASCIIString());
     return provider;
   }
 

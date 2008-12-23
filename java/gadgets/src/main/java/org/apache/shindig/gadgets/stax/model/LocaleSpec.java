@@ -192,7 +192,7 @@ public class LocaleSpec extends SpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final LocaleSpec locale,
-        final SpecElement child) {
+        final SpecElement child) throws SpecParserException  {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {

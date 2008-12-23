@@ -17,14 +17,15 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import com.google.common.collect.Lists;
-import org.apache.shindig.gadgets.spec.Feature;
-import org.apache.shindig.gadgets.spec.GadgetSpec;
-
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+
+import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.model.Feature;
+
+import com.google.common.collect.Lists;
 
 /**
  * Parser for the "content-rewrite" feature. The supported params are
@@ -83,15 +84,15 @@ public class ContentRewriterFeature {
     List<String> expiresOptions = Lists.newArrayListWithCapacity(3);
     if (f != null) {
       if (f.getParams().containsKey(INCLUDE_URLS)) {
-        includeRegex = normalizeParam(f.getParams().get(INCLUDE_URLS), includeRegex);
+        includeRegex = normalizeParam(f.getParams().get(INCLUDE_URLS).getText(), includeRegex);
       }
 
       // Note use of default for exclude as null here to allow clearing value in the
       // presence of a container default.
       if (f.getParams().containsKey(EXCLUDE_URLS)) {
-        excludeRegex = normalizeParam(f.getParams().get(EXCLUDE_URLS), null);
+        excludeRegex = normalizeParam(f.getParams().get(EXCLUDE_URLS).getText(), null);
       }
-      String includeTagList = f.getParams().get(INCLUDE_TAGS);
+      String includeTagList = f.getParams().get(INCLUDE_TAGS).getText();
       if (includeTagList != null) {
         TreeSet<String> tags = new TreeSet<String>();
         for (String tag : includeTagList.split(",")) {
@@ -103,7 +104,7 @@ public class ContentRewriterFeature {
       }
 
       if (f.getParams().containsKey(EXPIRES)) {
-        expiresOptions.add(normalizeParam(f.getParams().get(EXPIRES), null));
+        expiresOptions.add(normalizeParam(f.getParams().get(EXPIRES).getText(), null));
       }
     }
 
