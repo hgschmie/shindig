@@ -52,7 +52,7 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;

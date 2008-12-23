@@ -18,21 +18,22 @@
  */
 package org.apache.shindig.gadgets;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
 import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.Content;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Default url generator. Produces js urls that include checksums for cache-busting.
@@ -116,9 +117,9 @@ public class DefaultUrlGenerator implements UrlGenerator {
     GadgetSpec spec = gadget.getSpec();
     String url = context.getUrl().toString();
     View view = gadget.getCurrentView();
-    View.ContentType type;
+    Content.Type type;
     if (view == null) {
-      type = View.ContentType.HTML;
+      type = Content.Type.HTML;
     } else {
       type = view.getType();
     }
@@ -168,7 +169,7 @@ public class DefaultUrlGenerator implements UrlGenerator {
       uri.addQueryParameter("up_" + pref.getName(), value);
     }
     // add url last to work around browser bugs
-    if(!type.equals(View.ContentType.URL)) {
+    if(!type.equals(Content.Type.URL)) {
       uri.addQueryParameter("url", url);
     }
 

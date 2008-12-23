@@ -18,6 +18,11 @@
  */
 package org.apache.shindig.gadgets.render;
 
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
@@ -27,17 +32,12 @@ import org.apache.shindig.gadgets.LockedDomainService;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.View;
-
-import com.google.inject.Inject;
-
+import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.Content;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
+import com.google.inject.Inject;
 
 /**
  * Validates a rendering request parameters before calling an appropriate renderer.
@@ -81,7 +81,7 @@ public class Renderer {
             "' Available: " + gadget.getSpec().getViews().keySet());
       }
 
-      if (gadget.getCurrentView().getType() == View.ContentType.URL) {
+      if (gadget.getCurrentView().getType() == Content.Type.URL) {
         return RenderingResults.mustRedirect(getRedirect(gadget));
       }
 
@@ -144,7 +144,7 @@ public class Renderer {
     // TODO: This should probably just call UrlGenerator.getIframeUrl(), but really it should
     // never happen.
     View view = gadget.getCurrentView();
-    if (view.getType() == View.ContentType.URL) {
+    if (view.getType() == Content.Type.URL) {
       return gadget.getCurrentView().getHref();
     }
     // TODO

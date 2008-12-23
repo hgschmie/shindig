@@ -17,28 +17,6 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.util.Utf8UrlCoder;
-import org.apache.shindig.common.xml.DomUtil;
-import org.apache.shindig.gadgets.Gadget;
-import org.apache.shindig.gadgets.http.HttpRequest;
-import org.apache.shindig.gadgets.http.HttpResponse;
-import org.apache.shindig.gadgets.servlet.ProxyBase;
-import org.apache.shindig.gadgets.spec.View;
-
-import com.google.common.base.Nullable;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -49,6 +27,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.Utf8UrlCoder;
+import org.apache.shindig.common.xml.DomUtil;
+import org.apache.shindig.gadgets.Gadget;
+import org.apache.shindig.gadgets.http.HttpRequest;
+import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.servlet.ProxyBase;
+import org.apache.shindig.gadgets.stax.View;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import com.google.common.base.Nullable;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 
 /**
  * Perform rewriting of HTML content including

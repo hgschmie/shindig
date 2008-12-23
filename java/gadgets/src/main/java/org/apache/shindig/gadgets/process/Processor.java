@@ -17,6 +17,9 @@
  */
 package org.apache.shindig.gadgets.process;
 
+import java.net.URI;
+import java.util.logging.Logger;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetBlacklist;
@@ -24,16 +27,12 @@ import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.variables.VariableSubstituter;
+import org.json.JSONArray;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.json.JSONArray;
-
-import java.net.URI;
-import java.util.logging.Logger;
 
 /**
  * Converts an input Context into an output Gadget.

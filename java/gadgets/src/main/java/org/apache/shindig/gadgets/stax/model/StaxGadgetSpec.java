@@ -22,6 +22,7 @@ package org.apache.shindig.gadgets.stax.model;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -31,7 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
-public class GadgetSpec extends SpecElement {
+public class StaxGadgetSpec extends SpecElement {
 
   public static final String ELEMENT_NAME = "Module";
 
@@ -39,9 +40,9 @@ public class GadgetSpec extends SpecElement {
 
   private List<UserPref> userPrefs = new ArrayList<UserPref>();
 
-  private Content content = null;
+  private List<Content> contents = new ArrayList<Content>();
 
-  public GadgetSpec(final QName name) {
+  public StaxGadgetSpec(final QName name) {
     super(name);
   }
 
@@ -50,11 +51,11 @@ public class GadgetSpec extends SpecElement {
   }
 
   public List<UserPref> getUserPrefs() {
-    return userPrefs;
+    return Collections.unmodifiableList(userPrefs);
   }
 
-  public Content getContent() {
-    return content;
+  public List<Content> getContents() {
+    return Collections.unmodifiableList(contents);
   }
 
   private void setModulePrefs(final ModulePrefs modulePrefs) {
@@ -65,8 +66,8 @@ public class GadgetSpec extends SpecElement {
     this.userPrefs.add(userPref);
   }
 
-  private void setContent(final Content content) {
-    this.content = content;
+  protected void addContent(final Content content) {
+    contents.add(content);
   }
 
   @Override
@@ -78,7 +79,7 @@ public class GadgetSpec extends SpecElement {
     for (UserPref pref : userPrefs) {
       pref.toXml(writer);
     }
-    if (content != null) {
+    for(Content content: contents) {
       content.toXml(writer);
     }
   }
@@ -90,13 +91,13 @@ public class GadgetSpec extends SpecElement {
       throw new SpecParserException(name().getLocalPart()
           + " needs a ModulePrefs section!");
     }
-    if (content == null) {
+    if (contents.size() == 0) {
       throw new SpecParserException(name().getLocalPart()
           + " needs a Content section!");
     }
   }
 
-  public static class Parser extends SpecElement.Parser<GadgetSpec> {
+  public static class Parser<T extends StaxGadgetSpec> extends SpecElement.Parser<StaxGadgetSpec> {
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
@@ -109,22 +110,23 @@ public class GadgetSpec extends SpecElement {
     }
 
     @Override
-    protected GadgetSpec newElement() {
-      return new GadgetSpec(getName());
+    protected StaxGadgetSpec newElement() {
+      return new StaxGadgetSpec(getName());
     }
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final GadgetSpec spec, final SpecElement child) {
+        final StaxGadgetSpec spec, final SpecElement child) {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {
         spec.addUserPref((UserPref) child);
       } else if (child instanceof Content) {
-        spec.setContent((Content) child);
+        spec.addContent((Content) child);
       } else {
         super.addChild(reader, spec, child);
       }
     }
   }
 }
+

@@ -80,7 +80,7 @@ public abstract class SpecElement {
 
   // ======================================================================================================================================
 
-  protected QName name() {
+  public QName name() {
     return name;
   }
 

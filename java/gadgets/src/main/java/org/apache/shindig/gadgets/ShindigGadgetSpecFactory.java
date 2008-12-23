@@ -28,9 +28,11 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.model.GadgetSpec;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -40,16 +42,14 @@ import com.google.inject.name.Named;
  * Create GadgetSpec objects using a StAX parser, thus allowing
  * storage and recreation of namespaces on the Gadget spec object
  */
-public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements GadgetSpecFactory {
+public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
-    private static final Logger LOG = Logger.getLogger(StaxGadgetSpecFactory.class.getName());
+    private static final Logger LOG = Logger.getLogger(ShindigGadgetSpecFactory.class.getName());
 
     final XMLInputFactory factory;
 
-    private final GadgetSpec.Parser parser = new GadgetSpec.Parser();
-
     @Inject
-    public StaxGadgetSpecFactory(final HttpFetcher fetcher,
+    public ShindigGadgetSpecFactory(final HttpFetcher fetcher,
             final CacheProvider cacheProvider,
             final@Named("shindig.cache.xml.refreshInterval") long refresh) {
         super (fetcher, cacheProvider, refresh);
@@ -57,12 +57,14 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
         factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
     }
 
-    protected org.apache.shindig.gadgets.spec.GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
+    protected GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
 
-        GadgetSpec gadgetSpec = null;
+        ShindigGadgetSpec gadgetSpec = null;
 
         try {
             XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
+            final String checksum = HashUtil.checksum(xml.getBytes());
+            final ShindigGadgetSpec.Parser parser = new ShindigGadgetSpec.Parser(uri, checksum);
 
             loop:
             while (true) {
@@ -74,6 +76,8 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
                     case XMLStreamConstants.START_ELEMENT:
                         // This is the root element. Open a gadget spec parser and let it loose...
                         gadgetSpec = parser.parse(reader); // TODO, that parser must be injectable.
+                        // This might not be good enough; should we take message bundle changes
+                        // into account?
                         break;
                     default:
                         break;
@@ -84,6 +88,6 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
         }
 
         LOG.info("Spec is " + gadgetSpec);
-        return null;
+        return gadgetSpec;
     }
 }
