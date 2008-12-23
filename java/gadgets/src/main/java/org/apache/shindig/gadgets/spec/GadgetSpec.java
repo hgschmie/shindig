@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.variables.Substitutions;
+import org.apache.shindig.gadgets.stax.View;
 
 public interface GadgetSpec {
     String DEFAULT_VIEW = "default";

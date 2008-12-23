@@ -45,7 +45,7 @@ import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

@@ -21,6 +21,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Set;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -31,6 +33,8 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
+
+import com.google.common.collect.ImmutableSet;
 
 public class Content extends SpecElement {
 
@@ -62,20 +66,20 @@ public class Content extends SpecElement {
     return StaxUtils.toUri(href);
   }
 
-  public String getView() {
-    return StringUtils.defaultString(view);
-  }
-
   public int getPreferredHeight() {
-    return NumberUtils.toInt(preferredHeight);
+      return NumberUtils.toInt(preferredHeight, -1);
   }
 
   public int getPreferredWidth() {
-    return NumberUtils.toInt(preferredWidth);
+      return NumberUtils.toInt(preferredWidth, -1);
   }
 
   public String getText() {
     return text.toString();
+  }
+
+  public Set<String> getViews() {
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils.defaultString(view, "default"), ',')));
   }
 
   private void setType(final String type) {
@@ -114,7 +118,7 @@ public class Content extends SpecElement {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
     if (view != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VIEW, getView());
+      writer.writeAttribute(namespaceURI, ATTR_VIEW, StringUtils.join(getViews(), ','));
     }
     if (preferredHeight != null) {
       writer.writeAttribute(namespaceURI, ATTR_PREFERRED_HEIGHT, String

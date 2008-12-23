@@ -17,19 +17,19 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
 
 import com.google.inject.Inject;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Basic registry -- just iterates over rewriters and invokes them sequentially.

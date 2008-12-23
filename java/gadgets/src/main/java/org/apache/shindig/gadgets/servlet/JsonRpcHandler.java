@@ -18,6 +18,15 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.UrlGenerator;
@@ -27,22 +36,12 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LinkSpec;
 import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.spec.View;
-
-import com.google.inject.Inject;
-
+import org.apache.shindig.gadgets.stax.View;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
+import com.google.inject.Inject;
 
 /**
  * Processes JSON-RPC requests by retrieving all necessary meta data in parallel and coalescing into
@@ -145,8 +144,7 @@ public class JsonRpcHandler {
         for (View view : spec.getViews().values()) {
           views.put(view.getName(), new JSONObject()
                // .put("content", view.getContent())
-               .put("type", view.getType().toString().toLowerCase())
-               .put("quirks", view.getQuirks())
+               .put("type", view.getType().toString())
                .put("preferredHeight", view.getPreferredHeight())
                .put("preferredWidth", view.getPreferredWidth()));
         }

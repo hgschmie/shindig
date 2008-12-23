@@ -30,7 +30,7 @@ import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.View;
+import org.apache.shindig.gadgets.stax.View;
 
 import com.google.inject.Inject;
 
