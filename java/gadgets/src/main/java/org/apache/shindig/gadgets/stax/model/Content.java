@@ -23,6 +23,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +48,7 @@ public class Content extends SpecElement {
   private String preferredHeight;
   private String preferredWidth;
 
-  private String text = "";
+  private StringBuilder text = new StringBuilder();
 
   public Content(final QName name) {
     super(name);
@@ -74,7 +75,7 @@ public class Content extends SpecElement {
   }
 
   public String getText() {
-    return text;
+    return text.toString();
   }
 
   private void setType(final String type) {
@@ -97,8 +98,8 @@ public class Content extends SpecElement {
     this.preferredWidth = preferredWidth;
   }
 
-  private void setText(final String text) {
-    this.text = StringUtils.trim(text);
+  private void addText(final String text) {
+    this.text.append(text);
   }
 
   @Override
@@ -122,14 +123,6 @@ public class Content extends SpecElement {
     if (preferredWidth != null) {
       writer.writeAttribute(namespaceURI, ATTR_PREFERRED_WIDTH, String
           .valueOf(getPreferredWidth()));
-    }
-  }
-
-  @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
-    if (StringUtils.isNotEmpty(text)) {
-      writer.writeCharacters(text);
     }
   }
 
@@ -178,7 +171,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */
@@ -236,8 +229,10 @@ public class Content extends SpecElement {
     }
 
     @Override
-    protected void setText(final Content content, final String value) {
-      content.setText(value);
+    protected void addText(final XMLStreamReader reader, final Content content) {
+      if (!reader.isWhiteSpace()) {
+        content.addText(reader.getText());
+      }
     }
   }
 }

@@ -35,6 +35,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public abstract class SpecElement {
@@ -48,6 +49,8 @@ public abstract class SpecElement {
   private final List<SpecElement> children = new ArrayList<SpecElement>();
 
   private final QName name;
+
+  private boolean cdataFlag = false;
 
   protected SpecElement(final QName name) {
     this.name = name;
@@ -67,6 +70,14 @@ public abstract class SpecElement {
     namespaces.put(prefix, uri);
   }
 
+  private void setCDATAFlag() {
+    this.cdataFlag = true;
+  }
+
+  private boolean isCDATA() {
+    return cdataFlag;
+  }
+
   // ======================================================================================================================================
 
   protected QName name() {
@@ -79,6 +90,10 @@ public abstract class SpecElement {
 
   public void validate() throws SpecParserException {
     // Nothing to validate.
+  }
+
+  protected String getText() {
+    return null;
   }
 
   // ======================================================================================================================================
@@ -101,6 +116,8 @@ public abstract class SpecElement {
       child.toXml(writer);
     }
 
+    writeText(writer);
+
     writer.writeEndElement();
   }
 
@@ -115,6 +132,20 @@ public abstract class SpecElement {
 
   protected void writeChildren(final XMLStreamWriter writer)
       throws XMLStreamException {
+  }
+
+  protected void writeText(final XMLStreamWriter writer)
+    throws XMLStreamException {
+
+    final String text = getText();
+
+    if (StringUtils.isNotEmpty(text)) {
+      if (isCDATA()) {
+        writer.writeCData(text);
+      } else {
+        writer.writeCharacters(text);
+      }
+    }
   }
 
   // ======================================================================================================================================
@@ -190,17 +221,20 @@ public abstract class SpecElement {
 
         case XMLStreamConstants.START_ELEMENT:
           final QName elementName = reader.getName();
-          if (children.containsKey(elementName)) {
-            Parser<? extends SpecElement> parser = children.get(elementName);
-            if (parser == null) {
-              LOG.warning("No idea what to do with " + elementName
-                  + ", ignoring!");
-              parser = new GenericElement.Parser(elementName);
-            }
-
-            SpecElement child = parser.parse(reader);
-            addChild(reader, element, child);
+          Parser<? extends SpecElement> parser = children.get(elementName);
+          if (parser == null) {
+            LOG.fine("No idea what to do with " + elementName + ", ignoring!");
+            parser = new GenericElement.Parser(elementName);
           }
+
+          SpecElement child = parser.parse(reader);
+          addChild(reader, element, child);
+          break;
+        case XMLStreamConstants.CDATA:
+          element.setCDATAFlag();
+          /* FALLTHROUGH */
+        case XMLStreamConstants.CHARACTERS:
+          addText(reader, element);
           break;
         default:
           break; // TODO: Do we need to parse more things?
@@ -229,9 +263,11 @@ public abstract class SpecElement {
       element.setAttribute(name, value);
     }
 
-    protected void setText(final T element, final String value) {
-      throw new IllegalStateException("The element" + element.name()
-          + " does not accept any nested text");
+    protected void addText(final XMLStreamReader reader, final T element) {
+      if (!reader.isWhiteSpace()) {
+        throw new IllegalStateException("The element" + element.name()
+            + " does not accept any nested text");
+      }
     }
 
     protected void addChild(final XMLStreamReader reader, final T element,

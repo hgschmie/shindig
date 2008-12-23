@@ -44,6 +44,8 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
 
     private static final Logger LOG = Logger.getLogger(StaxGadgetSpecFactory.class.getName());
 
+    final XMLInputFactory factory;
+
     private final GadgetSpec.Parser parser = new GadgetSpec.Parser();
 
     @Inject
@@ -51,6 +53,8 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
             final CacheProvider cacheProvider,
             final@Named("shindig.cache.xml.refreshInterval") long refresh) {
         super (fetcher, cacheProvider, refresh);
+        factory = XMLInputFactory.newInstance();
+        factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
     }
 
     protected org.apache.shindig.gadgets.spec.GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
@@ -58,7 +62,6 @@ public class StaxGadgetSpecFactory extends AbstractGadgetSpecFactory implements 
         GadgetSpec gadgetSpec = null;
 
         try {
-            XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
 
             loop:
