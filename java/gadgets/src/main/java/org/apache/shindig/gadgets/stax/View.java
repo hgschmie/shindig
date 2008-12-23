@@ -32,6 +32,8 @@ public class View {
 
     private final String name;
 
+    private final Uri uri;
+
     private final Type type;
 
     private final Uri href;
@@ -50,9 +52,10 @@ public class View {
    * @param base The base url to resolve href against.
    * @throws SpecParserException
    */
-    public View(final String name, final Collection<Content> contents) throws SpecParserException
+    public View(final String name, final Collection<Content> contents, final Uri uri) throws SpecParserException
     {
         this.name = name;
+        this.uri = uri;
 
         Type type = null;
         Uri href = null;
@@ -64,14 +67,14 @@ public class View {
             switch(content.getType()) {
             case HTML:
             case HTML_INLINE:
-                if (href != null) {
+                if (type == Content.Type.URL) {
                     throw new SpecParserException(content.name().getLocalPart() + " contains HTML code but View '" + name + "' already uses '" + href + "' as content!");
                 }
                 text.append(content.getText());
                 type = Content.Type.HTML;
                 break;
             case URL:
-                if (text.length() > 0) {
+                if (type == Content.Type.HTML) {
                     throw new SpecParserException(content.name().getLocalPart() + " references '" + content.getHref() + " but View '" + name + "' already has inline HTML code!");
                 }
                 href = content.getHref();
@@ -82,7 +85,7 @@ public class View {
             }
 
             preferredHeight = Math.max(content.getPreferredHeight(), preferredHeight);
-            preferredWidth = Math.max(content.getPreferredHeight(), preferredWidth);
+            preferredWidth = Math.max(content.getPreferredWidth(), preferredWidth);
         }
 
         this.type = type;
