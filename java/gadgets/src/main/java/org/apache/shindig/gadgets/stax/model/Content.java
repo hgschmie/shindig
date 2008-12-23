@@ -181,7 +181,7 @@ public class Content extends SpecElement {
      */
     public static Type parse(String value) {
       for (Type type : Type.values()) {
-        if (type.getValue().compareToIgnoreCase(value) == 0) {
+        if (type.name().compareToIgnoreCase(value) == 0) {
           return type;
         }
       }

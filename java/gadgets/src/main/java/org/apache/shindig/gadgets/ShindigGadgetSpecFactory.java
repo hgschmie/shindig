@@ -45,8 +45,8 @@ import com.google.inject.name.Named;
 public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
     private static final Logger LOG = Logger.getLogger(ShindigGadgetSpecFactory.class.getName());
-
-    final XMLInputFactory factory;
+    
+    private final XMLInputFactory factory;
 
     @Inject
     public ShindigGadgetSpecFactory(final HttpFetcher fetcher,

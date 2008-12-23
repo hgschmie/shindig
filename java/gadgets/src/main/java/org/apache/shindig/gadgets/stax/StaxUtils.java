@@ -25,7 +25,7 @@ import org.apache.shindig.common.uri.Uri;
 
 public final class StaxUtils {
 
-  private static final Uri EMPTY_URI = Uri.parse("");
+  public static final Uri EMPTY_URI = Uri.parse("");
 
   private StaxUtils() {
   }
