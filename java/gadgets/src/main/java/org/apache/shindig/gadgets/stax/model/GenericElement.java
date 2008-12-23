@@ -32,6 +32,7 @@ public class GenericElement extends SpecElement {
     super(name);
   }
 
+  @Override
   public String getText() {
     return text.toString();
   }

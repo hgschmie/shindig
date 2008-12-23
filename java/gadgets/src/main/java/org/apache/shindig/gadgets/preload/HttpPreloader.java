@@ -18,6 +18,10 @@
  */
 package org.apache.shindig.gadgets.preload;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.FetchResponseUtils;
 import org.apache.shindig.gadgets.GadgetContext;
@@ -26,17 +30,12 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.Preload;
-
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-
+import org.apache.shindig.gadgets.stax.model.Preload;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 
 /**
  * Handles HTTP Preloading (/ModulePrefs/Preload elements).

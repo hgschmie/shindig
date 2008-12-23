@@ -33,10 +33,10 @@ import org.apache.shindig.gadgets.UrlGenerator;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.LinkSpec;
-import org.apache.shindig.gadgets.spec.ModulePrefs;
-import org.apache.shindig.gadgets.spec.UserPref;
 import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.LinkSpec;
+import org.apache.shindig.gadgets.stax.model.ModulePrefs;
+import org.apache.shindig.gadgets.stax.model.UserPref;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -156,7 +156,7 @@ public class JsonRpcHandler {
         // Links
         JSONObject links = new JSONObject();
         for (LinkSpec link : prefs.getLinks().values()) {
-          links.put(link.getRel(), link.getHref());
+          links.put(link.getRel().toString(), link.getHref());
         }
 
         JSONObject userPrefs = new JSONObject();
@@ -201,11 +201,11 @@ public class JsonRpcHandler {
                   .put("screenshot", prefs.getScreenshot().toString())
                   .put("height", prefs.getHeight())
                   .put("width", prefs.getWidth())
-                  .put("showStats", prefs.getShowStats())
-                  .put("showInDirectory", prefs.getShowInDirectory())
-                  .put("singleton", prefs.getSingleton())
-                  .put("scaling", prefs.getScaling())
-                  .put("scrolling", prefs.getScrolling());
+                  .put("showStats", prefs.isShowStats())
+                  .put("showInDirectory", prefs.isShowInDirectory())
+                  .put("singleton", prefs.isSingleton())
+                  .put("scaling", prefs.isScaling())
+                  .put("scrolling", prefs.isScrolling());
         return gadgetJson;
       } catch (ProcessingException e) {
         throw new RpcException(context, e);

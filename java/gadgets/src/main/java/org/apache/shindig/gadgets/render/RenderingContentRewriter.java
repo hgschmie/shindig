@@ -47,12 +47,12 @@ import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
 import org.apache.shindig.gadgets.rewrite.MutableContent;
 import org.apache.shindig.gadgets.rewrite.RewriterResults;
-import org.apache.shindig.gadgets.spec.Feature;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-import org.apache.shindig.gadgets.spec.UserPref;
 import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.Feature;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.UserPref;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
@@ -162,7 +162,7 @@ public class RenderingContentRewriter implements ContentRewriter {
 
       LocaleSpec localeSpec = gadget.getLocale();
       if (localeSpec != null) {
-        body.setAttribute("dir", localeSpec.getLanguageDirection());
+        body.setAttribute("dir", localeSpec.getLanguageDirection().toString());
       }
 
       // re append head content
@@ -311,7 +311,7 @@ public class RenderingContentRewriter implements ContentRewriter {
       Iterator<String> missingIter = unsupported.iterator();
       while (missingIter.hasNext()) {
         String missing = missingIter.next();
-        if (!features.get(missing).getRequired()) {
+        if (!features.get(missing).isRequired()) {
           missingIter.remove();
         }
       }

@@ -66,7 +66,7 @@ public class StaxGadgetSpec extends SpecElement {
     this.userPrefs.add(userPref);
   }
 
-  protected void addContent(final Content content) {
+  protected void addContent(final Content content) throws SpecParserException {
     contents.add(content);
   }
 
@@ -116,7 +116,7 @@ public class StaxGadgetSpec extends SpecElement {
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final StaxGadgetSpec spec, final SpecElement child) {
+        final StaxGadgetSpec spec, final SpecElement child) throws SpecParserException {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {

@@ -20,16 +20,18 @@
  */
 package org.apache.shindig.gadgets.stax.model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -63,7 +65,6 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     return checksum;
   }
 
-  @Override
   public Uri getUrl() {
       return url;
   }
@@ -81,28 +82,25 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     // ========================================================================
 
   @Override
-  protected void addContent(final Content content) {
+  protected void addContent(final Content content) throws SpecParserException {
       super.addContent(content);
       for(String viewName: content.getViews()) {
           viewMap.put(viewName, content);
-          views.put(viewName, new View(viewName, viewMap.get(viewName)));
+          views.put(viewName, new View(viewName, viewMap.get(viewName), StaxUtils.EMPTY_URI));
         }
   }
 
 
-  @Override
   public View getView(final String name) {
-    View view = views.get(name);
+    return views.get(name);
   }
 
     // ========================================================================
 
-  @Override
   public Map<String, View> getViews() {
     return Collections.unmodifiableMap(views);
   }
 
-  @Override
   public GadgetSpec substitute(Substitutions substituter) {
     // TODO Auto-generated method stub
     return null;
@@ -123,13 +121,13 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     }
 
     @Override
-    public ShindigGadgetSpec parse(final XMLStreamReader reader) {
+    public ShindigGadgetSpec parse(final XMLStreamReader reader) throws XMLStreamException, SpecParserException {
       return (ShindigGadgetSpec) super.parse(reader);
     }
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final StaxGadgetSpec spec, final SpecElement child) {
+        final StaxGadgetSpec spec, final SpecElement child) throws SpecParserException  {
       if (child instanceof Content) {
         spec.addContent((Content) child);
       } else {

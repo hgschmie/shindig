@@ -18,12 +18,12 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
-import org.apache.shindig.gadgets.spec.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Gadget

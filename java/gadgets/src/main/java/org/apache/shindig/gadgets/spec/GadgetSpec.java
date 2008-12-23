@@ -22,8 +22,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.ModulePrefs;
+import org.apache.shindig.gadgets.stax.model.UserPref;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 
 public interface GadgetSpec {
     String DEFAULT_VIEW = "default";

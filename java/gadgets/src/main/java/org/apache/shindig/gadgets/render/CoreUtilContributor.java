@@ -23,8 +23,8 @@ package org.apache.shindig.gadgets.render;
 
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetFeatureRegistry;
-import org.apache.shindig.gadgets.spec.Feature;
-import org.apache.shindig.gadgets.spec.ModulePrefs;
+import org.apache.shindig.gadgets.stax.model.Feature;
+import org.apache.shindig.gadgets.stax.model.ModulePrefs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,8 +49,8 @@ public class CoreUtilContributor implements ConfigContributor {
 
         try {
             for (final Feature feature : prefs.getFeatures().values()) {
-                if (registry.hasFeature(feature.getName())) {
-                    featureMap.put(feature.getName(), feature.getParams());
+                if (registry.hasFeature(feature.getFeature())) {
+                    featureMap.put(feature.getFeature(), feature.getParams());
                 }
             }
             config.put("core.util", featureMap);

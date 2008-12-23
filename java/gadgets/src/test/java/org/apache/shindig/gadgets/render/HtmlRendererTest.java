@@ -18,10 +18,7 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,7 +26,6 @@ import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
-import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
@@ -41,10 +37,15 @@ import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.Content;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for HtmlRenderer
@@ -81,7 +82,7 @@ public class HtmlRendererTest {
   private Gadget makeHrefGadget(String authz) throws Exception {
     Gadget gadget = makeGadget("");
     String doc = "<Content href='" + PROXIED_HTML_HREF + "' authz='" + authz + "'/>";
-    View view = new View("proxied", Arrays.asList(XmlUtil.parse(doc)), SPEC_URL);
+    View view = new View("proxied", Collections.singleton(StaxTestUtils.parseElement(doc, new Content.Parser())), SPEC_URL);
     gadget.setCurrentView(view);
     return gadget;
   }

@@ -199,8 +199,7 @@ public abstract class SpecElement {
       children.put(parseElement.getName(), parseElement);
     }
 
-    public T parse(final XMLStreamReader reader) throws IllegalStateException,
-        XMLStreamException, SpecParserException {
+    public T parse(final XMLStreamReader reader) throws SpecParserException, XMLStreamException {
 
       // This assumes, that parse it at the right element.
       T element = newElement();
@@ -263,7 +262,7 @@ public abstract class SpecElement {
       element.setAttribute(name, value);
     }
 
-    protected void addText(final XMLStreamReader reader, final T element) {
+    protected void addText(final XMLStreamReader reader, final T element) throws SpecParserException {
       if (!reader.isWhiteSpace()) {
         throw new IllegalStateException("The element" + element.name()
             + " does not accept any nested text");
@@ -271,7 +270,7 @@ public abstract class SpecElement {
     }
 
     protected void addChild(final XMLStreamReader reader, final T element,
-        final SpecElement child) {
+        final SpecElement child) throws SpecParserException {
       throw new IllegalStateException("The element" + element.name()
           + " does not accept any nested elements, saw " + child.name());
     }

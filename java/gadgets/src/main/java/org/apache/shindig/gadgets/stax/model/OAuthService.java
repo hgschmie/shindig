@@ -26,11 +26,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthService extends SpecElement {
 
   public static final String ELEMENT_NAME = "Service";
+
+  private static final String ATTR_NAME = "name";
+
+  private String name = null;
 
   private OAuthRequest oAuthRequest = null;
   private OAuthAccess oAuthAccess = null;
@@ -38,6 +43,10 @@ public class OAuthService extends SpecElement {
 
   public OAuthService(final QName name) {
     super(name);
+  }
+
+  public String getName() {
+    return StringUtils.defaultString(name);
   }
 
   public OAuthRequest getRequest() {
@@ -52,6 +61,10 @@ public class OAuthService extends SpecElement {
     return oAuthAuthorization;
   }
 
+  private void setName(final String name) {
+    this.name = name;
+  }
+
   private void setOAuthRequest(final OAuthRequest oAuthRequest) {
     this.oAuthRequest = oAuthRequest;
   }
@@ -62,6 +75,16 @@ public class OAuthService extends SpecElement {
 
   private void setOAuthAuthorization(final OAuthAuthorization oAuthAuthorization) {
     this.oAuthAuthorization = oAuthAuthorization;
+  }
+
+  @Override
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    final String namespaceURI = name().getNamespaceURI();
+
+    if (name != null) {
+      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+    }
   }
 
   @Override
@@ -80,6 +103,12 @@ public class OAuthService extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
+
+    if (name == null) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@name must be set!");
+    }
+
     if (oAuthRequest == null) {
       throw new SpecParserException(name().getLocalPart()
           + " must contain a 'Request' element!");
@@ -92,9 +121,20 @@ public class OAuthService extends SpecElement {
       throw new SpecParserException(name().getLocalPart()
           + " must contain an 'Authorization' element!");
     }
-  }
+
+    if (oAuthRequest.getMethod() != oAuthAccess.getMethod()) {
+        throw new SpecParserException(name().getLocalPart() + " access@method is not equal request@method!");
+    }
+
+    if (oAuthRequest.getParamLocation() != oAuthAccess.getParamLocation()) {
+        throw new SpecParserException(name().getLocalPart() + " access@param_location is not equal request@param_location!");
+    }
+}
 
   public static class Parser extends SpecElement.Parser<OAuthService> {
+
+    private final QName attrName;
+
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
@@ -104,6 +144,7 @@ public class OAuthService extends SpecElement {
       register(new OAuthRequest.Parser());
       register(new OAuthAccess.Parser());
       register(new OAuthAuthorization.Parser());
+      this.attrName = buildQName(name, ATTR_NAME);
     }
 
     @Override
@@ -112,8 +153,18 @@ public class OAuthService extends SpecElement {
     }
 
     @Override
+    protected void setAttribute(final OAuthService oAuthService, final QName name,
+        final String value) {
+      if (name.equals(attrName)) {
+        oAuthService.setName(value);
+      } else {
+        super.setAttribute(oAuthService, name, value);
+      }
+    }
+
+    @Override
     protected void addChild(XMLStreamReader reader,
-        final OAuthService oAuthService, final SpecElement child) {
+        final OAuthService oAuthService, final SpecElement child) throws SpecParserException  {
       if (child instanceof OAuthRequest) {
         oAuthService.setOAuthRequest((OAuthRequest) child);
       } else if (child instanceof OAuthAccess) {
