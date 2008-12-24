@@ -171,7 +171,7 @@ public abstract class SpecElement {
   // ======================================================================================================================================
 
   protected String attr(final String key) {
-    return attr(key.toLowerCase());
+    return attrs.get(key.toLowerCase());
   }
 
   protected String attrDefault(final String key) {
