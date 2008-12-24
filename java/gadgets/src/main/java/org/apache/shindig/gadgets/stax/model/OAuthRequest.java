@@ -31,7 +31,8 @@ public class OAuthRequest extends OAuthElement {
 
   public static final String ELEMENT_NAME = "Request";
 
-  public OAuthRequest(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public OAuthRequest(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base, true);
   }
 

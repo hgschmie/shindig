@@ -41,19 +41,19 @@ public class Icon extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Icon(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public Icon(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
-    protected Icon(final Icon icon, final Substitutions substituter) {
-        super(icon);
-        addText(substituter.substituteString(icon.getText()));
-    }
+  protected Icon(final Icon icon, final Substitutions substituter) {
+    super(icon);
+    addText(substituter.substituteString(icon.getText()));
+  }
 
-    public Icon substitute(final Substitutions substituter) {
-        return new Icon(this, substituter);
-    }
-
+  public Icon substitute(final Substitutions substituter) {
+    return new Icon(this, substituter);
+  }
 
   public String getMode() {
     return attrDefault(ATTR_MODE);

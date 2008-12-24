@@ -41,8 +41,8 @@ public abstract class Feature extends SpecElement {
 
   private Map<String, FeatureParam> params = new HashMap<String, FeatureParam>();
 
-  protected Feature(final QName name, final Map<String, QName> attrNames, final Uri base,
-      final boolean required) {
+  protected Feature(final QName name, final Map<String, QName> attrNames,
+      final Uri base, final boolean required) {
     super(name, attrNames, base);
     this.required = required;
   }

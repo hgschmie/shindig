@@ -31,7 +31,8 @@ public class Optional extends Feature {
 
   public static final String ELEMENT_NAME = "Optional";
 
-  public Optional(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public Optional(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base, false);
   }
 

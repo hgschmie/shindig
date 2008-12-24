@@ -39,7 +39,8 @@ public class OAuthSpec extends SpecElement {
 
   private Map<String, OAuthService> services = new HashMap<String, OAuthService>();
 
-  public OAuthSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public OAuthSpec(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 

@@ -56,7 +56,7 @@ public abstract class SpecElement {
 
   private final QName qName;
 
-    private final Uri base;
+  private final Uri base;
 
   private final Map<String, QName> attrNames;
 
@@ -72,7 +72,8 @@ public abstract class SpecElement {
 
   private boolean cdataFlag = false;
 
-    protected SpecElement(final QName qName, final Map<String, QName> attrNames, final Uri base) {
+  protected SpecElement(final QName qName, final Map<String, QName> attrNames,
+      final Uri base) {
     this.qName = qName;
     this.attrNames = attrNames;
     this.base = base;
@@ -101,9 +102,9 @@ public abstract class SpecElement {
     }
   }
 
-    protected Uri getBase() {
-        return base;
-    }
+  protected Uri getBase() {
+    return base;
+  }
 
   // ======================================================================================================================================
 
@@ -341,7 +342,7 @@ public abstract class SpecElement {
     }
 
     protected Uri getBase() {
-        return base;
+      return base;
     }
 
     protected Map<String, QName> getAttrNames() {

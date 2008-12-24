@@ -39,7 +39,8 @@ public class FeatureParam extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public FeatureParam(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public FeatureParam(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 

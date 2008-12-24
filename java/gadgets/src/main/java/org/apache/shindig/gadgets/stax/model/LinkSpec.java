@@ -39,20 +39,22 @@ public class LinkSpec extends SpecElement {
   public static final String ATTR_REL = "rel";
   public static final String ATTR_HREF = "href";
 
-  public LinkSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public LinkSpec(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
-    protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
-        super(linkSpec);
-        setAttr(ATTR_REL, substituter.substituteString(linkSpec.getRel().toString()));
-        setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(linkSpec.getHref())).toString());
-    }
+  protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
+    super(linkSpec);
+    setAttr(ATTR_REL, substituter
+        .substituteString(linkSpec.getRel().toString()));
+    setAttr(ATTR_HREF, getBase().resolve(
+        substituter.substituteUri(linkSpec.getHref())).toString());
+  }
 
-    public LinkSpec substitute(final Substitutions substituter) {
-        return new LinkSpec(this, substituter);
-    }
-
+  public LinkSpec substitute(final Substitutions substituter) {
+    return new LinkSpec(this, substituter);
+  }
 
   public Rel getRel() {
     return Rel.parse(attr(ATTR_REL));
@@ -107,7 +109,7 @@ public class LinkSpec extends SpecElement {
 
     /**
      * Parses a data rel from the input string.
-     *
+     * 
      * @param value
      * @return The data rel of the given value.
      */

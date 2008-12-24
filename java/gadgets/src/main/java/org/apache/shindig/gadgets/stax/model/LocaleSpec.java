@@ -46,7 +46,8 @@ public class LocaleSpec extends SpecElement {
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  public LocaleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public LocaleSpec(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
