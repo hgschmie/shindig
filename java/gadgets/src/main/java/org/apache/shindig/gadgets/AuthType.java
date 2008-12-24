@@ -17,6 +17,8 @@
  */
 package org.apache.shindig.gadgets;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The supported auth modes for outbound requests.
  */
@@ -29,7 +31,7 @@ public enum AuthType {
   public static AuthType parse(final String value) {
       for (AuthType authType : AuthType.values())
       {
-          if (authType.toString().compareToIgnoreCase(value) == 0)
+          if (StringUtils.equalsIgnoreCase(authType.toString(), value))
           {
               return authType;
           }

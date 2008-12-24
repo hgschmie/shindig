@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
@@ -105,7 +106,7 @@ public abstract class OAuthElement extends SpecElement {
 
     public static Method parse(String value) {
       for (Method method : Method.values()) {
-        if (method.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(method.toString(), value)) {
           return method;
         }
       }
@@ -123,7 +124,7 @@ public abstract class OAuthElement extends SpecElement {
 
     public static Location parse(String value) {
       for (Location location : Location.values()) {
-        if (location.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(location.toString(), value)) {
           return location;
         }
       }

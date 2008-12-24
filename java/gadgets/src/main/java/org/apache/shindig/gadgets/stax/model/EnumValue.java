@@ -27,6 +27,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class EnumValue extends SpecElement {
   public static final String ELEMENT_NAME = "EnumValue";
@@ -37,16 +38,27 @@ public class EnumValue extends SpecElement {
   private String value = null;
   private String displayValue = null;
 
-  public EnumValue(final QName name) {
+  protected EnumValue(final QName name) {
     super(name);
   }
+
+  protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
+    super(enumValue);
+    this.value = substituter.substituteString(enumValue.getValue());
+    this.displayValue = substituter.substituteString(enumValue.getDisplayValue());
+  }
+
+  public EnumValue substitute(final Substitutions substituter) {
+    return new EnumValue(this, substituter);
+  }
+
 
   public String getValue() {
     return StringUtils.defaultString(value);
   }
 
   public String getDisplayValue() {
-    return StringUtils.defaultString(displayValue);
+    return StringUtils.defaultString(displayValue, getValue());
   }
 
   private void setValue(final String value) {

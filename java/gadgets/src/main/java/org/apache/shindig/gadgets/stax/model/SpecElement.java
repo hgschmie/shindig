@@ -43,18 +43,27 @@ public abstract class SpecElement {
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
-  private final Map<QName, String> attributes = new HashMap<QName, String>();
+  private final Map<QName, String> attributes;
 
-  private final Map<String, String> namespaces = new HashMap<String, String>();
+  private final Map<String, String> namespaces;
 
   private final List<SpecElement> children = new ArrayList<SpecElement>();
 
-  private final QName name;
+  private final QName qName;
 
   private boolean cdataFlag = false;
 
-  protected SpecElement(final QName name) {
-    this.name = name;
+  protected SpecElement(final QName qName) {
+    attributes = new HashMap<QName, String>();
+    namespaces = new HashMap<String, String>();
+    this.qName = qName;
+  }
+
+  protected SpecElement(final SpecElement specElement) {
+    this.attributes = specElement.allAttributes();
+    this.namespaces = specElement.allNamespaces();
+    this.qName = specElement.name();
+    this.cdataFlag = specElement.isCDATA();
   }
 
   // ======================================================================================================================================
@@ -82,22 +91,30 @@ public abstract class SpecElement {
   // ======================================================================================================================================
 
   public QName name() {
-    return name;
+    return qName;
   }
 
   protected String attribute(final String key) {
-    return attributes.get(new QName(name.getNamespaceURI(), key));
+    return attributes.get(new QName(qName.getNamespaceURI(), key));
   }
 
   protected Map<String, String> attributes() {
     Map<String, String> localAttributes = new HashMap<String, String>();
     for (Map.Entry<QName, String> entry: attributes.entrySet()) {
-      if (entry.getKey().getPrefix().equals(name.getPrefix())) {
+      if (entry.getKey().getPrefix().equals(qName.getPrefix())) {
         localAttributes.put(entry.getKey().getLocalPart(), entry.getValue());
       }
     }
 
     return Collections.unmodifiableMap(localAttributes);
+  }
+
+  private Map<QName, String> allAttributes() {
+    return Collections.unmodifiableMap(attributes);
+  }
+
+  private Map<String, String> allNamespaces() {
+    return Collections.unmodifiableMap(namespaces);
   }
 
   public void validate() throws SpecParserException {
@@ -114,7 +131,7 @@ public abstract class SpecElement {
     for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
       writer.setPrefix(namespace.getKey(), namespace.getValue());
     }
-    writer.writeStartElement(name.getNamespaceURI(), name.getLocalPart());
+    writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
 
     writeAttributes(writer);
 
