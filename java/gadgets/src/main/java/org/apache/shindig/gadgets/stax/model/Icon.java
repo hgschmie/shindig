@@ -21,6 +21,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -32,37 +34,26 @@ public class Icon extends SpecElement {
 
   public static final String ELEMENT_NAME = "Icon";
 
-  private static final String ATTR_MODE = "mode";
-  private static final String ATTR_TYPE = "type";
-
-  private String mode = null;
-  private String type = null;
+  public static final String ATTR_MODE = "mode";
+  public static final String ATTR_TYPE = "type";
 
   private StringBuilder text = new StringBuilder();
 
-  public Icon(final QName name) {
-    super(name);
+  public Icon(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public String getMode() {
-    return StringUtils.defaultString(mode);
+    return attrDefault(ATTR_MODE);
   }
 
   public Type getType() {
-    return Type.parse(type);
+    return Type.parse(attr(ATTR_TYPE));
   }
 
   @Override
   public String getText() {
     return text.toString();
-  }
-
-  private void setMode(final String mode) {
-    this.mode = mode;
-  }
-
-  private void setType(final String type) {
-    this.type = type;
   }
 
   private void addText(final String text) {
@@ -74,10 +65,10 @@ public class Icon extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (mode != null) {
+    if (attr(ATTR_MODE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_MODE, getMode());
     }
-    if (type != null) {
+    if (attr(ATTR_TYPE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_TYPE, getType().toString());
     }
   }
@@ -97,34 +88,18 @@ public class Icon extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<Icon> {
 
-    private final QName attrMode;
-    private final QName attrType;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      this.attrMode = buildQName(name, ATTR_MODE);
-      this.attrType = buildQName(name, ATTR_TYPE);
+      register(ATTR_MODE, ATTR_TYPE);
     }
 
     @Override
     protected Icon newElement() {
-      return new Icon(getName());
-    }
-
-    @Override
-    protected void setAttribute(final Icon icon, final QName name,
-        final String value) {
-      if (name.equals(attrMode)) {
-        icon.setMode(value);
-      } else if (name.equals(attrType)) {
-        icon.setType(value);
-      } else {
-        super.setAttribute(icon, name, value);
-      }
+      return new Icon(name(), getAttrNames());
     }
 
     @Override

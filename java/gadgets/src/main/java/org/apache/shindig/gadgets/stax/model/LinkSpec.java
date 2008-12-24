@@ -21,6 +21,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -28,36 +30,24 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 
 public class LinkSpec extends SpecElement {
 
   public static final String ELEMENT_NAME = "Link";
 
-  private static final String ATTR_REL = "rel";
-  private static final String ATTR_HREF = "href";
+  public static final String ATTR_REL = "rel";
+  public static final String ATTR_HREF = "href";
 
-  public LinkSpec(final QName name) {
-    super(name);
+  public LinkSpec(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
-  private String rel = null;
-  private String href = null;
-
   public Rel getRel() {
-    return Rel.parse(rel);
+    return Rel.parse(attr(ATTR_REL));
   }
 
   public Uri getHref() {
-    return StaxUtils.toUri(href);
-  }
-
-  private void setRel(final String rel) {
-    this.rel = rel;
-  }
-
-  private void setHref(final String href) {
-    this.href = href;
+    return attrUriNull(ATTR_HREF);
   }
 
   @Override
@@ -65,20 +55,20 @@ public class LinkSpec extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (rel != null) {
+    if (attr(ATTR_REL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_REL, getRel().toString());
     }
-    if (href != null) {
+    if (getHref() != null) {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (rel == null) {
+    if (attr(ATTR_REL) == null) {
       throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
     }
-    if (href == null) {
+    if (getHref() == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@href must be set!");
     }
@@ -105,7 +95,7 @@ public class LinkSpec extends SpecElement {
 
     /**
      * Parses a data rel from the input string.
-     *
+     * 
      * @param value
      * @return The data rel of the given value.
      */
@@ -121,34 +111,18 @@ public class LinkSpec extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<LinkSpec> {
 
-    private final QName attrRel;
-    private final QName attrHref;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      attrRel = buildQName(name, ATTR_REL);
-      attrHref = buildQName(name, ATTR_HREF);
+      register(ATTR_REL, ATTR_HREF);
     }
 
     @Override
     protected LinkSpec newElement() {
-      return new LinkSpec(getName());
-    }
-
-    @Override
-    protected void setAttribute(final LinkSpec link, final QName name,
-        final String value) {
-      if (name.equals(attrRel)) {
-        link.setRel(value);
-      } else if (name.equals(attrHref)) {
-        link.setHref(value);
-      } else {
-        super.setAttribute(link, name, value);
-      }
+      return new LinkSpec(name(), getAttrNames());
     }
   }
 }

@@ -21,39 +21,34 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class FeatureParam extends SpecElement {
 
   public static final String ELEMENT_NAME = "Param";
 
-  private static final String ATTR_NAME = "name";
-
-  private String name = null;
+  public static final String ATTR_NAME = "name";
 
   private StringBuilder text = new StringBuilder();
 
-  public FeatureParam(final QName name) {
-    super(name);
+  public FeatureParam(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public String getName() {
-    return StringUtils.defaultString(name);
+    return attrDefault(ATTR_NAME);
   }
 
   @Override
   public String getText() {
     return text.toString();
-  }
-
-  private void setName(final String name) {
-    this.name = name;
   }
 
   private void addText(final String text) {
@@ -65,14 +60,14 @@ public class FeatureParam extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (name != null) {
+    if (attr(ATTR_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (name == null) {
+    if (attr(ATTR_NAME) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@name must be set!");
     }
@@ -80,30 +75,18 @@ public class FeatureParam extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<FeatureParam> {
 
-    private final QName attrName;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      this.attrName = buildQName(name, ATTR_NAME);
+      register(ATTR_NAME);
     }
 
     @Override
     protected FeatureParam newElement() {
-      return new FeatureParam(getName());
-    }
-
-    @Override
-    protected void setAttribute(final FeatureParam msg, final QName name,
-        final String value) {
-      if (name.equals(attrName)) {
-        msg.setName(value);
-      } else {
-        super.setAttribute(msg, name, value);
-      }
+      return new FeatureParam(name(), getAttrNames());
     }
 
     @Override

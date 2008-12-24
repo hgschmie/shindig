@@ -37,24 +37,25 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-
 public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
   private final String checksum;
 
-    private final Uri url;
+  private final Uri url;
 
-    private Multimap<String, Content> viewMap = new HashMultimap<String, Content>();
+  private Multimap<String, Content> viewMap = new HashMultimap<String, Content>();
 
-    private ConcurrentHashMap <String, View> views = new ConcurrentHashMap<String, View>();
+  private ConcurrentHashMap<String, View> views = new ConcurrentHashMap<String, View>();
 
   /**
-   * A map of attributes associated with the instance of the spec Used by handler classes to use specs to carry context. Not defined
-   * by the specification
+   * A map of attributes associated with the instance of the spec Used by
+   * handler classes to use specs to carry context. Not defined by the
+   * specification
    */
   private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    public ShindigGadgetSpec(final QName name, final Uri url, final String checksum) {
+  public ShindigGadgetSpec(final QName name, final Uri url,
+      final String checksum) {
     super(name);
     this.checksum = checksum;
     this.url = url;
@@ -66,10 +67,10 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
   @Override
   public Uri getUrl() {
-      return url;
+    return url;
   }
 
-    // ========================================================================
+  // ========================================================================
 
   public Object getAttribute(final String key) {
     return attributes.get(key);
@@ -79,23 +80,23 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     attributes.put(key, o);
   }
 
-    // ========================================================================
+  // ========================================================================
 
   @Override
   protected void addContent(final Content content) throws SpecParserException {
-      super.addContent(content);
-      for(String viewName: content.getViews()) {
-          viewMap.put(viewName, content);
-          views.put(viewName, new View(viewName, viewMap.get(viewName), Uri.EMPTY_URI));
-        }
+    super.addContent(content);
+    for (String viewName : content.getViews()) {
+      viewMap.put(viewName, content);
+      views.put(viewName, new View(viewName, viewMap.get(viewName),
+          Uri.EMPTY_URI));
+    }
   }
-
 
   public View getView(final String name) {
     return views.get(name);
   }
 
-    // ========================================================================
+  // ========================================================================
 
   public Map<String, View> getViews() {
     return Collections.unmodifiableMap(views);
@@ -117,17 +118,19 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
     @Override
     protected ShindigGadgetSpec newElement() {
-      return new ShindigGadgetSpec(getName(), url, checksum);
+      return new ShindigGadgetSpec(name(), url, checksum);
     }
 
     @Override
-    public ShindigGadgetSpec parse(final XMLStreamReader reader) throws XMLStreamException, SpecParserException {
+    public ShindigGadgetSpec parse(final XMLStreamReader reader)
+        throws XMLStreamException, SpecParserException {
       return (ShindigGadgetSpec) super.parse(reader);
     }
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final StaxGadgetSpec spec, final SpecElement child) throws SpecParserException  {
+        final StaxGadgetSpec spec, final SpecElement child)
+        throws SpecParserException {
       if (child instanceof Content) {
         spec.addContent((Content) child);
       } else {

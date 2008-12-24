@@ -57,8 +57,9 @@ public class View {
    * @param name
    *          The name of this view.
    * @param elements
-   *          List of all views, in order, that make up this view. An ordered list is required per the spec, since values must
-   *          overwrite one another.
+   *          List of all views, in order, that make up this view. An ordered
+   *          list is required per the spec, since values must overwrite one
+   *          another.
    * @param base
    *          The base url to resolve href against.
    * @throws SpecParserException
@@ -127,27 +128,26 @@ public class View {
    * can be performed.
    */
   private View(final View view, final Substitutions substituter) {
-      this.name = view.getName();
-      this.baseUri = view.getBaseUri();
+    this.name = view.getName();
+    this.baseUri = view.getBaseUri();
 
-      this.type = view.getType();
-      this.preferredHeight = view.getPreferredHeight();
-      this.preferredWidth = view.getPreferredWidth();
-      this.rawType = view.getRawType();
+    this.type = view.getType();
+    this.preferredHeight = view.getPreferredHeight();
+    this.preferredWidth = view.getPreferredWidth();
+    this.rawType = view.getRawType();
 
-      this.content = substituter.substituteString(view.getContent());
+    this.content = substituter.substituteString(view.getContent());
 
-      this.href = baseUri.resolve(substituter.substituteUri(view.getHref()));
+    this.href = baseUri.resolve(substituter.substituteUri(view.getHref()));
 
-      final Map<String, String> attributes = new HashMap<String, String>();
+    final Map<String, String> attributes = new HashMap<String, String>();
 
-      for (Map.Entry<String, String> entry : view.getAttributes().entrySet())
-      {
-          attributes.put(entry.getKey(), substituter.substituteString(entry.getValue()));
-      }
-      this.attributes = Collections.unmodifiableMap(attributes);
+    for (Map.Entry<String, String> entry : view.getAttributes().entrySet()) {
+      attributes.put(entry.getKey(), substituter.substituteString(entry
+          .getValue()));
+    }
+    this.attributes = Collections.unmodifiableMap(attributes);
   }
-
 
   public String getName() {
     return name;
@@ -181,14 +181,14 @@ public class View {
     return rawType;
   }
 
-    private Uri getBaseUri() {
-        return baseUri;
-    }
+  private Uri getBaseUri() {
+    return baseUri;
+  }
 
   /**
    * Creates a new view by performing hangman substitution. See field comments
    * for details on what gets substituted.
-   *
+   * 
    * @param substituter
    * @return The substituted view.
    */

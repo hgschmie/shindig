@@ -24,219 +24,125 @@ package org.apache.shindig.gadgets.stax.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPref extends SpecElement {
   public static final String ELEMENT_NAME = "UserPref";
 
-  private static final String ATTR_NAME = "name";
-  private static final String ATTR_DISPLAY_NAME = "display_name";
-  private static final String ATTR_DEFAULT_VALUE = "default_value";
-  private static final String ATTR_REQUIRED = "required";
-  private static final String ATTR_DATATYPE = "datatype";
-  private static final String ATTR_URLPARAM = "urlparam";
-  private static final String ATTR_AUTOCOMPLETE_URL = "autocomplete_url";
-  private static final String ATTR_NUM_MINVAL = "num_minval";
-  private static final String ATTR_NUM_MAXVAL = "num_maxval";
-  private static final String ATTR_STR_MAXLEN = "str_maxlen";
-  private static final String ATTR_RESTRICT_TO_COMPLETIONS = "restrict_to_completions";
-  private static final String ATTR_PREFIX_MATCH = "prefix_match";
-  private static final String ATTR_PUBLISH = "publish";
-  private static final String ATTR_LISTEN = "listen";
-  private static final String ATTR_ON_CHANGE = "on_change";
-  private static final String ATTR_GROUP = "group";
-
-  private String name = null;
-  private String displayName = null;
-  private String defaultValue = null;
-  private String required = null;
-  private String datatype = null;
-  private String urlparam = null;
-  private String autocompleteUrl = null;
-  private String numMinval = null;
-  private String numMaxval = null;
-  private String strMaxlen = null;
-  private String restrictToCompletions = null;
-  private String prefixMatch = null;
-  private String publish = null;
-  private String listen = null;
-  private String onChange = null;
-  private String group = null;
+  public static final String ATTR_NAME = "name";
+  public static final String ATTR_DISPLAY_NAME = "display_name";
+  public static final String ATTR_DEFAULT_VALUE = "default_value";
+  public static final String ATTR_REQUIRED = "required";
+  public static final String ATTR_DATATYPE = "datatype";
+  public static final String ATTR_URLPARAM = "urlparam";
+  public static final String ATTR_AUTOCOMPLETE_URL = "autocomplete_url";
+  public static final String ATTR_NUM_MINVAL = "num_minval";
+  public static final String ATTR_NUM_MAXVAL = "num_maxval";
+  public static final String ATTR_STR_MAXLEN = "str_maxlen";
+  public static final String ATTR_RESTRICT_TO_COMPLETIONS = "restrict_to_completions";
+  public static final String ATTR_PREFIX_MATCH = "prefix_match";
+  public static final String ATTR_PUBLISH = "publish";
+  public static final String ATTR_LISTEN = "listen";
+  public static final String ATTR_ON_CHANGE = "on_change";
+  public static final String ATTR_GROUP = "group";
 
   private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
-  public UserPref(final QName name) {
-    super(name);
+  public UserPref(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
-    protected UserPref(final UserPref userPref, final Substitutions substituter) {
-      super(userPref);
-        this.name = userPref.getName();
-        this.displayName = substituter.substituteString(userPref.getDisplayName());
-        this.defaultValue = substituter.substituteString(userPref.getDefaultValue());
-        this.required = String.valueOf(userPref.isRequired());
-        this.datatype = userPref.getDataType().toString();
-        this.urlparam = userPref.getUrlparam();
-        this.autocompleteUrl = userPref.getAutocompleteUrl();
-        this.numMinval = String.valueOf(userPref.getNumMinval());
-        this.numMaxval = String.valueOf(userPref.getNumMaxval());
-        this.strMaxlen = String.valueOf(userPref.getStrMaxlen());
-        this.restrictToCompletions = userPref.getRestrictToCompletions();
-        this.prefixMatch = String.valueOf(userPref.getPrefixMatch());
-        this.publish = String.valueOf(userPref.getPublish());
-        this.listen = String.valueOf(userPref.getListen());
-        this.onChange = userPref.getOnChange();
-        this.group = userPref.getGroup();
-        for (EnumValue enumValue : userPref.getEnumValues()) {
-          enumValues.add(enumValue.substitute(substituter));
-        }
-  }
+  protected UserPref(final UserPref userPref, final Substitutions substituter) {
+    super(userPref);
+    setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref
+        .getDisplayName()));
+    setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref
+        .getDefaultValue()));
 
-    public UserPref substitute(final Substitutions substituter) {
-      return new UserPref(this, substituter);
+    for (EnumValue enumValue : userPref.getEnumValues()) {
+      enumValues.add(enumValue.substitute(substituter));
     }
+  }
 
+  public UserPref substitute(final Substitutions substituter) {
+    return new UserPref(this, substituter);
+  }
 
   public String getName() {
-    return name;
+    return attr(ATTR_NAME);
   }
 
   public String getDefaultValue() {
-    return defaultValue;
+    return attr(ATTR_DEFAULT_VALUE);
   }
 
   public String getDisplayName() {
-    return displayName;
+    return attr(ATTR_DISPLAY_NAME);
   }
 
   public boolean isRequired() {
-    return BooleanUtils.toBoolean(required);
+    return attrBool(ATTR_REQUIRED);
   }
 
   public DataType getDataType() {
-    return DataType.parse(datatype);
+    return DataType.parse(attr(ATTR_DATATYPE));
   }
 
   public String getUrlparam() {
-    return urlparam;
+    return attr(ATTR_URLPARAM);
   }
 
   public String getAutocompleteUrl() {
-    return autocompleteUrl;
+    return attr(ATTR_AUTOCOMPLETE_URL);
   }
 
   public double getNumMinval() {
-    return NumberUtils.toDouble(numMinval);
+    return attrDouble(ATTR_NUM_MINVAL);
   }
 
   public double getNumMaxval() {
-    return NumberUtils.toDouble(numMaxval);
+    return attrDouble(ATTR_NUM_MAXVAL);
   }
 
   public int getStrMaxlen() {
-    return NumberUtils.toInt(strMaxlen);
+    return attrInt(ATTR_STR_MAXLEN);
   }
 
   public String getRestrictToCompletions() {
-    return restrictToCompletions;
+    return attr(ATTR_RESTRICT_TO_COMPLETIONS);
   }
 
   public boolean getPrefixMatch() {
-    return BooleanUtils.toBoolean(prefixMatch);
+    return attrBool(ATTR_PREFIX_MATCH);
   }
 
   public boolean getPublish() {
-    return BooleanUtils.toBoolean(publish);
+    return attrBool(ATTR_PUBLISH);
   }
 
   public boolean getListen() {
-    return BooleanUtils.toBoolean(listen);
+    return attrBool(ATTR_LISTEN);
   }
 
   public String getOnChange() {
-    return onChange;
+    return attr(ATTR_ON_CHANGE);
   }
 
   public String getGroup() {
-    return group;
+    return attr(ATTR_GROUP);
   }
 
   public List<EnumValue> getEnumValues() {
     return Collections.unmodifiableList(enumValues);
-  }
-
-  private void setName(final String name) {
-    this.name = name;
-  }
-
-  private void setDisplayName(final String displayName) {
-    this.displayName = displayName;
-  }
-
-  private void setDefaultValue(final String defaultValue) {
-    this.defaultValue = defaultValue;
-  }
-
-  private void setRequired(final String required) {
-    this.required = required;
-  }
-
-  private void setDataType(final String datatype) {
-    this.datatype = datatype;
-  }
-
-  private void setUrlparam(final String urlparam) {
-    this.urlparam = urlparam;
-  }
-
-  private void setAutocompleteUrl(final String autocompleteUrl) {
-    this.autocompleteUrl = autocompleteUrl;
-  }
-
-  private void setNumMinval(final String numMinval) {
-    this.numMinval = numMinval;
-  }
-
-  private void setNumMaxval(final String numMaxval) {
-    this.numMaxval = numMaxval;
-  }
-
-  private void setStrMaxlen(final String strMaxlen) {
-    this.strMaxlen = strMaxlen;
-  }
-
-  private void setRestrictToCompletions(final String restrictToCompletions) {
-    this.restrictToCompletions = restrictToCompletions;
-  }
-
-  private void setPrefixMatch(final String prefixMatch) {
-    this.prefixMatch = prefixMatch;
-  }
-
-  private void setPublish(final String publish) {
-    this.publish = publish;
-  }
-
-  private void setListen(final String listen) {
-    this.listen = listen;
-  }
-
-  private void setOnChange(final String onChange) {
-    this.onChange = onChange;
-  }
-
-  private void setGroup(final String group) {
-    this.group = group;
   }
 
   private void addEnumValue(final EnumValue enumValue) {
@@ -248,77 +154,78 @@ public class UserPref extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (name != null) {
+    if (attr(ATTR_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
     }
 
-    if (displayName != null) {
+    if (attr(ATTR_DISPLAY_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_DISPLAY_NAME, getDisplayName());
     }
 
-    if (defaultValue != null) {
+    if (attr(ATTR_DEFAULT_VALUE) != null) {
       writer
           .writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
     }
 
-    if (required != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String.valueOf(isRequired()));
+    if (attr(ATTR_REQUIRED) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String
+          .valueOf(isRequired()));
     }
 
-    if (datatype != null) {
+    if (attr(ATTR_DATATYPE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDataType()
           .toString());
     }
 
-    if (urlparam != null) {
+    if (attr(ATTR_URLPARAM) != null) {
       writer.writeAttribute(namespaceURI, ATTR_URLPARAM, getUrlparam());
     }
 
-    if (autocompleteUrl != null) {
+    if (attr(ATTR_AUTOCOMPLETE_URL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTOCOMPLETE_URL,
           getAutocompleteUrl());
     }
 
-    if (numMinval != null) {
+    if (attr(ATTR_NUM_MINVAL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_NUM_MINVAL, String
           .valueOf(getNumMinval()));
     }
 
-    if (numMaxval != null) {
+    if (attr(ATTR_NUM_MAXVAL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_NUM_MAXVAL, String
           .valueOf(getNumMaxval()));
     }
 
-    if (strMaxlen != null) {
+    if (attr(ATTR_STR_MAXLEN) != null) {
       writer.writeAttribute(namespaceURI, ATTR_STR_MAXLEN, String
           .valueOf(getStrMaxlen()));
     }
 
-    if (restrictToCompletions != null) {
+    if (attr(ATTR_RESTRICT_TO_COMPLETIONS) != null) {
       writer.writeAttribute(namespaceURI, ATTR_RESTRICT_TO_COMPLETIONS,
           getRestrictToCompletions());
     }
 
-    if (prefixMatch != null) {
+    if (attr(ATTR_PREFIX_MATCH) != null) {
       writer.writeAttribute(namespaceURI, ATTR_PREFIX_MATCH, String
           .valueOf(getPrefixMatch()));
     }
 
-    if (publish != null) {
+    if (attr(ATTR_PUBLISH) != null) {
       writer.writeAttribute(namespaceURI, ATTR_PUBLISH, String
           .valueOf(getPublish()));
     }
 
-    if (listen != null) {
+    if (attr(ATTR_LISTEN) != null) {
       writer.writeAttribute(namespaceURI, ATTR_LISTEN, String
           .valueOf(getListen()));
     }
 
-    if (onChange != null) {
+    if (attr(ATTR_ON_CHANGE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_ON_CHANGE, getOnChange());
     }
 
-    if (group != null) {
+    if (attr(ATTR_GROUP) != null) {
       writer.writeAttribute(namespaceURI, ATTR_GROUP, getGroup());
     }
   }
@@ -333,7 +240,7 @@ public class UserPref extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (name == null) {
+    if (attr(ATTR_NAME) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@name must be set!");
     }
@@ -347,7 +254,7 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */
@@ -363,23 +270,6 @@ public class UserPref extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<UserPref> {
 
-    private final QName attrName;
-    private final QName attrDisplayName;
-    private final QName attrDefaultValue;
-    private final QName attrRequired;
-    private final QName attrDatatype;
-    private final QName attrUrlparam;
-    private final QName attrAutocompleteUrl;
-    private final QName attrNumMinval;
-    private final QName attrNumMaxval;
-    private final QName attrStrMaxlen;
-    private final QName attrRestrictToCompletions;
-    private final QName attrPrefixMatch;
-    private final QName attrPublish;
-    private final QName attrListen;
-    private final QName attrOnChange;
-    private final QName attrGroup;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
@@ -387,68 +277,16 @@ public class UserPref extends SpecElement {
     public Parser(final QName name) {
       super(name);
       register(new EnumValue.Parser());
-      this.attrName = buildQName(name, ATTR_NAME);
-      this.attrDisplayName = buildQName(name, ATTR_DISPLAY_NAME);
-      this.attrDefaultValue = buildQName(name, ATTR_DEFAULT_VALUE);
-      this.attrRequired = buildQName(name, ATTR_REQUIRED);
-      this.attrDatatype = buildQName(name, ATTR_DATATYPE);
-      this.attrUrlparam = buildQName(name, ATTR_URLPARAM);
-      this.attrAutocompleteUrl = buildQName(name, ATTR_AUTOCOMPLETE_URL);
-      this.attrNumMinval = buildQName(name, ATTR_NUM_MINVAL);
-      this.attrNumMaxval = buildQName(name, ATTR_NUM_MAXVAL);
-      this.attrStrMaxlen = buildQName(name, ATTR_STR_MAXLEN);
-      this.attrRestrictToCompletions = buildQName(name,
-          ATTR_RESTRICT_TO_COMPLETIONS);
-      this.attrPrefixMatch = buildQName(name, ATTR_PREFIX_MATCH);
-      this.attrPublish = buildQName(name, ATTR_PUBLISH);
-      this.attrListen = buildQName(name, ATTR_LISTEN);
-      this.attrOnChange = buildQName(name, ATTR_ON_CHANGE);
-      this.attrGroup = buildQName(name, ATTR_GROUP);
+      register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED,
+          ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
+          ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS,
+          ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE,
+          ATTR_GROUP);
     }
 
     @Override
     protected UserPref newElement() {
-      return new UserPref(getName());
-    }
-
-    @Override
-    protected void setAttribute(final UserPref userPref, final QName name,
-        final String value) {
-      if (name.equals(attrName)) {
-        userPref.setName(value);
-      } else if (name.equals(attrDisplayName)) {
-        userPref.setDisplayName(value);
-      } else if (name.equals(attrDefaultValue)) {
-        userPref.setDefaultValue(value);
-      } else if (name.equals(attrRequired)) {
-        userPref.setRequired(value);
-      } else if (name.equals(attrDatatype)) {
-        userPref.setDataType(value);
-      } else if (name.equals(attrUrlparam)) {
-        userPref.setUrlparam(value);
-      } else if (name.equals(attrAutocompleteUrl)) {
-        userPref.setAutocompleteUrl(value);
-      } else if (name.equals(attrNumMinval)) {
-        userPref.setNumMinval(value);
-      } else if (name.equals(attrNumMaxval)) {
-        userPref.setNumMaxval(value);
-      } else if (name.equals(attrStrMaxlen)) {
-        userPref.setStrMaxlen(value);
-      } else if (name.equals(attrRestrictToCompletions)) {
-        userPref.setRestrictToCompletions(value);
-      } else if (name.equals(attrPrefixMatch)) {
-        userPref.setPrefixMatch(value);
-      } else if (name.equals(attrPublish)) {
-        userPref.setPublish(value);
-      } else if (name.equals(attrListen)) {
-        userPref.setListen(value);
-      } else if (name.equals(attrOnChange)) {
-        userPref.setOnChange(value);
-      } else if (name.equals(attrGroup)) {
-        userPref.setGroup(value);
-      } else {
-        super.setAttribute(userPref, name, value);
-      }
+      return new UserPref(name(), getAttrNames());
     }
 
     @Override

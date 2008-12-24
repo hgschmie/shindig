@@ -22,6 +22,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -37,20 +38,18 @@ public class MessageBundleSpec extends SpecElement {
   public static final String ELEMENT_NAME = "messageBundle";
 
   /** Non-0.8 Attribute! */
-  private static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
+  public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  private String languageDirection = null;
-
   private StringBuilder text = new StringBuilder();
 
-  public MessageBundleSpec(final QName name) {
-    super(name);
+  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public Direction getLanguageDirection() {
-    return Direction.parse(languageDirection);
+    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION));
   }
 
   @Override
@@ -66,10 +65,6 @@ public class MessageBundleSpec extends SpecElement {
     localeMsgs.add(localeMsg);
   }
 
-  private void setLanguageDirection(String languageDirection) {
-    this.languageDirection = languageDirection;
-  }
-
   private void addText(final String text) {
     this.text.append(text);
   }
@@ -79,15 +74,13 @@ public class MessageBundleSpec extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (languageDirection != null) {
+    if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
           getLanguageDirection().toString());
     }
   }
 
   public static class Parser extends SpecElement.Parser<MessageBundleSpec> {
-
-    private final QName attrLanguageDirection;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -96,34 +89,26 @@ public class MessageBundleSpec extends SpecElement {
     public Parser(final QName name) {
       super(name);
       register(new LocaleMsg.Parser());
-      this.attrLanguageDirection = buildQName(name, ATTR_LANGUAGE_DIRECTION);
+      register(ATTR_LANGUAGE_DIRECTION);
     }
 
     @Override
     protected MessageBundleSpec newElement() {
-      return new MessageBundleSpec(getName());
+      return new MessageBundleSpec(name(), getAttrNames());
     }
 
     @Override
-    protected void setAttribute(final MessageBundleSpec messageBundle, final QName name,
-        final String value) {
-      if (name.equals(attrLanguageDirection)) {
-        messageBundle.setLanguageDirection(value);
-      }else {
-        super.setAttribute(messageBundle, name, value);
-      }
-    }
-
-    @Override
-    protected void addText(final XMLStreamReader reader, final MessageBundleSpec messageBundle) {
+    protected void addText(final XMLStreamReader reader,
+        final MessageBundleSpec messageBundle) {
       if (!reader.isWhiteSpace()) {
         messageBundle.addText(reader.getText());
       }
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final MessageBundleSpec messageBundle,
-        final SpecElement child) throws SpecParserException  {
+    protected void addChild(XMLStreamReader reader,
+        final MessageBundleSpec messageBundle, final SpecElement child)
+        throws SpecParserException {
       if (child instanceof LocaleMsg) {
         messageBundle.addLocaleMsg((LocaleMsg) child);
       } else {

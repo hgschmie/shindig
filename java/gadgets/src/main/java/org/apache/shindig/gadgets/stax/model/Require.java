@@ -21,14 +21,16 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 public class Require extends Feature {
 
   public static final String ELEMENT_NAME = "Require";
 
-  public Require(final QName name) {
-    super(name, true);
+  public Require(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames, true);
   }
 
   public static class Parser extends Feature.Parser {
@@ -42,7 +44,7 @@ public class Require extends Feature {
 
     @Override
     protected Require newElement() {
-      return new Require(getName());
+      return new Require(name(), getAttrNames());
     }
   }
 }

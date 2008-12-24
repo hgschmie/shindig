@@ -21,14 +21,16 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 public class Optional extends Feature {
 
   public static final String ELEMENT_NAME = "Optional";
 
-  public Optional(final QName name) {
-    super(name, false);
+  public Optional(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames, false);
   }
 
   public static class Parser extends Feature.Parser {
@@ -42,7 +44,7 @@ public class Optional extends Feature {
 
     @Override
     protected Optional newElement() {
-      return new Optional(getName());
+      return new Optional(name(), getAttrNames());
     }
   }
 }

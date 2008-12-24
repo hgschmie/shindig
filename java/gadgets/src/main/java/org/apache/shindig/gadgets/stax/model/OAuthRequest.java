@@ -21,14 +21,16 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 public class OAuthRequest extends OAuthElement {
 
   public static final String ELEMENT_NAME = "Request";
 
-  public OAuthRequest(final QName name) {
-    super(name, true);
+  public OAuthRequest(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames, true);
   }
 
   public static class Parser extends OAuthElement.Parser {
@@ -42,7 +44,7 @@ public class OAuthRequest extends OAuthElement {
 
     @Override
     protected OAuthRequest newElement() {
-      return new OAuthRequest(getName());
+      return new OAuthRequest(name(), getAttrNames());
     }
   }
 }

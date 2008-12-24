@@ -21,51 +21,41 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class LocaleMsg extends SpecElement {
 
   public static final String ELEMENT_NAME = "msg";
 
-  private static final String ATTR_NAME = "name";
+  public static final String ATTR_NAME = "name";
 
   /** Non 0.8 in gadgetspec, present in message bundle */
-  private static final String ATTR_DESC = "name";
-
-  private String name = null;
-  private String desc = null;
+  public static final String ATTR_DESC = "name";
 
   private StringBuilder text = new StringBuilder();
 
-  public LocaleMsg(final QName name) {
-    super(name);
+  public LocaleMsg(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public String getName() {
-    return StringUtils.defaultString(name);
+    return attrDefault(ATTR_NAME);
   }
 
   public String getDesc() {
-    return StringUtils.defaultString(desc);
+    return attrDefault(ATTR_DESC);
   }
 
   @Override
   public String getText() {
     return text.toString();
-  }
-
-  private void setName(final String name) {
-    this.name = name;
-  }
-
-  private void setDesc(final String desc) {
-    this.desc = desc;
   }
 
   private void addText(final String text) {
@@ -77,18 +67,18 @@ public class LocaleMsg extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (name != null) {
+    if (attr(ATTR_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
     }
 
-    if (desc != null) {
+    if (attr(ATTR_DESC) != null) {
       writer.writeAttribute(namespaceURI, ATTR_DESC, getDesc());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (name == null) {
+    if (attr(ATTR_NAME) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@name must be set!");
     }
@@ -96,34 +86,18 @@ public class LocaleMsg extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
-    private final QName attrName;
-    private final QName attrDesc;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      this.attrName = buildQName(name, ATTR_NAME);
-      this.attrDesc = buildQName(name, ATTR_DESC);
+      register(ATTR_NAME, ATTR_DESC);
     }
 
     @Override
     protected LocaleMsg newElement() {
-      return new LocaleMsg(getName());
-    }
-
-    @Override
-    protected void setAttribute(final LocaleMsg msg, final QName name,
-        final String value) {
-      if (name.equals(attrName)) {
-        msg.setName(value);
-      } else if (name.equals(attrDesc)) {
-        msg.setDesc(value);
-      } else {
-        super.setAttribute(msg, name, value);
-      }
+      return new LocaleMsg(name(), getAttrNames());
     }
 
     @Override

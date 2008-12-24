@@ -23,6 +23,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -33,42 +34,36 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 
 public class LocaleSpec extends SpecElement {
 
   public static final String ELEMENT_NAME = "Locale";
 
-  private static final String ATTR_LANG = "lang";
-  private static final String ATTR_COUNTRY = "country";
-  private static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
-  private static final String ATTR_MESSAGES = "messages";
-
-  public LocaleSpec(final QName name) {
-    super(name);
-  }
+  public static final String ATTR_LANG = "lang";
+  public static final String ATTR_COUNTRY = "country";
+  public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
+  public static final String ATTR_MESSAGES = "messages";
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  private String language = null;
-  private String country = null;
-  private String languageDirection = null;
-  private String messages = null;
+  public LocaleSpec(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
+  }
 
   public String getLanguage() {
-    return StringUtils.defaultString(language, "all");
+    return attrDefault(ATTR_LANG, "all");
   }
 
   public String getCountry() {
-    return StringUtils.defaultString(country, "ALL");
+    return attrDefault(ATTR_COUNTRY, "ALL");
   }
 
   public Direction getLanguageDirection() {
-    return Direction.parse(languageDirection);
+    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION));
   }
 
   public Uri getMessages() {
-    return StaxUtils.toUri(messages);
+    return attrUriNull(ATTR_MESSAGES);
   }
 
   public Set<LocaleMsg> getLocaleMsgs() {
@@ -79,38 +74,22 @@ public class LocaleSpec extends SpecElement {
     localeMsgs.add(localeMsg);
   }
 
-  private void setLanguage(String language) {
-    this.language = language;
-  }
-
-  private void setCountry(String country) {
-    this.country = country;
-  }
-
-  private void setLanguageDirection(String languageDirection) {
-    this.languageDirection = languageDirection;
-  }
-
-  private void setMessages(String messages) {
-    this.messages = messages;
-  }
-
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (language != null) {
+    if (attr(ATTR_LANG) != null) {
       writer.writeAttribute(namespaceURI, ATTR_LANG, getLanguage());
     }
-    if (country != null) {
+    if (attr(ATTR_COUNTRY) != null) {
       writer.writeAttribute(namespaceURI, ATTR_COUNTRY, getCountry());
     }
-    if (languageDirection != null) {
+    if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
           getLanguageDirection().toString());
     }
-    if (messages != null) {
+    if (getMessages() != null) {
       writer.writeAttribute(namespaceURI, ATTR_MESSAGES, getMessages()
           .toString());
     }
@@ -126,9 +105,10 @@ public class LocaleSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-      if (messages == null && localeMsgs.size() == 0) {
-          throw new SpecParserException(name().getLocalPart() + " must either contain a @messages attribute or <msg> elements!");
-      }
+    if (attr(ATTR_MESSAGES) == null && localeMsgs.size() == 0) {
+      throw new SpecParserException(name().getLocalPart()
+          + " must contain a @messages attribute or <msg> elements!");
+    }
   }
 
   public static enum Direction {
@@ -150,10 +130,6 @@ public class LocaleSpec extends SpecElement {
   }
 
   public static class Parser extends SpecElement.Parser<LocaleSpec> {
-    private final QName attrLang;
-    private final QName attrCountry;
-    private final QName attrLanguageDirection;
-    private final QName attrMessages;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -162,36 +138,17 @@ public class LocaleSpec extends SpecElement {
     public Parser(final QName name) {
       super(name);
       register(new LocaleMsg.Parser());
-      this.attrLang = buildQName(name, ATTR_LANG);
-      this.attrCountry = buildQName(name, ATTR_COUNTRY);
-      this.attrLanguageDirection = buildQName(name, ATTR_LANGUAGE_DIRECTION);
-      this.attrMessages = buildQName(name, ATTR_MESSAGES);
+      register(ATTR_LANG, ATTR_COUNTRY, ATTR_LANGUAGE_DIRECTION, ATTR_MESSAGES);
     }
 
     @Override
     protected LocaleSpec newElement() {
-      return new LocaleSpec(getName());
-    }
-
-    @Override
-    protected void setAttribute(final LocaleSpec locale, final QName name,
-        final String value) {
-      if (name.equals(attrLang)) {
-        locale.setLanguage(value);
-      } else if (name.equals(attrCountry)) {
-        locale.setCountry(value);
-      } else if (name.equals(attrLanguageDirection)) {
-        locale.setLanguageDirection(value);
-      } else if (name.equals(attrMessages)) {
-        locale.setMessages(value);
-      } else {
-        super.setAttribute(locale, name, value);
-      }
+      return new LocaleSpec(name(), getAttrNames());
     }
 
     @Override
     protected void addChild(XMLStreamReader reader, final LocaleSpec locale,
-        final SpecElement child) throws SpecParserException  {
+        final SpecElement child) throws SpecParserException {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {

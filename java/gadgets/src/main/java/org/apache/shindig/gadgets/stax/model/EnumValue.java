@@ -21,52 +21,42 @@
 
 package org.apache.shindig.gadgets.stax.model;
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class EnumValue extends SpecElement {
   public static final String ELEMENT_NAME = "EnumValue";
 
-  private static final String ATTR_VALUE = "value";
-  private static final String ATTR_DISPLAY_VALUE = "display_value";
+  public static final String ATTR_VALUE = "value";
+  public static final String ATTR_DISPLAY_VALUE = "display_value";
 
-  private String value = null;
-  private String displayValue = null;
-
-  protected EnumValue(final QName name) {
-    super(name);
+  protected EnumValue(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
     super(enumValue);
-    this.value = substituter.substituteString(enumValue.getValue());
-    this.displayValue = substituter.substituteString(enumValue.getDisplayValue());
+    setAttr(ATTR_VALUE, substituter.substituteString(enumValue.getValue()));
+    setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue
+        .getDisplayValue()));
   }
 
   public EnumValue substitute(final Substitutions substituter) {
     return new EnumValue(this, substituter);
   }
 
-
   public String getValue() {
-    return StringUtils.defaultString(value);
+    return attr(ATTR_VALUE);
   }
 
   public String getDisplayValue() {
-    return StringUtils.defaultString(displayValue, getValue());
-  }
-
-  private void setValue(final String value) {
-    this.value = value;
-  }
-
-  private void setDisplayValue(final String displayValue) {
-    this.displayValue = displayValue;
+    return attrDefault(ATTR_VALUE, getValue());
   }
 
   @Override
@@ -74,10 +64,10 @@ public class EnumValue extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (value != null) {
+    if (attr(ATTR_VALUE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
     }
-    if (displayValue != null) {
+    if (attr(ATTR_DISPLAY_VALUE) != null) {
       writer
           .writeAttribute(namespaceURI, ATTR_DISPLAY_VALUE, getDisplayValue());
     }
@@ -85,7 +75,7 @@ public class EnumValue extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (value == null) {
+    if (attr(ATTR_VALUE) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@value must be set!");
     }
@@ -93,34 +83,18 @@ public class EnumValue extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<EnumValue> {
 
-    private final QName attrValue;
-    private final QName attrDisplayValue;
-
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
 
     public Parser(final QName name) {
       super(name);
-      this.attrValue = buildQName(name, ATTR_VALUE);
-      this.attrDisplayValue = buildQName(name, ATTR_DISPLAY_VALUE);
+      register(ATTR_VALUE, ATTR_DISPLAY_VALUE);
     }
 
     @Override
     protected EnumValue newElement() {
-      return new EnumValue(getName());
-    }
-
-    @Override
-    protected void setAttribute(final EnumValue enumValue, final QName name,
-        final String value) {
-      if (name.equals(attrValue)) {
-        enumValue.setValue(value);
-      } else if (name.equals(attrDisplayValue)) {
-        enumValue.setDisplayValue(value);
-      } else {
-        super.setAttribute(enumValue, name, value);
-      }
+      return new EnumValue(name(), getAttrNames());
     }
   }
 }
