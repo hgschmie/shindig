@@ -27,25 +27,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.model.EnumValue;
 import org.apache.shindig.gadgets.stax.model.UserPref;
 
 public final class StaxUtils {
 
   private StaxUtils() {
-  }
-
-  public static final Uri toUri(final String value) {
-    if (value != null) {
-      try {
-        return Uri.parse(value);
-      } catch (IllegalArgumentException e) {
-        return Uri.EMPTY_URI;
-      }
-    } else {
-      return Uri.EMPTY_URI;
-    }
   }
 
   public static final List<Pair<String, String>> orderEnumValues(

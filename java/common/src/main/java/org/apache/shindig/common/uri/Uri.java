@@ -89,6 +89,18 @@ public final class Uri {
     }
   }
 
+    public static final Uri toUri(final String value, final Uri defaultValue) {
+    if (value != null) {
+      try {
+        return Uri.parse(value);
+      } catch (IllegalArgumentException e) {
+          return defaultValue;
+      }
+    } else {
+        return defaultValue;
+    }
+  }
+
   /**
    * Convert a java.net.URI to a Uri.
    */
