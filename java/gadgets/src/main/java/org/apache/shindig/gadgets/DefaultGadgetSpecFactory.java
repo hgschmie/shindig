@@ -122,11 +122,9 @@ public class DefaultGadgetSpecFactory implements GadgetSpecFactory {
     // globally. This ensures propagation to shared caches when this is set.
     request.setCacheTtl((int) (refresh / 1000));
 
-    HttpResponse response = fetcher.fetch(request);
-    if (response.getHttpStatusCode() != HttpResponse.SC_OK) {
-      throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
-                                "Unable to retrieve gadget xml. HTTP error " +
-                                response.getHttpStatusCode());
+    @Override
+    protected GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
+        return new DefaultGadgetSpec(uri, xml);
     }
 
     GadgetSpec spec = new GadgetSpec(url, response.getResponseAsString());

@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -65,6 +64,7 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     return checksum;
   }
 
+  @Override
   public Uri getUrl() {
       return url;
   }
@@ -86,7 +86,7 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
       super.addContent(content);
       for(String viewName: content.getViews()) {
           viewMap.put(viewName, content);
-          views.put(viewName, new View(viewName, viewMap.get(viewName), StaxUtils.EMPTY_URI));
+          views.put(viewName, new View(viewName, viewMap.get(viewName), Uri.EMPTY_URI));
         }
   }
 

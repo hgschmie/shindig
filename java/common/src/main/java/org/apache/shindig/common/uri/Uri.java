@@ -34,6 +34,8 @@ import java.util.Map;
 * Assumes that all url components are UTF-8 encoded.
 */
 public final class Uri {
+  public static final Uri EMPTY_URI = Uri.parse("");
+
   private final String text;
   private final String scheme;
   private final String authority;

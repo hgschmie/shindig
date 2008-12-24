@@ -126,10 +126,9 @@ public class LocaleSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (messages == null && localeMsgs.size() == 0) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must either contain a @messages attribute or <msg> elements!");
-    }
+      if (messages == null && localeMsgs.size() == 0) {
+          throw new SpecParserException(name().getLocalPart() + " must either contain a @messages attribute or <msg> elements!");
+      }
   }
 
   public static enum Direction {
@@ -163,10 +162,10 @@ public class LocaleSpec extends SpecElement {
     public Parser(final QName name) {
       super(name);
       register(new LocaleMsg.Parser());
-      attrLang = buildQName(name, ATTR_LANG);
-      attrCountry = buildQName(name, ATTR_COUNTRY);
-      attrLanguageDirection = buildQName(name, ATTR_LANGUAGE_DIRECTION);
-      attrMessages = buildQName(name, ATTR_MESSAGES);
+      this.attrLang = buildQName(name, ATTR_LANG);
+      this.attrCountry = buildQName(name, ATTR_COUNTRY);
+      this.attrLanguageDirection = buildQName(name, ATTR_LANGUAGE_DIRECTION);
+      this.attrMessages = buildQName(name, ATTR_MESSAGES);
     }
 
     @Override

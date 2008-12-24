@@ -21,11 +21,17 @@ package org.apache.shindig.gadgets.stax;
  *
  */
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.stax.model.EnumValue;
+import org.apache.shindig.gadgets.stax.model.UserPref;
 
 public final class StaxUtils {
-
-  public static final Uri EMPTY_URI = Uri.parse("");
 
   private StaxUtils() {
   }
@@ -35,10 +41,40 @@ public final class StaxUtils {
       try {
         return Uri.parse(value);
       } catch (IllegalArgumentException e) {
-        return EMPTY_URI;
+        return Uri.EMPTY_URI;
       }
     } else {
-      return EMPTY_URI;
+      return Uri.EMPTY_URI;
     }
+  }
+
+  public static final List<Pair<String, String>> orderEnumValues(
+      final UserPref userPref) {
+    final List<EnumValue> enumValues = userPref.getEnumValues();
+    if (enumValues.size() == 0) {
+      return Collections.<Pair<String, String>> emptyList();
+    }
+
+    final List<Pair<String, String>> pairs = new LinkedList<Pair<String, String>>();
+    for (EnumValue value : enumValues) {
+      pairs.add(new Pair<String, String>(value.getValue(), value
+          .getDisplayValue()));
+    }
+
+    return Collections.unmodifiableList(pairs);
+  }
+
+  public static final Map<String, String> enumValues(final UserPref userPref) {
+    final List<EnumValue> enumValues = userPref.getEnumValues();
+    if (enumValues.size() == 0) {
+      return Collections.<String, String> emptyMap();
+    }
+
+    final Map<String, String> values = new HashMap<String, String>();
+    for (EnumValue value : enumValues) {
+      values.put(value.getValue(), value.getDisplayValue());
+    }
+
+    return Collections.unmodifiableMap(values);
   }
 }

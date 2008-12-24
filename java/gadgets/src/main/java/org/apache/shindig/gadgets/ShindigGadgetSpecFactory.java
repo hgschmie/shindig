@@ -86,8 +86,6 @@ public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
         } catch (XMLStreamException xse) {
             throw new SpecParserException("Could not parse GadgetSpec: ", xse);
         }
-
-        LOG.info("Spec is " + gadgetSpec);
         return gadgetSpec;
     }
 }

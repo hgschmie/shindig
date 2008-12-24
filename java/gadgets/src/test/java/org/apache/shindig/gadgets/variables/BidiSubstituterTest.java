@@ -17,19 +17,20 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import org.apache.shindig.gadgets.variables.BidiSubstituter;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
+import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.LTR;
+import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.RTL;
 import junit.framework.TestCase;
+
+import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
 
 public class BidiSubstituterTest extends TestCase {
 
   public void testBidiWithRtl() {
-    assertRightToLeft(BidiSubstituter.RTL);
+    assertRightToLeft(RTL.toString());
   }
 
   public void testBidiWithLtr() {
-    assertLeftToRight(BidiSubstituter.LTR);
+    assertLeftToRight(LTR.toString());
   }
 
   public void testBidiWithEmpty() {
@@ -40,20 +41,20 @@ public class BidiSubstituterTest extends TestCase {
     assertLeftToRight(null);
   }
 
-  private void assertRightToLeft(String direction) {
+  private void assertRightToLeft(final String direction) {
     assertSubstitutions(direction, BidiSubstituter.RIGHT,
-        BidiSubstituter.LEFT, BidiSubstituter.RTL, BidiSubstituter.LTR);
+        BidiSubstituter.LEFT, RTL, LTR);
   }
 
-  private void assertLeftToRight(String direction) {
+  private void assertLeftToRight(final String direction) {
     assertSubstitutions(direction, BidiSubstituter.LEFT,
-        BidiSubstituter.RIGHT, BidiSubstituter.LTR, BidiSubstituter.RTL);
+        BidiSubstituter.RIGHT, LTR, RTL);
   }
 
   private void assertSubstitutions(String direction,
-      String startEdge, String endEdge, String dir, String reverseDir) {
+      String startEdge, String endEdge, Direction dir, Direction reverseDir) {
     Substitutions substitutions = new Substitutions();
-    BidiSubstituter.addSubstitutions(substitutions, direction);
+    BidiSubstituter.addSubstitutions(substitutions, Direction.parse(direction));
 
     assertEquals(startEdge, substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.START_EDGE));
