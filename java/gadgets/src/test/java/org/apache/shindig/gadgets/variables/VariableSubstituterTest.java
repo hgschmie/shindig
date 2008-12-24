@@ -18,8 +18,6 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
@@ -27,22 +25,24 @@ import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.UserPrefs;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
 import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
-import org.apache.shindig.gadgets.stax.StaxUtils;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
+
+import static org.junit.Assert.assertEquals;
 
 public class VariableSubstituterTest {
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
   private final VariableSubstituter substituter = new VariableSubstituter(messageBundleFactory);
 
   private GadgetSpec substitute(String xml) throws Exception {
-    return substituter.substitute(new GadgetContext(), new DefaultGadgetSpec(Uri.parse("#"), xml));
+    return substituter.substitute(new GadgetContext(), (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(Uri.parse("#"), xml)));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class VariableSubstituterTest {
     		         "<UserPref name='foo'/>" +
     		         "<Content/>" +
     		         "</Module>";
-    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse("#"), xml);
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(Uri.parse("#"), xml));
     GadgetContext context = new GadgetContext() {
       @Override
       public UserPrefs getUserPrefs() {

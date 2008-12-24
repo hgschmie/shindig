@@ -18,18 +18,19 @@
  */
 package org.apache.shindig.gadgets;
 
+import java.util.Arrays;
+
+import org.apache.shindig.common.ContainerConfig;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
+
 import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_REQUIRED_KEY;
 import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_SUFFIX_KEY;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
-
-import java.util.Arrays;
-
-import org.apache.shindig.common.ContainerConfig;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
-import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 public class HashLockedDomainServiceTest extends EasyMockTestCase {
   private HashLockedDomainService lockedDomainService;
@@ -50,7 +51,8 @@ public class HashLockedDomainServiceTest extends EasyMockTestCase {
     }
 
     try {
-      return new DefaultGadgetSpec(Uri.parse(url), gadgetXml);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(gadgetXml, new ShindigGadgetSpec.Parser(Uri.parse(url), null));
+
     } catch (GadgetException e) {
       return null;
     }

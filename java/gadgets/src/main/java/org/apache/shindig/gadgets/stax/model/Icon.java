@@ -29,6 +29,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Icon extends SpecElement {
 
@@ -39,9 +41,19 @@ public class Icon extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Icon(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public Icon(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
+
+    protected Icon(final Icon icon, final Substitutions substituter) {
+        super(icon);
+        addText(substituter.substituteString(icon.getText()));
+    }
+
+    public Icon substitute(final Substitutions substituter) {
+        return new Icon(this, substituter);
+    }
+
 
   public String getMode() {
     return attrDefault(ATTR_MODE);
@@ -88,18 +100,18 @@ public class Icon extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<Icon> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_MODE, ATTR_TYPE);
     }
 
     @Override
     protected Icon newElement() {
-      return new Icon(name(), getAttrNames());
+      return new Icon(name(), getAttrNames(), getBase());
     }
 
     @Override

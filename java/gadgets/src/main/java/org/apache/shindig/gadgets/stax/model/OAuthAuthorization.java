@@ -36,8 +36,8 @@ public class OAuthAuthorization extends SpecElement {
 
   public static final String ATTR_URL = "url";
 
-  public OAuthAuthorization(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public OAuthAuthorization(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public Uri getUrl() {
@@ -64,18 +64,18 @@ public class OAuthAuthorization extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<OAuthAuthorization> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_URL);
     }
 
     @Override
     protected OAuthAuthorization newElement() {
-      return new OAuthAuthorization(name(), getAttrNames());
+      return new OAuthAuthorization(name(), getAttrNames(), getBase());
     }
   }
 }

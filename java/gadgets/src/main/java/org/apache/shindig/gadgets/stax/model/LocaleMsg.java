@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class LocaleMsg extends SpecElement {
@@ -41,8 +42,8 @@ public class LocaleMsg extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public LocaleMsg(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public LocaleMsg(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public String getName() {
@@ -86,18 +87,18 @@ public class LocaleMsg extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_NAME, ATTR_DESC);
     }
 
     @Override
     protected LocaleMsg newElement() {
-      return new LocaleMsg(name(), getAttrNames());
+      return new LocaleMsg(name(), getAttrNames(), getBase());
     }
 
     @Override

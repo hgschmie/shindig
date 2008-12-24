@@ -37,6 +37,8 @@ import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -141,7 +143,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='html'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(Uri.parse(SPEC_URL), null));
     replay();
 
     Gadget gadget = new Gadget()
@@ -165,7 +167,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='html'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(Uri.parse(SPEC_URL), null));
 
     expect(lockedDomainService.getLockedDomainForGadget(isA(GadgetSpec.class), eq(CONTAINER)))
         .andReturn("locked.example.org");
@@ -193,7 +195,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
           " <Content type='url' href='" + StringEscapeUtils.escapeHtml(TYPE_URL_HREF) + "'/>" +
           " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
           "</Module>";
-    GadgetSpec spec = new DefaultGadgetSpec(Uri.parse(SPEC_URL), xml);
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(Uri.parse(SPEC_URL), null));
     replay();
 
     Gadget gadget = new Gadget()

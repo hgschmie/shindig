@@ -30,7 +30,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class StaxGadgetSpec extends SpecElement {
 
@@ -42,8 +44,28 @@ public class StaxGadgetSpec extends SpecElement {
 
   private List<Content> contents = new ArrayList<Content>();
 
-  public StaxGadgetSpec(final QName name) {
-    super(name, Collections.<String, QName> emptyMap());
+    public StaxGadgetSpec(final QName name, final Uri base) {
+    super(name, Collections.<String, QName> emptyMap(), base);
+  }
+
+  protected StaxGadgetSpec(final StaxGadgetSpec gadgetSpec, final Substitutions substituter) {
+    super(gadgetSpec);
+
+    setModulePrefs(gadgetSpec.getModulePrefs().substitute(substituter));
+    for (final UserPref pref : gadgetSpec.getUserPrefs()) {
+        addUserPref(pref.substitute(substituter));
+    }
+  }
+
+  /**
+   * Performs substitutions on the spec. See individual elements for
+   * details on what gets substituted.
+   *
+   * @param substituter
+   * @return The substituted spec.
+   */
+  public StaxGadgetSpec substitute(final Substitutions substituter) {
+      return new StaxGadgetSpec(this, substituter);
   }
 
   public ModulePrefs getModulePrefs() {
@@ -99,20 +121,21 @@ public class StaxGadgetSpec extends SpecElement {
 
   public static class Parser<T extends StaxGadgetSpec> extends
       SpecElement.Parser<StaxGadgetSpec> {
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+
+    public Parser(final Uri url) {
+      this(new QName(ELEMENT_NAME), url);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new ModulePrefs.Parser());
-      register(new UserPref.Parser());
-      register(new Content.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new ModulePrefs.Parser(base));
+      register(new UserPref.Parser(base));
+      register(new Content.Parser(base));
     }
 
     @Override
     protected StaxGadgetSpec newElement() {
-      return new StaxGadgetSpec(name());
+      return new StaxGadgetSpec(name(), getBase());
     }
 
     @Override

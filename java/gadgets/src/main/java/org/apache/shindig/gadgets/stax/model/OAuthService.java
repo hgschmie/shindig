@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthService extends SpecElement {
@@ -40,8 +41,8 @@ public class OAuthService extends SpecElement {
   private OAuthAccess oAuthAccess = null;
   private OAuthAuthorization oAuthAuthorization = null;
 
-  public OAuthService(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public OAuthService(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public String getName() {
@@ -130,21 +131,21 @@ public class OAuthService extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<OAuthService> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new OAuthRequest.Parser());
-      register(new OAuthAccess.Parser());
-      register(new OAuthAuthorization.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new OAuthRequest.Parser(base));
+      register(new OAuthAccess.Parser(base));
+      register(new OAuthAuthorization.Parser(base));
       register(ATTR_NAME);
     }
 
     @Override
     protected OAuthService newElement() {
-      return new OAuthService(name(), getAttrNames());
+      return new OAuthService(name(), getAttrNames(), getBase());
     }
 
     @Override

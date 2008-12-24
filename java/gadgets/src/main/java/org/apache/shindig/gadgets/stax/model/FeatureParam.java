@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class FeatureParam extends SpecElement {
@@ -38,8 +39,8 @@ public class FeatureParam extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public FeatureParam(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public FeatureParam(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public String getName() {
@@ -75,18 +76,18 @@ public class FeatureParam extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<FeatureParam> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_NAME);
     }
 
     @Override
     protected FeatureParam newElement() {
-      return new FeatureParam(name(), getAttrNames());
+      return new FeatureParam(name(), getAttrNames(), getBase());
     }
 
     @Override

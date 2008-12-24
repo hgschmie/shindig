@@ -25,26 +25,28 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.shindig.common.uri.Uri;
+
 public class Require extends Feature {
 
   public static final String ELEMENT_NAME = "Require";
 
-  public Require(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames, true);
+  public Require(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base, true);
   }
 
   public static class Parser extends Feature.Parser {
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
     }
 
     @Override
     protected Require newElement() {
-      return new Require(name(), getAttrNames());
+      return new Require(name(), getAttrNames(), getBase());
     }
   }
 }

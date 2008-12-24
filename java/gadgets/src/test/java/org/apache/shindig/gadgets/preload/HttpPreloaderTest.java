@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets.preload;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -39,14 +34,20 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for HttpPreloader.
@@ -112,7 +113,7 @@ public class HttpPreloaderTest {
         "<Module><ModulePrefs title=''>" +
         " <Preload href='" + PRELOAD_HREF + "'/>" +
         "</ModulePrefs><Content/></Module>";
-    GadgetSpec gadget = new DefaultGadgetSpec(GADGET_URL, xml);
+    GadgetSpec gadget =  (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(GADGET_URL, null));
     Preloader preloader = new HttpPreloader(fetchers);
 
     Map<String, Callable<PreloadedData>> preloaded = preloader.createPreloadTasks(context, gadget);
@@ -129,7 +130,7 @@ public class HttpPreloaderTest {
         "<Module><ModulePrefs title=''>" +
         " <Preload href='" + PRELOAD_HREF + "' authz='signed' sign_viewer='false'/>" +
         "</ModulePrefs><Content/></Module>";
-    GadgetSpec gadget = new DefaultGadgetSpec(GADGET_URL, xml);
+    GadgetSpec gadget =  (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(GADGET_URL, null));
     Preloader preloader = new HttpPreloader(fetchers);
 
     Map<String, Callable<PreloadedData>> preloaded = preloader.createPreloadTasks(context, gadget);
@@ -150,7 +151,7 @@ public class HttpPreloaderTest {
         // This is kind of a bogus test since oauth params aren't set.
         " <Preload href='" + PRELOAD_HREF + "' authz='oauth'/>" +
         "</ModulePrefs><Content/></Module>";
-    GadgetSpec gadget = new DefaultGadgetSpec(GADGET_URL, xml);
+    GadgetSpec gadget =  (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(GADGET_URL, null));
     Preloader preloader = new HttpPreloader(fetchers);
 
     Map<String, Callable<PreloadedData>> preloaded = preloader.createPreloadTasks(context, gadget);
@@ -169,7 +170,7 @@ public class HttpPreloaderTest {
         " <Preload href='" + PRELOAD_HREF + "'/>" +
         " <Preload href='" + PRELOAD_HREF2 + "'/>" +
         "</ModulePrefs><Content/></Module>";
-    GadgetSpec gadget = new DefaultGadgetSpec(GADGET_URL, xml);
+    GadgetSpec gadget =  (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(GADGET_URL, null));
     Preloader preloader = new HttpPreloader(fetchers);
 
     Map<String, Callable<PreloadedData>> preloaded = preloader.createPreloadTasks(context, gadget);
@@ -190,7 +191,7 @@ public class HttpPreloaderTest {
         " <Preload href='" + PRELOAD_HREF + "' views='foo,bar,baz'/>" +
         " <Preload href='" + PRELOAD_HREF2 + "' views='bar'/>" +
         "</ModulePrefs><Content/></Module>";
-    GadgetSpec gadget = new DefaultGadgetSpec(GADGET_URL, xml);
+    GadgetSpec gadget =  (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(GADGET_URL, null));
     Preloader preloader = new HttpPreloader(fetchers);
 
     GadgetContext fooViewContext = new GadgetContext() {

@@ -56,6 +56,8 @@ public abstract class SpecElement {
 
   private final QName qName;
 
+    private final Uri base;
+
   private final Map<String, QName> attrNames;
 
   private final Map<String, String> attrs = new HashMap<String, String>();
@@ -70,9 +72,10 @@ public abstract class SpecElement {
 
   private boolean cdataFlag = false;
 
-  protected SpecElement(final QName qName, final Map<String, QName> attrNames) {
+    protected SpecElement(final QName qName, final Map<String, QName> attrNames, final Uri base) {
     this.qName = qName;
     this.attrNames = attrNames;
+    this.base = base;
 
     nsAttrs = new HashMap<QName, String>();
     namespaces = new HashMap<String, String>();
@@ -83,6 +86,7 @@ public abstract class SpecElement {
   protected SpecElement(final SpecElement specElement) {
     this.qName = specElement.name();
     this.attrNames = specElement.attrNames();
+    this.base = specElement.getBase();
 
     this.nsAttrs = specElement.nsAttrs();
     this.namespaces = specElement.namespaces();
@@ -96,6 +100,10 @@ public abstract class SpecElement {
       setAttr(key, specElement.attr(key));
     }
   }
+
+    protected Uri getBase() {
+        return base;
+    }
 
   // ======================================================================================================================================
 
@@ -321,12 +329,19 @@ public abstract class SpecElement {
 
     private final QName qName;
 
-    protected Parser(final QName qName) {
+    private final Uri base;
+
+    protected Parser(final QName qName, final Uri base) {
       this.qName = qName;
+      this.base = base;
     }
 
     public QName name() {
       return qName;
+    }
+
+    protected Uri getBase() {
+        return base;
     }
 
     protected Map<String, QName> getAttrNames() {
@@ -371,7 +386,7 @@ public abstract class SpecElement {
           Parser<? extends SpecElement> parser = children.get(elementName);
           if (parser == null) {
             LOG.fine("No idea what to do with " + elementName + ", ignoring!");
-            parser = new GenericElement.Parser(elementName);
+            parser = new GenericElement.Parser(elementName, getBase());
           }
 
           SpecElement child = parser.parse(reader);

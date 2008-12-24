@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public class OAuthSpec extends SpecElement {
@@ -38,8 +39,8 @@ public class OAuthSpec extends SpecElement {
 
   private Map<String, OAuthService> services = new HashMap<String, OAuthService>();
 
-  public OAuthSpec(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public OAuthSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public Map<String, OAuthService> getServices() {
@@ -68,18 +69,18 @@ public class OAuthSpec extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<OAuthSpec> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new OAuthService.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new OAuthService.Parser(base));
     }
 
     @Override
     protected OAuthSpec newElement() {
-      return new OAuthSpec(name(), getAttrNames());
+      return new OAuthSpec(name(), getAttrNames(), getBase());
     }
 
     @Override

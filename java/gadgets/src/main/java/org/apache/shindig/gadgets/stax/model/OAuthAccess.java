@@ -25,26 +25,28 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.shindig.common.uri.Uri;
+
 public class OAuthAccess extends OAuthElement {
 
   public static final String ELEMENT_NAME = "Access";
 
-  public OAuthAccess(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames, false);
+  public OAuthAccess(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base, false);
   }
 
   public static class Parser extends OAuthElement.Parser {
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
     }
 
     @Override
     protected OAuthAccess newElement() {
-      return new OAuthAccess(name(), getAttrNames());
+      return new OAuthAccess(name(), getAttrNames(), getBase());
     }
   }
 }

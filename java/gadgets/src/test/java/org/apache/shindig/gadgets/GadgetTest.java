@@ -18,13 +18,14 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Gadget
@@ -50,7 +51,7 @@ public class GadgetTest {
   public void getLocale() throws Exception {
     Gadget gadget = new Gadget()
         .setContext(context)
-        .setSpec(new DefaultGadgetSpec(Uri.parse(SPEC_URL), SPEC_XML));
+        .setSpec((ShindigGadgetSpec) StaxTestUtils.parseElement(SPEC_XML, new ShindigGadgetSpec.Parser(Uri.parse(SPEC_URL), null)));
 
     LocaleSpec localeSpec = gadget.getLocale();
     assertEquals("VALUE", StaxMessageBundleFactory.addMessages(null, localeSpec.getLocaleMsgs()) .get("name"));

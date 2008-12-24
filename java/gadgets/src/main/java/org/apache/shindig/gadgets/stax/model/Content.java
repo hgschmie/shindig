@@ -47,8 +47,8 @@ public class Content extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Content(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public Content(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public Type getType() {
@@ -148,7 +148,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */
@@ -164,19 +164,19 @@ public class Content extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<Content> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT,
           ATTR_PREFERRED_WIDTH);
     }
 
     @Override
     protected Content newElement() {
-      return new Content(name(), getAttrNames());
+      return new Content(name(), getAttrNames(), getBase());
     }
 
     @Override

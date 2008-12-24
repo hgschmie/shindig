@@ -22,8 +22,9 @@ import java.net.URI;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 
 /**
  * Fakes out a gadget spec factory
@@ -44,18 +45,20 @@ public class FakeGadgetSpecFactory implements GadgetSpecFactory {
     if (gadget.contains("nokey")) {
       // For testing key lookup failures
       String nokeySpec = baseSpec.replace(SERVICE_NAME, SERVICE_NAME_NO_KEY);
-      return new DefaultGadgetSpec(uri, nokeySpec);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(nokeySpec, new ShindigGadgetSpec.Parser(uri, null));
+
     } else if (gadget.contains("header")) {
       // For testing oauth data in header
       String headerSpec = baseSpec.replace("uri-query", "auth-header");
-      return new DefaultGadgetSpec(uri, headerSpec);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(headerSpec, new ShindigGadgetSpec.Parser(uri, null));
+
     } else if (gadget.contains("body")) {
       // For testing oauth data in body
       String bodySpec = baseSpec.replace("uri-query", "post-body");
       bodySpec = bodySpec.replace("'GET'", "'POST'");
-      return new DefaultGadgetSpec(uri, bodySpec);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(bodySpec, new ShindigGadgetSpec.Parser(uri, null));
     } else {
-      return new DefaultGadgetSpec(uri, baseSpec);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(baseSpec, new ShindigGadgetSpec.Parser(uri, null));
     }
   }
 }

@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -57,8 +58,8 @@ public class UserPref extends SpecElement {
 
   private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
-  public UserPref(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   protected UserPref(final UserPref userPref, final Substitutions substituter) {
@@ -254,7 +255,7 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */
@@ -270,13 +271,13 @@ public class UserPref extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<UserPref> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new EnumValue.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new EnumValue.Parser(base));
       register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED,
           ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
           ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS,
@@ -286,7 +287,7 @@ public class UserPref extends SpecElement {
 
     @Override
     protected UserPref newElement() {
-      return new UserPref(name(), getAttrNames());
+      return new UserPref(name(), getAttrNames(), getBase());
     }
 
     @Override

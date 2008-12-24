@@ -39,9 +39,9 @@ public abstract class OAuthElement extends SpecElement {
 
   private boolean request = false;
 
-  protected OAuthElement(final QName name, final Map<String, QName> attrNames,
+  protected OAuthElement(final QName name, final Map<String, QName> attrNames, final Uri base,
       boolean request) {
-    super(name, attrNames);
+    super(name, attrNames, base);
     this.request = request;
   }
 
@@ -121,8 +121,8 @@ public abstract class OAuthElement extends SpecElement {
 
   public static abstract class Parser extends SpecElement.Parser<OAuthElement> {
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_URL, ATTR_METHOD, ATTR_PARAM_LOCATION);
     }
 
