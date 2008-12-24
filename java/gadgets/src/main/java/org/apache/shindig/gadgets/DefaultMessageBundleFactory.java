@@ -30,7 +30,8 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.MessageBundle;
+import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 
 import com.google.inject.Inject;
@@ -46,7 +47,6 @@ import com.google.inject.name.Named;
 @Singleton
 public class DefaultMessageBundleFactory implements MessageBundleFactory {
   private static final Locale ALL_ALL = new Locale("all", "ALL");
-  public static final String CACHE_NAME = "messageBundles";
   static final Logger LOG = Logger.getLogger(DefaultMessageBundleFactory.class.getName());
   private final HttpFetcher fetcher;
   final SoftExpiringCache<String, MessageBundle> cache;
@@ -105,7 +105,7 @@ public class DefaultMessageBundleFactory implements MessageBundleFactory {
     }
     Uri messages = localeSpec.getMessages();
     if (messages == null || messages.toString().length() == 0) {
-      child = localeSpec.getMessageBundle();
+      child = StaxUtils.getMessageBundle(localeSpec);
     } else {
       child = fetchBundle(localeSpec, ignoreCache);
     }

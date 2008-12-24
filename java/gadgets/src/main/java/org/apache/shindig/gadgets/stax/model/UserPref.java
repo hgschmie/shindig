@@ -21,8 +21,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -71,7 +71,7 @@ public class UserPref extends SpecElement {
   private String onChange = null;
   private String group = null;
 
-  private List<EnumValue> enumValues = new ArrayList<EnumValue>();
+  private List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
   public UserPref(final QName name) {
     super(name);

@@ -33,6 +33,8 @@ import org.apache.shindig.gadgets.UrlGenerator;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.Pair;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.LinkSpec;
 import org.apache.shindig.gadgets.stax.model.ModulePrefs;
@@ -216,12 +218,12 @@ public class JsonRpcHandler {
     }
 
     private List<JSONObject> getOrderedEnums(UserPref pref) throws JSONException {
-      List<UserPref.EnumValuePair> orderedEnums = pref.getOrderedEnumValues();
+      List<Pair<String, String>> orderedEnums = StaxUtils.orderEnumValues(pref);
       List<JSONObject> jsonEnums = new ArrayList<JSONObject>(orderedEnums.size());
-      for (UserPref.EnumValuePair evp : orderedEnums) {
+      for (Pair<String, String> evp : orderedEnums) {
         JSONObject curEnum = new JSONObject();
-        curEnum.put("value", evp.getValue());
-        curEnum.put("displayValue", evp.getDisplayValue());
+        curEnum.put("value", evp.getKey());
+        curEnum.put("displayValue", evp.getValue());
         jsonEnums.add(curEnum);
       }
       return jsonEnums;

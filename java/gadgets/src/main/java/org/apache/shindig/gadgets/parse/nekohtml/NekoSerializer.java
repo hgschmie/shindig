@@ -36,6 +36,7 @@ public class NekoSerializer extends HtmlSerializer
   public NekoSerializer() {
   }
 
+  @Override
   public String serializeImpl(Document doc) {
     try {
       StringWriter sw = createWriter(doc);
@@ -49,7 +50,7 @@ public class NekoSerializer extends HtmlSerializer
       return null;
     }
   }
-  
+
   public static void serialize(Node n, Appendable output) throws IOException {
     switch (n.getNodeType()) {
       case Node.CDATA_SECTION_NODE: {

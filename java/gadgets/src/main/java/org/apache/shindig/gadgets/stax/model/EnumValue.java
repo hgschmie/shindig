@@ -1,5 +1,3 @@
-package org.apache.shindig.gadgets.stax.model;
-
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +19,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+package org.apache.shindig.gadgets.stax.model;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -32,10 +32,10 @@ public class EnumValue extends SpecElement {
   public static final String ELEMENT_NAME = "EnumValue";
 
   private static final String ATTR_VALUE = "value";
-  private static final String ATTR_DEFAULT_VALUE = "default_value";
+  private static final String ATTR_DISPLAY_VALUE = "display_value";
 
   private String value = null;
-  private String defaultValue = null;
+  private String displayValue = null;
 
   public EnumValue(final QName name) {
     super(name);
@@ -45,16 +45,16 @@ public class EnumValue extends SpecElement {
     return StringUtils.defaultString(value);
   }
 
-  public String getDefaultValue() {
-    return StringUtils.defaultString(defaultValue);
+  public String getDisplayValue() {
+    return StringUtils.defaultString(displayValue);
   }
 
   private void setValue(final String value) {
     this.value = value;
   }
 
-  private void setDefaultValue(final String defaultValue) {
-    this.defaultValue = defaultValue;
+  private void setDisplayValue(final String displayValue) {
+    this.displayValue = displayValue;
   }
 
   @Override
@@ -65,9 +65,9 @@ public class EnumValue extends SpecElement {
     if (value != null) {
       writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
     }
-    if (defaultValue != null) {
+    if (displayValue != null) {
       writer
-          .writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
+          .writeAttribute(namespaceURI, ATTR_DISPLAY_VALUE, getDisplayValue());
     }
   }
 
@@ -82,7 +82,7 @@ public class EnumValue extends SpecElement {
   public static class Parser extends SpecElement.Parser<EnumValue> {
 
     private final QName attrValue;
-    private final QName attrDefaultValue;
+    private final QName attrDisplayValue;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -91,7 +91,7 @@ public class EnumValue extends SpecElement {
     public Parser(final QName name) {
       super(name);
       this.attrValue = buildQName(name, ATTR_VALUE);
-      this.attrDefaultValue = buildQName(name, ATTR_DEFAULT_VALUE);
+      this.attrDisplayValue = buildQName(name, ATTR_DISPLAY_VALUE);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class EnumValue extends SpecElement {
         final String value) {
       if (name.equals(attrValue)) {
         enumValue.setValue(value);
-      } else if (name.equals(attrDefaultValue)) {
-        enumValue.setDefaultValue(value);
+      } else if (name.equals(attrDisplayValue)) {
+        enumValue.setDisplayValue(value);
       } else {
         super.setAttribute(enumValue, name, value);
       }

@@ -35,7 +35,11 @@ public class LocaleMsg extends SpecElement {
 
   private static final String ATTR_NAME = "name";
 
+  /** Non 0.8 in gadgetspec, present in message bundle */
+  private static final String ATTR_DESC = "name";
+
   private String name = null;
+  private String desc = null;
 
   private StringBuilder text = new StringBuilder();
 
@@ -47,6 +51,10 @@ public class LocaleMsg extends SpecElement {
     return StringUtils.defaultString(name);
   }
 
+  public String getDesc() {
+    return StringUtils.defaultString(desc);
+  }
+
   @Override
   public String getText() {
     return text.toString();
@@ -54,6 +62,10 @@ public class LocaleMsg extends SpecElement {
 
   private void setName(final String name) {
     this.name = name;
+  }
+
+  private void setDesc(final String desc) {
+    this.desc = desc;
   }
 
   private void addText(final String text) {
@@ -68,6 +80,10 @@ public class LocaleMsg extends SpecElement {
     if (name != null) {
       writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
     }
+
+    if (desc != null) {
+      writer.writeAttribute(namespaceURI, ATTR_DESC, getDesc());
+    }
   }
 
   @Override
@@ -81,6 +97,7 @@ public class LocaleMsg extends SpecElement {
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
     private final QName attrName;
+    private final QName attrDesc;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -89,6 +106,7 @@ public class LocaleMsg extends SpecElement {
     public Parser(final QName name) {
       super(name);
       this.attrName = buildQName(name, ATTR_NAME);
+      this.attrDesc = buildQName(name, ATTR_DESC);
     }
 
     @Override
@@ -101,6 +119,8 @@ public class LocaleMsg extends SpecElement {
         final String value) {
       if (name.equals(attrName)) {
         msg.setName(value);
+      } else if (name.equals(attrDesc)) {
+        msg.setDesc(value);
       } else {
         super.setAttribute(msg, name, value);
       }

@@ -41,6 +41,7 @@ public class DefaultGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
         super (fetcher, cacheProvider, refresh);
     }
 
+    @Override
     protected GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
         return new DefaultGadgetSpec(uri, xml);
     }

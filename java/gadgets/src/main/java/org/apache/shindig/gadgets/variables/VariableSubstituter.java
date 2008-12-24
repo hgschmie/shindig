@@ -22,7 +22,8 @@ import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.MessageBundle;
+import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
 
 import com.google.inject.Inject;
 
@@ -45,7 +46,7 @@ public class VariableSubstituter {
   public GadgetSpec substitute(GadgetContext context, GadgetSpec spec) throws GadgetException {
     MessageBundle bundle =
         messageBundleFactory.getBundle(spec, context.getLocale(), context.getIgnoreCache());
-    String dir = bundle.getLanguageDirection();
+    final Direction dir = bundle.getLanguageDirection();
 
     Substitutions substituter = new Substitutions();
     substituter.addSubstitutions(Substitutions.Type.MESSAGE, bundle.getMessages());

@@ -265,6 +265,7 @@ public class ConcatProxyServlet extends InjectedServlet {
    * there's no output.
    */
   private static class NullServletOutputStream extends ServletOutputStream {
+    @Override
     public void write(int b) throws IOException {
     }
 

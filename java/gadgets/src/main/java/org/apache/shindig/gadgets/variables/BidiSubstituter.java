@@ -17,6 +17,11 @@
  */
 package org.apache.shindig.gadgets.variables;
 
+import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.LTR;
+import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.RTL;
+
+import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
+
 /**
  * Provides static hangman substitutions for bidirectional language support.
  * Useful for generating internationalized layouts using CSS.
@@ -29,18 +34,16 @@ public class BidiSubstituter {
 
   public static final String RIGHT = "right";
   public static final String LEFT = "left";
-  public static final String RTL = "rtl";
-  public static final String LTR = "ltr";
 
-  public static void addSubstitutions(Substitutions substituter, String dir) {
-    boolean rtl = RTL.equals(dir);
+  public static void addSubstitutions(Substitutions substituter, final Direction dir) {
+    boolean rtl = dir == RTL;
     substituter.addSubstitution(Substitutions.Type.BIDI, START_EDGE,
         rtl ? RIGHT : LEFT);
     substituter.addSubstitution(Substitutions.Type.BIDI, END_EDGE,
         rtl ? LEFT : RIGHT);
     substituter.addSubstitution(Substitutions.Type.BIDI, DIR,
-        rtl ? RTL : LTR);
+        rtl ? RTL.toString() : LTR.toString());
     substituter.addSubstitution(Substitutions.Type.BIDI, REVERSE_DIR,
-        rtl ? LTR : RTL);
+        rtl ? LTR.toString() : RTL.toString());
   }
 }

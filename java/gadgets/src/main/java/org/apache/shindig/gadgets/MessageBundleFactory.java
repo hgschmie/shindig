@@ -21,12 +21,15 @@ package org.apache.shindig.gadgets;
 import java.util.Locale;
 
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.MessageBundle;
+import org.apache.shindig.gadgets.stax.MessageBundle;
 
 /**
  * Factory of message bundles
  */
 public interface MessageBundleFactory {
+
+    String CACHE_NAME = "messageBundles";
+
   /**
    * Retrieves a messagMessageBundle for the provided GadgetSpec and Locale. Implementations must be
    * sure to perform proper merging of message bundles of lower specifity with exact matches.
