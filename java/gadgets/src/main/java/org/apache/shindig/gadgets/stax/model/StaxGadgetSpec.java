@@ -53,18 +53,22 @@ public class StaxGadgetSpec extends SpecElement {
     super(gadgetSpec);
 
     setModulePrefs(gadgetSpec.getModulePrefs().substitute(substituter));
+
     for (final UserPref pref : gadgetSpec.getUserPrefs()) {
       addUserPref(pref.substitute(substituter));
     }
+
+    contents = gadgetSpec.getContents();
   }
 
   /**
    * Performs substitutions on the spec. See individual elements for details on
    * what gets substituted.
-   * 
+   *
    * @param substituter
    * @return The substituted spec.
    */
+  @Override
   public StaxGadgetSpec substitute(final Substitutions substituter) {
     return new StaxGadgetSpec(this, substituter);
   }
