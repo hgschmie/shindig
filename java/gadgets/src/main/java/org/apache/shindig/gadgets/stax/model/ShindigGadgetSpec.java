@@ -59,7 +59,7 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
   }
 
   protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec,
-      final Substitutions substituter)  {
+      final Substitutions substituter) {
     super(gadgetSpec, substituter);
 
     this.checksum = gadgetSpec.getChecksum();
