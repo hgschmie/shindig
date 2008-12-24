@@ -136,7 +136,7 @@ public class LocaleSpec extends SpecElement {
 
     public static Direction parse(String value) {
       for (Direction direction : Direction.values()) {
-        if (direction.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(direction.toString(), value)) {
           return direction;
         }
       }

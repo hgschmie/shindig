@@ -19,10 +19,12 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 import junit.framework.TestCase;
+
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.StaxUtils;
+import org.apache.shindig.gadgets.stax.model.UserPref;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPrefTest extends TestCase {
   public void testBasic() throws Exception {
@@ -32,11 +34,11 @@ public class UserPrefTest extends TestCase {
                  " default_value=\"default_value\"" +
                  " required=\"true\"" +
                  " datatype=\"hidden\"/>";
-    UserPref userPref = new UserPref(XmlUtil.parse(xml));
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser());
     assertEquals("name", userPref.getName());
     assertEquals("display_name", userPref.getDisplayName());
     assertEquals("default_value", userPref.getDefaultValue());
-    assertEquals(true, userPref.getRequired());
+    assertEquals(true, userPref.isRequired());
     assertEquals(UserPref.DataType.HIDDEN, userPref.getDataType());
   }
 
@@ -45,10 +47,10 @@ public class UserPrefTest extends TestCase {
                  " <EnumValue value=\"0\" display_value=\"Zero\"/>" +
                  " <EnumValue value=\"1\"/>" +
                  "</UserPref>";
-    UserPref userPref = new UserPref(XmlUtil.parse(xml));
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser());
     assertEquals(2, userPref.getEnumValues().size());
-    assertEquals("Zero", userPref.getEnumValues().get("0"));
-    assertEquals("1", userPref.getEnumValues().get("1"));
+    assertEquals("Zero", StaxUtils.enumValues(userPref).get("0"));
+    assertEquals("1", StaxUtils.enumValues(userPref).get("1"));
   }
 
   public void testSubstitutions() throws Exception {
@@ -66,17 +68,16 @@ public class UserPrefTest extends TestCase {
     substituter.addSubstitution(Substitutions.Type.MESSAGE,
         "default_value", defaultValue);
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "dv", displayValue);
-    UserPref userPref
-        = new UserPref(XmlUtil.parse(xml)).substitute(substituter);
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser()).substitute(substituter);
     assertEquals(displayName, userPref.getDisplayName());
     assertEquals(defaultValue, userPref.getDefaultValue());
-    assertEquals(displayValue, userPref.getEnumValues().get("0"));
+    assertEquals(displayValue, StaxUtils.enumValues(userPref).get("0"));
   }
 
   public void testMissingName() throws Exception {
     String xml = "<UserPref datatype=\"string\"/>";
     try {
-      new UserPref(XmlUtil.parse(xml));
+      StaxTestUtils.parseElement(xml, new UserPref.Parser());
       fail("No exception thrown when name is missing");
     } catch (SpecParserException e) {
       // OK
@@ -85,7 +86,7 @@ public class UserPrefTest extends TestCase {
 
   public void testMissingDataType() throws Exception {
     String xml = "<UserPref name=\"name\"/>";
-    UserPref pref = new UserPref(XmlUtil.parse(xml));
+    UserPref pref = StaxTestUtils.parseElement(xml, new UserPref.Parser());
     assertEquals(UserPref.DataType.STRING, pref.getDataType());
   }
 
@@ -94,7 +95,7 @@ public class UserPrefTest extends TestCase {
                  " <EnumValue/>" +
                  "</UserPref>";
     try {
-      new UserPref(XmlUtil.parse(xml));
+      StaxTestUtils.parseElement(xml, new UserPref.Parser());
       fail("No exception thrown when EnumValue@value is missing");
     } catch (SpecParserException e) {
       // OK

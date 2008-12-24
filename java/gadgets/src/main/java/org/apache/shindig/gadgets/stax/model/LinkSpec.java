@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
@@ -104,13 +105,13 @@ public class LinkSpec extends SpecElement {
 
     /**
      * Parses a data rel from the input string.
-     * 
+     *
      * @param value
      * @return The data rel of the given value.
      */
     public static Rel parse(String value) {
       for (Rel rel : Rel.values()) {
-        if (rel.getValue().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(rel.toString(), value)) {
           return rel;
         }
       }

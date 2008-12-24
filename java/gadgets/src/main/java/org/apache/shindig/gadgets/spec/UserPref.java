@@ -17,6 +17,7 @@
  */
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -225,7 +226,7 @@ public class UserPref {
      */
     public static DataType parse(String value) {
       for (DataType type : DataType.values()) {
-        if (type.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
           return type;
         }
       }

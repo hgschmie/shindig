@@ -31,8 +31,10 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPref extends SpecElement {
   public static final String ELEMENT_NAME = "UserPref";
@@ -71,11 +73,39 @@ public class UserPref extends SpecElement {
   private String onChange = null;
   private String group = null;
 
-  private List<EnumValue> enumValues = new LinkedList<EnumValue>();
+  private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
   public UserPref(final QName name) {
     super(name);
   }
+
+    protected UserPref(final UserPref userPref, final Substitutions substituter) {
+      super(userPref);
+        this.name = userPref.getName();
+        this.displayName = substituter.substituteString(userPref.getDisplayName());
+        this.defaultValue = substituter.substituteString(userPref.getDefaultValue());
+        this.required = String.valueOf(userPref.isRequired());
+        this.datatype = userPref.getDataType().toString();
+        this.urlparam = userPref.getUrlparam();
+        this.autocompleteUrl = userPref.getAutocompleteUrl();
+        this.numMinval = String.valueOf(userPref.getNumMinval());
+        this.numMaxval = String.valueOf(userPref.getNumMaxval());
+        this.strMaxlen = String.valueOf(userPref.getStrMaxlen());
+        this.restrictToCompletions = userPref.getRestrictToCompletions();
+        this.prefixMatch = String.valueOf(userPref.getPrefixMatch());
+        this.publish = String.valueOf(userPref.getPublish());
+        this.listen = String.valueOf(userPref.getListen());
+        this.onChange = userPref.getOnChange();
+        this.group = userPref.getGroup();
+        for (EnumValue enumValue : userPref.getEnumValues()) {
+          enumValues.add(enumValue.substitute(substituter));
+        }
+  }
+
+    public UserPref substitute(final Substitutions substituter) {
+      return new UserPref(this, substituter);
+    }
+
 
   public String getName() {
     return name;
@@ -89,8 +119,8 @@ public class UserPref extends SpecElement {
     return displayName;
   }
 
-  public String getRequired() {
-    return required;
+  public boolean isRequired() {
+    return BooleanUtils.toBoolean(required);
   }
 
   public DataType getDataType() {
@@ -232,7 +262,7 @@ public class UserPref extends SpecElement {
     }
 
     if (required != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, getRequired());
+      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String.valueOf(isRequired()));
     }
 
     if (datatype != null) {
@@ -323,7 +353,7 @@ public class UserPref extends SpecElement {
      */
     public static DataType parse(String value) {
       for (DataType type : DataType.values()) {
-        if (type.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
           return type;
         }
       }

@@ -87,7 +87,7 @@ public class Icon extends SpecElement {
 
     public static Type parse(String value) {
       for (Type type : Type.values()) {
-        if (type.toString().compareToIgnoreCase(value) == 0) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
           return type;
         }
       }
