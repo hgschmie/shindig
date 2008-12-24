@@ -117,25 +117,27 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
     }
 
     final Uri messageUrl = localeSpec.getMessages();
-    final Map<String, String> messages = new HashMap<String, String>();
+    Map<String, String> messages = null;
     if (!messageUrl.equals(Uri.EMPTY_URI)) {
       final MessageBundleSpec messageBundleSpec = fetchMessageBundle(
           messageUrl, ignoreCache);
-      addMessages(messages, messageBundleSpec.getLocalMsgs());
+      messages = addMessages(messages, messageBundleSpec.getLocalMsgs());
     }
 
-    addMessages(messages, localeSpec.getLocalMsgs());
+    messages = addMessages(messages, localeSpec.getLocaleMsgs());
 
     return new MessageBundle(messages, localeSpec.getLanguageDirection());
   }
 
-  private void addMessages(final Map<String, String> messages,
+  public static Map<String, String> addMessages(final Map<String, String> messages,
       final Set<LocaleMsg> msgs) {
+    final Map<String, String> targetMap = (messages != null) ? messages : new HashMap<String, String>((msgs != null) ? msgs.size() : 10);
     if (msgs != null) {
       for (LocaleMsg msg : msgs) {
-        messages.put(msg.getName(), msg.getText());
+        targetMap.put(msg.getName(), msg.getText());
       }
     }
+    return targetMap;
   }
 
   protected MessageBundleSpec fetchMessageBundle(final Uri uri,

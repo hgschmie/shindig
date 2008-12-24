@@ -18,9 +18,12 @@ public class MessageBundle {
 
 
     public MessageBundle() {
-        this(Collections.<String, String>emptyMap(), Direction.LTR);
+        this(Collections.<String, String>emptyMap());
     }
 
+    public MessageBundle(final Map<String, String> messages) {
+      this(messages, Direction.LTR);
+  }
     public MessageBundle(final Map<String, String> messages, final Direction languageDirection) {
         this.languageDirection = languageDirection;
         this.messages = messages;

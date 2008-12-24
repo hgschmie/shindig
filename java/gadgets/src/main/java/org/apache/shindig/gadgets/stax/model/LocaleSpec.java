@@ -71,7 +71,7 @@ public class LocaleSpec extends SpecElement {
     return StaxUtils.toUri(messages);
   }
 
-  public Set<LocaleMsg> getLocalMsgs() {
+  public Set<LocaleMsg> getLocaleMsgs() {
     return Collections.unmodifiableSet(localeMsgs);
   }
 

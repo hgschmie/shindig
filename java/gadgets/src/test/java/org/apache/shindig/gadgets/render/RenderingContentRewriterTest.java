@@ -62,8 +62,8 @@ import org.apache.shindig.gadgets.rewrite.MutableContent;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
@@ -752,7 +752,8 @@ public class RenderingContentRewriterTest {
       if (localeSpec == null) {
         return MessageBundle.EMPTY;
       }
-      return StaxUtils.getMessageBundle(spec.getModulePrefs().getLocale(locale));
+      return new MessageBundle(StaxMessageBundleFactory.addMessages(null, spec.getModulePrefs().getLocale(locale).getLocaleMsgs()));
+
     }
   }
 

@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -31,12 +32,13 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.StaxUtils;
 
 import com.google.common.collect.ImmutableSet;
 
-public class Preload extends SpecElement {
+public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
   public static final String ELEMENT_NAME = "Preload";
 
@@ -99,6 +101,10 @@ public class Preload extends SpecElement {
 
   public String getOAuthRequestTokenSecret() {
     return StringUtils.defaultString(oAuthRequestTokenSecret);
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes();
   }
 
   private void setHref(final String href) {

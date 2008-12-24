@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxUtils;
+import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
 
@@ -53,7 +53,7 @@ public class GadgetTest {
         .setSpec(new DefaultGadgetSpec(Uri.parse(SPEC_URL), SPEC_XML));
 
     LocaleSpec localeSpec = gadget.getLocale();
-    assertEquals("VALUE", StaxUtils.getMessageBundle(localeSpec).getMessages().get("name"));
+    assertEquals("VALUE", StaxMessageBundleFactory.addMessages(null, localeSpec.getLocaleMsgs()) .get("name"));
   }
 
   private static class DummyContext extends GadgetContext {

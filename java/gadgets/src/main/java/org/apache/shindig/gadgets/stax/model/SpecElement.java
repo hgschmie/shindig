@@ -23,6 +23,7 @@ package org.apache.shindig.gadgets.stax.model;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,17 @@ public abstract class SpecElement {
 
   protected String attribute(final String key) {
     return attributes.get(new QName(name.getNamespaceURI(), key));
+  }
+
+  protected Map<String, String> attributes() {
+    Map<String, String> localAttributes = new HashMap<String, String>();
+    for (Map.Entry<QName, String> entry: attributes.entrySet()) {
+      if (entry.getKey().getPrefix().equals(name.getPrefix())) {
+        localAttributes.put(entry.getKey().getLocalPart(), entry.getValue());
+      }
+    }
+
+    return Collections.unmodifiableMap(localAttributes);
   }
 
   public void validate() throws SpecParserException {
@@ -259,7 +271,7 @@ public abstract class SpecElement {
 
     protected void setAttribute(final T element, final QName attributeName,
         final String value) {
-      element.setAttribute(name, value);
+      element.setAttribute(attributeName, value);
     }
 
     protected void addText(final XMLStreamReader reader, final T element) throws SpecParserException {

@@ -18,15 +18,15 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 
 import com.google.common.collect.Maps;
-
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Arguments to an OAuth fetch sent by the client.

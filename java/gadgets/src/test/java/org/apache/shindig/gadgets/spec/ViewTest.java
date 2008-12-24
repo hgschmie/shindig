@@ -23,14 +23,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
-
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class ViewTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
@@ -47,11 +49,11 @@ public class ViewTest {
                     content +
                  "]]></Content>";
 
-    View view = new View(viewName, Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    View view = new View(viewName, Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
 
     assertEquals(viewName, view.getName());
     assertEquals(false, view.getQuirks());
-    assertEquals(View.ContentType.HTML, view.getType());
+    assertEquals(Content.Type.HTML, view.getType());
     assertEquals("html", view.getRawType());
     assertEquals(content, view.getContent());
     assertTrue("Default value for sign_owner should be true.", view.isSignOwner());
@@ -64,8 +66,9 @@ public class ViewTest {
     String body2 = "World!";
     String content1 = "<Content type=\"html\">" + body1 + "</Content>";
     String content2 = "<Content type=\"html\">" + body2 + "</Content>";
-    View view = new View("test", Arrays.asList(XmlUtil.parse(content1),
-                                               XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
     assertEquals(body1 + body2, view.getContent());
   }
 
@@ -75,9 +78,9 @@ public class ViewTest {
     String xml = "<Content" +
                  " type=\"" + contentType + '\"' +
                  " quirks=\"false\"><![CDATA[blah]]></Content>";
-    View view = new View("default", Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    View view = new View("default", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
 
-    assertEquals(View.ContentType.HTML, view.getType());
+    assertEquals(Content.Type.HTML, view.getType());
     assertEquals(contentType, view.getRawType());
   }
 
@@ -85,13 +88,16 @@ public class ViewTest {
   public void testContentTypeConflict() throws Exception {
     String content1 = "<Content type=\"html\"/>";
     String content2 = "<Content type=\"url\" href=\"http://example.org/\"/>";
-    new View("test", Arrays.asList(XmlUtil.parse(content1), XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
   }
 
   @Test(expected = SpecParserException.class)
   public void testHrefOnTypeUrl() throws Exception {
     String xml = "<Content type=\"url\"/>";
-    new View("dummy", Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    new View("default", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
+
   }
 
   @Test(expected = SpecParserException.class)
@@ -99,15 +105,16 @@ public class ViewTest {
     // Unfortunately, this actually does URI validation rather than URL, so
     // most anything will pass. urn:isbn:0321146530 is valid here.
     String xml = "<Content type=\"url\" href=\"fobad@$%!fdf\"/>";
-    new View("dummy", Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    new View("default", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
   }
 
   @Test
   public void testQuirksCascade() throws Exception {
     String content1 = "<Content type=\"html\" quirks=\"true\"/>";
     String content2 = "<Content type=\"html\" quirks=\"false\"/>";
-    View view = new View("test", Arrays.asList(XmlUtil.parse(content1),
-                                               XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
     assertEquals(false, view.getQuirks());
   }
 
@@ -115,8 +122,9 @@ public class ViewTest {
   public void testQuirksCascadeReverse() throws Exception {
     String content1 = "<Content type=\"html\" quirks=\"false\"/>";
     String content2 = "<Content type=\"html\" quirks=\"true\"/>";
-    View view = new View("test", Arrays.asList(XmlUtil.parse(content1),
-                                               XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
     assertEquals(true, view.getQuirks());
   }
 
@@ -124,8 +132,9 @@ public class ViewTest {
   public void testPreferredHeight() throws Exception {
     String content1 = "<Content type=\"html\" preferred_height=\"100\"/>";
     String content2 = "<Content type=\"html\" preferred_height=\"300\"/>";
-    View view = new View("test", Arrays.asList(XmlUtil.parse(content1),
-                                               XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
     assertEquals(300, view.getPreferredHeight());
   }
 
@@ -133,8 +142,9 @@ public class ViewTest {
   public void testPreferredWidth() throws Exception {
     String content1 = "<Content type=\"html\" preferred_width=\"300\"/>";
     String content2 = "<Content type=\"html\" preferred_width=\"172\"/>";
-    View view = new View("test", Arrays.asList(XmlUtil.parse(content1),
-                                               XmlUtil.parse(content2)), SPEC_URL);
+    Content.Parser parser = new Content.Parser();
+    View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
+        StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
     assertEquals(172, view.getPreferredWidth());
   }
 
@@ -149,8 +159,7 @@ public class ViewTest {
     substituter.addSubstitution(Type.BIDI, "START_EDGE", "right");
     substituter.addSubstitution(Type.MODULE, "ID", "3");
 
-    View view = new View("test",
-        Arrays.asList(XmlUtil.parse(xml)), SPEC_URL).substitute(substituter);
+    View view = new View("default", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL).substitute(substituter);
     assertEquals("Hello, foo Earthright 3", view.getContent());
   }
 
@@ -165,8 +174,7 @@ public class ViewTest {
     substituter.addSubstitution(Type.BIDI, "DIR", "rtl");
     substituter.addSubstitution(Type.MODULE, "ID", "123");
 
-    View view = new View("test",
-        Arrays.asList(XmlUtil.parse(xml)), SPEC_URL).substitute(substituter);
+    View view = new View("default", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL).substitute(substituter);
     assertEquals("http://up.example.org/123?dir=rtl",
                  view.getHref().toString());
   }
@@ -179,7 +187,7 @@ public class ViewTest {
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Type.MESSAGE, "foo", "/bar");
 
-    View view = new View("test", Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    View view = new View("test", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
     view = view.substitute(substituter);
     assertEquals(SPEC_URL.resolve(Uri.parse("/bar")), view.getHref());
   }
@@ -189,7 +197,7 @@ public class ViewTest {
     String xml = "<Content type='html' sign_owner='false' sign_viewer='false' foo='bar' " +
                  "yo='momma' sub='__MSG_view__'/>";
 
-    View view = new View("test", Arrays.asList(XmlUtil.parse(xml)), SPEC_URL);
+    View view = new View("test", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "view", "stuff");
     View substituted = view.substitute(substituter);
