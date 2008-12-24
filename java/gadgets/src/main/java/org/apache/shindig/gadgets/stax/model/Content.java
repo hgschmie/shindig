@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -50,6 +51,16 @@ public class Content extends SpecElement {
   public Content(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected Content(final Content content, final Substitutions substitutions) {
+    super(content);
+    this.addText(content.getText());
+  }
+
+  @Override
+  protected Content substitute(final Substitutions substitutions) {
+    return new Content(this, substitutions);
   }
 
   public Type getType() {
@@ -149,7 +160,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */

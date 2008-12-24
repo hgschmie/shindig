@@ -42,6 +42,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.Pair;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class SpecElement {
 
@@ -104,6 +105,11 @@ public abstract class SpecElement {
 
   protected Uri getBase() {
     return base;
+  }
+
+  // TODO HPS - implement everywhere and use it.
+  protected SpecElement substitute(final Substitutions subs) {
+    return this;
   }
 
   // ======================================================================================================================================

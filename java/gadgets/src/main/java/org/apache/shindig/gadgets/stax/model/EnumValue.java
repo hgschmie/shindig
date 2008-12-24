@@ -49,6 +49,7 @@ public class EnumValue extends SpecElement {
         .getDisplayValue()));
   }
 
+  @Override
   public EnumValue substitute(final Substitutions substituter) {
     return new EnumValue(this, substituter);
   }
