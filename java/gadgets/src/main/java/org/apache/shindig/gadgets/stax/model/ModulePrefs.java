@@ -112,7 +112,7 @@ public class ModulePrefs extends SpecElement {
    * Produces a new ModulePrefs by substituting hangman variables from
    * substituter. See comments on individual fields to see what actually has
    * substitutions performed.
-   *
+   * 
    * @param substituter
    */
   public ModulePrefs substitute(final Substitutions substituter) {

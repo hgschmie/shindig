@@ -58,7 +58,8 @@ public class UserPref extends SpecElement {
 
   private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
-  public UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public UserPref(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -255,7 +256,7 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */

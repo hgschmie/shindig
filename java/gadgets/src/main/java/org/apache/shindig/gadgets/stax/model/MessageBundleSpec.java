@@ -45,7 +45,8 @@ public class MessageBundleSpec extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public MessageBundleSpec(final QName name,
+      final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

@@ -31,7 +31,8 @@ public class OAuthAccess extends OAuthElement {
 
   public static final String ELEMENT_NAME = "Access";
 
-  public OAuthAccess(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public OAuthAccess(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base, false);
   }
 

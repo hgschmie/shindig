@@ -54,15 +54,16 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
   public ShindigGadgetSpec(final QName name, final Uri url,
       final String checksum) {
-      super(name, url);
+    super(name, url);
     this.checksum = checksum;
   }
 
-    protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec, final Substitutions substituter) {
-        super(gadgetSpec, substituter);
+  protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec,
+      final Substitutions substituter) {
+    super(gadgetSpec, substituter);
 
-        this.checksum = gadgetSpec.getChecksum();
-        this.views = new ConcurrentHashMap<String, View>(gadgetSpec.getViews());
+    this.checksum = gadgetSpec.getChecksum();
+    this.views = new ConcurrentHashMap<String, View>(gadgetSpec.getViews());
   }
 
   public String getChecksum() {

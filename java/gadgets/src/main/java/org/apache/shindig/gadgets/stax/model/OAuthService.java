@@ -41,7 +41,8 @@ public class OAuthService extends SpecElement {
   private OAuthAccess oAuthAccess = null;
   private OAuthAuthorization oAuthAuthorization = null;
 
-  public OAuthService(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public OAuthService(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 

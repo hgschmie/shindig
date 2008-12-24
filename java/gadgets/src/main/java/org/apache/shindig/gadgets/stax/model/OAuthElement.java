@@ -39,8 +39,8 @@ public abstract class OAuthElement extends SpecElement {
 
   private boolean request = false;
 
-  protected OAuthElement(final QName name, final Map<String, QName> attrNames, final Uri base,
-      boolean request) {
+  protected OAuthElement(final QName name, final Map<String, QName> attrNames,
+      final Uri base, boolean request) {
     super(name, attrNames, base);
     this.request = request;
   }

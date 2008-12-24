@@ -47,7 +47,8 @@ public class Content extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Content(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public Content(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -148,7 +149,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */

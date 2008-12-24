@@ -51,25 +51,27 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static final String ATTR_OAUTH_REQUEST_TOKEN = "oauth_request_token";
   public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
 
-  public Preload(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public Preload(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
-    private Preload(final Preload preload, final Substitutions substituter) {
-        super(preload);
+  private Preload(final Preload preload, final Substitutions substituter) {
+    super(preload);
 
-        setAttr(ATTR_VIEWS, StringUtils.join(preload.getViews(), ','));
-        setAttr(ATTR_AUTHZ, preload.getAuthType().toString());
-        setAttr(ATTR_SIGN_OWNER, String.valueOf(preload.isSignOwner()));
-        setAttr(ATTR_SIGN_VIEWER, String.valueOf(preload.isSignViewer()));
-        setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(preload.getHref())).toString());
-    }
+    setAttr(ATTR_VIEWS, StringUtils.join(preload.getViews(), ','));
+    setAttr(ATTR_AUTHZ, preload.getAuthType().toString());
+    setAttr(ATTR_SIGN_OWNER, String.valueOf(preload.isSignOwner()));
+    setAttr(ATTR_SIGN_VIEWER, String.valueOf(preload.isSignViewer()));
+    setAttr(ATTR_HREF, getBase().resolve(
+        substituter.substituteUri(preload.getHref())).toString());
+  }
 
   /**
-   * Produces a new Preload by substituting hangman variables from
-   * substituter. See comments on individual fields to see what actually
-   * has substitutions performed.
-   *
+   * Produces a new Preload by substituting hangman variables from substituter.
+   * See comments on individual fields to see what actually has substitutions
+   * performed.
+   * 
    * @param substituter
    */
   public Preload substitute(final Substitutions substituter) {
@@ -176,7 +178,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static class Parser extends SpecElement.Parser<Preload> {
 
     public Parser(final Uri base) {
-        this(new QName(ELEMENT_NAME), base);
+      this(new QName(ELEMENT_NAME), base);
     }
 
     public Parser(final QName name, final Uri base) {
@@ -189,7 +191,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
     @Override
     protected Preload newElement() {
-        return new Preload(name(), getAttrNames(), getBase());
+      return new Preload(name(), getAttrNames(), getBase());
     }
   }
 }

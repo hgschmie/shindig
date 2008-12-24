@@ -37,7 +37,8 @@ public class EnumValue extends SpecElement {
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISPLAY_VALUE = "display_value";
 
-  protected EnumValue(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected EnumValue(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
