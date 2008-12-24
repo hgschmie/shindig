@@ -21,6 +21,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
@@ -28,8 +30,8 @@ public class GenericElement extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public GenericElement(final QName name) {
-    super(name);
+  public GenericElement(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   @Override
@@ -48,7 +50,7 @@ public class GenericElement extends SpecElement {
 
     @Override
     protected GenericElement newElement() {
-      return new GenericElement(getName());
+      return new GenericElement(name(), getAttrNames());
     }
 
     @Override

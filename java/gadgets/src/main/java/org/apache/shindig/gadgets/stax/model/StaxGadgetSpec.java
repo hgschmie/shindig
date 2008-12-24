@@ -43,7 +43,7 @@ public class StaxGadgetSpec extends SpecElement {
   private List<Content> contents = new ArrayList<Content>();
 
   public StaxGadgetSpec(final QName name) {
-    super(name);
+    super(name, Collections.<String, QName> emptyMap());
   }
 
   public ModulePrefs getModulePrefs() {
@@ -79,7 +79,7 @@ public class StaxGadgetSpec extends SpecElement {
     for (UserPref pref : userPrefs) {
       pref.toXml(writer);
     }
-    for(Content content: contents) {
+    for (Content content : contents) {
       content.toXml(writer);
     }
   }
@@ -97,7 +97,8 @@ public class StaxGadgetSpec extends SpecElement {
     }
   }
 
-  public static class Parser<T extends StaxGadgetSpec> extends SpecElement.Parser<StaxGadgetSpec> {
+  public static class Parser<T extends StaxGadgetSpec> extends
+      SpecElement.Parser<StaxGadgetSpec> {
     public Parser() {
       this(new QName(ELEMENT_NAME));
     }
@@ -111,12 +112,13 @@ public class StaxGadgetSpec extends SpecElement {
 
     @Override
     protected StaxGadgetSpec newElement() {
-      return new StaxGadgetSpec(getName());
+      return new StaxGadgetSpec(name());
     }
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final StaxGadgetSpec spec, final SpecElement child) throws SpecParserException {
+        final StaxGadgetSpec spec, final SpecElement child)
+        throws SpecParserException {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {
@@ -129,4 +131,3 @@ public class StaxGadgetSpec extends SpecElement {
     }
   }
 }
-

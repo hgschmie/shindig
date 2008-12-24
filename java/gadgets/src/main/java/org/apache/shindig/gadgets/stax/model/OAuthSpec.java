@@ -38,8 +38,8 @@ public class OAuthSpec extends SpecElement {
 
   private Map<String, OAuthService> services = new HashMap<String, OAuthService>();
 
-  public OAuthSpec(final QName name) {
-    super(name);
+  public OAuthSpec(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public Map<String, OAuthService> getServices() {
@@ -79,12 +79,12 @@ public class OAuthSpec extends SpecElement {
 
     @Override
     protected OAuthSpec newElement() {
-      return new OAuthSpec(getName());
+      return new OAuthSpec(name(), getAttrNames());
     }
 
     @Override
     protected void addChild(XMLStreamReader reader, final OAuthSpec oAuth,
-        final SpecElement child) throws SpecParserException  {
+        final SpecElement child) throws SpecParserException {
       if (child instanceof OAuthService) {
         oAuth.addService((OAuthService) child);
       } else {

@@ -30,21 +30,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public abstract class Feature extends SpecElement {
 
-  private static final String ATTR_FEATURE = "feature";
+  public static final String ATTR_FEATURE = "feature";
 
   private final boolean required;
 
-  private String feature = null;
-
   private Map<String, FeatureParam> params = new HashMap<String, FeatureParam>();
 
-  protected Feature(final QName name, final boolean required) {
-    super(name);
+  protected Feature(final QName name, final Map<String, QName> attrNames,
+      final boolean required) {
+    super(name, attrNames);
     this.required = required;
   }
 
@@ -53,15 +51,11 @@ public abstract class Feature extends SpecElement {
   }
 
   public String getFeature() {
-    return StringUtils.defaultString(feature);
+    return attrDefault(ATTR_FEATURE);
   }
 
   public Map<String, FeatureParam> getParams() {
     return Collections.unmodifiableMap(params);
-  }
-
-  private void setFeature(final String feature) {
-    this.feature = feature;
   }
 
   private void addParam(final FeatureParam param) {
@@ -72,7 +66,7 @@ public abstract class Feature extends SpecElement {
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
-    if (feature != null) {
+    if (attr(ATTR_FEATURE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_FEATURE, getFeature());
     }
   }
@@ -87,37 +81,27 @@ public abstract class Feature extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (feature == null) {
+    if (attr(ATTR_FEATURE) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@feature must be set!");
     }
   }
 
   public abstract static class Parser extends SpecElement.Parser<Feature> {
-    private final QName attrFeature;
 
     public Parser(final QName name) {
       super(name);
       register(new FeatureParam.Parser());
-      attrFeature = buildQName(name, ATTR_FEATURE);
+      register(ATTR_FEATURE);
     }
 
     @Override
     protected abstract Feature newElement();
 
     @Override
-    protected void setAttribute(final Feature feature, final QName name,
-        final String value) {
-      if (name.equals(attrFeature)) {
-        feature.setFeature(value);
-      } else {
-        super.setAttribute(feature, name, value);
-      }
-    }
-
-    @Override
     protected void addChild(final XMLStreamReader reader,
-        final Feature feature, final SpecElement child) throws SpecParserException {
+        final Feature feature, final SpecElement child)
+        throws SpecParserException {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

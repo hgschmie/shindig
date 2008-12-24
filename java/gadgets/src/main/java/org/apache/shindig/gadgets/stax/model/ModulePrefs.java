@@ -27,50 +27,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
-
-import com.google.common.collect.ImmutableSet;
 
 public class ModulePrefs extends SpecElement {
   public static final String ELEMENT_NAME = "ModulePrefs";
 
-  private static final String ATTR_TITLE = "title";
-  private static final String ATTR_TITLE_URL = "title_url";
-  private static final String ATTR_DESCRIPTION = "description";
-  private static final String ATTR_AUTHOR = "author";
-  private static final String ATTR_AUTHOR_EMAIL = "author_email";
-  private static final String ATTR_SCREENSHOT = "screenshot";
-  private static final String ATTR_THUMBNAIL = "thumbnail";
-  private static final String ATTR_DIRECTORY_TITLE = "directory_title";
-  private static final String ATTR_AUTHOR_AFFILIATION = "author_affiliation";
-  private static final String ATTR_AUTHOR_LOCATION = "author_location";
-  private static final String ATTR_AUTHOR_PHOTO = "author_photo";
-  private static final String ATTR_AUTHOR_ABOUTME = "author_aboutme";
-  private static final String ATTR_AUTHOR_QUOTE = "author_quote";
-  private static final String ATTR_AUTHOR_LINK = "author_link";
-  private static final String ATTR_SHOW_STATS = "show_stats";
-  private static final String ATTR_SHOW_IN_DIRECTORY = "show_in_directory";
-  private static final String ATTR_SINGLETON = "singleton";
-  private static final String ATTR_SCALING = "scaling";
-  private static final String ATTR_SCROLLING = "scrolling";
-  private static final String ATTR_WIDTH = "width";
-  private static final String ATTR_HEIGHT = "height";
-  private static final String ATTR_CATEGORY = "category";
-  private static final String ATTR_CATEGORY2 = "category2";
-  private static final String ATTR_RENDER_INLINE = "render_inline";
+  public static final String ATTR_TITLE = "title";
+  public static final String ATTR_TITLE_URL = "title_url";
+  public static final String ATTR_DESCRIPTION = "description";
+  public static final String ATTR_AUTHOR = "author";
+  public static final String ATTR_AUTHOR_EMAIL = "author_email";
+  public static final String ATTR_SCREENSHOT = "screenshot";
+  public static final String ATTR_THUMBNAIL = "thumbnail";
+  public static final String ATTR_DIRECTORY_TITLE = "directory_title";
+  public static final String ATTR_AUTHOR_AFFILIATION = "author_affiliation";
+  public static final String ATTR_AUTHOR_LOCATION = "author_location";
+  public static final String ATTR_AUTHOR_PHOTO = "author_photo";
+  public static final String ATTR_AUTHOR_ABOUTME = "author_aboutme";
+  public static final String ATTR_AUTHOR_QUOTE = "author_quote";
+  public static final String ATTR_AUTHOR_LINK = "author_link";
+  public static final String ATTR_SHOW_STATS = "show_stats";
+  public static final String ATTR_SHOW_IN_DIRECTORY = "show_in_directory";
+  public static final String ATTR_SINGLETON = "singleton";
+  public static final String ATTR_SCALING = "scaling";
+  public static final String ATTR_SCROLLING = "scrolling";
+  public static final String ATTR_WIDTH = "width";
+  public static final String ATTR_HEIGHT = "height";
+  public static final String ATTR_CATEGORY = "category";
+  public static final String ATTR_CATEGORY2 = "category2";
+  public static final String ATTR_RENDER_INLINE = "render_inline";
 
   private final List<Preload> preloads = new ArrayList<Preload>();
   private final Map<String, Feature> features = new HashMap<String, Feature>();
@@ -79,8 +72,8 @@ public class ModulePrefs extends SpecElement {
   private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
   private OAuthSpec oauth = null;
 
-  public ModulePrefs(final QName name) {
-    super(name);
+  public ModulePrefs(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public List<Preload> getPreloads() {
@@ -107,115 +100,119 @@ public class ModulePrefs extends SpecElement {
     return oauth;
   }
 
-  private Map<String, String> attributes = new HashMap<String, String>();
-  private final List<String> categories = new ArrayList<String>();
-
   public String getTitle() {
-    return StringUtils.defaultString(attributes.get(ATTR_TITLE));
+    return attrDefault(ATTR_TITLE);
   }
 
   public Uri getTitleUrl() {
-    return StaxUtils.toUri(attributes.get(ATTR_TITLE_URL));
+    return attrUri(ATTR_TITLE_URL);
   }
 
   public String getDescription() {
-    return StringUtils.defaultString(attributes.get(ATTR_DESCRIPTION));
+    return attrDefault(ATTR_DESCRIPTION);
   }
 
   public String getAuthor() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR));
+    return attrDefault(ATTR_AUTHOR);
   }
 
   public String getAuthorEmail() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR_EMAIL));
+    return attrDefault(ATTR_AUTHOR_EMAIL);
   }
 
   public Uri getScreenshot() {
-    return StaxUtils.toUri(attributes.get(ATTR_SCREENSHOT));
+    return attrUri(ATTR_SCREENSHOT);
   }
 
   public Uri getThumbnail() {
-    return StaxUtils.toUri(attributes.get(ATTR_THUMBNAIL));
+    return attrUri(ATTR_THUMBNAIL);
   }
 
   public String getDirectoryTitle() {
-    return StringUtils.defaultString(attributes.get(ATTR_DIRECTORY_TITLE));
+    return attrDefault(ATTR_DIRECTORY_TITLE);
   }
 
   public String getAuthorAffiliation() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR_AFFILIATION));
+    return attrDefault(ATTR_AUTHOR_AFFILIATION);
   }
 
   public String getAuthorLocation() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR_LOCATION));
+    return attrDefault(ATTR_AUTHOR_LOCATION);
   }
 
   public Uri getAuthorPhoto() {
-    return StaxUtils.toUri(attributes.get(ATTR_AUTHOR_PHOTO));
+    return attrUri(ATTR_AUTHOR_PHOTO);
   }
 
   public String getAuthorAboutme() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR_ABOUTME));
+    return attrDefault(ATTR_AUTHOR_ABOUTME);
   }
 
   public String getAuthorQuote() {
-    return StringUtils.defaultString(attributes.get(ATTR_AUTHOR_QUOTE));
+    return attrDefault(ATTR_AUTHOR_QUOTE);
   }
 
   public Uri getAuthorLink() {
-    return StaxUtils.toUri(attributes.get(ATTR_AUTHOR_LINK));
+    return attrUri(ATTR_AUTHOR_LINK);
   }
 
   public boolean isShowStats() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_SHOW_STATS));
+    return attrBool(ATTR_SHOW_STATS);
   }
 
   public boolean isShowInDirectory() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_SHOW_IN_DIRECTORY));
+    return attrBool(ATTR_SHOW_IN_DIRECTORY);
   }
 
   public boolean isSingleton() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_SINGLETON));
+    return attrBool(ATTR_SINGLETON);
   }
 
   public boolean isScaling() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_SCALING));
+    return attrBool(ATTR_SCALING);
   }
 
   public boolean isScrolling() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_SCROLLING));
+    return attrBool(ATTR_SCROLLING);
   }
 
   public int getWidth() {
-    return NumberUtils.toInt(attributes.get(ATTR_WIDTH));
+    return attrInt(ATTR_WIDTH);
   }
 
   public int getHeight() {
-    return NumberUtils.toInt(attributes.get(ATTR_HEIGHT));
+    return attrInt(ATTR_HEIGHT);
   }
 
   public boolean isRenderInline() {
-    return BooleanUtils.toBoolean(attributes.get(ATTR_RENDER_INLINE));
+    return attrBool(ATTR_RENDER_INLINE);
   }
 
   public List<String> getCategories() {
+    List<String> categories = new ArrayList<String>(2);
+    if (attr(ATTR_CATEGORY) != null) {
+      categories.add(attr(ATTR_CATEGORY));
+    }
+    if (attr(ATTR_CATEGORY2) != null) {
+      categories.add(attr(ATTR_CATEGORY2));
+    }
     return Collections.unmodifiableList(categories);
   }
 
   public LocaleSpec getLocale(final Locale locale) {
-      if (locales.isEmpty()) {
-          return null;
-      }
+    if (locales.isEmpty()) {
+      return null;
+    }
 
-      LocaleSpec localeSpec = locales.get(locale);
-      if (localeSpec == null) {
-          Locale allLocale = new Locale(locale.getLanguage(), "ALL");
-          localeSpec = locales.get(allLocale);
-          if (allLocale == null) {
-              localeSpec = locales.get(GadgetSpec.DEFAULT_LOCALE);
-          }
+    LocaleSpec localeSpec = locales.get(locale);
+    if (localeSpec == null) {
+      Locale allLocale = new Locale(locale.getLanguage(), "ALL");
+      localeSpec = locales.get(allLocale);
+      if (allLocale == null) {
+        localeSpec = locales.get(GadgetSpec.DEFAULT_LOCALE);
       }
-      return localeSpec;
+    }
+    return localeSpec;
   }
 
   private void addPreload(final Preload preload) {
@@ -240,14 +237,6 @@ public class ModulePrefs extends SpecElement {
 
   private void setOAuth(final OAuthSpec oauth) {
     this.oauth = oauth;
-  }
-
-  private void setAttribute(final String key, final String value) {
-    this.attributes.put(key, value);
-  }
-
-  private void addCategory(final String category) {
-    categories.add(category);
   }
 
   @Override
@@ -278,111 +267,112 @@ public class ModulePrefs extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (attributes.get(ATTR_TITLE) != null) {
+    if (attr(ATTR_TITLE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_TITLE, getTitle());
     }
 
-    if (attributes.get(ATTR_TITLE_URL) != null) {
+    if (attr(ATTR_TITLE_URL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_TITLE_URL, getTitleUrl()
           .toString());
     }
 
-    if (attributes.get(ATTR_DESCRIPTION) != null) {
+    if (attr(ATTR_DESCRIPTION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_DESCRIPTION, getDescription());
     }
 
-    if (attributes.get(ATTR_AUTHOR) != null) {
+    if (attr(ATTR_AUTHOR) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR, getAuthor());
     }
 
-    if (attributes.get(ATTR_AUTHOR_EMAIL) != null) {
+    if (attr(ATTR_AUTHOR_EMAIL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_EMAIL, getAuthorEmail());
     }
 
-    if (attributes.get(ATTR_SCREENSHOT) != null) {
+    if (attr(ATTR_SCREENSHOT) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SCREENSHOT, getScreenshot()
           .toString());
     }
 
-    if (attributes.get(ATTR_THUMBNAIL) != null) {
+    if (attr(ATTR_THUMBNAIL) != null) {
       writer.writeAttribute(namespaceURI, ATTR_THUMBNAIL, getThumbnail()
           .toString());
     }
 
-    if (attributes.get(ATTR_DIRECTORY_TITLE) != null) {
+    if (attr(ATTR_DIRECTORY_TITLE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_DIRECTORY_TITLE,
           getDirectoryTitle());
     }
 
-    if (attributes.get(ATTR_AUTHOR_AFFILIATION) != null) {
+    if (attr(ATTR_AUTHOR_AFFILIATION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_AFFILIATION,
           getAuthorAffiliation());
     }
 
-    if (attributes.get(ATTR_AUTHOR_LOCATION) != null) {
+    if (attr(ATTR_AUTHOR_LOCATION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LOCATION,
           getAuthorLocation());
     }
 
-    if (attributes.get(ATTR_AUTHOR_PHOTO) != null) {
+    if (attr(ATTR_AUTHOR_PHOTO) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_PHOTO, getAuthorPhoto()
           .toString());
     }
 
-    if (attributes.get(ATTR_AUTHOR_ABOUTME) != null) {
+    if (attr(ATTR_AUTHOR_ABOUTME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_ABOUTME,
           getAuthorAboutme());
     }
 
-    if (attributes.get(ATTR_AUTHOR_QUOTE) != null) {
+    if (attr(ATTR_AUTHOR_QUOTE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_QUOTE, getAuthorQuote());
     }
 
-    if (attributes.get(ATTR_AUTHOR_LINK) != null) {
+    if (attr(ATTR_AUTHOR_LINK) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LINK, getAuthorLink()
           .toString());
     }
 
-    if (attributes.get(ATTR_SHOW_STATS) != null) {
+    if (attr(ATTR_SHOW_STATS) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SHOW_STATS, String
           .valueOf(isShowStats()));
     }
 
-    if (attributes.get(ATTR_SHOW_IN_DIRECTORY) != null) {
+    if (attr(ATTR_SHOW_IN_DIRECTORY) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SHOW_IN_DIRECTORY, String
           .valueOf(isShowInDirectory()));
     }
 
-    if (attributes.get(ATTR_SINGLETON) != null) {
+    if (attr(ATTR_SINGLETON) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SINGLETON, String
           .valueOf(isSingleton()));
     }
 
-    if (attributes.get(ATTR_SCALING) != null) {
+    if (attr(ATTR_SCALING) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SCALING, String
           .valueOf(isScaling()));
     }
 
-    if (attributes.get(ATTR_SCROLLING) != null) {
+    if (attr(ATTR_SCROLLING) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SCROLLING, String
           .valueOf(isScrolling()));
     }
 
-    if (attributes.get(ATTR_WIDTH) != null) {
+    if (attr(ATTR_WIDTH) != null) {
       writer.writeAttribute(namespaceURI, ATTR_WIDTH, String
           .valueOf(getWidth()));
     }
 
-    if (attributes.get(ATTR_HEIGHT) != null) {
+    if (attr(ATTR_HEIGHT) != null) {
       writer.writeAttribute(namespaceURI, ATTR_HEIGHT, String
           .valueOf(getHeight()));
     }
 
-    if (attributes.get(ATTR_RENDER_INLINE) != null) {
+    if (attr(ATTR_RENDER_INLINE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_RENDER_INLINE, String
           .valueOf(isRenderInline()));
     }
 
+    final List<String> categories = getCategories();
     if (categories.size() > 0) {
       writer.writeAttribute(namespaceURI, ATTR_CATEGORY, categories.get(0));
       if (categories.size() > 1) {
@@ -392,8 +382,6 @@ public class ModulePrefs extends SpecElement {
   }
 
   public static class Parser extends SpecElement.Parser<ModulePrefs> {
-    private final Set<QName> knownAttributes;
-    private final Set<QName> categories;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -402,24 +390,6 @@ public class ModulePrefs extends SpecElement {
     public Parser(final QName name) {
       super(name);
 
-      this.knownAttributes = ImmutableSet.of(buildQName(name, ATTR_TITLE),
-          buildQName(name, ATTR_TITLE_URL), buildQName(name, ATTR_DESCRIPTION),
-          buildQName(name, ATTR_AUTHOR), buildQName(name, ATTR_AUTHOR_EMAIL),
-          buildQName(name, ATTR_SCREENSHOT), buildQName(name, ATTR_THUMBNAIL),
-          buildQName(name, ATTR_DIRECTORY_TITLE), buildQName(name,
-              ATTR_AUTHOR_AFFILIATION), buildQName(name, ATTR_AUTHOR_LOCATION),
-          buildQName(name, ATTR_AUTHOR_PHOTO), buildQName(name,
-              ATTR_AUTHOR_ABOUTME), buildQName(name, ATTR_AUTHOR_QUOTE),
-          buildQName(name, ATTR_AUTHOR_LINK),
-          buildQName(name, ATTR_SHOW_STATS), buildQName(name,
-              ATTR_SHOW_IN_DIRECTORY), buildQName(name, ATTR_SINGLETON),
-          buildQName(name, ATTR_SCALING), buildQName(name, ATTR_SCROLLING),
-          buildQName(name, ATTR_WIDTH), buildQName(name, ATTR_HEIGHT),
-          buildQName(name, ATTR_RENDER_INLINE));
-
-      this.categories = ImmutableSet.of(buildQName(name, ATTR_CATEGORY),
-          buildQName(name, ATTR_CATEGORY2));
-
       register(new Require.Parser());
       register(new Optional.Parser());
       register(new Preload.Parser());
@@ -427,28 +397,25 @@ public class ModulePrefs extends SpecElement {
       register(new LocaleSpec.Parser());
       register(new LinkSpec.Parser());
       register(new OAuthSpec.Parser());
+
+      register(ATTR_TITLE, ATTR_TITLE_URL, ATTR_DESCRIPTION, ATTR_AUTHOR,
+          ATTR_AUTHOR_EMAIL, ATTR_SCREENSHOT, ATTR_THUMBNAIL,
+          ATTR_DIRECTORY_TITLE, ATTR_AUTHOR_AFFILIATION, ATTR_AUTHOR_LOCATION,
+          ATTR_AUTHOR_PHOTO, ATTR_AUTHOR_ABOUTME, ATTR_AUTHOR_QUOTE,
+          ATTR_AUTHOR_LINK, ATTR_SHOW_STATS, ATTR_SHOW_IN_DIRECTORY,
+          ATTR_SINGLETON, ATTR_SCALING, ATTR_SCROLLING, ATTR_WIDTH,
+          ATTR_HEIGHT, ATTR_RENDER_INLINE, ATTR_CATEGORY, ATTR_CATEGORY2);
     }
 
     @Override
     protected ModulePrefs newElement() {
-      return new ModulePrefs(getName());
-    }
-
-    @Override
-    protected void setAttribute(final ModulePrefs modulePrefs,
-        final QName name, final String value) {
-      if (knownAttributes.contains(name)) {
-        modulePrefs.setAttribute(name.getLocalPart(), value);
-      } else if (categories.contains(name)) {
-        modulePrefs.addCategory(value);
-      } else {
-        super.setAttribute(modulePrefs, name, value);
-      }
+      return new ModulePrefs(name(), getAttrNames());
     }
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final ModulePrefs prefs, final SpecElement child) throws SpecParserException  {
+        final ModulePrefs prefs, final SpecElement child)
+        throws SpecParserException {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
       } else if (child instanceof Preload) {

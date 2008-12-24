@@ -30,10 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -41,42 +39,36 @@ public class Content extends SpecElement {
 
   public static final String ELEMENT_NAME = "Content";
 
-  private static final String ATTR_TYPE = "type";
-  private static final String ATTR_HREF = "href";
-  private static final String ATTR_VIEW = "view";
-  private static final String ATTR_PREFERRED_HEIGHT = "preferred_height";
-  private static final String ATTR_PREFERRED_WIDTH = "preferred_width";
-
-  private String type;
-  private String href;
-  private String view;
-  private String preferredHeight;
-  private String preferredWidth;
+  public static final String ATTR_TYPE = "type";
+  public static final String ATTR_HREF = "href";
+  public static final String ATTR_VIEW = "view";
+  public static final String ATTR_PREFERRED_HEIGHT = "preferred_height";
+  public static final String ATTR_PREFERRED_WIDTH = "preferred_width";
 
   private StringBuilder text = new StringBuilder();
 
-  public Content(final QName name) {
-    super(name);
+  public Content(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
   public Type getType() {
-    return Type.parse(type);
+    return Type.parse(attr(ATTR_TYPE));
   }
 
   public String getRawType() {
-    return type;
+    return attr(ATTR_TYPE);
   }
 
   public Uri getHref() {
-    return StaxUtils.toUri(href);
+    return attrUriNull(ATTR_HREF);
   }
 
   public int getPreferredHeight() {
-      return NumberUtils.toInt(preferredHeight, -1);
+    return attrInt(ATTR_PREFERRED_HEIGHT, -1);
   }
 
   public int getPreferredWidth() {
-      return NumberUtils.toInt(preferredWidth, -1);
+    return attrInt(ATTR_PREFERRED_WIDTH, -1);
   }
 
   @Override
@@ -85,31 +77,12 @@ public class Content extends SpecElement {
   }
 
   public Set<String> getViews() {
-    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils.defaultString(view, "default"), ',')));
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
+        .defaultString(attr(ATTR_VIEW), "default"), ',')));
   }
 
   public Map<String, String> getAttributes() {
-    return attributes();
-  }
-
-  private void setType(final String type) {
-    this.type = type;
-  }
-
-  private void setHref(final String href) {
-    this.href = href;
-  }
-
-  private void setView(final String view) {
-    this.view = view;
-  }
-
-  private void setPreferredHeight(final String preferredHeight) {
-    this.preferredHeight = preferredHeight;
-  }
-
-  private void setPreferredWidth(final String preferredWidth) {
-    this.preferredWidth = preferredWidth;
+    return getOtherAttrs();
   }
 
   private void addText(final String text) {
@@ -121,20 +94,21 @@ public class Content extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (type != null) {
+    if (attr(ATTR_TYPE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_TYPE, getType().toString());
     }
-    if (href != null) {
+    if (getHref() != null) {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
-    if (view != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VIEW, StringUtils.join(getViews(), ','));
+    if (attr(ATTR_VIEW) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_VIEW, StringUtils.join(
+          getViews(), ','));
     }
-    if (preferredHeight != null) {
+    if (attr(ATTR_PREFERRED_HEIGHT) != null) {
       writer.writeAttribute(namespaceURI, ATTR_PREFERRED_HEIGHT, String
           .valueOf(getPreferredHeight()));
     }
-    if (preferredWidth != null) {
+    if (attr(ATTR_PREFERRED_WIDTH) != null) {
       writer.writeAttribute(namespaceURI, ATTR_PREFERRED_WIDTH, String
           .valueOf(getPreferredWidth()));
     }
@@ -150,7 +124,7 @@ public class Content extends SpecElement {
       }
       break;
     case URL:
-      if (getHref().equals(Uri.EMPTY_URI)) {
+      if (getHref() == null) {
         throw new SpecParserException(name().getLocalPart()
             + "@href required for type='url'!");
       }
@@ -174,7 +148,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */
@@ -189,11 +163,6 @@ public class Content extends SpecElement {
   }
 
   public static class Parser extends SpecElement.Parser<Content> {
-    private final QName attrType;
-    private final QName attrHref;
-    private final QName attrView;
-    private final QName attrPreferredHeight;
-    private final QName attrPreferredWidth;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -201,34 +170,13 @@ public class Content extends SpecElement {
 
     public Parser(final QName name) {
       super(name);
-      this.attrType = buildQName(name, ATTR_TYPE);
-      this.attrHref = buildQName(name, ATTR_HREF);
-      this.attrView = buildQName(name, ATTR_VIEW);
-      this.attrPreferredHeight = buildQName(name, ATTR_PREFERRED_HEIGHT);
-      this.attrPreferredWidth = buildQName(name, ATTR_PREFERRED_WIDTH);
+      register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT,
+          ATTR_PREFERRED_WIDTH);
     }
 
     @Override
     protected Content newElement() {
-      return new Content(getName());
-    }
-
-    @Override
-    protected void setAttribute(final Content content, final QName name,
-        final String value) {
-      if (name.equals(attrType)) {
-        content.setType(value);
-      } else if (name.equals(attrHref)) {
-        content.setHref(value);
-      } else if (name.equals(attrView)) {
-        content.setView(value);
-      } else if (name.equals(attrPreferredHeight)) {
-        content.setPreferredHeight(value);
-      } else if (name.equals(attrPreferredWidth)) {
-        content.setPreferredWidth(value);
-      } else {
-        super.setAttribute(content, name, value);
-      }
+      return new Content(name(), getAttrNames());
     }
 
     @Override

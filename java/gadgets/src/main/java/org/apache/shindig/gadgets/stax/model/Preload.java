@@ -28,13 +28,11 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -42,149 +40,103 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
   public static final String ELEMENT_NAME = "Preload";
 
-  private static final String ATTR_HREF = "href";
-  private static final String ATTR_AUTHZ = "authz";
-  private static final String ATTR_SIGN_OWNER = "sign_owner";
-  private static final String ATTR_SIGN_VIEWER = "sign_viewer";
-  private static final String ATTR_VIEWS = "views";
-  private static final String ATTR_OAUTH_SERVICE_NAME = "oauth_service_name";
-  private static final String ATTR_OAUTH_TOKEN_NAME = "oauth_token_name";
-  private static final String ATTR_OAUTH_REQUEST_TOKEN = "oauth_request_token";
-  private static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
+  public static final String ATTR_HREF = "href";
+  public static final String ATTR_AUTHZ = "authz";
+  public static final String ATTR_SIGN_OWNER = "sign_owner";
+  public static final String ATTR_SIGN_VIEWER = "sign_viewer";
+  public static final String ATTR_VIEWS = "views";
+  public static final String ATTR_OAUTH_SERVICE_NAME = "oauth_service_name";
+  public static final String ATTR_OAUTH_TOKEN_NAME = "oauth_token_name";
+  public static final String ATTR_OAUTH_REQUEST_TOKEN = "oauth_request_token";
+  public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
 
-  public Preload(final QName name) {
-    super(name);
+  public Preload(final QName name, final Map<String, QName> attrNames) {
+    super(name, attrNames);
   }
 
-  private String href;
-  private String authType;
-  private String signOwner = "true"; // Default is true, according to spec
-  private String signViewer = "true"; // Default is true, according to spec
-  private String views;
-  private String oAuthServiceName;
-  private String oAuthTokenName;
-  private String oAuthRequestToken;
-  private String oAuthRequestTokenSecret;
-
   public Uri getHref() {
-    return StaxUtils.toUri(href);
+    return attrUriNull(ATTR_HREF);
   }
 
   public AuthType getAuthType() {
-    return AuthType.parse(authType);
+    return AuthType.parse(attr(ATTR_AUTHZ));
   }
 
   public boolean isSignOwner() {
-    return BooleanUtils.toBoolean(signOwner);
+    return attrBool(ATTR_SIGN_OWNER, true);
   }
 
   public boolean isSignViewer() {
-    return BooleanUtils.toBoolean(signViewer);
+    return attrBool(ATTR_SIGN_VIEWER, true);
   }
 
   public Set<String> getViews() {
-    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
-        .defaultString(views), ',')));
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(
+        attrDefault(ATTR_VIEWS), ',')));
   }
 
   public String getOAuthServiceName() {
-    return StringUtils.defaultString(oAuthServiceName);
+    return attrDefault(ATTR_OAUTH_SERVICE_NAME);
   }
 
   public String getOAuthTokenName() {
-    return StringUtils.defaultString(oAuthTokenName);
+    return attrDefault(ATTR_OAUTH_TOKEN_NAME);
   }
 
   public String getOAuthRequestToken() {
-    return StringUtils.defaultString(oAuthRequestToken);
+    return attrDefault(ATTR_OAUTH_REQUEST_TOKEN);
   }
 
   public String getOAuthRequestTokenSecret() {
-    return StringUtils.defaultString(oAuthRequestTokenSecret);
+    return attrDefault(ATTR_OAUTH_REQUEST_TOKEN_SECRET);
   }
 
   public Map<String, String> getAttributes() {
-    return attributes();
-  }
-
-  private void setHref(final String href) {
-    this.href = href;
-  }
-
-  private void setAuthType(final String authType) {
-    this.authType = authType;
-  }
-
-  private void setSignOwner(final String signOwner) {
-    this.signOwner = signOwner;
-  }
-
-  private void setSignViewer(final String signViewer) {
-    this.signViewer = signViewer;
-  }
-
-  private void setViews(final String views) {
-    this.views = views;
-  }
-
-  private void setOAuthServiceName(final String oAuthServiceName) {
-    this.oAuthServiceName = oAuthServiceName;
-  }
-
-  private void setOAuthTokenName(final String oAuthTokenName) {
-    this.oAuthTokenName = oAuthTokenName;
-  }
-
-  private void setOAuthRequestToken(final String oAuthRequestToken) {
-    this.oAuthRequestToken = oAuthRequestToken;
-  }
-
-  private void setOAuthRequestTokenSecret(final String oAuthRequestTokenSecret) {
-    this.oAuthRequestTokenSecret = oAuthRequestTokenSecret;
+    return getOtherAttrs();
   }
 
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
-    if (href != null) {
+    if (getHref() != null) {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
-    if (authType != null) {
+    if (attr(ATTR_AUTHZ) != null) {
       writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
     }
 
-    if (signOwner != null) {
+    if (attr(ATTR_SIGN_OWNER) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String
           .valueOf(isSignOwner()));
     }
 
-    if (signViewer != null) {
+    if (attr(ATTR_SIGN_VIEWER) != null) {
       writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String
           .valueOf(isSignViewer()));
     }
 
-    if (views != null) {
+    if (attr(ATTR_VIEWS) != null) {
       writer.writeAttribute(namespaceURI, ATTR_VIEWS, StringUtils.join(
           getViews(), ','));
     }
 
-    if (oAuthServiceName != null) {
+    if (attr(ATTR_OAUTH_SERVICE_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_OAUTH_SERVICE_NAME,
           getOAuthServiceName());
     }
 
-    if (oAuthTokenName != null) {
+    if (attr(ATTR_OAUTH_TOKEN_NAME) != null) {
       writer.writeAttribute(namespaceURI, ATTR_OAUTH_TOKEN_NAME,
           getOAuthTokenName());
     }
 
-    if (oAuthRequestToken != null) {
+    if (attr(ATTR_OAUTH_REQUEST_TOKEN) != null) {
       writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN,
           getOAuthRequestToken());
     }
 
-    if (oAuthRequestTokenSecret != null) {
+    if (attr(ATTR_OAUTH_REQUEST_TOKEN_SECRET) != null) {
       writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
           getOAuthRequestTokenSecret());
     }
@@ -193,22 +145,13 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
   @Override
   public void validate() throws SpecParserException {
-    if (href == null) {
+    if (getHref() == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@href must be set!");
     }
   }
 
   public static class Parser extends SpecElement.Parser<Preload> {
-    private final QName attrHref;
-    private final QName attrAuthz;
-    private final QName attrSignOwner;
-    private final QName attrSignViewer;
-    private final QName attrViews;
-    private final QName attrOAuthServiceName;
-    private final QName attrOAuthTokenName;
-    private final QName attrOAuthRequestToken;
-    private final QName attrOAuthRequestTokenSecret;
 
     public Parser() {
       this(new QName(ELEMENT_NAME));
@@ -216,47 +159,14 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
     public Parser(final QName name) {
       super(name);
-      this.attrHref = buildQName(name, ATTR_HREF);
-      this.attrAuthz = buildQName(name, ATTR_AUTHZ);
-      this.attrSignOwner = buildQName(name, ATTR_SIGN_OWNER);
-      this.attrSignViewer = buildQName(name, ATTR_SIGN_VIEWER);
-      this.attrViews = buildQName(name, ATTR_VIEWS);
-      this.attrOAuthServiceName = buildQName(name, ATTR_OAUTH_SERVICE_NAME);
-      this.attrOAuthTokenName = buildQName(name, ATTR_OAUTH_TOKEN_NAME);
-      this.attrOAuthRequestToken = buildQName(name, ATTR_OAUTH_REQUEST_TOKEN);
-      this.attrOAuthRequestTokenSecret = buildQName(name,
-          ATTR_OAUTH_REQUEST_TOKEN_SECRET);
+      register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER,
+          ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME, ATTR_OAUTH_TOKEN_NAME,
+          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET);
     }
 
     @Override
     protected Preload newElement() {
-      return new Preload(getName());
-    }
-
-    @Override
-    protected void setAttribute(final Preload preload, final QName name,
-        final String value) {
-      if (name.equals(attrHref)) {
-        preload.setHref(value);
-      } else if (name.equals(attrAuthz)) {
-        preload.setAuthType(value);
-      } else if (name.equals(attrSignOwner)) {
-        preload.setSignOwner(value);
-      } else if (name.equals(attrSignViewer)) {
-        preload.setSignViewer(value);
-      } else if (name.equals(attrViews)) {
-        preload.setViews(value);
-      } else if (name.equals(attrOAuthServiceName)) {
-        preload.setOAuthServiceName(value);
-      } else if (name.equals(attrOAuthTokenName)) {
-        preload.setOAuthTokenName(value);
-      } else if (name.equals(attrOAuthRequestToken)) {
-        preload.setOAuthRequestToken(value);
-      } else if (name.equals(attrOAuthRequestTokenSecret)) {
-        preload.setOAuthRequestTokenSecret(value);
-      } else {
-        super.setAttribute(preload, name, value);
-      }
+      return new Preload(name(), getAttrNames());
     }
   }
 }

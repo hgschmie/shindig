@@ -36,8 +36,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.Pair;
 
 public abstract class SpecElement {
 
@@ -48,36 +52,69 @@ public abstract class SpecElement {
     factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
   }
 
-
   private final Logger LOG = Logger.getLogger(getClass().getName());
-
-  private final Map<QName, String> attributes;
-
-  private final Map<String, String> namespaces;
-
-  private final List<SpecElement> children = new ArrayList<SpecElement>();
 
   private final QName qName;
 
+  private final Map<String, QName> attrNames;
+
+  private final Map<String, String> attrs = new HashMap<String, String>();
+
+  private final Map<String, Pair<QName, String>> otherAttrs;
+
+  private final Map<String, String> namespaces;
+
+  private final Map<QName, String> nsAttrs;
+
+  private final List<SpecElement> children = new ArrayList<SpecElement>();
+
   private boolean cdataFlag = false;
 
-  protected SpecElement(final QName qName) {
-    attributes = new HashMap<QName, String>();
-    namespaces = new HashMap<String, String>();
+  protected SpecElement(final QName qName, final Map<String, QName> attrNames) {
     this.qName = qName;
+    this.attrNames = attrNames;
+
+    nsAttrs = new HashMap<QName, String>();
+    namespaces = new HashMap<String, String>();
+
+    otherAttrs = new HashMap<String, Pair<QName, String>>();
   }
 
   protected SpecElement(final SpecElement specElement) {
-    this.attributes = specElement.allAttributes();
-    this.namespaces = specElement.allNamespaces();
     this.qName = specElement.name();
+    this.attrNames = specElement.attrNames();
+
+    this.nsAttrs = specElement.nsAttrs();
+    this.namespaces = specElement.namespaces();
+
+    this.otherAttrs = specElement.otherAttrs();
+
     this.cdataFlag = specElement.isCDATA();
+
+    // Copy known keys over.
+    for (String key : attrNames.keySet()) {
+      setAttr(key, specElement.attr(key));
+    }
   }
 
   // ======================================================================================================================================
 
-  protected void setAttribute(final QName name, final String value) {
-    attributes.put(name, value);
+  protected void setAttr(final QName key, final String value) {
+    if (StringUtils.equalsIgnoreCase(key.getNamespaceURI(), qName
+        .getNamespaceURI())) {
+      final String keyName = key.getLocalPart().toLowerCase();
+      if (attrNames.containsKey(keyName)) {
+        setAttr(keyName, value);
+      } else {
+        otherAttrs.put(keyName, new Pair<QName, String>(key, value));
+      }
+    } else {
+      nsAttrs.put(key, value);
+    }
+  }
+
+  protected void setAttr(final String key, final String value) {
+    attrs.put(key, value);
   }
 
   protected void addChild(final SpecElement child) {
@@ -102,26 +139,78 @@ public abstract class SpecElement {
     return qName;
   }
 
-  protected String attribute(final String key) {
-    return attributes.get(new QName(qName.getNamespaceURI(), key));
+  public String getOtherAttr(final String key) {
+    return otherAttrs.get(key.toLowerCase()).getValue();
   }
 
-  protected Map<String, String> attributes() {
+  public Map<String, String> getOtherAttrs() {
     Map<String, String> localAttributes = new HashMap<String, String>();
-    for (Map.Entry<QName, String> entry: attributes.entrySet()) {
-      if (entry.getKey().getPrefix().equals(qName.getPrefix())) {
-        localAttributes.put(entry.getKey().getLocalPart(), entry.getValue());
-      }
+
+    for (Pair<QName, String> pairs : otherAttrs.values()) {
+      localAttributes.put(pairs.getKey().getLocalPart(), pairs.getValue());
     }
 
     return Collections.unmodifiableMap(localAttributes);
   }
 
-  private Map<QName, String> allAttributes() {
-    return Collections.unmodifiableMap(attributes);
+  // ======================================================================================================================================
+
+  protected String attr(final String key) {
+    return attr(key.toLowerCase());
   }
 
-  private Map<String, String> allNamespaces() {
+  protected String attrDefault(final String key) {
+    return StringUtils.defaultString(attr(key));
+  }
+
+  protected String attrDefault(final String key, final String defaultValue) {
+    return StringUtils.defaultString(attr(key), defaultValue);
+  }
+
+  protected boolean attrBool(final String key) {
+    return BooleanUtils.toBoolean(attr(key));
+  }
+
+  protected boolean attrBool(final String key, final boolean defaultValue) {
+    final String value = attr(key);
+    return (value == null) ? defaultValue : BooleanUtils.toBoolean(value);
+  }
+
+  protected double attrDouble(final String key) {
+    return NumberUtils.toDouble(attr(key));
+  }
+
+  protected int attrInt(final String key) {
+    return NumberUtils.toInt(attr(key));
+  }
+
+  protected int attrInt(final String key, final int defaultValue) {
+    return NumberUtils.toInt(attr(key), defaultValue);
+  }
+
+  protected Uri attrUri(final String key) {
+    return Uri.toUri(attr(key), Uri.EMPTY_URI);
+  }
+
+  protected Uri attrUriNull(final String key) {
+    return Uri.toUri(attr(key), null);
+  }
+
+  // ======================================================================================================================================
+
+  private Map<String, QName> attrNames() {
+    return Collections.unmodifiableMap(attrNames);
+  }
+
+  private Map<QName, String> nsAttrs() {
+    return Collections.unmodifiableMap(nsAttrs);
+  }
+
+  private Map<String, Pair<QName, String>> otherAttrs() {
+    return Collections.unmodifiableMap(otherAttrs);
+  }
+
+  private Map<String, String> namespaces() {
     return Collections.unmodifiableMap(namespaces);
   }
 
@@ -145,7 +234,11 @@ public abstract class SpecElement {
 
     writeAttributes(writer);
 
-    for (Map.Entry<QName, String> attribute : attributes.entrySet()) {
+    for (Pair<QName, String> attribute : otherAttrs.values()) {
+      writeAttribute(writer, attribute.getKey(), attribute.getValue());
+    }
+
+    for (Map.Entry<QName, String> attribute : nsAttrs.entrySet()) {
       writeAttribute(writer, attribute.getKey(), attribute.getValue());
     }
 
@@ -160,11 +253,6 @@ public abstract class SpecElement {
     writer.writeEndElement();
   }
 
-  protected void writeAttribute(final XMLStreamWriter writer, final QName name,
-      final String value) throws XMLStreamException {
-    writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
-  }
-
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
   }
@@ -174,7 +262,7 @@ public abstract class SpecElement {
   }
 
   protected void writeText(final XMLStreamWriter writer)
-    throws XMLStreamException {
+      throws XMLStreamException {
 
     final String text = getText();
 
@@ -185,6 +273,13 @@ public abstract class SpecElement {
         writer.writeCharacters(text);
       }
     }
+  }
+
+  // ======================================================================================================================================
+
+  protected static void writeAttribute(final XMLStreamWriter writer,
+      final QName name, final String value) throws XMLStreamException {
+    writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
   }
 
   // ======================================================================================================================================
@@ -222,21 +317,37 @@ public abstract class SpecElement {
 
     private final Map<QName, Parser<? extends SpecElement>> children = new HashMap<QName, Parser<? extends SpecElement>>();
 
-    private final QName name;
+    private final Map<String, QName> attrNames = new HashMap<String, QName>();
 
-    protected Parser(final QName name) {
-      this.name = name;
+    private final QName qName;
+
+    protected Parser(final QName qName) {
+      this.qName = qName;
     }
 
-    public QName getName() {
-      return name;
+    public QName name() {
+      return qName;
     }
 
-    protected void register(Parser<? extends SpecElement> parseElement) {
-      children.put(parseElement.getName(), parseElement);
+    protected Map<String, QName> getAttrNames() {
+      return attrNames;
     }
 
-    public T parse(final XMLStreamReader reader) throws SpecParserException, XMLStreamException {
+    protected void register(final Parser<? extends SpecElement> parser) {
+      children.put(parser.name(), parser);
+    }
+
+    protected void register(final String... attrNames) {
+      for (final String attrName : attrNames) {
+        this.attrNames.put(attrName.toLowerCase(), new QName(qName
+            .getNamespaceURI(), attrName));
+      }
+    }
+
+    protected abstract T newElement();
+
+    public T parse(final XMLStreamReader reader) throws SpecParserException,
+        XMLStreamException {
 
       // This assumes, that parse it at the right element.
       T element = newElement();
@@ -280,8 +391,8 @@ public abstract class SpecElement {
 
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
-        setAttribute(element, reader.getAttributeName(i), reader
-            .getAttributeValue(i));
+        element
+            .setAttr(reader.getAttributeName(i), reader.getAttributeValue(i));
       }
     }
 
@@ -292,14 +403,8 @@ public abstract class SpecElement {
       }
     }
 
-    protected abstract T newElement();
-
-    protected void setAttribute(final T element, final QName attributeName,
-        final String value) {
-      element.setAttribute(attributeName, value);
-    }
-
-    protected void addText(final XMLStreamReader reader, final T element) throws SpecParserException {
+    protected void addText(final XMLStreamReader reader, final T element)
+        throws SpecParserException {
       if (!reader.isWhiteSpace()) {
         throw new IllegalStateException("The element" + element.name()
             + " does not accept any nested text");
@@ -311,10 +416,5 @@ public abstract class SpecElement {
       throw new IllegalStateException("The element" + element.name()
           + " does not accept any nested elements, saw " + child.name());
     }
-
-  }
-
-  protected static QName buildQName(final QName name, final String localName) {
-    return new QName(name.getNamespaceURI(), localName);
   }
 }

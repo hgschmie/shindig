@@ -129,9 +129,10 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
     return new MessageBundle(messages, localeSpec.getLanguageDirection());
   }
 
-  public static Map<String, String> addMessages(final Map<String, String> messages,
-      final Set<LocaleMsg> msgs) {
-    final Map<String, String> targetMap = (messages != null) ? messages : new HashMap<String, String>((msgs != null) ? msgs.size() : 10);
+  public static Map<String, String> addMessages(
+      final Map<String, String> messages, final Set<LocaleMsg> msgs) {
+    final Map<String, String> targetMap = (messages != null) ? messages
+        : new HashMap<String, String>((msgs != null) ? msgs.size() : 10);
     if (msgs != null) {
       for (LocaleMsg msg : msgs) {
         targetMap.put(msg.getName(), msg.getText());
@@ -145,7 +146,8 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
 
     HttpRequest request = new HttpRequest(uri).setIgnoreCache(ignoreCache);
 
-    // Since we don't allow any variance in cache time, we should just force the cache time
+    // Since we don't allow any variance in cache time, we should just force the
+    // cache time
     // globally. This ensures propagation to shared caches when this is set.
     request.setCacheTtl((int) (refresh / 1000));
 
