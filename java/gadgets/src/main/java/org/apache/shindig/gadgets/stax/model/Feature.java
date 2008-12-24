@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public abstract class Feature extends SpecElement {
@@ -40,9 +41,9 @@ public abstract class Feature extends SpecElement {
 
   private Map<String, FeatureParam> params = new HashMap<String, FeatureParam>();
 
-  protected Feature(final QName name, final Map<String, QName> attrNames,
+  protected Feature(final QName name, final Map<String, QName> attrNames, final Uri base,
       final boolean required) {
-    super(name, attrNames);
+    super(name, attrNames, base);
     this.required = required;
   }
 
@@ -89,9 +90,9 @@ public abstract class Feature extends SpecElement {
 
   public abstract static class Parser extends SpecElement.Parser<Feature> {
 
-    public Parser(final QName name) {
-      super(name);
-      register(new FeatureParam.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new FeatureParam.Parser(base));
       register(ATTR_FEATURE);
     }
 

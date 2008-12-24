@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 
 import org.apache.shindig.common.ContainerConfigException;
@@ -34,13 +29,19 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.LockedDomainService;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for Renderer.
@@ -216,7 +217,7 @@ public class RendererTest {
         throw exception;
       }
       try {
-        GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL, GADGET);
+        GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(GADGET, new ShindigGadgetSpec.Parser(SPEC_URL, null));
         View view = spec.getView(context.getView());
         return new Gadget()
             .setContext(context)

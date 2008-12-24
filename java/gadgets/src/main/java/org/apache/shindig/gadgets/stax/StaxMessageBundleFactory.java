@@ -163,7 +163,7 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
     try {
       XMLStreamReader reader = factory.createXMLStreamReader(response
           .getResponse());
-      final MessageBundleSpec.Parser parser = new MessageBundleSpec.Parser();
+      final MessageBundleSpec.Parser parser = new MessageBundleSpec.Parser(Uri.EMPTY_URI);
       MessageBundleSpec messageBundleSpec = null;
 
       loop: while (true) {

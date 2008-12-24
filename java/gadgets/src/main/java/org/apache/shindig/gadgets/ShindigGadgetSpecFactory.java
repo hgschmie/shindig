@@ -19,7 +19,6 @@
 package org.apache.shindig.gadgets;
 
 import java.io.StringReader;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -44,8 +43,6 @@ import com.google.inject.name.Named;
  */
 public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
-    private static final Logger LOG = Logger.getLogger(ShindigGadgetSpecFactory.class.getName());
-    
     private final XMLInputFactory factory;
 
     @Inject
@@ -57,6 +54,7 @@ public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
         factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
     }
 
+    @Override
     protected GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException {
 
         ShindigGadgetSpec gadgetSpec = null;

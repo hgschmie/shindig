@@ -25,26 +25,28 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
+import org.apache.shindig.common.uri.Uri;
+
 public class Optional extends Feature {
 
   public static final String ELEMENT_NAME = "Optional";
 
-  public Optional(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames, false);
+  public Optional(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base, false);
   }
 
   public static class Parser extends Feature.Parser {
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
     }
 
     @Override
     protected Optional newElement() {
-      return new Optional(name(), getAttrNames());
+      return new Optional(name(), getAttrNames(), getBase());
     }
   }
 }

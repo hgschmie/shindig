@@ -18,14 +18,6 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +51,6 @@ import org.apache.shindig.gadgets.preload.PreloadedData;
 import org.apache.shindig.gadgets.preload.Preloads;
 import static org.apache.shindig.gadgets.render.RenderingContentRewriter.*;
 import org.apache.shindig.gadgets.rewrite.MutableContent;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
 import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
@@ -67,6 +58,7 @@ import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.json.JSONException;
@@ -92,6 +84,14 @@ import org.junit.Test;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for RenderingContentRewriter.
@@ -127,7 +127,7 @@ public class RenderingContentRewriterTest {
   }
 
   private Gadget makeGadgetWithSpec(String gadgetXml) throws GadgetException {
-    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL, gadgetXml);
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(gadgetXml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
     return new Gadget()
         .setContext(new GadgetContext())
         .setPreloads(new NullPreloads())
@@ -716,7 +716,7 @@ public class RenderingContentRewriterTest {
 
     String viewUrl = "http://example.org/view.html";
     String xml = "<Content href='" + viewUrl + "'/>";
-    View fakeView = new View("foo", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser())), SPEC_URL);
+    View fakeView = new View("foo", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser(SPEC_URL))), SPEC_URL);
     gadget.setCurrentView(fakeView);
 
     expect(config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))

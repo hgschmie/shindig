@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class ModulePrefs extends SpecElement {
   public static final String ELEMENT_NAME = "ModulePrefs";
@@ -65,15 +66,57 @@ public class ModulePrefs extends SpecElement {
   public static final String ATTR_CATEGORY2 = "category2";
   public static final String ATTR_RENDER_INLINE = "render_inline";
 
-  private final List<Preload> preloads = new ArrayList<Preload>();
   private final Map<String, Feature> features = new HashMap<String, Feature>();
-  private final List<Icon> icons = new ArrayList<Icon>();
   private final Map<Locale, LocaleSpec> locales = new HashMap<Locale, LocaleSpec>();
+  private final List<Preload> preloads = new ArrayList<Preload>();
+  private final List<Icon> icons = new ArrayList<Icon>();
   private final Map<String, LinkSpec> links = new HashMap<String, LinkSpec>();
+
   private OAuthSpec oauth = null;
 
-  public ModulePrefs(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public ModulePrefs(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
+    super(name, attrNames, base);
+  }
+
+  /**
+   * Produces a new, substituted ModulePrefs
+   */
+  protected ModulePrefs(final ModulePrefs prefs, final Substitutions substituter) {
+    super(prefs);
+
+    for (Feature feature : prefs.getFeatures().values()) {
+      addFeature(feature);
+    }
+
+    for (LocaleSpec locale : prefs.getLocales().values()) {
+      addLocale(locale);
+    }
+
+    for (Preload preload : prefs.getPreloads()) {
+      addPreload(preload.substitute(substituter));
+    }
+
+    for (Icon icon : prefs.getIcons()) {
+      addIcon(icon.substitute(substituter));
+    }
+
+    for (LinkSpec link : prefs.getLinks().values()) {
+      addLink(link.substitute(substituter));
+    }
+
+    this.oauth = prefs.getOauth();
+  }
+
+  /**
+   * Produces a new ModulePrefs by substituting hangman variables from
+   * substituter. See comments on individual fields to see what actually has
+   * substitutions performed.
+   *
+   * @param substituter
+   */
+  public ModulePrefs substitute(final Substitutions substituter) {
+    return new ModulePrefs(this, substituter);
   }
 
   public List<Preload> getPreloads() {
@@ -383,20 +426,20 @@ public class ModulePrefs extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<ModulePrefs> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
 
-      register(new Require.Parser());
-      register(new Optional.Parser());
-      register(new Preload.Parser());
-      register(new Icon.Parser());
-      register(new LocaleSpec.Parser());
-      register(new LinkSpec.Parser());
-      register(new OAuthSpec.Parser());
+      register(new Require.Parser(base));
+      register(new Optional.Parser(base));
+      register(new Preload.Parser(base));
+      register(new Icon.Parser(base));
+      register(new LocaleSpec.Parser(base));
+      register(new LinkSpec.Parser(base));
+      register(new OAuthSpec.Parser(base));
 
       register(ATTR_TITLE, ATTR_TITLE_URL, ATTR_DESCRIPTION, ATTR_AUTHOR,
           ATTR_AUTHOR_EMAIL, ATTR_SCREENSHOT, ATTR_THUMBNAIL,
@@ -409,7 +452,7 @@ public class ModulePrefs extends SpecElement {
 
     @Override
     protected ModulePrefs newElement() {
-      return new ModulePrefs(name(), getAttrNames());
+      return new ModulePrefs(name(), getAttrNames(), getBase());
     }
 
     @Override

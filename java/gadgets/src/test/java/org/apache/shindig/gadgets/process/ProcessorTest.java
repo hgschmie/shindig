@@ -17,10 +17,6 @@
  */
 package org.apache.shindig.gadgets.process;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.util.Arrays;
 
@@ -32,13 +28,18 @@ import org.apache.shindig.gadgets.GadgetBlacklist;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.variables.VariableSubstituter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ProcessorTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
@@ -175,7 +176,7 @@ public class ProcessorTest {
       if (exception != null) {
         throw exception;
       }
-      return new DefaultGadgetSpec(Uri.fromJavaUri(context.getUrl()), GADGET);
+      return (ShindigGadgetSpec) StaxTestUtils.parseElement(GADGET, new ShindigGadgetSpec.Parser(Uri.fromJavaUri(context.getUrl()), null));
     }
 
     public GadgetSpec getGadgetSpec(URI uri, boolean ignoreCache) {

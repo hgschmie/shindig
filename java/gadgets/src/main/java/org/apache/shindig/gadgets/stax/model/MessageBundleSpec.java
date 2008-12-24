@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
 
@@ -44,8 +45,8 @@ public class MessageBundleSpec extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public Direction getLanguageDirection() {
@@ -82,19 +83,19 @@ public class MessageBundleSpec extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<MessageBundleSpec> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new LocaleMsg.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new LocaleMsg.Parser(base));
       register(ATTR_LANGUAGE_DIRECTION);
     }
 
     @Override
     protected MessageBundleSpec newElement() {
-      return new MessageBundleSpec(name(), getAttrNames());
+      return new MessageBundleSpec(name(), getAttrNames(), getBase());
     }
 
     @Override

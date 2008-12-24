@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LinkSpec extends SpecElement {
 
@@ -38,9 +39,20 @@ public class LinkSpec extends SpecElement {
   public static final String ATTR_REL = "rel";
   public static final String ATTR_HREF = "href";
 
-  public LinkSpec(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public LinkSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
+
+    protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
+        super(linkSpec);
+        setAttr(ATTR_REL, substituter.substituteString(linkSpec.getRel().toString()));
+        setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(linkSpec.getHref())).toString());
+    }
+
+    public LinkSpec substitute(final Substitutions substituter) {
+        return new LinkSpec(this, substituter);
+    }
+
 
   public Rel getRel() {
     return Rel.parse(attr(ATTR_REL));
@@ -95,7 +107,7 @@ public class LinkSpec extends SpecElement {
 
     /**
      * Parses a data rel from the input string.
-     * 
+     *
      * @param value
      * @return The data rel of the given value.
      */
@@ -111,18 +123,18 @@ public class LinkSpec extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<LinkSpec> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_REL, ATTR_HREF);
     }
 
     @Override
     protected LinkSpec newElement() {
-      return new LinkSpec(name(), getAttrNames());
+      return new LinkSpec(name(), getAttrNames(), getBase());
     }
   }
 }

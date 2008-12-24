@@ -26,12 +26,14 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.shindig.common.uri.Uri;
+
 public class GenericElement extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public GenericElement(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public GenericElement(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   @Override
@@ -44,13 +46,13 @@ public class GenericElement extends SpecElement {
   }
 
   public static class Parser extends SpecElement.Parser<GenericElement> {
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
     }
 
     @Override
     protected GenericElement newElement() {
-      return new GenericElement(name(), getAttrNames());
+      return new GenericElement(name(), getAttrNames(), getBase());
     }
 
     @Override

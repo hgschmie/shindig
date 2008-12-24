@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -36,8 +37,8 @@ public class EnumValue extends SpecElement {
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISPLAY_VALUE = "display_value";
 
-  protected EnumValue(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  protected EnumValue(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
@@ -83,18 +84,18 @@ public class EnumValue extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<EnumValue> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
       register(ATTR_VALUE, ATTR_DISPLAY_VALUE);
     }
 
     @Override
     protected EnumValue newElement() {
-      return new EnumValue(name(), getAttrNames());
+      return new EnumValue(name(), getAttrNames(), getBase());
     }
   }
 }

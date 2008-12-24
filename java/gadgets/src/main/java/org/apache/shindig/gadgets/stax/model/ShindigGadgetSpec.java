@@ -41,8 +41,6 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
   private final String checksum;
 
-  private final Uri url;
-
   private Multimap<String, Content> viewMap = new HashMultimap<String, Content>();
 
   private ConcurrentHashMap<String, View> views = new ConcurrentHashMap<String, View>();
@@ -56,18 +54,23 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
 
   public ShindigGadgetSpec(final QName name, final Uri url,
       final String checksum) {
-    super(name);
+      super(name, url);
     this.checksum = checksum;
-    this.url = url;
+  }
+
+    protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec, final Substitutions substituter) {
+        super(gadgetSpec, substituter);
+
+        this.checksum = gadgetSpec.getChecksum();
+        this.views = new ConcurrentHashMap<String, View>(gadgetSpec.getViews());
   }
 
   public String getChecksum() {
     return checksum;
   }
 
-  @Override
   public Uri getUrl() {
-    return url;
+    return getBase();
   }
 
   // ========================================================================
@@ -102,23 +105,22 @@ public class ShindigGadgetSpec extends StaxGadgetSpec implements GadgetSpec {
     return Collections.unmodifiableMap(views);
   }
 
-  public GadgetSpec substitute(Substitutions substituter) {
-    // TODO Auto-generated method stub
-    return null;
+  @Override
+  public ShindigGadgetSpec substitute(Substitutions substituter) {
+    return new ShindigGadgetSpec(this, substituter);
   }
 
   public static class Parser extends StaxGadgetSpec.Parser<ShindigGadgetSpec> {
-    private final Uri url;
     private final String checksum;
 
     public Parser(final Uri url, final String checksum) {
-      this.url = url;
+      super(url);
       this.checksum = checksum;
     }
 
     @Override
     protected ShindigGadgetSpec newElement() {
-      return new ShindigGadgetSpec(name(), url, checksum);
+      return new ShindigGadgetSpec(name(), getBase(), checksum);
     }
 
     @Override

@@ -46,8 +46,8 @@ public class LocaleSpec extends SpecElement {
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  public LocaleSpec(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public LocaleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
   }
 
   public String getLanguage() {
@@ -131,19 +131,19 @@ public class LocaleSpec extends SpecElement {
 
   public static class Parser extends SpecElement.Parser<LocaleSpec> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+      this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
-      register(new LocaleMsg.Parser());
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+      register(new LocaleMsg.Parser(base));
       register(ATTR_LANG, ATTR_COUNTRY, ATTR_LANGUAGE_DIRECTION, ATTR_MESSAGES);
     }
 
     @Override
     protected LocaleSpec newElement() {
-      return new LocaleSpec(name(), getAttrNames());
+      return new LocaleSpec(name(), getAttrNames(), getBase());
     }
 
     @Override

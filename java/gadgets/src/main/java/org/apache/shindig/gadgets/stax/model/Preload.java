@@ -33,6 +33,7 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -50,8 +51,29 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static final String ATTR_OAUTH_REQUEST_TOKEN = "oauth_request_token";
   public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
 
-  public Preload(final QName name, final Map<String, QName> attrNames) {
-    super(name, attrNames);
+  public Preload(final QName name, final Map<String, QName> attrNames, final Uri base) {
+    super(name, attrNames, base);
+  }
+
+    private Preload(final Preload preload, final Substitutions substituter) {
+        super(preload);
+
+        setAttr(ATTR_VIEWS, StringUtils.join(preload.getViews(), ','));
+        setAttr(ATTR_AUTHZ, preload.getAuthType().toString());
+        setAttr(ATTR_SIGN_OWNER, String.valueOf(preload.isSignOwner()));
+        setAttr(ATTR_SIGN_VIEWER, String.valueOf(preload.isSignViewer()));
+        setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(preload.getHref())).toString());
+    }
+
+  /**
+   * Produces a new Preload by substituting hangman variables from
+   * substituter. See comments on individual fields to see what actually
+   * has substitutions performed.
+   *
+   * @param substituter
+   */
+  public Preload substitute(final Substitutions substituter) {
+    return new Preload(this, substituter);
   }
 
   public Uri getHref() {
@@ -153,12 +175,13 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
   public static class Parser extends SpecElement.Parser<Preload> {
 
-    public Parser() {
-      this(new QName(ELEMENT_NAME));
+    public Parser(final Uri base) {
+        this(new QName(ELEMENT_NAME), base);
     }
 
-    public Parser(final QName name) {
-      super(name);
+    public Parser(final QName name, final Uri base) {
+      super(name, base);
+
       register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER,
           ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME, ATTR_OAUTH_TOKEN_NAME,
           ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET);
@@ -166,7 +189,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
     @Override
     protected Preload newElement() {
-      return new Preload(name(), getAttrNames());
+        return new Preload(name(), getAttrNames(), getBase());
     }
   }
 }

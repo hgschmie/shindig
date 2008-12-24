@@ -29,6 +29,8 @@ import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -84,7 +86,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new DefaultGadgetSpec(SPEC_URL, xml);
+    return (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
   }
 
   public static GadgetSpec createSpecWithoutRewrite() throws GadgetException {
@@ -93,7 +95,8 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return new DefaultGadgetSpec(SPEC_URL, xml);
+    return (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+
   }
 
   ContentRewriterFeatureFactory mockContentRewriterFeatureFactory(
@@ -119,8 +122,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
       throws Exception {
     MutableContent mc = new MutableContent(parser, s);
 
-    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL,
-        "<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>");
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement("<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>", new ShindigGadgetSpec.Parser(SPEC_URL, null));
 
     GadgetContext context = new GadgetContext() {
       @Override

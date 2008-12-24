@@ -35,11 +35,11 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.Content;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
@@ -70,8 +70,7 @@ public class HtmlRendererTest {
   private final HtmlRenderer renderer = new HtmlRenderer(fetcher, preloaderService, rewriter);
 
   private Gadget makeGadget(String content) throws GadgetException {
-    GadgetSpec spec = new DefaultGadgetSpec(SPEC_URL,
-        "<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>");
+    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement("<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>", new ShindigGadgetSpec.Parser(SPEC_URL, null));
 
     return new Gadget()
         .setSpec(spec)
@@ -82,7 +81,7 @@ public class HtmlRendererTest {
   private Gadget makeHrefGadget(String authz) throws Exception {
     Gadget gadget = makeGadget("");
     String doc = "<Content href='" + PROXIED_HTML_HREF + "' authz='" + authz + "'/>";
-    View view = new View("proxied", Collections.singleton(StaxTestUtils.parseElement(doc, new Content.Parser())), SPEC_URL);
+    View view = new View("proxied", Collections.singleton(StaxTestUtils.parseElement(doc, new Content.Parser(SPEC_URL))), SPEC_URL);
     gadget.setCurrentView(view);
     return gadget;
   }
