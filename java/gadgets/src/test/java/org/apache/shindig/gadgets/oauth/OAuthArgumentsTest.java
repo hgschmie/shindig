@@ -22,17 +22,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shindig.common.testing.FakeHttpServletRequest;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.OAuthArguments.UseToken;
-import org.apache.shindig.gadgets.spec.Preload;
-
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.Preload;
 import org.junit.Test;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Tests parameter parsing
@@ -49,7 +47,7 @@ public class OAuthArgumentsTest {
     		"OAUTH_USE_TOKEN='never' " +
     		"/>";
 
-    Preload preload = new Preload(XmlUtil.parse(xml), Uri.parse(""));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser());
     OAuthArguments params = new OAuthArguments(preload);
     assertEquals("service", params.getServiceName());
     assertEquals("token", params.getTokenName());

@@ -41,6 +41,14 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 
 public abstract class SpecElement {
 
+  private static final XMLOutputFactory factory;
+
+  static {
+    factory = XMLOutputFactory.newInstance();
+    factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+  }
+
+
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
   private final Map<QName, String> attributes;
@@ -128,6 +136,8 @@ public abstract class SpecElement {
   // ======================================================================================================================================
 
   public void toXml(final XMLStreamWriter writer) throws XMLStreamException {
+
+    writer.setDefaultNamespace(name().getPrefix());
     for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
       writer.setPrefix(namespace.getKey(), namespace.getValue());
     }
@@ -182,8 +192,6 @@ public abstract class SpecElement {
   @Override
   public String toString() {
     final StringWriter sw = new StringWriter();
-    XMLOutputFactory factory = XMLOutputFactory.newInstance();
-    factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
     XMLStreamWriter writer = null;
     try {
       writer = factory.createXMLStreamWriter(sw);
