@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -62,6 +63,10 @@ public class Content extends SpecElement {
     return Type.parse(type);
   }
 
+  public String getRawType() {
+    return type;
+  }
+
   public Uri getHref() {
     return StaxUtils.toUri(href);
   }
@@ -81,6 +86,10 @@ public class Content extends SpecElement {
 
   public Set<String> getViews() {
     return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils.defaultString(view, "default"), ',')));
+  }
+
+  public Map<String, String> getAttributes() {
+    return attributes();
   }
 
   private void setType(final String type) {
@@ -135,14 +144,13 @@ public class Content extends SpecElement {
   public void validate() throws SpecParserException {
     switch (getType()) {
     case HTML:
-    case HTML_INLINE:
       if (text == null) {
         throw new SpecParserException(name().getLocalPart()
             + " body required for type='html'!");
       }
       break;
     case URL:
-      if (href == null) {
+      if (getHref().equals(Uri.EMPTY_URI)) {
         throw new SpecParserException(name().getLocalPart()
             + "@href required for type='url'!");
       }
@@ -157,21 +165,11 @@ public class Content extends SpecElement {
    * Possible values for Content@type
    */
   public static enum Type {
-    HTML("html"), URL("url"), HTML_INLINE("html-inline");
-
-    private final String value;
-
-    private Type(final String value) {
-      this.value = value;
-    }
-
-    public String getValue() {
-      return value;
-    }
+    HTML, URL;
 
     @Override
     public String toString() {
-      return getValue();
+      return name().toLowerCase();
     }
 
     /**

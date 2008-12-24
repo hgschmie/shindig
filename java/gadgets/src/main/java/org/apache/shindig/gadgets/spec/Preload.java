@@ -17,23 +17,22 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.XmlUtil;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.variables.Substitutions;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 /**
  * Represents an addressable piece of content that can be preloaded by the server
