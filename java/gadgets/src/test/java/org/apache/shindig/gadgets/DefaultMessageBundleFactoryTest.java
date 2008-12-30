@@ -37,11 +37,9 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
@@ -98,7 +96,7 @@ public class DefaultMessageBundleFactoryTest {
 
   public DefaultMessageBundleFactoryTest() {
     try {
-      gadgetSpec = (ShindigGadgetSpec) StaxTestUtils.parseElement(BASIC_SPEC, new ShindigGadgetSpec.Parser(SPEC_URI, null));
+      gadgetSpec = StaxTestUtils.parseSpec(BASIC_SPEC, SPEC_URI);
     } catch (GadgetException e) {
       throw new RuntimeException(e);
     }

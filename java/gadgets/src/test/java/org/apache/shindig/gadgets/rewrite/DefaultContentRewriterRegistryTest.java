@@ -25,10 +25,8 @@ import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.easymock.classextension.EasyMock;
 
 import com.google.common.collect.Lists;
@@ -39,6 +37,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   private List<ContentRewriter> contentRewriters;
   private ContentRewriterRegistry registry;
 
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
     rewriters = Arrays.asList(new CaptureRewriter(), new CaptureRewriter());
@@ -49,7 +48,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   public void testRewriteGadget() throws Exception {
     String body = "Hello, world";
     String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetContext context = new GadgetContext();
     Gadget gadget = new Gadget()
         .setContext(context)
@@ -79,7 +78,7 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   public void testRewriteView() throws Exception {
     String body = "Hello, world";
     String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetContext context = new GadgetContext();
     Gadget gadget = new Gadget()
         .setContext(context)
