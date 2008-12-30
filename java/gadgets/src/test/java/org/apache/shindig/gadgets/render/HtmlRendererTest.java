@@ -18,6 +18,9 @@
  */
 package org.apache.shindig.gadgets.render;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -39,13 +42,9 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.Content;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for HtmlRenderer
@@ -70,7 +69,7 @@ public class HtmlRendererTest {
   private final HtmlRenderer renderer = new HtmlRenderer(fetcher, preloaderService, rewriter);
 
   private Gadget makeGadget(String content) throws GadgetException {
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement("<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>", new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec("<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>", SPEC_URL);
 
     return new Gadget()
         .setSpec(spec)

@@ -62,7 +62,7 @@ public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
         try {
             XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
             final String checksum = HashUtil.checksum(xml.getBytes());
-            final ShindigGadgetSpec.Parser parser = new ShindigGadgetSpec.Parser(uri, checksum);
+            final ShindigGadgetSpec.Parser<ShindigGadgetSpec> parser = new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(uri, checksum);
 
             loop:
             while (true) {

@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.stax.model.UserPref;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
@@ -37,7 +36,7 @@ public class GadgetSpecTest extends TestCase {
                  "<UserPref name=\"foo\" datatype=\"string\"/>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
     assertEquals(UserPref.DataType.STRING,
         spec.getUserPrefs().get(0).getDataType());
@@ -51,7 +50,7 @@ public class GadgetSpecTest extends TestCase {
                  "<Content type=\"html\" view=\"world\">world</Content>" +
                  "<Content type=\"html\" view=\"hello, test\">test</Content>" +
                  "</Module>";
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("hello test", spec.getView("hello").getContent());
     assertEquals("world", spec.getView("world").getContent());
     assertEquals("test", spec.getView("test").getContent());
@@ -62,7 +61,7 @@ public class GadgetSpecTest extends TestCase {
                  "<Content type=\"html\"/>" +
                  "</Module>";
     try {
-      StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+      StaxTestUtils.parseSpec(xml, SPEC_URL);
       fail("No exception thrown when ModulePrefs is missing.");
     } catch (SpecParserException e) {
       // OK
@@ -76,7 +75,7 @@ public class GadgetSpecTest extends TestCase {
                  "<Content type=\"html\"/>" +
                  "</Module>";
     try {
-      StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+      StaxTestUtils.parseSpec(xml, SPEC_URL);
       fail("No exception thrown when more than 1 ModulePrefs is specified.");
     } catch (SpecParserException e) {
       // OK
@@ -86,7 +85,7 @@ public class GadgetSpecTest extends TestCase {
   public void testMalformedXml() throws Exception {
     String xml = "<Module><ModulePrefs/>";
     try {
-      StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+      StaxTestUtils.parseSpec(xml, SPEC_URL);
       fail("No exception thrown on malformed XML.");
     } catch (SpecParserException e) {
       // OK
@@ -106,7 +105,7 @@ public class GadgetSpecTest extends TestCase {
     substituter.addSubstitution(Type.USER_PREF, "title", title);
     substituter.addSubstitution(Type.MESSAGE, "content", content);
 
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null)).substitute(substituter);
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL).substitute(substituter);
     assertEquals(title, spec.getModulePrefs().getTitle());
     assertEquals(content, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }

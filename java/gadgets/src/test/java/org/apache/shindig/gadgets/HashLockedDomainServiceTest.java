@@ -18,19 +18,18 @@
  */
 package org.apache.shindig.gadgets;
 
+import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_REQUIRED_KEY;
+import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_SUFFIX_KEY;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+
 import java.util.Arrays;
 
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
-
-import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_REQUIRED_KEY;
-import static org.apache.shindig.gadgets.HashLockedDomainService.LOCKED_DOMAIN_SUFFIX_KEY;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
 
 public class HashLockedDomainServiceTest extends EasyMockTestCase {
   private HashLockedDomainService lockedDomainService;
@@ -51,7 +50,7 @@ public class HashLockedDomainServiceTest extends EasyMockTestCase {
     }
 
     try {
-      return (ShindigGadgetSpec) StaxTestUtils.parseElement(gadgetXml, new ShindigGadgetSpec.Parser(Uri.parse(url), null));
+      return StaxTestUtils.parseSpec(gadgetXml, Uri.parse(url));
 
     } catch (GadgetException e) {
       return null;

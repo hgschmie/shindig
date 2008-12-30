@@ -18,6 +18,14 @@
  */
 package org.apache.shindig.gadgets.render;
 
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,7 +67,6 @@ import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.json.JSONException;
@@ -77,14 +84,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for RenderingContentRewriter.
@@ -132,7 +131,7 @@ public class RenderingContentRewriterTest {
   }
 
   private Gadget makeGadgetWithSpec(String gadgetXml) throws GadgetException {
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(gadgetXml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec(gadgetXml, SPEC_URL);
     return new Gadget()
         .setContext(new GadgetContext())
         .setPreloads(new NullPreloads())

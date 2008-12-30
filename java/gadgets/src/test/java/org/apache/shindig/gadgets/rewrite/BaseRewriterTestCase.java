@@ -32,10 +32,8 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
-import org.apache.shindig.gadgets.spec.DefaultGadgetSpec;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -86,7 +84,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    return StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
   public static GadgetSpec createSpecWithoutRewrite() throws GadgetException {
@@ -95,7 +93,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
                  "</ModulePrefs>" +
                  "<Content type=\"html\">Hello!</Content>" +
                  "</Module>";
-    return (ShindigGadgetSpec) StaxTestUtils.parseElement(xml, new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    return StaxTestUtils.parseSpec(xml, SPEC_URL);
 
   }
 
@@ -122,7 +120,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
       throws Exception {
     MutableContent mc = new MutableContent(parser, s);
 
-    GadgetSpec spec = (ShindigGadgetSpec) StaxTestUtils.parseElement("<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>", new ShindigGadgetSpec.Parser(SPEC_URL, null));
+    GadgetSpec spec = StaxTestUtils.parseSpec("<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>", SPEC_URL);
 
     GadgetContext context = new GadgetContext() {
       @Override

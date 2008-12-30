@@ -28,7 +28,6 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
 
 public class UserPrefSubstituterTest extends TestCase {
@@ -57,7 +56,7 @@ public class UserPrefSubstituterTest extends TestCase {
   @Override
   public void setUp() throws Exception {
     super.setUp();
-    spec = (ShindigGadgetSpec) StaxTestUtils.parseElement(DEFAULT_XML, new ShindigGadgetSpec.Parser(Uri.parse("#"), null));
+    spec = StaxTestUtils.parseSpec(DEFAULT_XML, Uri.parse("#"));
 
   }
 

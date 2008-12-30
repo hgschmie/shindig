@@ -7,8 +7,11 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.stax.model.SpecElement;
 import org.apache.shindig.gadgets.stax.model.SpecElement.Parser;
 
@@ -51,4 +54,8 @@ public final class StaxTestUtils {
       throw new SpecParserException("Could not parse XML:", e);
     }
   }
+
+    public static final GadgetSpec parseSpec(final String xml, final Uri base) throws GadgetException {
+        return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(base, xml));
+    }
 }
