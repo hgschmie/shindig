@@ -38,6 +38,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
@@ -51,7 +53,7 @@ public abstract class SpecElement {
 
   static {
     factory = XMLOutputFactory.newInstance();
-    factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+    factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
   }
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
@@ -209,6 +211,10 @@ public abstract class SpecElement {
     return Uri.toUri(attr(key), null);
   }
 
+  protected boolean attrIsValidUri(final String key) {
+    return attr(key) == null || attrUriNull(key) != null;
+  }
+
   // ======================================================================================================================================
 
   private Map<String, QName> attrNames() {
@@ -227,7 +233,11 @@ public abstract class SpecElement {
     return Collections.unmodifiableMap(namespaces);
   }
 
-  public void validate() throws SpecParserException {
+  private List<SpecElement> children() {
+    return Collections.unmodifiableList(children);
+  }
+
+  public void validate() throws GadgetException {
     // Nothing to validate.
   }
 
@@ -312,6 +322,39 @@ public abstract class SpecElement {
     }
     sw.flush();
     return sw.toString();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other instanceof SpecElement == false) {
+      return false;
+    }
+    if (this == other) {
+      return true;
+    }
+    SpecElement rhs = (SpecElement) other;
+    return new EqualsBuilder()
+                  .append(name(), rhs.name())
+                  .append(getBase(), rhs.getBase())
+                  .append(namespaces(), rhs.namespaces())
+                  .append(nsAttrs(), rhs.nsAttrs())
+                  .append(otherAttrs(), rhs.otherAttrs())
+                  .append(children(), rhs.children())
+                  .append(isCDATA(), rhs.isCDATA())
+                  .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+      .append(name())
+      .append(getBase())
+      .append(namespaces())
+      .append(nsAttrs())
+      .append(otherAttrs())
+      .append(children())
+      .append(isCDATA())
+      .toHashCode();
   }
 
   private static void closeQuietly(final XMLStreamWriter writer) {

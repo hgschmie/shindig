@@ -29,7 +29,6 @@ import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
-import org.apache.shindig.gadgets.stax.StaxMessageBundleFactory;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
@@ -104,7 +103,7 @@ public class VariableSubstituterTest {
       if (localeSpec == null) {
         return MessageBundle.EMPTY;
       }
-      return new MessageBundle(StaxMessageBundleFactory.addMessages(null, localeSpec.getLocaleMsgs()));
+      return new MessageBundle(localeSpec);
     }
   }
 }

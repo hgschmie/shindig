@@ -46,8 +46,6 @@ public class LinkSpec extends SpecElement {
 
   protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
     super(linkSpec);
-    setAttr(ATTR_REL, substituter
-        .substituteString(linkSpec.getRel().toString()));
     setAttr(ATTR_HREF, getBase().resolve(
         substituter.substituteUri(linkSpec.getHref())).toString());
   }
@@ -83,6 +81,9 @@ public class LinkSpec extends SpecElement {
     if (attr(ATTR_REL) == null) {
       throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
     }
+    if (getRel() == null) {
+      throw new SpecParserException(name().getLocalPart() + "@rel is invalid!");
+    }
     if (getHref() == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@href must be set!");
@@ -114,13 +115,18 @@ public class LinkSpec extends SpecElement {
      * @param value
      * @return The data rel of the given value.
      */
-    public static Rel parse(String value) {
+    public static Rel parse(final String value) {
+
+      if (value == null) {
+        return ICON;
+      }
+
       for (Rel rel : Rel.values()) {
         if (StringUtils.equalsIgnoreCase(rel.toString(), value)) {
           return rel;
         }
       }
-      return ICON;
+      return null;
     }
   }
 

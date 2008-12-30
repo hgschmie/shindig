@@ -19,24 +19,25 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 import junit.framework.TestCase;
+
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.Icon;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class IconTest extends TestCase {
   public void testBasicIcon() throws Exception {
     String xml = "<Icon type=\"foo\" mode=\"base64\">helloWorld</Icon>";
-    Icon icon = new Icon(XmlUtil.parse(xml));
+    Icon icon = StaxTestUtils.parseElement(xml, new Icon.Parser(null));
     assertEquals("foo", icon.getType());
-    assertEquals("base64", icon.getMode());
-    assertEquals("helloWorld", icon.getContent());
+    assertEquals(Icon.Mode.BASE64, icon.getMode());
+    assertEquals("helloWorld", icon.getText());
   }
 
   public void testInvalidMode() throws Exception {
     String xml = "<Icon type=\"foo\" mode=\"broken\"/>";
     try {
-      new Icon(XmlUtil.parse(xml));
+      StaxTestUtils.parseElement(xml, new Icon.Parser(null));
       fail("No exception thrown when an invalid mode attribute is passed.");
     } catch (SpecParserException e) {
       // OK
@@ -48,7 +49,7 @@ public class IconTest extends TestCase {
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "domain",
         "example.org");
-    Icon icon = new Icon(XmlUtil.parse(xml)).substitute(substituter);
-    assertEquals("http://example.org/icon.png", icon.getContent());
+    Icon icon = StaxTestUtils.parseElement(xml, new Icon.Parser(null)).substitute(substituter);
+    assertEquals("http://example.org/icon.png", icon.getText());
   }
 }

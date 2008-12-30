@@ -28,6 +28,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
@@ -39,7 +41,7 @@ public class LocaleMsg extends SpecElement {
   public static final String ATTR_NAME = "name";
 
   /** Non 0.8 in gadgetspec, present in message bundle */
-  public static final String ATTR_DESC = "name";
+  public static final String ATTR_DESC = "desc";
 
   private StringBuilder text = new StringBuilder();
 
@@ -94,6 +96,33 @@ public class LocaleMsg extends SpecElement {
       throw new SpecParserException(name().getLocalPart()
           + "@name must be set!");
     }
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other instanceof LocaleMsg == false) {
+      return false;
+    }
+    if (this == other) {
+      return true;
+    }
+    LocaleMsg rhs = (LocaleMsg) other;
+    return new EqualsBuilder()
+                  .appendSuper(super.equals(other))
+                  .append(getName(), rhs.getName())
+                  .append(getDesc(), rhs.getDesc())
+                  .append(getText(), rhs.getText())
+                  .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+      .appendSuper(super.hashCode())
+      .append(getName())
+      .append(getDesc())
+      .append(getText())
+      .toHashCode();
   }
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {

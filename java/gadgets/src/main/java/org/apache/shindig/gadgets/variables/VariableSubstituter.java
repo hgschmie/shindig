@@ -23,7 +23,7 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
-import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
+import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
 
 import com.google.inject.Inject;
 

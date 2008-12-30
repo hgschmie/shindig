@@ -108,28 +108,27 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
           : new Locale(locale.getLanguage(), "ALL");
     }
 
-    final MessageBundle parentBundle = getBundle(spec, parentLocale,
-        ignoreCache);
+    final MessageBundle parentBundle = getBundle(spec, parentLocale, ignoreCache);
     final LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
 
     if (localeSpec == null) {
       return parentBundle; // This either exists or is MessageBundle.EMPTY;
     }
 
+
     final Uri messageUrl = localeSpec.getMessages();
     Map<String, String> messages = null;
-    if (!messageUrl.equals(Uri.EMPTY_URI)) {
-      final MessageBundleSpec messageBundleSpec = fetchMessageBundle(
-          messageUrl, ignoreCache);
-      messages = addMessages(messages, messageBundleSpec.getLocalMsgs());
+    if (messageUrl != null) {
+      final MessageBundleSpec messageBundleSpec = fetchMessageBundle(messageUrl, ignoreCache);
+      messages = addMessages(messages, messageBundleSpec.getLocaleMsgs());
     }
 
     messages = addMessages(messages, localeSpec.getLocaleMsgs());
 
-    return new MessageBundle(messages, localeSpec.getLanguageDirection());
+    return new MessageBundle(parentBundle.getMessages(), messages, localeSpec.getLanguageDirection());
   }
 
-  public static Map<String, String> addMessages(
+  private  static Map<String, String> addMessages(
       final Map<String, String> messages, final Set<LocaleMsg> msgs) {
     final Map<String, String> targetMap = (messages != null) ? messages
         : new HashMap<String, String>((msgs != null) ? msgs.size() : 10);

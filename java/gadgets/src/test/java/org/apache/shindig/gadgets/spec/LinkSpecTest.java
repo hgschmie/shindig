@@ -21,9 +21,10 @@ package org.apache.shindig.gadgets.spec;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.LinkSpec;
+import org.apache.shindig.gadgets.stax.model.LinkSpec.Rel;
 import org.apache.shindig.gadgets.variables.Substitutions;
-
 import org.junit.Test;
 
 /**
@@ -31,14 +32,14 @@ import org.junit.Test;
  */
 public class LinkSpecTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
-  private static final String REL_VALUE = "foo";
+  private static final LinkSpec.Rel REL_VALUE = Rel.GADGETS_HELP;
   private static final Uri HREF_VALUE = Uri.parse("http://example.org/foo");
 
   @Test
   public void parseBasicLink() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='" + HREF_VALUE + "'/>";
 
-    LinkSpec link = new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
 
     assertEquals(REL_VALUE, link.getRel());
     assertEquals(HREF_VALUE, link.getHref());
@@ -48,7 +49,7 @@ public class LinkSpecTest {
   public void parseRelativeLink() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='/foo'/>";
 
-    LinkSpec link = new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
 
     link = link.substitute(new Substitutions());
 
@@ -58,45 +59,42 @@ public class LinkSpecTest {
 
   @Test
   public void substitutionsPerformed() throws Exception {
-    String rel = "foo.bar";
     String href = "jp-DE.xml";
     Uri expectedHref = Uri.parse("http://example.org/jp-DE.xml");
-    String xml = "<Link rel='__MSG_rel__' href='http://example.org/__MSG_href__'/>";
+    String xml = "<Link rel='icon' href='http://example.org/__MSG_href__'/>";
 
-    LinkSpec link = new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
     Substitutions substitutions = new Substitutions();
-    substitutions.addSubstitution(Substitutions.Type.MESSAGE, "rel", rel);
     substitutions.addSubstitution(Substitutions.Type.MESSAGE, "href", href);
     LinkSpec substituted = link.substitute(substitutions);
 
-    assertEquals(rel, substituted.getRel());
     assertEquals(expectedHref, substituted.getHref());
   }
 
   @Test(expected = SpecParserException.class)
   public void parseNoRel() throws Exception {
     String xml = "<Link href='foo'/>";
-    new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
   }
 
   @Test(expected = SpecParserException.class)
   public void parseNoHref() throws Exception {
     String xml = "<Link rel='bar'/>";
-    new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
   }
 
   @Test(expected = SpecParserException.class)
   public void parseBogusHref() throws Exception {
     String xml = "<Link rel='foo' href='$%^$#%$#$%'/>";
-    new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
   }
 
   @Test
   public void toStringIsSane() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='" + HREF_VALUE + "'/>";
 
-    LinkSpec link = new LinkSpec(XmlUtil.parse(xml), SPEC_URL);
-    LinkSpec link2 = new LinkSpec(XmlUtil.parse(link.toString()), SPEC_URL);
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
+    LinkSpec link2 = StaxTestUtils.parseElement(link.toString(), new LinkSpec.Parser(SPEC_URL));
 
     assertEquals(link.getRel(), link2.getRel());
     assertEquals(link.getHref(), link2.getHref());
