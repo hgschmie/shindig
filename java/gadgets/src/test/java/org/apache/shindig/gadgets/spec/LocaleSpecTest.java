@@ -22,8 +22,9 @@ package org.apache.shindig.gadgets.spec;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
-
+import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
 
 public class LocaleSpecTest {
@@ -37,24 +38,24 @@ public class LocaleSpecTest {
                  " language_direction=\"rtl\"" +
                  " messages=\"http://example.org/msgs.xml\"/>";
 
-    LocaleSpec locale = new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
+    LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
     assertEquals("en", locale.getLanguage());
     assertEquals("US", locale.getCountry());
-    assertEquals("rtl", locale.getLanguageDirection());
+    assertEquals(MessageBundle.Direction.RTL, locale.getLanguageDirection());
     assertEquals("http://example.org/msgs.xml", locale.getMessages().toString());
   }
 
   @Test
   public void relativeLocale() throws Exception {
     String xml = "<Locale messages=\"/test/msgs.xml\"/>";
-    LocaleSpec locale = new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
+    LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
     assertEquals("http://example.org/test/msgs.xml", locale.getMessages().toString());
   }
 
   @Test
   public void defaultLanguageAndCountry() throws Exception {
     String xml = "<Locale/>";
-    LocaleSpec locale = new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
+    LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
     assertEquals("all", locale.getLanguage());
     assertEquals("ALL", locale.getCountry());
   }
@@ -62,13 +63,13 @@ public class LocaleSpecTest {
   @Test(expected = SpecParserException.class)
   public void invalidLanguageDirection() throws Exception {
     String xml = "<Locale language_direction=\"invalid\"/>";
-    new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
   }
 
   @Test(expected = SpecParserException.class)
   public void invalidMessagesUrl() throws Exception {
     String xml = "<Locale messages=\"fobad@$%!fdf\"/>";
-    new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
   }
 
   @Test
@@ -78,8 +79,9 @@ public class LocaleSpecTest {
     String xml = "<Locale>" +
                  "<msg name=\"" + msgName + "\">" + msgValue + "</msg>" +
                  "</Locale>";
-    LocaleSpec locale = new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
-    assertEquals(msgValue, locale.getMessageBundle().getMessages().get(msgName));
+    LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
+    MessageBundle bundle = new MessageBundle(locale);
+    assertEquals(msgValue, bundle.getMessages().get(msgName));
   }
 
   @Test
@@ -89,13 +91,13 @@ public class LocaleSpecTest {
                  "  <msg name='hello'>World</msg>" +
                  "  <msg name='foo'>Bar</msg>" +
                  "</Locale>";
-    LocaleSpec loc = new LocaleSpec(XmlUtil.parse(xml), SPEC_URL);
-    LocaleSpec loc2 = new LocaleSpec(XmlUtil.parse(loc.toString()), SPEC_URL);
+    LocaleSpec loc = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
+    LocaleSpec loc2 = StaxTestUtils.parseElement(loc.toString(), new LocaleSpec.Parser(SPEC_URL));
     assertEquals(loc.getLanguage(), loc2.getLanguage());
     assertEquals(loc.getCountry(), loc2.getCountry());
     assertEquals(loc.getLanguageDirection(), loc2.getLanguageDirection());
     assertEquals(loc.getMessages(), loc2.getMessages());
-    assertEquals(loc.getMessageBundle().getMessages(),
-                 loc2.getMessageBundle().getMessages());
+    assertEquals(new MessageBundle(loc).getMessages(),
+                 new MessageBundle(loc2).getMessages());
   }
 }

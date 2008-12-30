@@ -30,6 +30,8 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Icon extends SpecElement {
@@ -56,12 +58,12 @@ public class Icon extends SpecElement {
     return new Icon(this, substituter);
   }
 
-  public String getMode() {
-    return attrDefault(ATTR_MODE);
+  public Mode getMode() {
+    return Mode.parse(attr(ATTR_MODE));
   }
 
-  public Type getType() {
-    return Type.parse(attr(ATTR_TYPE));
+  public String getType() {
+    return attrDefault(ATTR_TYPE);
   }
 
   @Override
@@ -74,28 +76,45 @@ public class Icon extends SpecElement {
   }
 
   @Override
+  public void validate() throws GadgetException {
+    if (getMode() == null) {
+      throw new SpecParserException("Invalid mode value passed!");
+    }
+  }
+
+  @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_MODE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_MODE, getMode());
+      writer.writeAttribute(namespaceURI, ATTR_MODE, getMode().toString());
     }
     if (attr(ATTR_TYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType().toString());
+      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType());
     }
   }
 
-  public static enum Type {
+  public static enum Mode {
     BASE64;
 
-    public static Type parse(String value) {
-      for (Type type : Type.values()) {
+    public static Mode parse(final String value) {
+
+      if (value == null) {
+        return BASE64;
+      }
+
+      for (Mode type : Mode.values()) {
         if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
           return type;
         }
       }
-      return BASE64;
+      return null;
+    }
+
+    @Override
+    public String toString() {
+      return name().toLowerCase();
     }
   }
 

@@ -17,11 +17,11 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.LTR;
-import static org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction.RTL;
+import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.LTR;
+import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.RTL;
 import junit.framework.TestCase;
 
-import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
+import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
 
 public class BidiSubstituterTest extends TestCase {
 

@@ -21,7 +21,7 @@
 package org.apache.shindig.gadgets.stax.model;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,17 +32,18 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
+import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class MessageBundleSpec extends SpecElement {
+public class MessageBundleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
   public static final String ELEMENT_NAME = "messageBundle";
 
   /** Non-0.8 Attribute! */
   public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
 
-  private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
+  private Set<LocaleMsg> localeMsgs = new LinkedHashSet<LocaleMsg>();
 
   private StringBuilder text = new StringBuilder();
 
@@ -69,7 +70,7 @@ public class MessageBundleSpec extends SpecElement {
     return text.toString();
   }
 
-  public Set<LocaleMsg> getLocalMsgs() {
+  public Set<LocaleMsg> getLocaleMsgs() {
     return Collections.unmodifiableSet(localeMsgs);
   }
 
@@ -89,6 +90,13 @@ public class MessageBundleSpec extends SpecElement {
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
       writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
           getLanguageDirection().toString());
+    }
+  }
+
+  @Override
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+    for (LocaleMsg localeMsg: localeMsgs) {
+      localeMsg.toXml(writer);
     }
   }
 

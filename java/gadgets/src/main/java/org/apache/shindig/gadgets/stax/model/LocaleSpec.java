@@ -31,13 +31,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class LocaleSpec extends SpecElement {
+public class LocaleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
   public static final String ELEMENT_NAME = "Locale";
 
@@ -75,7 +76,14 @@ public class LocaleSpec extends SpecElement {
   }
 
   public Uri getMessages() {
-    return attrUriNull(ATTR_MESSAGES);
+    final Uri baseUri = getBase();
+    final Uri messageUri = attrUriNull(ATTR_MESSAGES);
+
+    if (baseUri != null) {
+      return baseUri.resolve(messageUri);
+    } else {
+      return messageUri;
+    }
   }
 
   public Set<LocaleMsg> getLocaleMsgs() {
@@ -117,27 +125,11 @@ public class LocaleSpec extends SpecElement {
 
   @Override
   public void validate() throws SpecParserException {
-    if (attr(ATTR_MESSAGES) == null && localeMsgs.size() == 0) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must contain a @messages attribute or <msg> elements!");
+    if (getLanguageDirection() == null) {
+      throw new SpecParserException("Direction '" + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
     }
-  }
-
-  public static enum Direction {
-    LTR, RTL;
-
-    public static Direction parse(String value) {
-      for (Direction direction : Direction.values()) {
-        if (StringUtils.equalsIgnoreCase(direction.toString(), value)) {
-          return direction;
-        }
-      }
-      return LTR;
-    }
-
-    @Override
-    public String toString() {
-      return name().toLowerCase();
+    if (!attrIsValidUri(ATTR_MESSAGES)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES) + "' is invalid!");
     }
   }
 

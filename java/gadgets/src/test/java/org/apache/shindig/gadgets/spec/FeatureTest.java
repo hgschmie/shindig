@@ -19,25 +19,29 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import org.apache.shindig.common.xml.XmlUtil;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import java.util.Map;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.Feature;
+import org.apache.shindig.gadgets.stax.model.FeatureParam;
+import org.apache.shindig.gadgets.stax.model.Optional;
+import org.apache.shindig.gadgets.stax.model.Require;
 
 public class FeatureTest extends TestCase {
   public void testRequire() throws Exception {
     String xml = "<Require feature=\"foo\"/>";
-    Feature feature = new Feature(XmlUtil.parse(xml));
-    assertEquals("foo", feature.getName());
-    assertEquals(true, feature.getRequired());
+    Feature feature = StaxTestUtils.parseElement(xml, new Require.Parser(null));
+    assertEquals("foo", feature.getFeature());
+    assertEquals(true, feature.isRequired());
   }
 
   public void testOptional() throws Exception {
     String xml = "<Optional feature=\"foo\"/>";
-    Feature feature = new Feature(XmlUtil.parse(xml));
-    assertEquals("foo", feature.getName());
-    assertEquals(false, feature.getRequired());
+    Feature feature = StaxTestUtils.parseElement(xml, new Optional.Parser(null));
+    assertEquals("foo", feature.getFeature());
+    assertEquals(false, feature.isRequired());
   }
 
   public void testParams() throws Exception {
@@ -46,16 +50,16 @@ public class FeatureTest extends TestCase {
     String xml = "<Require feature=\"foo\">" +
                  "  <Param name=\"" + key + "\">" + value + "</Param>" +
                  "</Require>";
-    Feature feature = new Feature(XmlUtil.parse(xml));
-    Map<String, String> params = feature.getParams();
+    Feature feature = StaxTestUtils.parseElement(xml, new Require.Parser(null));
+    Map<String, FeatureParam> params = feature.getParams();
     assertEquals(1, params.size());
-    assertEquals(value, params.get(key));
+    assertEquals(value, params.get(key).getText());
   }
 
   public void testDoesNotLikeUnnamedFeatures() throws Exception {
     String xml = "<Require/>";
     try {
-      new Feature(XmlUtil.parse(xml));
+      StaxTestUtils.parseElement(xml, new Require.Parser(null));
       fail("No exception thrown when an unnamed feature is passed.");
     } catch (SpecParserException e) {
       // Ok
@@ -65,7 +69,7 @@ public class FeatureTest extends TestCase {
   public void testEnforceParamNames() throws Exception {
     String xml = "<Require feature=\"foo\"><Param>Test</Param></Require>";
     try {
-      new Feature(XmlUtil.parse(xml));
+      StaxTestUtils.parseElement(xml, new Require.Parser(null));
       fail("No exception thrown when an unnamed parameter is passed.");
     } catch (SpecParserException e) {
       // OK.
