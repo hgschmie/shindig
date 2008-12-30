@@ -31,7 +31,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthSpec extends SpecElement {
 
@@ -42,6 +44,15 @@ public class OAuthSpec extends SpecElement {
   public OAuthSpec(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected OAuthSpec(final OAuthSpec oAuthSpec, final Substitutions substituter) {
+      super(oAuthSpec);
+  }
+
+  @Override
+  public OAuthSpec substitute(final Substitutions substituter) {
+    return new OAuthSpec(this, substituter);
   }
 
   public Map<String, OAuthService> getServices() {
@@ -86,7 +97,7 @@ public class OAuthSpec extends SpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final OAuthSpec oAuth,
-        final SpecElement child) throws SpecParserException {
+        final SpecElement child) throws GadgetException {
       if (child instanceof OAuthService) {
         oAuth.addService((OAuthService) child);
       } else {

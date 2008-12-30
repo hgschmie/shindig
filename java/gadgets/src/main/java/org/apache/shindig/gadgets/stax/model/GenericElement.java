@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class GenericElement extends SpecElement {
 
@@ -35,6 +36,15 @@ public class GenericElement extends SpecElement {
   public GenericElement(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected GenericElement(final GenericElement genericElement, final Substitutions substituter) {
+      super(genericElement);
+  }
+
+  @Override
+  public GenericElement substitute(final Substitutions substituter) {
+    return new GenericElement(this, substituter);
   }
 
   @Override

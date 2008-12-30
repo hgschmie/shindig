@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class FeatureParam extends SpecElement {
 
@@ -42,6 +43,15 @@ public class FeatureParam extends SpecElement {
   public FeatureParam(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
+      super(featureParam);
+  }
+
+  @Override
+  public FeatureParam substitute(final Substitutions substituter) {
+    return new FeatureParam(this, substituter);
   }
 
   public String getName() {

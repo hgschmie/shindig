@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class OAuthElement extends SpecElement {
 
@@ -43,6 +44,11 @@ public abstract class OAuthElement extends SpecElement {
       final Uri base, boolean request) {
     super(name, attrNames, base);
     this.request = request;
+  }
+
+  protected OAuthElement(final OAuthElement oAuthElement, final Substitutions substituter) {
+      super(oAuthElement);
+      this.request = oAuthElement.isRequest();
   }
 
   public boolean isRequest() {

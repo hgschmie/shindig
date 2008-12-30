@@ -40,6 +40,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.Pair;
 import org.apache.shindig.gadgets.variables.Substitutions;
@@ -107,10 +108,7 @@ public abstract class SpecElement {
     return base;
   }
 
-  // TODO HPS - implement everywhere and use it.
-  protected SpecElement substitute(final Substitutions subs) {
-    return this;
-  }
+  public abstract SpecElement substitute(final Substitutions subs) throws GadgetException;
 
   // ======================================================================================================================================
 
@@ -368,7 +366,7 @@ public abstract class SpecElement {
 
     protected abstract T newElement();
 
-    public T parse(final XMLStreamReader reader) throws SpecParserException,
+    public T parse(final XMLStreamReader reader) throws GadgetException,
         XMLStreamException {
 
       // This assumes, that parse it at the right element.
@@ -434,7 +432,7 @@ public abstract class SpecElement {
     }
 
     protected void addChild(final XMLStreamReader reader, final T element,
-        final SpecElement child) throws SpecParserException {
+        final SpecElement child) throws GadgetException {
       throw new IllegalStateException("The element" + element.name()
           + " does not accept any nested elements, saw " + child.name());
     }

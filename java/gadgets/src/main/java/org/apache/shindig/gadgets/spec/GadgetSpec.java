@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.stax.model.ModulePrefs;
 import org.apache.shindig.gadgets.stax.model.UserPref;
@@ -50,5 +51,5 @@ public interface GadgetSpec {
 
     void setAttribute(String key, Object o);
 
-    GadgetSpec substitute(Substitutions substituter);
+    GadgetSpec substitute(Substitutions substituter) throws GadgetException;
 }

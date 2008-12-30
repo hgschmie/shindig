@@ -31,7 +31,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class Feature extends SpecElement {
 
@@ -45,6 +47,11 @@ public abstract class Feature extends SpecElement {
       final Uri base, final boolean required) {
     super(name, attrNames, base);
     this.required = required;
+  }
+
+  protected Feature(final Feature feature, final Substitutions substituter) {
+      super(feature);
+      this.required = feature.isRequired();
   }
 
   public boolean isRequired() {
@@ -102,7 +109,7 @@ public abstract class Feature extends SpecElement {
     @Override
     protected void addChild(final XMLStreamReader reader,
         final Feature feature, final SpecElement child)
-        throws SpecParserException {
+        throws GadgetException {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleMsg extends SpecElement {
 
@@ -45,6 +46,15 @@ public class LocaleMsg extends SpecElement {
   public LocaleMsg(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected LocaleMsg(final LocaleMsg localeMsg, final Substitutions substituter) {
+      super(localeMsg);
+  }
+
+  @Override
+  public LocaleMsg substitute(final Substitutions substituter) {
+    return new LocaleMsg(this, substituter);
   }
 
   public String getName() {
