@@ -31,8 +31,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec.Direction;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class MessageBundleSpec extends SpecElement {
 
@@ -48,6 +49,15 @@ public class MessageBundleSpec extends SpecElement {
   public MessageBundleSpec(final QName name,
       final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec, final Substitutions substituter) {
+      super(messageBundleSpec);
+  }
+
+  @Override
+  public MessageBundleSpec substitute(final Substitutions substituter) {
+    return new MessageBundleSpec(this, substituter);
   }
 
   public Direction getLanguageDirection() {
@@ -110,7 +120,7 @@ public class MessageBundleSpec extends SpecElement {
     @Override
     protected void addChild(XMLStreamReader reader,
         final MessageBundleSpec messageBundle, final SpecElement child)
-        throws SpecParserException {
+        throws GadgetException {
       if (child instanceof LocaleMsg) {
         messageBundle.addLocaleMsg((LocaleMsg) child);
       } else {

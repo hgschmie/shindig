@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAuthorization extends SpecElement {
 
@@ -39,6 +40,15 @@ public class OAuthAuthorization extends SpecElement {
   public OAuthAuthorization(final QName name,
       final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
+      super(oAuthAuthorization);
+  }
+
+  @Override
+  public OAuthAuthorization substitute(final Substitutions substituter) {
+    return new OAuthAuthorization(this, substituter);
   }
 
   public Uri getUrl() {

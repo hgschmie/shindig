@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Require extends Feature {
 
@@ -34,6 +35,15 @@ public class Require extends Feature {
   public Require(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base, true);
+  }
+
+  protected Require(final Require require, final Substitutions substituter) {
+    super(require, substituter);
+  }
+
+  @Override
+  public Require substitute(final Substitutions substituter) {
+    return new Require(this, substituter);
   }
 
   public static class Parser extends Feature.Parser {

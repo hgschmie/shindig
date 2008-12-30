@@ -52,6 +52,7 @@ public class LinkSpec extends SpecElement {
         substituter.substituteUri(linkSpec.getHref())).toString());
   }
 
+  @Override
   public LinkSpec substitute(final Substitutions substituter) {
     return new LinkSpec(this, substituter);
   }
@@ -109,7 +110,7 @@ public class LinkSpec extends SpecElement {
 
     /**
      * Parses a data rel from the input string.
-     * 
+     *
      * @param value
      * @return The data rel of the given value.
      */

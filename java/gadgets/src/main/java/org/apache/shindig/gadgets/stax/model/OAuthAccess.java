@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAccess extends OAuthElement {
 
@@ -34,6 +35,15 @@ public class OAuthAccess extends OAuthElement {
   public OAuthAccess(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base, false);
+  }
+
+  protected OAuthAccess(final OAuthAccess oAuthAccess, final Substitutions substituter) {
+    super(oAuthAccess, substituter);
+  }
+
+  @Override
+  public OAuthAccess substitute(final Substitutions substituter) {
+    return new OAuthAccess(this, substituter);
   }
 
   public static class Parser extends OAuthElement.Parser {

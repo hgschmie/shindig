@@ -51,6 +51,7 @@ public class Icon extends SpecElement {
     addText(substituter.substituteString(icon.getText()));
   }
 
+  @Override
   public Icon substitute(final Substitutions substituter) {
     return new Icon(this, substituter);
   }

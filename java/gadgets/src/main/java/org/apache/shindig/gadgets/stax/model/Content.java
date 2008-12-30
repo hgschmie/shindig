@@ -59,7 +59,7 @@ public class Content extends SpecElement {
   }
 
   @Override
-  protected Content substitute(final Substitutions substitutions) {
+  public Content substitute(final Substitutions substitutions) {
     return new Content(this, substitutions);
   }
 

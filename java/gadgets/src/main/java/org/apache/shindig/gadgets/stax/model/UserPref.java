@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -75,6 +76,7 @@ public class UserPref extends SpecElement {
     }
   }
 
+  @Override
   public UserPref substitute(final Substitutions substituter) {
     return new UserPref(this, substituter);
   }
@@ -256,7 +258,7 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     * 
+     *
      * @param value
      * @return The data type of the given value.
      */
@@ -293,7 +295,7 @@ public class UserPref extends SpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final UserPref userPref,
-        final SpecElement child) throws SpecParserException {
+        final SpecElement child) throws GadgetException {
       if (child instanceof EnumValue) {
         userPref.addEnumValue((EnumValue) child);
       } else {

@@ -34,8 +34,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class ModulePrefs extends SpecElement {
@@ -112,9 +112,10 @@ public class ModulePrefs extends SpecElement {
    * Produces a new ModulePrefs by substituting hangman variables from
    * substituter. See comments on individual fields to see what actually has
    * substitutions performed.
-   * 
+   *
    * @param substituter
    */
+  @Override
   public ModulePrefs substitute(final Substitutions substituter) {
     return new ModulePrefs(this, substituter);
   }
@@ -458,7 +459,7 @@ public class ModulePrefs extends SpecElement {
     @Override
     protected void addChild(final XMLStreamReader reader,
         final ModulePrefs prefs, final SpecElement child)
-        throws SpecParserException {
+        throws GadgetException {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
       } else if (child instanceof Preload) {

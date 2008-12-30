@@ -33,7 +33,9 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleSpec extends SpecElement {
 
@@ -49,6 +51,15 @@ public class LocaleSpec extends SpecElement {
   public LocaleSpec(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
+  }
+
+  protected LocaleSpec(final LocaleSpec localeSpec, final Substitutions substituter) {
+      super(localeSpec);
+  }
+
+  @Override
+  public LocaleSpec substitute(final Substitutions substituter) {
+    return new LocaleSpec(this, substituter);
   }
 
   public String getLanguage() {
@@ -149,7 +160,7 @@ public class LocaleSpec extends SpecElement {
 
     @Override
     protected void addChild(XMLStreamReader reader, final LocaleSpec locale,
-        final SpecElement child) throws SpecParserException {
+        final SpecElement child) throws GadgetException {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {
