@@ -238,10 +238,12 @@ public class View implements RequestAuthenticationInfo {
     return quirks;
   }
 
+  @Override
   public boolean isSignOwner() {
     return signOwner;
   }
 
+  @Override
   public boolean isSignViewer() {
     return signViewer;
   }
