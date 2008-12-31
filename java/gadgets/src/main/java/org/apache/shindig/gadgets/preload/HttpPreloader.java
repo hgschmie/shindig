@@ -30,7 +30,7 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.model.Preload;
+import org.apache.shindig.gadgets.spec.Preload;
 import org.json.JSONException;
 import org.json.JSONObject;
 

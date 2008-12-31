@@ -25,7 +25,6 @@ import java.util.Collections;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
-import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
 import org.junit.Test;

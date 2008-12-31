@@ -24,10 +24,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.Feature;
-import org.apache.shindig.gadgets.stax.model.FeatureParam;
-import org.apache.shindig.gadgets.stax.model.Optional;
-import org.apache.shindig.gadgets.stax.model.Require;
 
 public class FeatureTest extends TestCase {
   public void testRequire() throws Exception {

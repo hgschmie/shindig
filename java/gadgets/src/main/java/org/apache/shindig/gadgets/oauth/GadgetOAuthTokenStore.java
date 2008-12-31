@@ -33,10 +33,10 @@ import org.apache.shindig.gadgets.oauth.AccessorInfo.OAuthParamLocation;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.model.OAuthService;
-import org.apache.shindig.gadgets.stax.model.OAuthSpec;
-import org.apache.shindig.gadgets.stax.model.OAuthElement.Location;
-import org.apache.shindig.gadgets.stax.model.OAuthElement.Method;
+import org.apache.shindig.gadgets.spec.OAuthService;
+import org.apache.shindig.gadgets.spec.OAuthSpec;
+import org.apache.shindig.gadgets.spec.OAuthElement.Location;
+import org.apache.shindig.gadgets.spec.OAuthElement.Method;
 
 import com.google.inject.Inject;
 

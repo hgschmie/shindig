@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.stax.model.EnumValue;
-import org.apache.shindig.gadgets.stax.model.Feature;
-import org.apache.shindig.gadgets.stax.model.FeatureParam;
-import org.apache.shindig.gadgets.stax.model.UserPref;
+import org.apache.shindig.gadgets.spec.EnumValue;
+import org.apache.shindig.gadgets.spec.Feature;
+import org.apache.shindig.gadgets.spec.FeatureParam;
+import org.apache.shindig.gadgets.spec.UserPref;
 
 public final class StaxUtils {
 

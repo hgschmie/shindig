@@ -30,8 +30,8 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;

@@ -1,3 +1,5 @@
+package org.apache.shindig.gadgets.spec;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,8 +21,6 @@
  *
  */
 
-package org.apache.shindig.gadgets.stax.model;
-
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,38 +28,31 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class EnumValue extends SpecElement {
-  public static final String ELEMENT_NAME = "EnumValue";
+public class OAuthAuthorization extends SpecElement {
 
-  public static final String ATTR_VALUE = "value";
-  public static final String ATTR_DISPLAY_VALUE = "display_value";
+  public static final String ELEMENT_NAME = "Authorization";
 
-  protected EnumValue(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public static final String ATTR_URL = "url";
+
+  public OAuthAuthorization(final QName name,
+      final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
-    super(enumValue, substituter);
-    setAttr(ATTR_VALUE, substituter.substituteString(enumValue.getValue()));
-    setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue
-        .getDisplayValue()));
+  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
+      super(oAuthAuthorization, substituter);
   }
 
   @Override
-  public EnumValue substitute(final Substitutions substituter) {
-    return new EnumValue(this, substituter);
+  public OAuthAuthorization substitute(final Substitutions substituter) {
+    return new OAuthAuthorization(this, substituter);
   }
 
-  public String getValue() {
-    return attr(ATTR_VALUE);
-  }
-
-  public String getDisplayValue() {
-    return attrDefault(ATTR_DISPLAY_VALUE, getValue());
+  public Uri getUrl() {
+    return attrUriNull(ATTR_URL);
   }
 
   @Override
@@ -67,24 +60,24 @@ public class EnumValue extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (attr(ATTR_VALUE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
-    }
-    if (attr(ATTR_DISPLAY_VALUE) != null) {
-      writer
-          .writeAttribute(namespaceURI, ATTR_DISPLAY_VALUE, getDisplayValue());
+    if (getUrl() != null) {
+      writer.writeAttribute(namespaceURI, ATTR_URL, getUrl().toString());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (attr(ATTR_VALUE) == null) {
+    if (getUrl() == null) {
       throw new SpecParserException(name().getLocalPart()
-          + "@value must be set!");
+          + "@url must be set!");
+    }
+    if (!StaxUtils.isHttpUri(getUrl())) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@url must be http or https!");
     }
   }
 
-  public static class Parser extends SpecElement.Parser<EnumValue> {
+  public static class Parser extends SpecElement.Parser<OAuthAuthorization> {
 
     public Parser(final Uri base) {
       this(new QName(ELEMENT_NAME), base);
@@ -92,12 +85,12 @@ public class EnumValue extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(ATTR_VALUE, ATTR_DISPLAY_VALUE);
+      register(ATTR_URL);
     }
 
     @Override
-    protected EnumValue newElement() {
-      return new EnumValue(name(), getAttrNames(), getBase());
+    protected OAuthAuthorization newElement() {
+      return new OAuthAuthorization(name(), getAttrNames(), getBase());
     }
   }
 }

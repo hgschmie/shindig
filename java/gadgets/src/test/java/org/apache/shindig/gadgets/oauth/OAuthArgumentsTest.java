@@ -24,8 +24,8 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.oauth.OAuthArguments.UseToken;
+import org.apache.shindig.gadgets.spec.Preload;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.Preload;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

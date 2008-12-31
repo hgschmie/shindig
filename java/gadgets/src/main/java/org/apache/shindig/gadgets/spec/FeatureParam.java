@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 /*
  *
@@ -25,35 +25,45 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class OAuthAuthorization extends SpecElement {
+public class FeatureParam extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Authorization";
+  public static final String ELEMENT_NAME = "Param";
 
-  public static final String ATTR_URL = "url";
+  public static final String ATTR_NAME = "name";
 
-  public OAuthAuthorization(final QName name,
-      final Map<String, QName> attrNames, final Uri base) {
+  private StringBuilder text = new StringBuilder();
+
+  public FeatureParam(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
-      super(oAuthAuthorization, substituter);
+  protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
+      super(featureParam, substituter);
   }
 
   @Override
-  public OAuthAuthorization substitute(final Substitutions substituter) {
-    return new OAuthAuthorization(this, substituter);
+  public FeatureParam substitute(final Substitutions substituter) {
+    return new FeatureParam(this, substituter);
   }
 
-  public Uri getUrl() {
-    return attrUriNull(ATTR_URL);
+  public String getName() {
+    return attrDefault(ATTR_NAME);
+  }
+
+  @Override
+  public String getText() {
+    return text.toString();
+  }
+
+  private void addText(final String text) {
+    this.text.append(text);
   }
 
   @Override
@@ -61,24 +71,20 @@ public class OAuthAuthorization extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (getUrl() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_URL, getUrl().toString());
+    if (attr(ATTR_NAME) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (getUrl() == null) {
+    if (attr(ATTR_NAME) == null) {
       throw new SpecParserException(name().getLocalPart()
-          + "@url must be set!");
-    }
-    if (!StaxUtils.isHttpUri(getUrl())) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@url must be http or https!");
+          + "@name must be set!");
     }
   }
 
-  public static class Parser extends SpecElement.Parser<OAuthAuthorization> {
+  public static class Parser extends SpecElement.Parser<FeatureParam> {
 
     public Parser(final Uri base) {
       this(new QName(ELEMENT_NAME), base);
@@ -86,12 +92,20 @@ public class OAuthAuthorization extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(ATTR_URL);
+      register(ATTR_NAME);
     }
 
     @Override
-    protected OAuthAuthorization newElement() {
-      return new OAuthAuthorization(name(), getAttrNames(), getBase());
+    protected FeatureParam newElement() {
+      return new FeatureParam(name(), getAttrNames(), getBase());
+    }
+
+    @Override
+    protected void addText(final XMLStreamReader reader,
+        final FeatureParam param) {
+      if (!reader.isWhiteSpace()) {
+        param.addText(reader.getText());
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 /*
  *
@@ -31,8 +31,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 import com.google.common.collect.ImmutableSet;

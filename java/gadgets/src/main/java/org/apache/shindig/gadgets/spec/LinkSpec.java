@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 /*
  *
@@ -25,46 +25,41 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class FeatureParam extends SpecElement {
+public class LinkSpec extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Param";
+  public static final String ELEMENT_NAME = "Link";
 
-  public static final String ATTR_NAME = "name";
+  public static final String ATTR_REL = "rel";
+  public static final String ATTR_HREF = "href";
 
-  private StringBuilder text = new StringBuilder();
-
-  public FeatureParam(final QName name, final Map<String, QName> attrNames,
+  public LinkSpec(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
-      super(featureParam, substituter);
+  protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
+    super(linkSpec, substituter);
+    setAttr(ATTR_HREF, getBase().resolve(
+        substituter.substituteUri(linkSpec.getHref())).toString());
+    setAttr(ATTR_REL, substituter.substituteString(linkSpec.getRel()));
   }
 
   @Override
-  public FeatureParam substitute(final Substitutions substituter) {
-    return new FeatureParam(this, substituter);
+  public LinkSpec substitute(final Substitutions substituter) {
+    return new LinkSpec(this, substituter);
   }
 
-  public String getName() {
-    return attrDefault(ATTR_NAME);
+  public String getRel() {
+    return attrDefault(ATTR_REL);
   }
 
-  @Override
-  public String getText() {
-    return text.toString();
-  }
-
-  private void addText(final String text) {
-    this.text.append(text);
+  public Uri getHref() {
+    return attrUriNull(ATTR_HREF);
   }
 
   @Override
@@ -72,20 +67,26 @@ public class FeatureParam extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (attr(ATTR_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+    if (attr(ATTR_REL) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_REL, getRel());
+    }
+    if (getHref() != null) {
+      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (attr(ATTR_NAME) == null) {
+    if (attr(ATTR_REL) == null) {
+      throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
+    }
+    if (getHref() == null) {
       throw new SpecParserException(name().getLocalPart()
-          + "@name must be set!");
+          + "@href must be set!");
     }
   }
 
-  public static class Parser extends SpecElement.Parser<FeatureParam> {
+  public static class Parser extends SpecElement.Parser<LinkSpec> {
 
     public Parser(final Uri base) {
       this(new QName(ELEMENT_NAME), base);
@@ -93,20 +94,12 @@ public class FeatureParam extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(ATTR_NAME);
+      register(ATTR_REL, ATTR_HREF);
     }
 
     @Override
-    protected FeatureParam newElement() {
-      return new FeatureParam(name(), getAttrNames(), getBase());
-    }
-
-    @Override
-    protected void addText(final XMLStreamReader reader,
-        final FeatureParam param) {
-      if (!reader.isWhiteSpace()) {
-        param.addText(reader.getText());
-      }
+    protected LinkSpec newElement() {
+      return new LinkSpec(name(), getAttrNames(), getBase());
     }
   }
 }

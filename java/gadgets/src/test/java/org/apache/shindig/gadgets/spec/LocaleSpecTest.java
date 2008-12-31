@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.MessageBundle;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.junit.Test;
 
 public class LocaleSpecTest {

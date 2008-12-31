@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 /*
  *
@@ -31,7 +31,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleMsg extends SpecElement {
