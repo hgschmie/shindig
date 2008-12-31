@@ -21,6 +21,8 @@
 
 package org.apache.shindig.common.util;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 public class Pair<K, V> {
 
   private final K key;
@@ -38,5 +40,13 @@ public class Pair<K, V> {
 
   public V getValue() {
     return value;
+  }
+
+  @Override public String toString() {
+    return new ToStringBuilder(this)
+      .appendSuper(super.toString())
+      .append("key", getKey())
+      .append("value", getValue())
+      .toString();
   }
 }
