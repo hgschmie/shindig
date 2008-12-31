@@ -167,29 +167,26 @@ public class Content extends SpecElement {
   public void validate() throws SpecParserException {
 
     if (attr(ATTR_TYPE) != null && getType() == null) {
-      throw new SpecParserException(name().getLocalPart() + "@type value '" + attr(ATTR_TYPE) + "' is unknown!");
+      throw new SpecParserException(this, "@type value '" + attr(ATTR_TYPE) + "' is unknown!");
     }
 
     if (attr(ATTR_AUTHZ) != null && getAuthType() == null) {
-      throw new SpecParserException(name().getLocalPart() + "@authz value '" + attr(ATTR_AUTHZ) + "' is unknown!");
+      throw new SpecParserException(this, "@authz value '" + attr(ATTR_AUTHZ) + "' is unknown!");
     }
 
     switch (getType()) {
     case HTML:
       if (text == null) {
-        throw new SpecParserException(name().getLocalPart()
-            + " body required for type='html'!");
+        throw new SpecParserException(this, " body required for type='html'!");
       }
       break;
     case URL:
       if (getHref() == null) {
-        throw new SpecParserException(name().getLocalPart()
-            + "@href required for type='url'!");
+        throw new SpecParserException(this, "@href required for type='url'!");
       }
       break;
     default:
-      throw new SpecParserException(
-          "Unknown type for Content@type encountered: " + getType());
+      throw new SpecParserException(this, "Unknown type for Content@type encountered: " + getType());
     }
   }
 

@@ -17,10 +17,10 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.LTR;
-import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.RTL;
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
 
-import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 
 /**
  * Provides static hangman substitutions for bidirectional language support.

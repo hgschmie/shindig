@@ -22,6 +22,7 @@ package org.apache.shindig.gadgets.spec;
  */
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -58,20 +60,22 @@ public class UserPref extends SpecElement {
 
   private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
-  public UserPref(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  // Shindig uses enums internally ordered and as user prefs attributes all the time.
+  // So let's keep track of this here.
+  private final List<Pair<String, String>> orderedEnums = new LinkedList<Pair<String, String>>();
+  private final Map<String, String> enumMap = new HashMap<String, String>();
+
+  public UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
   protected UserPref(final UserPref userPref, final Substitutions substituter) {
     super(userPref, substituter);
-    setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref
-        .getDisplayName()));
-    setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref
-        .getDefaultValue()));
+    setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref.getDisplayName()));
+    setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref.getDefaultValue()));
 
     for (EnumValue enumValue : userPref.getEnumValues()) {
-      enumValues.add(enumValue.substitute(substituter));
+      addEnumValue(enumValue.substitute(substituter));
     }
   }
 
@@ -150,11 +154,12 @@ public class UserPref extends SpecElement {
 
   private void addEnumValue(final EnumValue enumValue) {
     this.enumValues.add(enumValue);
+    this.orderedEnums.add(new Pair<String, String>(enumValue.getValue(), enumValue.getDisplayValue()));
+    this.enumMap.put(enumValue.getValue(), enumValue.getDisplayValue());
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_NAME) != null) {
@@ -166,18 +171,15 @@ public class UserPref extends SpecElement {
     }
 
     if (attr(ATTR_DEFAULT_VALUE) != null) {
-      writer
-          .writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
+      writer.writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
     }
 
     if (attr(ATTR_REQUIRED) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String
-          .valueOf(isRequired()));
+      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String.valueOf(isRequired()));
     }
 
     if (attr(ATTR_DATATYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDataType()
-          .toString());
+      writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDataType().toString());
     }
 
     if (attr(ATTR_URLPARAM) != null) {
@@ -185,43 +187,35 @@ public class UserPref extends SpecElement {
     }
 
     if (attr(ATTR_AUTOCOMPLETE_URL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTOCOMPLETE_URL,
-          getAutocompleteUrl());
+      writer.writeAttribute(namespaceURI, ATTR_AUTOCOMPLETE_URL, getAutocompleteUrl());
     }
 
     if (attr(ATTR_NUM_MINVAL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NUM_MINVAL, String
-          .valueOf(getNumMinval()));
+      writer.writeAttribute(namespaceURI, ATTR_NUM_MINVAL, String.valueOf(getNumMinval()));
     }
 
     if (attr(ATTR_NUM_MAXVAL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NUM_MAXVAL, String
-          .valueOf(getNumMaxval()));
+      writer.writeAttribute(namespaceURI, ATTR_NUM_MAXVAL, String.valueOf(getNumMaxval()));
     }
 
     if (attr(ATTR_STR_MAXLEN) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_STR_MAXLEN, String
-          .valueOf(getStrMaxlen()));
+      writer.writeAttribute(namespaceURI, ATTR_STR_MAXLEN, String.valueOf(getStrMaxlen()));
     }
 
     if (attr(ATTR_RESTRICT_TO_COMPLETIONS) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_RESTRICT_TO_COMPLETIONS,
-          getRestrictToCompletions());
+      writer.writeAttribute(namespaceURI, ATTR_RESTRICT_TO_COMPLETIONS, getRestrictToCompletions());
     }
 
     if (attr(ATTR_PREFIX_MATCH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PREFIX_MATCH, String
-          .valueOf(getPrefixMatch()));
+      writer.writeAttribute(namespaceURI, ATTR_PREFIX_MATCH, String.valueOf(getPrefixMatch()));
     }
 
     if (attr(ATTR_PUBLISH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PUBLISH, String
-          .valueOf(getPublish()));
+      writer.writeAttribute(namespaceURI, ATTR_PUBLISH, String.valueOf(getPublish()));
     }
 
     if (attr(ATTR_LISTEN) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LISTEN, String
-          .valueOf(getListen()));
+      writer.writeAttribute(namespaceURI, ATTR_LISTEN, String.valueOf(getListen()));
     }
 
     if (attr(ATTR_ON_CHANGE) != null) {
@@ -234,8 +228,7 @@ public class UserPref extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (EnumValue enumValue : enumValues) {
       enumValue.toXml(writer);
     }
@@ -244,9 +237,18 @@ public class UserPref extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_NAME) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@name must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@name must be set!");
     }
+  }
+
+  // Convenience Methods that deal with the underlying enum elements. These are not part of the model!
+
+  public List<Pair<String, String>> orderEnumValues() {
+    return Collections.unmodifiableList(orderedEnums);
+  }
+
+  public Map<String, String> enumValues() {
+    return Collections.unmodifiableMap(enumMap);
   }
 
   /**
@@ -261,13 +263,13 @@ public class UserPref extends SpecElement {
      * @param value
      * @return The data type of the given value.
      */
-    public static DataType parse(String value) {
+    public static DataType parse(final String value) {
       for (DataType type : DataType.values()) {
-        if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), StringUtils.trimToEmpty(value))) {
           return type;
         }
       }
-      return STRING;
+      return STRING; // Undefined or unset type is STRING.
     }
   }
 
@@ -280,11 +282,8 @@ public class UserPref extends SpecElement {
     public Parser(final QName name, final Uri base) {
       super(name, base);
       register(new EnumValue.Parser(base));
-      register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED,
-          ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
-          ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS,
-          ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE,
-          ATTR_GROUP);
+      register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED, ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
+          ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS, ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE, ATTR_GROUP);
     }
 
     @Override
@@ -293,8 +292,7 @@ public class UserPref extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final UserPref userPref,
-        final SpecElement child) throws GadgetException {
+    protected void addChild(XMLStreamReader reader, final UserPref userPref, final SpecElement child) throws GadgetException {
       if (child instanceof EnumValue) {
         userPref.addEnumValue((EnumValue) child);
       } else {

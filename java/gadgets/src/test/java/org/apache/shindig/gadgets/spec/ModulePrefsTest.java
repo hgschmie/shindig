@@ -27,8 +27,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
+import org.apache.shindig.common.xml.StaxTestUtils;
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 

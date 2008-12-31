@@ -42,8 +42,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.stax.Pair;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class SpecElement {

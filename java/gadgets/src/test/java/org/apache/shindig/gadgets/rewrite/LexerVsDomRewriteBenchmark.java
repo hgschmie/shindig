@@ -27,6 +27,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.shindig.common.guice.DefaultCommonModule;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
@@ -39,7 +40,6 @@ import org.apache.shindig.gadgets.parse.nekohtml.NekoSimplifiedHtmlParser;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.HtmlTagTransformer;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

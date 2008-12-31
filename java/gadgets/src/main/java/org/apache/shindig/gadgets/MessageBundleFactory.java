@@ -20,7 +20,7 @@ package org.apache.shindig.gadgets;
 
 import com.google.inject.ImplementedBy;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 
 import java.util.Locale;
 

@@ -29,7 +29,7 @@ import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 import org.apache.shindig.gadgets.variables.VariableSubstituter;
 import org.json.JSONArray;
 

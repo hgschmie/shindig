@@ -17,11 +17,11 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.LTR;
-import static org.apache.shindig.gadgets.stax.MessageBundle.Direction.RTL;
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
 import junit.framework.TestCase;
 
-import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 
 public class BidiSubstituterTest extends TestCase {
 

@@ -19,6 +19,7 @@ package org.apache.shindig.gadgets.rewrite;
 
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.EasyMockTestCase;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
@@ -28,7 +29,6 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

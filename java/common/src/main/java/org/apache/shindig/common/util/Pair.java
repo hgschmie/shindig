@@ -19,7 +19,7 @@
  *
  */
 
-package org.apache.shindig.gadgets.stax;
+package org.apache.shindig.common.util;
 
 public class Pair<K, V> {
 

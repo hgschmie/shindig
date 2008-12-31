@@ -22,8 +22,7 @@ package org.apache.shindig.gadgets.spec;
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.StaxUtils;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPrefTest extends TestCase {
@@ -49,8 +48,8 @@ public class UserPrefTest extends TestCase {
                  "</UserPref>";
     UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
     assertEquals(2, userPref.getEnumValues().size());
-    assertEquals("Zero", StaxUtils.enumValues(userPref).get("0"));
-    assertEquals("1", StaxUtils.enumValues(userPref).get("1"));
+    assertEquals("Zero", userPref.enumValues().get("0"));
+    assertEquals("1", userPref.enumValues().get("1"));
   }
 
   public void testSubstitutions() throws Exception {
@@ -71,7 +70,7 @@ public class UserPrefTest extends TestCase {
     UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI)).substitute(substituter);
     assertEquals(displayName, userPref.getDisplayName());
     assertEquals(defaultValue, userPref.getDefaultValue());
-    assertEquals(displayValue, StaxUtils.enumValues(userPref).get("0"));
+    assertEquals(displayValue, userPref.enumValues().get("0"));
   }
 
   public void testMissingName() throws Exception {

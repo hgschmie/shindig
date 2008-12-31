@@ -29,7 +29,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class OAuthElement extends SpecElement {
@@ -86,21 +85,20 @@ public abstract class OAuthElement extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (getUrl() == null) {
-      throw new SpecParserException(name().getLocalPart() + "@url must be set!");
+      throw new SpecParserException(this, "@url must be set!");
     }
-    if(!StaxUtils.isHttpUri(getUrl())) {
-      throw new SpecParserException(name().getLocalPart() + "@url value '" + attr(ATTR_URL) + "' is not a valid URL!");
+    if(!getUrl().isHttpUri()) {
+      throw new SpecParserException(this, "@url value '" + attr(ATTR_URL) + "' is not a valid URL!");
     }
 
     if (Method.parse(attr(ATTR_METHOD)) == null) {
-      throw new SpecParserException(name().getLocalPart() + "@method attribute value '" + attr(ATTR_METHOD) + "' is invalid!");
+      throw new SpecParserException(this, "@method attribute value '" + attr(ATTR_METHOD) + "' is invalid!");
     }
     if (Location.parse(attr(ATTR_PARAM_LOCATION)) == null) {
-      throw new SpecParserException(name().getLocalPart() + "@param_location attribute value '" + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
+      throw new SpecParserException(this, "@param_location attribute value '" + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
     }
     if ((getMethod() == Method.GET) && (getParamLocation() == Location.BODY)) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@method is GET but parameter location is body!");
+      throw new SpecParserException(this, "@method is GET but parameter location is body!");
     }
 
   }
@@ -113,11 +111,11 @@ public abstract class OAuthElement extends SpecElement {
         return GET;
       }
       for (Method method : Method.values()) {
-        if (StringUtils.equalsIgnoreCase(method.toString(), value)) {
+        if (StringUtils.equalsIgnoreCase(method.toString(), StringUtils.trimToEmpty(value))) {
           return method;
         }
       }
-      return null;
+      return null; // If set and invalid, return null. Catched in validate()
     }
   }
 
@@ -140,7 +138,7 @@ public abstract class OAuthElement extends SpecElement {
         return HEADER;
       }
       for (Location location : Location.values()) {
-        if (StringUtils.equalsIgnoreCase(location.toString(), value)) {
+        if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils.trimToEmpty(value))) {
           return location;
         }
       }

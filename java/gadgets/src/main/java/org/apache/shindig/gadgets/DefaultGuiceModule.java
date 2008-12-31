@@ -35,7 +35,6 @@ import org.apache.shindig.gadgets.render.RenderingContentRewriter;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.servlet.CajaContentRewriter;
-import org.apache.shindig.gadgets.stax.ShindigMessageBundleFactory;
 
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;

@@ -35,7 +35,7 @@ import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.servlet.ProxyBase;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

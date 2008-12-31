@@ -44,7 +44,7 @@ import org.apache.shindig.gadgets.rewrite.MutableContent;
 import org.apache.shindig.gadgets.rewrite.ProxyingLinkRewriter;
 import org.apache.shindig.gadgets.rewrite.RewriterResults;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
