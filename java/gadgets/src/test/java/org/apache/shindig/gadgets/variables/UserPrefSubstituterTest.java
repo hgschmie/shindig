@@ -25,7 +25,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
+import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;

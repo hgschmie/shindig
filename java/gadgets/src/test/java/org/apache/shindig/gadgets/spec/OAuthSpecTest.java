@@ -20,7 +20,7 @@ package org.apache.shindig.gadgets.spec;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
+import org.apache.shindig.gadgets.StaxTestUtils;
 import org.junit.Test;
 
 /**

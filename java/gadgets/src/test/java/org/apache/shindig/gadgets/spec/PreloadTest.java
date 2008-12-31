@@ -27,8 +27,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 
