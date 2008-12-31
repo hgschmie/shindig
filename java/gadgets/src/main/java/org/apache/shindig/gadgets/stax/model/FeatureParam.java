@@ -46,7 +46,7 @@ public class FeatureParam extends SpecElement {
   }
 
   protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
-      super(featureParam);
+      super(featureParam, substituter);
   }
 
   @Override

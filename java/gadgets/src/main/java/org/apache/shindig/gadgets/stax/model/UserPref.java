@@ -65,7 +65,7 @@ public class UserPref extends SpecElement {
   }
 
   protected UserPref(final UserPref userPref, final Substitutions substituter) {
-    super(userPref);
+    super(userPref, substituter);
     setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref
         .getDisplayName()));
     setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref

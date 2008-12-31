@@ -49,7 +49,7 @@ public class OAuthService extends SpecElement {
   }
 
   protected OAuthService(final OAuthService oAuthService, final Substitutions substituter) {
-      super(oAuthService);
+      super(oAuthService, substituter);
   }
 
   @Override
@@ -112,10 +112,15 @@ public class OAuthService extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
 
+    // The spec requires this test, however, the old
+    // shindig parser allowed (and actually unit-tests) for
+    // an empty service.
+    /*
     if (attr(ATTR_NAME) == null) {
       throw new SpecParserException(name().getLocalPart()
           + "@name must be set!");
     }
+    */
 
     if (oAuthRequest == null) {
       throw new SpecParserException(name().getLocalPart()

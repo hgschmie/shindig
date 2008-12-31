@@ -24,13 +24,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.variables.Substitutions;
+import java.util.Locale;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
+import org.apache.shindig.gadgets.stax.model.LocaleSpec;
+import org.apache.shindig.gadgets.stax.model.ModulePrefs;
+import org.apache.shindig.gadgets.stax.model.OAuthElement;
+import org.apache.shindig.gadgets.stax.model.OAuthService;
+import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 
-import java.util.Locale;
 
 public class ModulePrefsTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
@@ -86,8 +91,8 @@ public class ModulePrefsTest {
     assertEquals("directory_title", prefs.getDirectoryTitle());
     assertEquals(1, prefs.getWidth());
     assertEquals(2, prefs.getHeight());
-    assertTrue(prefs.getScrolling());
-    assertFalse(prefs.getScaling());
+    assertTrue(prefs.isScrolling());
+    assertFalse(prefs.isScaling());
     assertEquals("category", prefs.getCategories().get(0));
     assertEquals("category2", prefs.getCategories().get(1));
     assertEquals("author_affiliation", prefs.getAuthorAffiliation());
@@ -96,12 +101,12 @@ public class ModulePrefsTest {
     assertEquals(SPEC_URL.resolve(Uri.parse("author_link")), prefs.getAuthorLink());
     assertEquals("author_aboutme", prefs.getAuthorAboutme());
     assertEquals("author_quote", prefs.getAuthorQuote());
-    assertEquals(true, prefs.getShowStats());
-    assertEquals(true, prefs.getShowInDirectory());
-    assertEquals(true, prefs.getSingleton());
+    assertEquals(true, prefs.isShowStats());
+    assertEquals(true, prefs.isShowInDirectory());
+    assertEquals(true, prefs.isSingleton());
 
-    assertEquals(true, prefs.getFeatures().get("require").getRequired());
-    assertEquals(false, prefs.getFeatures().get("optional").getRequired());
+    assertEquals(true, prefs.getFeatures().get("require").isRequired());
+    assertEquals(false, prefs.getFeatures().get("optional").isRequired());
 
     assertEquals("http://example.org",
         prefs.getPreloads().get(0).getHref().toString());
@@ -112,25 +117,25 @@ public class ModulePrefsTest {
 
     assertEquals(Uri.parse("http://example.org/link"), prefs.getLinks().get("link").getHref());
 
-    OAuthService oauth = prefs.getOAuthSpec().getServices().get("serviceOne");
-    assertEquals(Uri.parse("http://www.example.com/request"), oauth.getRequestUrl().url);
-    assertEquals(OAuthService.Method.GET, oauth.getRequestUrl().method);
-    assertEquals(OAuthService.Method.GET, oauth.getAccessUrl().method);
-    assertEquals(OAuthService.Location.HEADER, oauth.getAccessUrl().location);
-    assertEquals(Uri.parse("http://www.example.com/authorize"), oauth.getAuthorizationUrl());
+    OAuthService oauth = prefs.getOAuth().getServices().get("serviceOne");
+    assertEquals(Uri.parse("http://www.example.com/request"), oauth.getRequest().getUrl());
+    assertEquals(OAuthElement.Method.GET, oauth.getRequest().getMethod());
+    assertEquals(OAuthElement.Method.GET, oauth.getAccess().getMethod());
+    assertEquals(OAuthElement.Location.HEADER, oauth.getAccess().getParamLocation());
+    assertEquals(Uri.parse("http://www.example.com/authorize"), oauth.getAuthorization().getUrl());
   }
 
   @Test
   public void basicElementsParseOk() throws Exception {
-    doAsserts(new ModulePrefs(XmlUtil.parse(FULL_XML), SPEC_URL));
+    doAsserts(StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(SPEC_URL)));
   }
 
   @Test
   public void getAttribute() throws Exception {
     String xml = "<ModulePrefs title='title' some_attribute='attribute' " +
         "empty_attribute=''/>";
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(xml), SPEC_URL);
-    assertEquals("title", prefs.getAttribute("title"));
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
+    assertEquals("title", prefs.getTitle());
     assertEquals("attribute", prefs.getAttribute("some_attribute"));
     assertEquals("", prefs.getAttribute("empty_attribute"));
     assertNull(prefs.getAttribute("gobbledygook"));
@@ -142,12 +147,12 @@ public class ModulePrefsTest {
                  "  <Locale lang='en' messages='en.xml'/>" +
                  "  <Locale lang='foo' language_direction='rtl'/>" +
                  "</ModulePrefs>";
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(xml), SPEC_URL);
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
     LocaleSpec spec = prefs.getLocale(new Locale("en", "uk"));
     assertEquals("http://example.org/en.xml", spec.getMessages().toString());
 
     spec = prefs.getLocale(new Locale("foo", "bar"));
-    assertEquals("rtl", spec.getLanguageDirection());
+    assertEquals(Direction.RTL, spec.getLanguageDirection());
   }
 
   @Test
@@ -161,7 +166,7 @@ public class ModulePrefsTest {
                  "  <Link rel='" + link2Rel + "' href='" + link2Href + "'/>" +
                  "</ModulePrefs>";
 
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(xml), SPEC_URL)
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL))
         .substitute(new Substitutions());
 
     assertEquals(link1Href, prefs.getLinks().get(link1Rel).getHref());
@@ -181,7 +186,7 @@ public class ModulePrefsTest {
     String linkHref = "http://example.org/link.html";
     String preHref = "http://example.org/preload.html";
 
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(xml), SPEC_URL);
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
     Substitutions subst = new Substitutions();
     subst.addSubstitution(Substitutions.Type.MESSAGE, "title", title);
     subst.addSubstitution(Substitutions.Type.MESSAGE, "icon", icon);
@@ -191,7 +196,7 @@ public class ModulePrefsTest {
     prefs = prefs.substitute(subst);
 
     assertEquals(title, prefs.getTitle());
-    assertEquals(icon, prefs.getIcons().get(0).getContent());
+    assertEquals(icon, prefs.getIcons().get(0).getText());
     assertEquals(rel, prefs.getLinks().get(rel).getRel());
     assertEquals(linkHref, prefs.getLinks().get(rel).getHref().toString());
     assertEquals(preHref, prefs.getPreloads().get(0).getHref().toString());
@@ -201,7 +206,7 @@ public class ModulePrefsTest {
   public void malformedIntAttributeTreatedAsZero() throws Exception {
     String xml = "<ModulePrefs title='' height='100px' width='foobar' arbitrary='0xff'/>";
 
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(xml), SPEC_URL);
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
 
     assertEquals(0, prefs.getHeight());
     assertEquals(0, prefs.getWidth());
@@ -211,12 +216,12 @@ public class ModulePrefsTest {
   @Test(expected = SpecParserException.class)
   public void missingTitleThrows() throws Exception {
     String xml = "<ModulePrefs/>";
-    new ModulePrefs(XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
   }
 
   @Test
   public void toStringIsSane() throws Exception {
-    ModulePrefs prefs = new ModulePrefs(XmlUtil.parse(FULL_XML), SPEC_URL);
-    doAsserts(new ModulePrefs(XmlUtil.parse(prefs.toString()), SPEC_URL));
+    ModulePrefs prefs = StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(SPEC_URL));
+    doAsserts(StaxTestUtils.parseElement(prefs.toString(), new ModulePrefs.Parser(SPEC_URL)));
   }
 }

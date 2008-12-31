@@ -57,7 +57,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   }
 
   private Preload(final Preload preload, final Substitutions substituter) {
-    super(preload);
+    super(preload, substituter);
 
     setAttr(ATTR_VIEWS, StringUtils.join(preload.getViews(), ','));
     setAttr(ATTR_AUTHZ, preload.getAuthType().toString());
@@ -114,10 +114,6 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
   public String getOAuthRequestTokenSecret() {
     return attrDefault(ATTR_OAUTH_REQUEST_TOKEN_SECRET);
-  }
-
-  public Map<String, String> getAttributes() {
-    return getOtherAttrs();
   }
 
   @Override

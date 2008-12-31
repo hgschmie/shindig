@@ -50,7 +50,7 @@ public abstract class Feature extends SpecElement {
   }
 
   protected Feature(final Feature feature, final Substitutions substituter) {
-      super(feature);
+      super(feature, substituter);
       this.required = feature.isRequired();
   }
 

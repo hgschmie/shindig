@@ -53,8 +53,8 @@ public class Content extends SpecElement {
     super(name, attrNames, base);
   }
 
-  protected Content(final Content content, final Substitutions substitutions) {
-    super(content);
+  protected Content(final Content content, final Substitutions substituter) {
+    super(content, substituter);
     this.addText(content.getText());
   }
 
@@ -91,10 +91,6 @@ public class Content extends SpecElement {
   public Set<String> getViews() {
     return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
         .defaultString(attr(ATTR_VIEW), "default"), ',')));
-  }
-
-  public Map<String, String> getAttributes() {
-    return getOtherAttrs();
   }
 
   private void addText(final String text) {

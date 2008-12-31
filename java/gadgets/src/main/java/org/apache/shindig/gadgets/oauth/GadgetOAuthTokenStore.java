@@ -111,7 +111,7 @@ public class GadgetOAuthTokenStore {
   private OAuthServiceProvider lookupSpecInfo(SecurityToken securityToken, OAuthArguments arguments,
       AccessorInfoBuilder accessorBuilder) throws GadgetException {
     GadgetSpec spec = findSpec(securityToken, arguments);
-    OAuthSpec oauthSpec = spec.getModulePrefs().getOauth();
+    OAuthSpec oauthSpec = spec.getModulePrefs().getOAuth();
     if (oauthSpec == null) {
       throw oauthNotFoundEx(securityToken);
     }

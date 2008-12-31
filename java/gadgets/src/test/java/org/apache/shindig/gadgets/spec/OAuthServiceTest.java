@@ -20,99 +20,83 @@
 package org.apache.shindig.gadgets.spec;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.XmlUtil;
-
+import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.stax.model.OAuthAuthorization;
+import org.apache.shindig.gadgets.stax.model.OAuthElement;
+import org.apache.shindig.gadgets.stax.model.OAuthRequest;
+import org.apache.shindig.gadgets.stax.model.OAuthService;
 import org.junit.Before;
 import org.junit.Test;
 
 public class OAuthServiceTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
-  private OAuthService service;
 
   @Before
   public void setUp() {
-    service = new OAuthService();
   }
 
   @Test
   public void testParseAuthorizeUrl() throws Exception {
     String xml = "<Authorization url='http://azn.example.com'/>";
-    Uri url = service.parseAuthorizationUrl(XmlUtil.parse(xml), SPEC_URL);
-    assertEquals("http://azn.example.com", url.toString());
+    OAuthAuthorization authorization = StaxTestUtils.parseElement(xml, new OAuthAuthorization.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://azn.example.com"), authorization.getUrl());
   }
 
-  @Test
+  @Test(expected=SpecParserException.class)
   public void testParseAuthorizeUrl_nourl() throws Exception {
     String xml = "<Authorization/>";
-    try {
-      service.parseAuthorizationUrl(XmlUtil.parse(xml), SPEC_URL);
-      fail("Should have rejected malformed Authorization element");
-    } catch (SpecParserException e) {
-      assertEquals("OAuth/Service/Authorization @url is not valid: ", e.getMessage());
-    }
+    StaxTestUtils.parseElement(xml, new OAuthAuthorization.Parser(SPEC_URL));
   }
 
   @Test
   public void testParseAuthorizeUrl_extraAttr() throws Exception {
     String xml = "<Authorization url='http://www.example.com' foo='bar'/>";
-    Uri url = service.parseAuthorizationUrl(XmlUtil.parse(xml), SPEC_URL);
-    assertEquals("http://www.example.com", url.toString());
+    OAuthAuthorization authorization = StaxTestUtils.parseElement(xml, new OAuthAuthorization.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://www.example.com"), authorization.getUrl());
   }
 
-  @Test
+  @Test(expected=SpecParserException.class)
   public void testParseAuthorizeUrl_notHttp() throws Exception {
-    OAuthService service = new OAuthService();
     String xml = "<Authorization url='ftp://www.example.com'/>";
-    try {
-      service.parseAuthorizationUrl(XmlUtil.parse(xml), SPEC_URL);
-      fail("Should have rejected malformed Authorization element");
-    } catch (SpecParserException e) {
-      assertEquals("OAuth/Service/Authorization @url is not valid: ftp://www.example.com", e.getMessage());
-    }
+    StaxTestUtils.parseElement(xml, new OAuthAuthorization.Parser(SPEC_URL));
   }
 
   @Test
   public void testParseEndPoint() throws Exception {
     String xml = "<Request url='http://www.example.com'/>";
-    OAuthService.EndPoint ep = service.parseEndPoint("Request", XmlUtil.parse(xml), SPEC_URL);
-    assertEquals("http://www.example.com", ep.url.toString());
-    assertEquals(OAuthService.Location.HEADER, ep.location);
-    assertEquals(OAuthService.Method.GET, ep.method);
+    OAuthElement request = StaxTestUtils.parseElement(xml, new OAuthRequest.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://www.example.com"), request.getUrl());
+    assertEquals(OAuthElement.Location.HEADER, request.getParamLocation());
+    assertEquals(OAuthElement.Method.GET, request.getMethod());
   }
 
-  @Test
+  @Test(expected=SpecParserException.class)
   public void testParseEndPoint_badlocation() throws Exception {
-    try {
       String xml = "<Request url='http://www.example.com' method='GET' param_location='body'/>";
-      service.parseEndPoint("Request", XmlUtil.parse(xml), SPEC_URL);
-      fail("Should have thrown");
-    } catch (SpecParserException e) {
-      assertEquals("Unknown OAuth param_location: body", e.getMessage());
-    }
+      StaxTestUtils.parseElement(xml, new OAuthRequest.Parser(SPEC_URL));
   }
 
   @Test
   public void testParseEndPoint_nodefaults() throws Exception {
-    String xml = "<Request url='http://www.example.com' method='GET' param_location='post-body'/>";
-    OAuthService.EndPoint ep = service.parseEndPoint("Request", XmlUtil.parse(xml), SPEC_URL);
-    assertEquals("http://www.example.com", ep.url.toString());
-    assertEquals(OAuthService.Location.BODY, ep.location);
-    assertEquals(OAuthService.Method.GET, ep.method);
+    String xml = "<Request url='http://www.example.com' method='POST' param_location='post-body'/>";
+    OAuthElement request = StaxTestUtils.parseElement(xml, new OAuthRequest.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://www.example.com"), request.getUrl());
+    assertEquals(OAuthElement.Location.BODY, request.getParamLocation());
+    assertEquals(OAuthElement.Method.POST, request.getMethod());
   }
 
   @Test(expected=SpecParserException.class)
   public void testParseEndPoint_nourl() throws Exception {
     String xml = "<Request method='GET' param_location='post-body'/>";
-    service.parseEndPoint("Request", XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new OAuthRequest.Parser(SPEC_URL));
   }
 
   @Test(expected=SpecParserException.class)
   public void testParseEndPoint_badurl() throws Exception {
     String xml = "<Request url='www.example.com' />";
-    service.parseEndPoint("Request", XmlUtil.parse(xml), SPEC_URL);
+    StaxTestUtils.parseElement(xml, new OAuthRequest.Parser(SPEC_URL));
   }
 
   @Test
@@ -123,10 +107,10 @@ public class OAuthServiceTest {
     	"   <Access url='http://access.example.com/bar'/>" +
     	"   <Authorization url='http://azn.example.com/quux'/>" +
     	"</Service>";
-    OAuthService s = new OAuthService(XmlUtil.parse(xml), SPEC_URL);
+    OAuthService s = StaxTestUtils.parseElement(xml, new OAuthService.Parser(SPEC_URL));
     assertEquals("thename", s.getName());
-    assertEquals(OAuthService.Location.HEADER, s.getAccessUrl().location);
-    assertEquals("http://azn.example.com/quux", s.getAuthorizationUrl().toString());
+    assertEquals(OAuthElement.Location.HEADER, s.getAccess().getParamLocation());
+    assertEquals(Uri.parse("http://azn.example.com/quux"), s.getAuthorization().getUrl());
   }
 
   @Test
@@ -137,31 +121,23 @@ public class OAuthServiceTest {
         "   <Access url='http://access.example.com/bar'/>" +
         "   <Authorization url='http://azn.example.com/quux'/>" +
         "</Service>";
-    OAuthService s = new OAuthService(XmlUtil.parse(xml), SPEC_URL);
+    OAuthService s = StaxTestUtils.parseElement(xml, new OAuthService.Parser(SPEC_URL));
     assertEquals("", s.getName());
-    assertEquals(OAuthService.Location.HEADER, s.getAccessUrl().location);
-    assertEquals("http://azn.example.com/quux", s.getAuthorizationUrl().toString());
+    assertEquals(OAuthElement.Location.HEADER, s.getAccess().getParamLocation());
+    assertEquals(Uri.parse("http://azn.example.com/quux"), s.getAuthorization().getUrl());
   }
 
-  @Test
+  @Test(expected=SpecParserException.class)
   public void testParseService_nodata() throws Exception {
     String xml = "<Service/>";
-    try {
-      new OAuthService(XmlUtil.parse(xml), SPEC_URL);
-    } catch (SpecParserException e) {
-      assertEquals("/OAuth/Service/Request is required", e.getMessage());
-    }
+    StaxTestUtils.parseElement(xml, new OAuthService.Parser(SPEC_URL));
   }
 
-  @Test
+  @Test(expected=SpecParserException.class)
   public void testParseService_reqonly() throws Exception {
     String xml = "<Service>" +
         "<Request url='http://www.example.com/request'/>" +
         "</Service>";
-    try {
-      new OAuthService(XmlUtil.parse(xml), SPEC_URL);
-    } catch (SpecParserException e) {
-      assertEquals("/OAuth/Service/Access is required", e.getMessage());
-    }
+    StaxTestUtils.parseElement(xml, new OAuthService.Parser(SPEC_URL));
   }
 }

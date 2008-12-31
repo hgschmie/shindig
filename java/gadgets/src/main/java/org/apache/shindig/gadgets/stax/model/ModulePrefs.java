@@ -36,6 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class ModulePrefs extends SpecElement {
@@ -83,7 +84,7 @@ public class ModulePrefs extends SpecElement {
    * Produces a new, substituted ModulePrefs
    */
   protected ModulePrefs(final ModulePrefs prefs, final Substitutions substituter) {
-    super(prefs);
+    super(prefs, substituter);
 
     for (Feature feature : prefs.getFeatures().values()) {
       addFeature(feature);
@@ -105,7 +106,12 @@ public class ModulePrefs extends SpecElement {
       addLink(link.substitute(substituter));
     }
 
-    this.oauth = prefs.getOauth();
+    this.oauth = prefs.getOAuth();
+
+    // That is actually gross...
+    for (Map.Entry<String, String> entry: prefs.attributes().entrySet()) {
+      setAttr(entry.getKey(), substituter.substituteString(entry.getValue()));
+    }
   }
 
   /**
@@ -140,7 +146,7 @@ public class ModulePrefs extends SpecElement {
     return Collections.unmodifiableMap(links);
   }
 
-  public OAuthSpec getOauth() {
+  public OAuthSpec getOAuth() {
     return oauth;
   }
 
@@ -149,7 +155,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   public Uri getTitleUrl() {
-    return attrUri(ATTR_TITLE_URL);
+      return attrUriBase(ATTR_TITLE_URL);
   }
 
   public String getDescription() {
@@ -165,11 +171,11 @@ public class ModulePrefs extends SpecElement {
   }
 
   public Uri getScreenshot() {
-    return attrUri(ATTR_SCREENSHOT);
+    return attrUriBase(ATTR_SCREENSHOT);
   }
 
   public Uri getThumbnail() {
-    return attrUri(ATTR_THUMBNAIL);
+    return attrUriBase(ATTR_THUMBNAIL);
   }
 
   public String getDirectoryTitle() {
@@ -185,7 +191,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   public Uri getAuthorPhoto() {
-    return attrUri(ATTR_AUTHOR_PHOTO);
+    return attrUriBase(ATTR_AUTHOR_PHOTO);
   }
 
   public String getAuthorAboutme() {
@@ -197,7 +203,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   public Uri getAuthorLink() {
-    return attrUri(ATTR_AUTHOR_LINK);
+    return attrUriBase(ATTR_AUTHOR_LINK);
   }
 
   public boolean isShowStats() {
@@ -422,6 +428,28 @@ public class ModulePrefs extends SpecElement {
       if (categories.size() > 1) {
         writer.writeAttribute(namespaceURI, ATTR_CATEGORY2, categories.get(1));
       }
+    }
+  }
+
+  @Override
+  public void validate() throws GadgetException {
+    if (attr(ATTR_TITLE) == null) {
+      throw new SpecParserException("ModulePrefs@title must be set!");
+    }
+    if (!attrIsValidUri(ATTR_TITLE_URL)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
+    }
+    if (!attrIsValidUri(ATTR_SCREENSHOT)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
+    }
+    if (!attrIsValidUri(ATTR_THUMBNAIL)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
+    }
+    if (!attrIsValidUri(ATTR_AUTHOR_PHOTO)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
+    }
+    if (!attrIsValidUri(ATTR_AUTHOR_LINK)) {
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
     }
   }
 
