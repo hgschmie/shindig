@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 /*
  *
@@ -43,7 +43,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.Pair;
 import org.apache.shindig.gadgets.variables.Substitutions;
 

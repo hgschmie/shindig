@@ -29,10 +29,6 @@ import java.util.Locale;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.MessageBundle.Direction;
-import org.apache.shindig.gadgets.stax.model.LocaleSpec;
-import org.apache.shindig.gadgets.stax.model.ModulePrefs;
-import org.apache.shindig.gadgets.stax.model.OAuthElement;
-import org.apache.shindig.gadgets.stax.model.OAuthService;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 

@@ -1,5 +1,3 @@
-package org.apache.shindig.gadgets.stax.model;
-
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +19,8 @@ package org.apache.shindig.gadgets.stax.model;
  *
  */
 
+package org.apache.shindig.gadgets.spec;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,39 +28,37 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class LinkSpec extends SpecElement {
+public class EnumValue extends SpecElement {
+  public static final String ELEMENT_NAME = "EnumValue";
 
-  public static final String ELEMENT_NAME = "Link";
+  public static final String ATTR_VALUE = "value";
+  public static final String ATTR_DISPLAY_VALUE = "display_value";
 
-  public static final String ATTR_REL = "rel";
-  public static final String ATTR_HREF = "href";
-
-  public LinkSpec(final QName name, final Map<String, QName> attrNames,
+  protected EnumValue(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
-    super(linkSpec, substituter);
-    setAttr(ATTR_HREF, getBase().resolve(
-        substituter.substituteUri(linkSpec.getHref())).toString());
-    setAttr(ATTR_REL, substituter.substituteString(linkSpec.getRel()));
+  protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
+    super(enumValue, substituter);
+    setAttr(ATTR_VALUE, substituter.substituteString(enumValue.getValue()));
+    setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue
+        .getDisplayValue()));
   }
 
   @Override
-  public LinkSpec substitute(final Substitutions substituter) {
-    return new LinkSpec(this, substituter);
+  public EnumValue substitute(final Substitutions substituter) {
+    return new EnumValue(this, substituter);
   }
 
-  public String getRel() {
-    return attrDefault(ATTR_REL);
+  public String getValue() {
+    return attr(ATTR_VALUE);
   }
 
-  public Uri getHref() {
-    return attrUriNull(ATTR_HREF);
+  public String getDisplayValue() {
+    return attrDefault(ATTR_DISPLAY_VALUE, getValue());
   }
 
   @Override
@@ -68,26 +66,24 @@ public class LinkSpec extends SpecElement {
       throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
 
-    if (attr(ATTR_REL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REL, getRel());
+    if (attr(ATTR_VALUE) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
     }
-    if (getHref() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
+    if (attr(ATTR_DISPLAY_VALUE) != null) {
+      writer
+          .writeAttribute(namespaceURI, ATTR_DISPLAY_VALUE, getDisplayValue());
     }
   }
 
   @Override
   public void validate() throws SpecParserException {
-    if (attr(ATTR_REL) == null) {
-      throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
-    }
-    if (getHref() == null) {
+    if (attr(ATTR_VALUE) == null) {
       throw new SpecParserException(name().getLocalPart()
-          + "@href must be set!");
+          + "@value must be set!");
     }
   }
 
-  public static class Parser extends SpecElement.Parser<LinkSpec> {
+  public static class Parser extends SpecElement.Parser<EnumValue> {
 
     public Parser(final Uri base) {
       this(new QName(ELEMENT_NAME), base);
@@ -95,12 +91,12 @@ public class LinkSpec extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(ATTR_REL, ATTR_HREF);
+      register(ATTR_VALUE, ATTR_DISPLAY_VALUE);
     }
 
     @Override
-    protected LinkSpec newElement() {
-      return new LinkSpec(name(), getAttrNames(), getBase());
+    protected EnumValue newElement() {
+      return new EnumValue(name(), getAttrNames(), getBase());
     }
   }
 }

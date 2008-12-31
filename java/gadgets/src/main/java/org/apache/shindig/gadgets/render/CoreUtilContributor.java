@@ -23,9 +23,9 @@ package org.apache.shindig.gadgets.render;
 
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetFeatureRegistry;
+import org.apache.shindig.gadgets.spec.Feature;
+import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.stax.StaxUtils;
-import org.apache.shindig.gadgets.stax.model.Feature;
-import org.apache.shindig.gadgets.stax.model.ModulePrefs;
 import org.json.JSONException;
 import org.json.JSONObject;
 

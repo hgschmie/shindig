@@ -23,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.OAuthAuthorization;
-import org.apache.shindig.gadgets.stax.model.OAuthElement;
-import org.apache.shindig.gadgets.stax.model.OAuthRequest;
-import org.apache.shindig.gadgets.stax.model.OAuthService;
 import org.junit.Before;
 import org.junit.Test;
 

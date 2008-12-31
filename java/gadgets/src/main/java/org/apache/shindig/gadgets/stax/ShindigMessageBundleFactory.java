@@ -43,10 +43,10 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.LocaleMsg;
+import org.apache.shindig.gadgets.spec.LocaleSpec;
+import org.apache.shindig.gadgets.spec.MessageBundleSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.model.LocaleMsg;
-import org.apache.shindig.gadgets.stax.model.LocaleSpec;
-import org.apache.shindig.gadgets.stax.model.MessageBundleSpec;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;

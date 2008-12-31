@@ -26,10 +26,10 @@ import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
 import org.apache.shindig.common.util.HashUtil;
+import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+import org.apache.shindig.gadgets.spec.UserPref;
 import org.apache.shindig.gadgets.stax.View;
-import org.apache.shindig.gadgets.stax.model.Content;
-import org.apache.shindig.gadgets.stax.model.UserPref;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;

@@ -22,7 +22,6 @@ package org.apache.shindig.gadgets.spec;
 import junit.framework.TestCase;
 
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.Icon;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class IconTest extends TestCase {

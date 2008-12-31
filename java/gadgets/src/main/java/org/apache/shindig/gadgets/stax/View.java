@@ -25,10 +25,10 @@ import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 import org.apache.shindig.gadgets.spec.SpecParserException;
-import org.apache.shindig.gadgets.stax.model.Content;
-import org.apache.shindig.gadgets.stax.model.Content.Type;
+import org.apache.shindig.gadgets.spec.Content.Type;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 /**

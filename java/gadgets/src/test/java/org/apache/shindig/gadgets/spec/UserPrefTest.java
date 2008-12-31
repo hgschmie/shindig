@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.StaxUtils;
-import org.apache.shindig.gadgets.stax.model.UserPref;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPrefTest extends TestCase {

@@ -38,10 +38,10 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
+import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.View;
-import org.apache.shindig.gadgets.stax.model.Content;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;

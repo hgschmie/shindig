@@ -18,7 +18,7 @@
  * under the License.
  *
  */
-package org.apache.shindig.gadgets.stax.model;
+package org.apache.shindig.gadgets.spec;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
