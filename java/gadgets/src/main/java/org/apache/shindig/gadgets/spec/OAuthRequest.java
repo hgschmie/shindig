@@ -30,7 +30,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthRequest extends OAuthElement {
 
-  public static final String ELEMENT_NAME = "Request";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Request");
 
   public OAuthRequest(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
@@ -48,7 +48,7 @@ public class OAuthRequest extends OAuthElement {
 
   public static class Parser extends OAuthElement.Parser {
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

@@ -40,7 +40,7 @@ import com.google.common.collect.Multimap;
 
 public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
-  public static final String ELEMENT_NAME = "Module";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
 
   private final String checksum;
 
@@ -186,7 +186,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
     private final String checksum;
 
     public Parser(final Uri base, final String checksum) {
-        this(new QName(ELEMENT_NAME), base, checksum);
+      this(ELEMENT_NAME, base, checksum);
     }
 
     public Parser(final QName name, final Uri base, final String checksum) {

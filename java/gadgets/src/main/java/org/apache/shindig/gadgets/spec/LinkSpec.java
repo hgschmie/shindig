@@ -32,7 +32,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LinkSpec extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Link";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Link");
 
   public static final String ATTR_REL = "rel";
   public static final String ATTR_HREF = "href";
@@ -65,13 +65,12 @@ public class LinkSpec extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_REL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REL, getRel());
+      writeAttribute(writer, ATTR_REL, getRel());
     }
     if (getHref() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
+      writeAttribute(writer, ATTR_HREF, getHref().toString());
     }
   }
 
@@ -89,7 +88,7 @@ public class LinkSpec extends SpecElement {
   public static class Parser extends SpecElement.Parser<LinkSpec> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

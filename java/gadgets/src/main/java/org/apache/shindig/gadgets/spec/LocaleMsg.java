@@ -35,7 +35,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleMsg extends SpecElement {
 
-  public static final String ELEMENT_NAME = "msg";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
 
   public static final String ATTR_NAME = "name";
 
@@ -78,14 +78,12 @@ public class LocaleMsg extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
-
     if (attr(ATTR_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+      writeAttribute(writer, ATTR_NAME, getName());
     }
 
     if (attr(ATTR_DESC) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DESC, getDesc());
+      writeAttribute(writer, ATTR_DESC, getDesc());
     }
   }
 
@@ -127,7 +125,7 @@ public class LocaleMsg extends SpecElement {
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

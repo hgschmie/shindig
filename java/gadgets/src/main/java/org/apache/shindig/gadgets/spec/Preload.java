@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
-  public static final String ELEMENT_NAME = "Preload";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
 
   public static final String ATTR_HREF = "href";
   public static final String ATTR_AUTHZ = "authz";
@@ -118,46 +118,47 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
+
     if (getHref() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
+      writeAttribute(writer, ATTR_HREF, getHref().toString());
     }
+
     if (attr(ATTR_AUTHZ) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
+      writeAttribute(writer, ATTR_AUTHZ, getAuthType().toString());
     }
 
     if (attr(ATTR_SIGN_OWNER) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String
+      writeAttribute(writer, ATTR_SIGN_OWNER, String
           .valueOf(isSignOwner()));
     }
 
     if (attr(ATTR_SIGN_VIEWER) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String
+      writeAttribute(writer, ATTR_SIGN_VIEWER, String
           .valueOf(isSignViewer()));
     }
 
     if (attr(ATTR_VIEWS) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VIEWS, StringUtils.join(
+      writeAttribute(writer, ATTR_VIEWS, StringUtils.join(
           getViews(), ','));
     }
 
     if (attr(ATTR_OAUTH_SERVICE_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_SERVICE_NAME,
+      writeAttribute(writer, ATTR_OAUTH_SERVICE_NAME,
           getOAuthServiceName());
     }
 
     if (attr(ATTR_OAUTH_TOKEN_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_TOKEN_NAME,
+      writeAttribute(writer, ATTR_OAUTH_TOKEN_NAME,
           getOAuthTokenName());
     }
 
     if (attr(ATTR_OAUTH_REQUEST_TOKEN) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN,
+      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN,
           getOAuthRequestToken());
     }
 
     if (attr(ATTR_OAUTH_REQUEST_TOKEN_SECRET) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
+      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
           getOAuthRequestTokenSecret());
     }
 
@@ -179,7 +180,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static class Parser extends SpecElement.Parser<Preload> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

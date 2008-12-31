@@ -37,7 +37,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class MessageBundleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-  public static final String ELEMENT_NAME = "messageBundle";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
 
   /** Non-0.8 Attribute! */
   public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
@@ -84,10 +84,9 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION,
           getLanguageDirection().toString());
     }
   }
@@ -102,7 +101,7 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
   public static class Parser extends SpecElement.Parser<MessageBundleSpec> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

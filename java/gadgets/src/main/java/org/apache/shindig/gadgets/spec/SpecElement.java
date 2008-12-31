@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -46,13 +47,18 @@ import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
+import com.ctc.wstx.api.WstxOutputProperties;
+
 public abstract class SpecElement {
+
+  public static final String OPENSOCIAL_NAMESPACE_URI = "http://ns.opensocial.org/specs/0.8/";
 
   private static final XMLOutputFactory factory;
 
   static {
     factory = XMLOutputFactory.newInstance();
     factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
+    factory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR, Boolean.FALSE);
   }
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
@@ -266,16 +272,12 @@ public abstract class SpecElement {
 
   public void toXml(final XMLStreamWriter writer) throws XMLStreamException {
 
-    writer.setDefaultNamespace(name().getPrefix());
-    for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
-      writer.setPrefix(namespace.getKey(), namespace.getValue());
-    }
-    writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
+    writer.writeStartElement(qName.getPrefix(), qName.getLocalPart(), qName.getNamespaceURI());
 
     writeAttributes(writer);
 
     for (Pair<QName, String> attribute : otherAttrs.values()) {
-      writeAttribute(writer, attribute.getKey(), attribute.getValue());
+      writeAttribute(writer, attribute.getKey().getLocalPart(), attribute.getValue());
     }
 
     for (Map.Entry<QName, String> attribute : nsAttrs.entrySet()) {
@@ -322,6 +324,11 @@ public abstract class SpecElement {
     writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
   }
 
+  protected void writeAttribute(final XMLStreamWriter writer,
+      final String localName, final String value) throws XMLStreamException {
+    writer.writeAttribute(qName.getPrefix(), qName.getNamespaceURI(), localName, value);
+  }
+
   // ======================================================================================================================================
 
   @Override
@@ -330,6 +337,11 @@ public abstract class SpecElement {
     XMLStreamWriter writer = null;
     try {
       writer = factory.createXMLStreamWriter(sw);
+      writer.setDefaultNamespace(name().getNamespaceURI());
+      for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
+        writer.setPrefix(namespace.getKey(), namespace.getValue());
+      }
+
       toXml(writer);
       writer.flush();
     } catch (XMLStreamException xse) {
@@ -448,7 +460,7 @@ public abstract class SpecElement {
           throw new SpecParserException("Unexpected end of document encountered!");
 
         case XMLStreamConstants.START_ELEMENT:
-          final QName elementName = reader.getName();
+          final QName elementName = buildQName(reader.getName());
           Parser<? extends SpecElement> parser = children.get(elementName);
           if (parser == null) {
             LOG.fine("No idea what to do with " + elementName + ", ignoring!");
@@ -470,10 +482,18 @@ public abstract class SpecElement {
       }
     }
 
+    private QName buildQName(final QName elementName) {
+      if (XMLConstants.DEFAULT_NS_PREFIX.equals(elementName.getPrefix())) {
+        return new QName(name().getNamespaceURI(), elementName.getLocalPart());
+      } else {
+        return elementName;
+      }
+    }
+
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
         element
-            .setAttr(reader.getAttributeName(i), reader.getAttributeValue(i));
+            .setAttr(buildQName(reader.getAttributeName(i)), reader.getAttributeValue(i));
       }
     }
 

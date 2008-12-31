@@ -79,9 +79,8 @@ public abstract class Feature extends SpecElement {
 
   @Override
   protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
     if (attr(ATTR_FEATURE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_FEATURE, getFeature());
+      writeAttribute(writer, ATTR_FEATURE, getFeature());
     }
   }
 

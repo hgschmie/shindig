@@ -35,7 +35,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Icon extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Icon";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Icon");
 
   public static final String ATTR_MODE = "mode";
   public static final String ATTR_TYPE = "type";
@@ -84,13 +84,12 @@ public class Icon extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_MODE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_MODE, getMode().toString());
+      writeAttribute(writer,  ATTR_MODE, getMode().toString());
     }
     if (attr(ATTR_TYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType());
+      writeAttribute(writer, ATTR_TYPE, getType());
     }
   }
 
@@ -120,7 +119,7 @@ public class Icon extends SpecElement {
   public static class Parser extends SpecElement.Parser<Icon> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

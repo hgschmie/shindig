@@ -39,7 +39,7 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPref extends SpecElement {
-  public static final String ELEMENT_NAME = "UserPref";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "UserPref");
 
   public static final String ATTR_NAME = "name";
   public static final String ATTR_DISPLAY_NAME = "display_name";
@@ -160,70 +160,69 @@ public class UserPref extends SpecElement {
 
   @Override
   protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+      writeAttribute(writer, ATTR_NAME, getName());
     }
 
     if (attr(ATTR_DISPLAY_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DISPLAY_NAME, getDisplayName());
+      writeAttribute(writer, ATTR_DISPLAY_NAME, getDisplayName());
     }
 
     if (attr(ATTR_DEFAULT_VALUE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DEFAULT_VALUE, getDefaultValue());
+      writeAttribute(writer, ATTR_DEFAULT_VALUE, getDefaultValue());
     }
 
     if (attr(ATTR_REQUIRED) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_REQUIRED, String.valueOf(isRequired()));
+      writeAttribute(writer, ATTR_REQUIRED, String.valueOf(isRequired()));
     }
 
     if (attr(ATTR_DATATYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DATATYPE, getDataType().toString());
+      writeAttribute(writer, ATTR_DATATYPE, getDataType().toString());
     }
 
     if (attr(ATTR_URLPARAM) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_URLPARAM, getUrlparam());
+      writeAttribute(writer, ATTR_URLPARAM, getUrlparam());
     }
 
     if (attr(ATTR_AUTOCOMPLETE_URL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTOCOMPLETE_URL, getAutocompleteUrl());
+      writeAttribute(writer, ATTR_AUTOCOMPLETE_URL, getAutocompleteUrl());
     }
 
     if (attr(ATTR_NUM_MINVAL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NUM_MINVAL, String.valueOf(getNumMinval()));
+      writeAttribute(writer, ATTR_NUM_MINVAL, String.valueOf(getNumMinval()));
     }
 
     if (attr(ATTR_NUM_MAXVAL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NUM_MAXVAL, String.valueOf(getNumMaxval()));
+      writeAttribute(writer, ATTR_NUM_MAXVAL, String.valueOf(getNumMaxval()));
     }
 
     if (attr(ATTR_STR_MAXLEN) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_STR_MAXLEN, String.valueOf(getStrMaxlen()));
+      writeAttribute(writer, ATTR_STR_MAXLEN, String.valueOf(getStrMaxlen()));
     }
 
     if (attr(ATTR_RESTRICT_TO_COMPLETIONS) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_RESTRICT_TO_COMPLETIONS, getRestrictToCompletions());
+      writeAttribute(writer, ATTR_RESTRICT_TO_COMPLETIONS, getRestrictToCompletions());
     }
 
     if (attr(ATTR_PREFIX_MATCH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PREFIX_MATCH, String.valueOf(getPrefixMatch()));
+      writeAttribute(writer, ATTR_PREFIX_MATCH, String.valueOf(getPrefixMatch()));
     }
 
     if (attr(ATTR_PUBLISH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PUBLISH, String.valueOf(getPublish()));
+      writeAttribute(writer, ATTR_PUBLISH, String.valueOf(getPublish()));
     }
 
     if (attr(ATTR_LISTEN) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LISTEN, String.valueOf(getListen()));
+      writeAttribute(writer, ATTR_LISTEN, String.valueOf(getListen()));
     }
 
     if (attr(ATTR_ON_CHANGE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_ON_CHANGE, getOnChange());
+      writeAttribute(writer, ATTR_ON_CHANGE, getOnChange());
     }
 
     if (attr(ATTR_GROUP) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_GROUP, getGroup());
+      writeAttribute(writer, ATTR_GROUP, getGroup());
     }
   }
 
@@ -276,7 +275,7 @@ public class UserPref extends SpecElement {
   public static class Parser extends SpecElement.Parser<UserPref> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {
