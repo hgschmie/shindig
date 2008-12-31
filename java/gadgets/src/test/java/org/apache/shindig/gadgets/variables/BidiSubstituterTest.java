@@ -56,13 +56,13 @@ public class BidiSubstituterTest extends TestCase {
     Substitutions substitutions = new Substitutions();
     BidiSubstituter.addSubstitutions(substitutions, Direction.parse(direction));
 
-    assertEquals(startEdge, substitutions.getSubstitution(
+    assertEquals(startEdge.toString(), substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.START_EDGE));
-    assertEquals(endEdge, substitutions.getSubstitution(
+    assertEquals(endEdge.toString(), substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.END_EDGE));
-    assertEquals(dir, substitutions.getSubstitution(
+    assertEquals(dir.toString(), substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.DIR));
-    assertEquals(reverseDir, substitutions.getSubstitution(
+    assertEquals(reverseDir.toString(), substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.REVERSE_DIR));
   }
 }
