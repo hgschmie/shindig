@@ -18,12 +18,14 @@
 package org.apache.shindig.gadgets.rewrite;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.model.Feature;
+import org.apache.shindig.gadgets.stax.model.FeatureParam;
 
 import com.google.common.collect.Lists;
 
@@ -83,16 +85,18 @@ public class ContentRewriterFeature {
 
     List<String> expiresOptions = Lists.newArrayListWithCapacity(3);
     if (f != null) {
-      if (f.getParams().containsKey(INCLUDE_URLS)) {
-        includeRegex = normalizeParam(f.getParams().get(INCLUDE_URLS).getText(), includeRegex);
+      final Map<String, FeatureParam> params = f.getParams();
+
+      if (params.containsKey(INCLUDE_URLS)) {
+        includeRegex = normalizeParam(params.get(INCLUDE_URLS).getText(), includeRegex);
       }
 
       // Note use of default for exclude as null here to allow clearing value in the
       // presence of a container default.
-      if (f.getParams().containsKey(EXCLUDE_URLS)) {
-        excludeRegex = normalizeParam(f.getParams().get(EXCLUDE_URLS).getText(), null);
+      if (params.containsKey(EXCLUDE_URLS)) {
+        excludeRegex = normalizeParam(params.get(EXCLUDE_URLS).getText(), null);
       }
-      String includeTagList = f.getParams().get(INCLUDE_TAGS).getText();
+      String includeTagList = params.get(INCLUDE_TAGS).getText();
       if (includeTagList != null) {
         TreeSet<String> tags = new TreeSet<String>();
         for (String tag : includeTagList.split(",")) {
@@ -103,8 +107,8 @@ public class ContentRewriterFeature {
         includeTags = tags;
       }
 
-      if (f.getParams().containsKey(EXPIRES)) {
-        expiresOptions.add(normalizeParam(f.getParams().get(EXPIRES).getText(), null));
+      if (params.containsKey(EXPIRES)) {
+        expiresOptions.add(normalizeParam(params.get(EXPIRES).getText(), null));
       }
     }
 

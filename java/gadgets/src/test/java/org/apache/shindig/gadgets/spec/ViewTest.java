@@ -19,10 +19,6 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -33,6 +29,10 @@ import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ViewTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
@@ -52,7 +52,7 @@ public class ViewTest {
     View view = new View(viewName, Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser(SPEC_URL))), SPEC_URL);
 
     assertEquals(viewName, view.getName());
-    assertEquals(false, view.getQuirks());
+    assertEquals(false, view.isQuirks());
     assertEquals(Content.Type.HTML, view.getType());
     assertEquals("html", view.getRawType());
     assertEquals(content, view.getContent());
@@ -115,7 +115,7 @@ public class ViewTest {
     Content.Parser parser = new Content.Parser(SPEC_URL);
     View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
         StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
-    assertEquals(false, view.getQuirks());
+    assertEquals(false, view.isQuirks());
   }
 
   @Test
@@ -125,7 +125,7 @@ public class ViewTest {
     Content.Parser parser = new Content.Parser(SPEC_URL);
     View view = new View("test", Arrays.asList(StaxTestUtils.parseElement(content1, parser),
         StaxTestUtils.parseElement(content2, parser)), SPEC_URL);
-    assertEquals(true, view.getQuirks());
+    assertEquals(true, view.isQuirks());
   }
 
   @Test

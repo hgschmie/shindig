@@ -169,7 +169,7 @@ public class JsonRpcHandler {
               .put("displayName", pref.getDisplayName())
               .put("type", pref.getDataType().toString().toLowerCase())
               .put("default", pref.getDefaultValue())
-              .put("enumValues", pref.getEnumValues())
+              .put("enumValues", StaxUtils.enumValues(pref))
               .put("orderedEnumValues", getOrderedEnums(pref));
           userPrefs.put(pref.getName(), up);
         }
@@ -178,10 +178,10 @@ public class JsonRpcHandler {
         // ModulePrefs.getAttributes(), but names have to be converted to
         // camel case.
         gadgetJson.put("iframeUrl", urlGenerator.getIframeUrl(gadget))
-                  .put("url",context.getUrl().toString())
+                  .put("url",context.getUrl())
                   .put("moduleId", context.getModuleId())
                   .put("title", prefs.getTitle())
-                  .put("titleUrl", prefs.getTitleUrl().toString())
+                  .put("titleUrl", prefs.getTitleUrl())
                   .put("views", views)
                   .put("features", features)
                   .put("userPrefs", userPrefs)
@@ -189,8 +189,8 @@ public class JsonRpcHandler {
 
                   // extended meta data
                   .put("directoryTitle", prefs.getDirectoryTitle())
-                  .put("thumbnail", prefs.getThumbnail().toString())
-                  .put("screenshot", prefs.getScreenshot().toString())
+                  .put("thumbnail", prefs.getThumbnail())
+                  .put("screenshot", prefs.getScreenshot())
                   .put("author", prefs.getAuthor())
                   .put("authorEmail", prefs.getAuthorEmail())
                   .put("authorAffiliation", prefs.getAuthorAffiliation())
@@ -200,7 +200,6 @@ public class JsonRpcHandler {
                   .put("authorQuote", prefs.getAuthorQuote())
                   .put("authorLink", prefs.getAuthorLink())
                   .put("categories", prefs.getCategories())
-                  .put("screenshot", prefs.getScreenshot().toString())
                   .put("height", prefs.getHeight())
                   .put("width", prefs.getWidth())
                   .put("showStats", prefs.isShowStats())

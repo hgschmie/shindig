@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -47,6 +48,13 @@ public class Content extends SpecElement {
   public static final String ATTR_VIEW = "view";
   public static final String ATTR_PREFERRED_HEIGHT = "preferred_height";
   public static final String ATTR_PREFERRED_WIDTH = "preferred_width";
+
+  // non 0.8 attributes!
+
+  public static final String ATTR_AUTHZ = "authz";
+  public static final String ATTR_QUIRKS = "quirks";
+  public static final String ATTR_SIGN_OWNER = "sign_owner";
+  public static final String ATTR_SIGN_VIEWER = "sign_viewer";
 
   private StringBuilder text = new StringBuilder();
 
@@ -85,6 +93,22 @@ public class Content extends SpecElement {
     return attrInt(ATTR_PREFERRED_WIDTH, -1);
   }
 
+  public AuthType getAuthType() {
+    return AuthType.parse(attr(ATTR_AUTHZ));
+  }
+
+  public boolean isQuirks() {
+    return attrBool(ATTR_QUIRKS);
+  }
+
+  public boolean isSignOwner() {
+    return attrBool(ATTR_SIGN_OWNER, true);
+  }
+
+  public boolean isSignViewer() {
+    return attrBool(ATTR_SIGN_VIEWER, true);
+  }
+
   @Override
   public String getText() {
     return text.toString();
@@ -105,7 +129,7 @@ public class Content extends SpecElement {
     final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_TYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TYPE, getType().toString());
+      writer.writeAttribute(namespaceURI, ATTR_TYPE, getRawType());
     }
     if (getHref() != null) {
       writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
@@ -122,10 +146,35 @@ public class Content extends SpecElement {
       writer.writeAttribute(namespaceURI, ATTR_PREFERRED_WIDTH, String
           .valueOf(getPreferredWidth()));
     }
+
+    if (attr(ATTR_AUTHZ) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
+    }
+
+    if (attr(ATTR_QUIRKS) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_QUIRKS, String.valueOf(isQuirks()));
+    }
+
+    if (attr(ATTR_SIGN_OWNER) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String.valueOf(isSignOwner()));
+    }
+
+    if (attr(ATTR_SIGN_VIEWER) != null) {
+      writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String.valueOf(isSignViewer()));
+    }
   }
 
   @Override
   public void validate() throws SpecParserException {
+
+    if (attr(ATTR_TYPE) != null && getType() == null) {
+      throw new SpecParserException(name().getLocalPart() + "@type value '" + attr(ATTR_TYPE) + "' is unknown!");
+    }
+
+    if (attr(ATTR_AUTHZ) != null && getAuthType() == null) {
+      throw new SpecParserException(name().getLocalPart() + "@authz value '" + attr(ATTR_AUTHZ) + "' is unknown!");
+    }
+
     switch (getType()) {
     case HTML:
       if (text == null) {
@@ -159,6 +208,10 @@ public class Content extends SpecElement {
                   .append(getHref(), rhs.getHref())
                   .append(getViews(), rhs.getViews())
                   .append(getText(), rhs.getText())
+                  .append(getAuthType(), rhs.getAuthType())
+                  .append(isQuirks(), rhs.isQuirks())
+                  .append(isSignOwner(), rhs.isSignOwner())
+                  .append(isSignViewer(), rhs.isSignViewer())
                   .isEquals();
   }
 
@@ -169,6 +222,10 @@ public class Content extends SpecElement {
     .append(getHref())
     .append(getViews())
     .append(getText())
+    .append(getAuthType())
+    .append(isQuirks())
+    .append(isSignOwner())
+    .append(isSignViewer())
     .toHashCode();
   }
 
@@ -191,12 +248,15 @@ public class Content extends SpecElement {
      * @return The data type of the given value.
      */
     public static Type parse(String value) {
-      for (Type type : Type.values()) {
-        if (StringUtils.equalsIgnoreCase(type.name(), value)) {
-          return type;
+
+      if (value != null) {
+        for (Type type : Type.values()) {
+          if (StringUtils.equalsIgnoreCase(type.name(), StringUtils.trimToEmpty(value))) {
+            return type;
+          }
         }
       }
-      return HTML;
+      return HTML; // Default type for unknown content types.
     }
   }
 
@@ -209,7 +269,7 @@ public class Content extends SpecElement {
     public Parser(final QName name, final Uri base) {
       super(name, base);
       register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT,
-          ATTR_PREFERRED_WIDTH);
+          ATTR_PREFERRED_WIDTH, ATTR_AUTHZ, ATTR_QUIRKS, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER);
     }
 
     @Override

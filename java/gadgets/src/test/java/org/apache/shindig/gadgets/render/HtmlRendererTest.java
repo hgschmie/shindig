@@ -79,7 +79,7 @@ public class HtmlRendererTest {
 
   private Gadget makeHrefGadget(String authz) throws Exception {
     Gadget gadget = makeGadget("");
-    String doc = "<Content href='" + PROXIED_HTML_HREF + "' authz='" + authz + "'/>";
+    String doc = "<Content type='url' href='" + PROXIED_HTML_HREF + "' authz='" + authz + "'/>";
     View view = new View("proxied", Collections.singleton(StaxTestUtils.parseElement(doc, new Content.Parser(SPEC_URL))), SPEC_URL);
     gadget.setCurrentView(view);
     return gadget;

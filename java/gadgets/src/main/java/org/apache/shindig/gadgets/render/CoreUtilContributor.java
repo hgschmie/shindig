@@ -23,6 +23,7 @@ package org.apache.shindig.gadgets.render;
 
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetFeatureRegistry;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.stax.model.Feature;
 import org.apache.shindig.gadgets.stax.model.ModulePrefs;
 import org.json.JSONException;
@@ -50,7 +51,7 @@ public class CoreUtilContributor implements ConfigContributor {
         try {
             for (final Feature feature : prefs.getFeatures().values()) {
                 if (registry.hasFeature(feature.getFeature())) {
-                    featureMap.put(feature.getFeature(), feature.getParams());
+                    featureMap.put(feature.getFeature(), StaxUtils.params(feature));
                 }
             }
             config.put("core.util", featureMap);

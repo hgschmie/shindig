@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets.stax;
  *
  */
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +30,8 @@ import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.model.EnumValue;
+import org.apache.shindig.gadgets.stax.model.Feature;
+import org.apache.shindig.gadgets.stax.model.FeatureParam;
 import org.apache.shindig.gadgets.stax.model.UserPref;
 
 public final class StaxUtils {
@@ -58,9 +61,22 @@ public final class StaxUtils {
       return Collections.<String, String> emptyMap();
     }
 
-    final Map<String, String> values = new HashMap<String, String>();
+    final Map<String, String> values = new HashMap<String, String>(enumValues.size());
     for (EnumValue value : enumValues) {
       values.put(value.getValue(), value.getDisplayValue());
+    }
+
+    return Collections.unmodifiableMap(values);
+  }
+
+  public static final Map<String, String> params(final Feature feature) {
+    final Collection<FeatureParam> params = feature.getParams().values();
+    if (params.size() == 0) {
+      return Collections.<String, String>emptyMap();
+    }
+    final Map<String, String> values = new HashMap<String, String>(params.size());
+    for (FeatureParam param: params) {
+      values.put(param.getName(), param.getText());
     }
 
     return Collections.unmodifiableMap(values);
