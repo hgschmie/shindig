@@ -30,7 +30,6 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 public class HashLockedDomainServiceTest extends EasyMockTestCase {

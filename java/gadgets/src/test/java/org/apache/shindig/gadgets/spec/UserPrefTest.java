@@ -22,7 +22,7 @@ package org.apache.shindig.gadgets.spec;
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
+import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPrefTest extends TestCase {

@@ -23,7 +23,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.common.xml.StaxTestUtils;
+import org.apache.shindig.gadgets.StaxTestUtils;
 
 public class FeatureTest extends TestCase {
   public void testRequire() throws Exception {
