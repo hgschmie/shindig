@@ -31,9 +31,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.ShindigGadgetSpec;
-import org.apache.shindig.gadgets.spec.SpecElement;
-import org.apache.shindig.gadgets.spec.SpecElement.Parser;
+import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
+import org.apache.shindig.gadgets.stax.model.SpecElement;
+import org.apache.shindig.gadgets.stax.model.SpecElement.Parser;
 
 public final class StaxTestUtils {
 
