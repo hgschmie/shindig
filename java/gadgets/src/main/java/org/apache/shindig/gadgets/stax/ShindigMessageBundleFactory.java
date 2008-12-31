@@ -30,10 +30,10 @@ import org.apache.shindig.gadgets.stax.model.MessageBundleSpec;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-public class StaxMessageBundleFactory implements MessageBundleFactory {
+public class ShindigMessageBundleFactory implements MessageBundleFactory {
 
   private static final Logger LOG = Logger
-      .getLogger(StaxMessageBundleFactory.class.getName());
+  .getLogger(ShindigMessageBundleFactory.class.getName());
 
   public static final Locale LOCALE_ALL_ALL = new Locale("all", "ALL");
 
@@ -44,13 +44,13 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
   private final long refresh;
 
   @Inject
-  public StaxMessageBundleFactory(final HttpFetcher fetcher,
+  public ShindigMessageBundleFactory(final HttpFetcher fetcher,
       final CacheProvider cacheProvider,
       @Named("shindig.cache.xml.refreshInterval")
       final long refresh) {
 
     final Cache<String, MessageBundle> baseCache = cacheProvider
-        .createCache(MessageBundleFactory.CACHE_NAME);
+    .createCache(MessageBundleFactory.CACHE_NAME);
 
     this.fetcher = fetcher;
     this.cache = new SoftExpiringCache<String, MessageBundle>(baseCache);
@@ -82,18 +82,20 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
 
     try {
       bundle = loadBundle(spec, locale, ignoreCache);
-      return bundle;
     } catch (GadgetException e) {
       if (cached != null) {
         bundle = cached.obj;
         LOG.warning("Could not refresh MessageBundle, keeping stale entry.");
       } else {
+        LOG.warning("Could not load MessageBundle, creating empty dummy.");
         bundle = MessageBundle.EMPTY;
       }
-      throw e;
     } finally {
-      cache.addElement(key, bundle, refresh);
+      if (!ignoreCache) {
+        cache.addElement(key, bundle, refresh);
+      }
     }
+    return bundle;
   }
 
   private MessageBundle loadBundle(final GadgetSpec spec, final Locale locale,
@@ -152,6 +154,13 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
 
     final HttpResponse response = fetcher.fetch(request);
 
+    if (response == null) {
+      throw new GadgetException(
+          GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, String.format(
+              "Unable to retrieve message bundle xml from '%s', got null!",
+              uri.toString()));
+    }
+
     if (response.getHttpStatusCode() != HttpResponse.SC_OK) {
       throw new GadgetException(
           GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, String.format(
@@ -162,7 +171,7 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
     try {
       XMLStreamReader reader = factory.createXMLStreamReader(response
           .getResponse());
-      final MessageBundleSpec.Parser parser = new MessageBundleSpec.Parser(Uri.EMPTY_URI);
+      final MessageBundleSpec.Parser parser = new MessageBundleSpec.Parser(uri);
       MessageBundleSpec messageBundleSpec = null;
 
       loop: while (true) {
@@ -184,5 +193,11 @@ public class StaxMessageBundleFactory implements MessageBundleFactory {
       throw new SpecParserException(String.format(
           "Could not parse Message bundle from '%s': ", uri.toString()), xse);
     }
+  }
+
+  // Code for unit tests.
+  public SoftExpiringCache<String, MessageBundle> getCache()
+  {
+    return cache;
   }
 }

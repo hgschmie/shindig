@@ -37,9 +37,9 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 
 /**
- * Tests for DefaultGadgetSpecFactory
+ * Tests for GadgetSpecFactory
  */
-public class DefaultGadgetSpecFactoryTest {
+public class GadgetSpecFactoryTest {
   private final static Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
   private final static Uri REMOTE_URL = Uri.parse("http://example.org/remote.html");
   private final static String LOCAL_CONTENT = "Hello, local content!";
@@ -92,7 +92,7 @@ public class DefaultGadgetSpecFactoryTest {
     @Override
     public String getParameter(String param) {
         /*
-      if (param.equals(DefaultGadgetSpecFactory.RAW_GADGETSPEC_XML_PARAM_NAME)) {
+      if (param.equals(ShindigGadgetSpecFactory.RAW_GADGETSPEC_XML_PARAM_NAME)) {
         return RAWXML_SPEC_XML;
       }
       */
@@ -106,8 +106,8 @@ public class DefaultGadgetSpecFactoryTest {
 
   private final CacheProvider cacheProvider = new LruCacheProvider(5);
 
-  private final DefaultGadgetSpecFactory specFactory
-      = new DefaultGadgetSpecFactory(fetcher, cacheProvider, MAX_AGE);
+  private final ShindigGadgetSpecFactory specFactory
+      = new ShindigGadgetSpecFactory(fetcher, cacheProvider, MAX_AGE);
 
   @Test
   public void specFetched() throws Exception {
@@ -145,7 +145,7 @@ public class DefaultGadgetSpecFactoryTest {
 /*    GadgetSpec spec = specFactory.getGadgetSpec(RAWXML_GADGET_CONTEXT);
 
     assertEquals(RAWXML_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
-    assertEquals(DefaultGadgetSpecFactory.RAW_GADGET_URI, spec.getUrl());
+    assertEquals(ShindigGadgetSpecFactory.RAW_GADGET_URI, spec.getUrl());
 */
   }
 
@@ -190,8 +190,8 @@ public class DefaultGadgetSpecFactoryTest {
   public void ttlPropagatesToFetcher() throws Exception {
     CapturingFetcher capturingFetcher = new CapturingFetcher();
 
-    DefaultGadgetSpecFactory forcedCacheFactory
-        = new DefaultGadgetSpecFactory(capturingFetcher, cacheProvider, 10000);
+    ShindigGadgetSpecFactory forcedCacheFactory
+        = new ShindigGadgetSpecFactory(capturingFetcher, cacheProvider, 10000);
 
     forcedCacheFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
 

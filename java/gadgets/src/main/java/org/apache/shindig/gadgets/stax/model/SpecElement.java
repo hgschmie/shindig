@@ -217,10 +217,11 @@ public abstract class SpecElement {
   }
 
   protected Uri attrUriBase(final String key) {
-      if (base != null) {
-          return base.resolve(attrUri(key));
+    final Uri uri = attrUriNull(key);
+      if (base != null && uri !=  null) {
+          return base.resolve(uri);
       } else {
-          return attrUri(key);
+          return uri;
       }
   }
 
