@@ -96,15 +96,18 @@ public class ContentRewriterFeature {
       if (params.containsKey(EXCLUDE_URLS)) {
         excludeRegex = normalizeParam(params.get(EXCLUDE_URLS).getText(), null);
       }
-      String includeTagList = params.get(INCLUDE_TAGS).getText();
-      if (includeTagList != null) {
-        TreeSet<String> tags = new TreeSet<String>();
-        for (String tag : includeTagList.split(",")) {
-          if (tag != null) {
-            tags.add(tag.trim().toLowerCase());
+
+      if (params.containsKey(INCLUDE_TAGS)) {
+        final String includeTagList = params.get(INCLUDE_TAGS).getText();
+        if (includeTagList != null) {
+          final TreeSet<String> tags = new TreeSet<String>();
+          for (String tag : includeTagList.split(",")) {
+            if (tag != null) {
+              tags.add(tag.trim().toLowerCase());
+            }
           }
+          includeTags = tags;
         }
-        includeTags = tags;
       }
 
       if (params.containsKey(EXPIRES)) {
