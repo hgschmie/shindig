@@ -31,6 +31,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.testing.TestExecutorService;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
@@ -38,8 +39,7 @@ import org.apache.shindig.gadgets.UrlGenerator;
 import org.apache.shindig.gadgets.process.ProcessingException;
 import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

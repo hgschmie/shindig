@@ -1,4 +1,4 @@
-package org.apache.shindig.gadgets.stax;
+package org.apache.shindig.gadgets.spec;
 /*
  * 
  * Licensed to the Apache Software Foundation (ASF) under one

@@ -48,4 +48,10 @@ public class SpecParserException extends GadgetException {
   public SpecParserException(String message, XMLStreamException e) {
       super(GadgetException.Code.MALFORMED_XML_DOCUMENT, message, e);
     }
+
+  public SpecParserException(final SpecElement element, String message) {
+    super(GadgetException.Code.MALFORMED_XML_DOCUMENT, element.name().getLocalPart() + message);
+  }
+
+
 }

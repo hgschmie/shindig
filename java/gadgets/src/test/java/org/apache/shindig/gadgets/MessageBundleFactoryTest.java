@@ -33,14 +33,13 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.TimeSource;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.MessageBundle;
-import org.apache.shindig.gadgets.stax.ShindigMessageBundleFactory;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.easymock.EasyMock;
 import org.junit.Test;
 

@@ -42,15 +42,22 @@ public abstract class Feature extends SpecElement {
 
   private Map<String, FeatureParam> params = new HashMap<String, FeatureParam>();
 
-  protected Feature(final QName name, final Map<String, QName> attrNames,
-      final Uri base, final boolean required) {
+  // Shindig uses the feature params internally as attributes all the time.
+  // So let's keep track of this here.
+  private final Map<String, String> paramMap = new HashMap<String, String>();
+
+  protected Feature(final QName name, final Map<String, QName> attrNames, final Uri base, final boolean required) {
     super(name, attrNames, base);
     this.required = required;
   }
 
   protected Feature(final Feature feature, final Substitutions substituter) {
-      super(feature, substituter);
-      this.required = feature.isRequired();
+    super(feature, substituter);
+    this.required = feature.isRequired();
+
+    for (FeatureParam featureParam : feature.getParams().values()) {
+      addParam(featureParam.substitute(substituter));
+    }
   }
 
   public boolean isRequired() {
@@ -67,11 +74,11 @@ public abstract class Feature extends SpecElement {
 
   private void addParam(final FeatureParam param) {
     this.params.put(param.getName(), param);
+    this.paramMap.put(param.getName(), param.getText());
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     final String namespaceURI = name().getNamespaceURI();
     if (attr(ATTR_FEATURE) != null) {
       writer.writeAttribute(namespaceURI, ATTR_FEATURE, getFeature());
@@ -79,8 +86,7 @@ public abstract class Feature extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (final FeatureParam param : params.values()) {
       param.toXml(writer);
     }
@@ -89,9 +95,13 @@ public abstract class Feature extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_FEATURE) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@feature must be set!");
+      throw new SpecParserException(this, "@feature must be set!");
     }
+  }
+
+  // Convenience Methods that deal with the underlying featureParam elements. These are not part of the model!
+  public Map<String, String> params() {
+    return Collections.unmodifiableMap(paramMap);
   }
 
   public abstract static class Parser extends SpecElement.Parser<Feature> {
@@ -106,9 +116,7 @@ public abstract class Feature extends SpecElement {
     protected abstract Feature newElement();
 
     @Override
-    protected void addChild(final XMLStreamReader reader,
-        final Feature feature, final SpecElement child)
-        throws GadgetException {
+    protected void addChild(final XMLStreamReader reader, final Feature feature, final SpecElement child) throws GadgetException {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

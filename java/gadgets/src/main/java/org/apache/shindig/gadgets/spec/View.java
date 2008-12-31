@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package org.apache.shindig.gadgets.stax;
+package org.apache.shindig.gadgets.spec;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class View implements RequestAuthenticationInfo {
 
   private final Uri baseUri;
 
-  private final Type type;
+  private final Content.Type type;
 
   private final Uri href;
 
@@ -74,7 +74,7 @@ public class View implements RequestAuthenticationInfo {
     this.name = name;
     this.baseUri = baseUri;
 
-    Type type = null;
+    Content.Type type = null;
     Uri href = null;
     int preferredHeight = -1;
     int preferredWidth = -1;
@@ -174,7 +174,7 @@ public class View implements RequestAuthenticationInfo {
     return name;
   }
 
-  public Type getType() {
+  public Content.Type getType() {
     return type;
   }
 

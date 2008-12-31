@@ -23,9 +23,9 @@ import java.net.URI;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
 
 /**
  * Fakes out a gadget spec factory

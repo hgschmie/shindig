@@ -26,8 +26,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.stax.MessageBundle;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;

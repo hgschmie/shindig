@@ -18,14 +18,14 @@
  */
 package org.apache.shindig.common.uri;
 
-import com.google.common.collect.Maps;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 /**
 * Represents a Uniform Resource Identifier (URI) reference as defined by <a
@@ -99,6 +99,10 @@ public final class Uri {
     } else {
         return defaultValue;
     }
+  }
+
+  public final boolean isHttpUri() {
+    return "http".equalsIgnoreCase(getScheme()) || "https".equalsIgnoreCase(getScheme());
   }
 
   /**

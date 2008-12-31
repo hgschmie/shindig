@@ -29,7 +29,7 @@ import org.apache.shindig.common.util.HashUtil;
 import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;

@@ -23,14 +23,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
-import org.apache.shindig.gadgets.stax.MessageBundle;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;

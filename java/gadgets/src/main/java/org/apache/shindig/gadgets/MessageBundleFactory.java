@@ -21,7 +21,7 @@ package org.apache.shindig.gadgets;
 import java.util.Locale;
 
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 
 /**
  * Factory of message bundles

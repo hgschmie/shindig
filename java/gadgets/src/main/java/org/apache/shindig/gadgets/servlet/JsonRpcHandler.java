@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 
+import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.UrlGenerator;
@@ -36,9 +37,7 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LinkSpec;
 import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.UserPref;
-import org.apache.shindig.gadgets.stax.Pair;
-import org.apache.shindig.gadgets.stax.StaxUtils;
-import org.apache.shindig.gadgets.stax.View;
+import org.apache.shindig.gadgets.spec.View;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -169,7 +168,7 @@ public class JsonRpcHandler {
               .put("displayName", pref.getDisplayName())
               .put("type", pref.getDataType().toString().toLowerCase())
               .put("default", pref.getDefaultValue())
-              .put("enumValues", StaxUtils.enumValues(pref))
+              .put("enumValues", pref.enumValues())
               .put("orderedEnumValues", getOrderedEnums(pref));
           userPrefs.put(pref.getName(), up);
         }
@@ -217,7 +216,7 @@ public class JsonRpcHandler {
     }
 
     private List<JSONObject> getOrderedEnums(UserPref pref) throws JSONException {
-      List<Pair<String, String>> orderedEnums = StaxUtils.orderEnumValues(pref);
+      List<Pair<String, String>> orderedEnums = pref.orderEnumValues();
       List<JSONObject> jsonEnums = new ArrayList<JSONObject>(orderedEnums.size());
       for (Pair<String, String> evp : orderedEnums) {
         JSONObject curEnum = new JSONObject();

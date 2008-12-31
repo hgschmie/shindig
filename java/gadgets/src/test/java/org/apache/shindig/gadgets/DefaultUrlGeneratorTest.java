@@ -35,8 +35,8 @@ import junitx.framework.StringAssert;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

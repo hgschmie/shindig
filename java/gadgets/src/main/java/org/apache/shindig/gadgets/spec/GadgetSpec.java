@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 
