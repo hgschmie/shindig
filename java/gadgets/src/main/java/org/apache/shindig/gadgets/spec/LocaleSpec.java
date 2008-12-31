@@ -38,7 +38,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-  public static final String ELEMENT_NAME = "Locale";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
 
   public static final String ATTR_LANG = "lang";
   public static final String ATTR_COUNTRY = "country";
@@ -88,20 +88,18 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
-
     if (attr(ATTR_LANG) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LANG, getLanguage());
+      writeAttribute(writer, ATTR_LANG, getLanguage());
     }
     if (attr(ATTR_COUNTRY) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_COUNTRY, getCountry());
+      writeAttribute(writer, ATTR_COUNTRY, getCountry());
     }
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_LANGUAGE_DIRECTION,
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION,
           getLanguageDirection().toString());
     }
     if (getMessages() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_MESSAGES, getMessages()
+      writeAttribute(writer, ATTR_MESSAGES, getMessages()
           .toString());
     }
   }
@@ -127,7 +125,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   public static class Parser extends SpecElement.Parser<LocaleSpec> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

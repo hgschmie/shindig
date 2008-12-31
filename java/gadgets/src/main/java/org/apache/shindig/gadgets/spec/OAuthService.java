@@ -34,7 +34,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthService extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Service";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
 
   public static final String ATTR_NAME = "name";
 
@@ -87,10 +87,9 @@ public class OAuthService extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_NAME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_NAME, getName());
+      writeAttribute(writer, ATTR_NAME, getName());
     }
   }
 
@@ -148,7 +147,7 @@ public class OAuthService extends SpecElement {
   public static class Parser extends SpecElement.Parser<OAuthService> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

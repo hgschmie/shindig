@@ -30,7 +30,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Require extends Feature {
 
-  public static final String ELEMENT_NAME = "Require";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Require");
 
   public Require(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
@@ -48,7 +48,7 @@ public class Require extends Feature {
 
   public static class Parser extends Feature.Parser {
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

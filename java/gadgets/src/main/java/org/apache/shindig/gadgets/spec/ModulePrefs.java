@@ -38,7 +38,8 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class ModulePrefs extends SpecElement {
-  public static final String ELEMENT_NAME = "ModulePrefs";
+
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
 
   public static final String ATTR_TITLE = "title";
   public static final String ATTR_TITLE_URL = "title_url";
@@ -313,118 +314,117 @@ public class ModulePrefs extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
 
     if (attr(ATTR_TITLE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TITLE, getTitle());
+      writeAttribute(writer, ATTR_TITLE, getTitle());
     }
 
     if (attr(ATTR_TITLE_URL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TITLE_URL, getTitleUrl()
+      writeAttribute(writer, ATTR_TITLE_URL, getTitleUrl()
           .toString());
     }
 
     if (attr(ATTR_DESCRIPTION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DESCRIPTION, getDescription());
+      writeAttribute(writer, ATTR_DESCRIPTION, getDescription());
     }
 
     if (attr(ATTR_AUTHOR) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR, getAuthor());
+      writeAttribute(writer, ATTR_AUTHOR, getAuthor());
     }
 
     if (attr(ATTR_AUTHOR_EMAIL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_EMAIL, getAuthorEmail());
+      writeAttribute(writer, ATTR_AUTHOR_EMAIL, getAuthorEmail());
     }
 
     if (attr(ATTR_SCREENSHOT) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SCREENSHOT, getScreenshot()
+      writeAttribute(writer, ATTR_SCREENSHOT, getScreenshot()
           .toString());
     }
 
     if (attr(ATTR_THUMBNAIL) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_THUMBNAIL, getThumbnail()
+      writeAttribute(writer, ATTR_THUMBNAIL, getThumbnail()
           .toString());
     }
 
     if (attr(ATTR_DIRECTORY_TITLE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_DIRECTORY_TITLE,
+      writeAttribute(writer, ATTR_DIRECTORY_TITLE,
           getDirectoryTitle());
     }
 
     if (attr(ATTR_AUTHOR_AFFILIATION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_AFFILIATION,
+      writeAttribute(writer, ATTR_AUTHOR_AFFILIATION,
           getAuthorAffiliation());
     }
 
     if (attr(ATTR_AUTHOR_LOCATION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LOCATION,
+      writeAttribute(writer, ATTR_AUTHOR_LOCATION,
           getAuthorLocation());
     }
 
     if (attr(ATTR_AUTHOR_PHOTO) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_PHOTO, getAuthorPhoto()
+      writeAttribute(writer, ATTR_AUTHOR_PHOTO, getAuthorPhoto()
           .toString());
     }
 
     if (attr(ATTR_AUTHOR_ABOUTME) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_ABOUTME,
+      writeAttribute(writer, ATTR_AUTHOR_ABOUTME,
           getAuthorAboutme());
     }
 
     if (attr(ATTR_AUTHOR_QUOTE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_QUOTE, getAuthorQuote());
+      writeAttribute(writer, ATTR_AUTHOR_QUOTE, getAuthorQuote());
     }
 
     if (attr(ATTR_AUTHOR_LINK) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHOR_LINK, getAuthorLink()
+      writeAttribute(writer, ATTR_AUTHOR_LINK, getAuthorLink()
           .toString());
     }
 
     if (attr(ATTR_SHOW_STATS) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SHOW_STATS, String
+      writeAttribute(writer, ATTR_SHOW_STATS, String
           .valueOf(isShowStats()));
     }
 
     if (attr(ATTR_SHOW_IN_DIRECTORY) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SHOW_IN_DIRECTORY, String
+      writeAttribute(writer, ATTR_SHOW_IN_DIRECTORY, String
           .valueOf(isShowInDirectory()));
     }
 
     if (attr(ATTR_SINGLETON) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SINGLETON, String
+      writeAttribute(writer, ATTR_SINGLETON, String
           .valueOf(isSingleton()));
     }
 
     if (attr(ATTR_SCALING) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SCALING, String
+      writeAttribute(writer, ATTR_SCALING, String
           .valueOf(isScaling()));
     }
 
     if (attr(ATTR_SCROLLING) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SCROLLING, String
+      writeAttribute(writer, ATTR_SCROLLING, String
           .valueOf(isScrolling()));
     }
 
     if (attr(ATTR_WIDTH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_WIDTH, String
+      writeAttribute(writer, ATTR_WIDTH, String
           .valueOf(getWidth()));
     }
 
     if (attr(ATTR_HEIGHT) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_HEIGHT, String
+      writeAttribute(writer, ATTR_HEIGHT, String
           .valueOf(getHeight()));
     }
 
     if (attr(ATTR_RENDER_INLINE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_RENDER_INLINE, String
+      writeAttribute(writer, ATTR_RENDER_INLINE, String
           .valueOf(isRenderInline()));
     }
 
     final List<String> categories = getCategories();
     if (categories.size() > 0) {
-      writer.writeAttribute(namespaceURI, ATTR_CATEGORY, categories.get(0));
+      writeAttribute(writer, ATTR_CATEGORY, categories.get(0));
       if (categories.size() > 1) {
-        writer.writeAttribute(namespaceURI, ATTR_CATEGORY2, categories.get(1));
+        writeAttribute(writer, ATTR_CATEGORY2, categories.get(1));
       }
     }
   }
@@ -454,7 +454,7 @@ public class ModulePrefs extends SpecElement {
   public static class Parser extends SpecElement.Parser<ModulePrefs> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

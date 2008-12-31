@@ -69,15 +69,15 @@ public abstract class OAuthElement extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
+
     if (getUrl() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_URL, getUrl().toString());
+      writeAttribute(writer, ATTR_URL, getUrl().toString());
     }
     if (attr(ATTR_METHOD) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_METHOD, getMethod().toString());
+      writeAttribute(writer, ATTR_METHOD, getMethod().toString());
     }
     if (attr(ATTR_PARAM_LOCATION) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PARAM_LOCATION,
+      writeAttribute(writer, ATTR_PARAM_LOCATION,
           getParamLocation().toString());
     }
   }

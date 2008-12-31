@@ -40,7 +40,7 @@ import com.google.common.collect.ImmutableSet;
 
 public class Content extends SpecElement {
 
-  public static final String ELEMENT_NAME = "Content";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
 
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_HREF = "href";
@@ -125,41 +125,39 @@ public class Content extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
-
     if (attr(ATTR_TYPE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_TYPE, getRawType());
+      writeAttribute(writer, ATTR_TYPE, getRawType());
     }
     if (getHref() != null) {
-      writer.writeAttribute(namespaceURI, ATTR_HREF, getHref().toString());
+      writeAttribute(writer, ATTR_HREF, getHref().toString());
     }
     if (attr(ATTR_VIEW) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VIEW, StringUtils.join(
+      writeAttribute(writer, ATTR_VIEW, StringUtils.join(
           getViews(), ','));
     }
     if (attr(ATTR_PREFERRED_HEIGHT) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PREFERRED_HEIGHT, String
+      writeAttribute(writer, ATTR_PREFERRED_HEIGHT, String
           .valueOf(getPreferredHeight()));
     }
     if (attr(ATTR_PREFERRED_WIDTH) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_PREFERRED_WIDTH, String
+      writeAttribute(writer, ATTR_PREFERRED_WIDTH, String
           .valueOf(getPreferredWidth()));
     }
 
     if (attr(ATTR_AUTHZ) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_AUTHZ, getAuthType().toString());
+      writeAttribute(writer, ATTR_AUTHZ, getAuthType().toString());
     }
 
     if (attr(ATTR_QUIRKS) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_QUIRKS, String.valueOf(isQuirks()));
+      writeAttribute(writer, ATTR_QUIRKS, String.valueOf(isQuirks()));
     }
 
     if (attr(ATTR_SIGN_OWNER) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SIGN_OWNER, String.valueOf(isSignOwner()));
+      writeAttribute(writer, ATTR_SIGN_OWNER, String.valueOf(isSignOwner()));
     }
 
     if (attr(ATTR_SIGN_VIEWER) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_SIGN_VIEWER, String.valueOf(isSignViewer()));
+      writeAttribute(writer, ATTR_SIGN_VIEWER, String.valueOf(isSignViewer()));
     }
   }
 
@@ -259,7 +257,7 @@ public class Content extends SpecElement {
   public static class Parser extends SpecElement.Parser<Content> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {

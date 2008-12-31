@@ -31,7 +31,7 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class EnumValue extends SpecElement {
-  public static final String ELEMENT_NAME = "EnumValue";
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "EnumValue");
 
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISPLAY_VALUE = "display_value";
@@ -64,14 +64,11 @@ public class EnumValue extends SpecElement {
   @Override
   protected void writeAttributes(final XMLStreamWriter writer)
       throws XMLStreamException {
-    final String namespaceURI = name().getNamespaceURI();
-
     if (attr(ATTR_VALUE) != null) {
-      writer.writeAttribute(namespaceURI, ATTR_VALUE, getValue());
+      writeAttribute(writer, ATTR_VALUE, getValue());
     }
     if (attr(ATTR_DISPLAY_VALUE) != null) {
-      writer
-          .writeAttribute(namespaceURI, ATTR_DISPLAY_VALUE, getDisplayValue());
+      writeAttribute(writer, ATTR_DISPLAY_VALUE, getDisplayValue());
     }
   }
 
@@ -86,7 +83,7 @@ public class EnumValue extends SpecElement {
   public static class Parser extends SpecElement.Parser<EnumValue> {
 
     public Parser(final Uri base) {
-      this(new QName(ELEMENT_NAME), base);
+      this(ELEMENT_NAME, base);
     }
 
     public Parser(final QName name, final Uri base) {
