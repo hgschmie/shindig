@@ -89,7 +89,7 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
                 // If we pulled the error gadget spec from the cache, this allows us to re-throw the
                 // cached exception.
-                final GadgetException cachedException = (GadgetException) spec.getAttribute(ERROR_KEY);
+                final GadgetException cachedException = (GadgetException) spec.getSpecAttribute(ERROR_KEY);
                 if (cachedException != null) {
                     throw cachedException;
                 }
@@ -127,7 +127,7 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
             } else {
                 spec = buildGadgetSpec(uri, ERROR_SPEC);
                 // That looks pretty brittle to me...
-                spec.setAttribute(ERROR_KEY, e);
+                spec.setSpecAttribute(ERROR_KEY, e);
             }
             throw e;
         }

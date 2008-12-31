@@ -66,7 +66,7 @@ public abstract class SpecElement {
 
   private final Map<String, String> attrs = new HashMap<String, String>();
 
-  private final Map<String, Pair<QName, String>> otherAttrs;
+  private final Map<String, Pair<QName, String>> otherAttrs = new HashMap<String, Pair<QName, String>>();
 
   private final Map<String, String> namespaces;
 
@@ -84,11 +84,9 @@ public abstract class SpecElement {
 
     nsAttrs = new HashMap<QName, String>();
     namespaces = new HashMap<String, String>();
-
-    otherAttrs = new HashMap<String, Pair<QName, String>>();
   }
 
-  protected SpecElement(final SpecElement specElement) {
+  protected SpecElement(final SpecElement specElement, final Substitutions substituter) {
     this.qName = specElement.name();
     this.attrNames = specElement.attrNames();
     this.base = specElement.getBase();
@@ -96,13 +94,15 @@ public abstract class SpecElement {
     this.nsAttrs = specElement.nsAttrs();
     this.namespaces = specElement.namespaces();
 
-    this.otherAttrs = specElement.otherAttrs();
-
     this.cdataFlag = specElement.isCDATA();
 
     // Copy known keys over.
     for (String key : attrNames.keySet()) {
       setAttr(key, specElement.attr(key));
+    }
+
+    for (Pair<QName, String> pair : specElement.otherAttrs().values()) {
+      setAttr(pair.getKey(), substituter.substituteString(pair.getValue()));
     }
   }
 
@@ -154,11 +154,16 @@ public abstract class SpecElement {
     return qName;
   }
 
-  public String getOtherAttr(final String key) {
-    return otherAttrs.get(key.toLowerCase()).getValue();
+  public String getAttribute(final String key) {
+    final Pair<QName, String> result = otherAttrs.get(key.toLowerCase());
+    return result != null ? result.getValue() : null;
   }
 
-  public Map<String, String> getOtherAttrs() {
+  public int getIntAttribute(final String key) {
+    return NumberUtils.toInt(getAttribute(key));
+  }
+
+  public Map<String, String> getAttributes() {
     Map<String, String> localAttributes = new HashMap<String, String>();
 
     for (Pair<QName, String> pairs : otherAttrs.values()) {
@@ -211,6 +216,14 @@ public abstract class SpecElement {
     return Uri.toUri(attr(key), null);
   }
 
+  protected Uri attrUriBase(final String key) {
+      if (base != null) {
+          return base.resolve(attrUri(key));
+      } else {
+          return attrUri(key);
+      }
+  }
+
   protected boolean attrIsValidUri(final String key) {
     return attr(key) == null || attrUriNull(key) != null;
   }
@@ -235,6 +248,10 @@ public abstract class SpecElement {
 
   private List<SpecElement> children() {
     return Collections.unmodifiableList(children);
+  }
+
+  protected Map<String, String> attributes() {
+    return Collections.unmodifiableMap(attrs);
   }
 
   public void validate() throws GadgetException {

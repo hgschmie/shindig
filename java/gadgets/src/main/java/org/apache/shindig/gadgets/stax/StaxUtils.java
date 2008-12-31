@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.model.EnumValue;
 import org.apache.shindig.gadgets.stax.model.UserPref;
 
@@ -63,5 +64,13 @@ public final class StaxUtils {
     }
 
     return Collections.unmodifiableMap(values);
+  }
+
+  public static final boolean isHttpUri(final Uri uri) {
+    if (uri == null) {
+      return false;
+    }
+
+    return "http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme());
   }
 }

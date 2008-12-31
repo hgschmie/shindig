@@ -180,11 +180,11 @@ public class DefaultGadgetSpec implements GadgetSpec {
    * Not defined by the specification
    */
   private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
-  public Object getAttribute(String key) {
+  public Object getSpecAttribute(String key) {
     return attributes.get(key);
   }
 
-  public void setAttribute(String key, Object o) {
+  public void setSpecAttribute(String key, Object o) {
     attributes.put(key, o);
   }
 

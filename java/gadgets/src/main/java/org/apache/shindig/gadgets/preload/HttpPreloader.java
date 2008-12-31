@@ -39,8 +39,6 @@ import com.google.inject.Inject;
 
 /**
  * Handles HTTP Preloading (/ModulePrefs/Preload elements).
- *
- * @see org.apache.shindig.gadgets.spec.Preload
  */
 public class HttpPreloader implements Preloader {
   // TODO: This needs to be fixed.

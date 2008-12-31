@@ -51,7 +51,7 @@ public class LocaleMsg extends SpecElement {
   }
 
   protected LocaleMsg(final LocaleMsg localeMsg, final Substitutions substituter) {
-      super(localeMsg);
+      super(localeMsg, substituter);
   }
 
   @Override

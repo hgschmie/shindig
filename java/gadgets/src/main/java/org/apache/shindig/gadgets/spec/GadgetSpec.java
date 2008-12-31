@@ -47,9 +47,9 @@ public interface GadgetSpec {
 
     View getView(String name);
 
-    Object getAttribute(String key);
+    Object getSpecAttribute(String key);
 
-    void setAttribute(String key, Object o);
+    void setSpecAttribute(String key, Object o);
 
     GadgetSpec substitute(Substitutions substituter) throws GadgetException;
 }

@@ -56,7 +56,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
    * handler classes to use specs to carry context. Not defined by the
    * specification
    */
-  private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
+  private final Map<String, Object> specAttributes = new ConcurrentHashMap<String, Object>();
 
   private ModulePrefs modulePrefs = null;
 
@@ -72,7 +72,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec,
       final Substitutions substituter) throws GadgetException {
-    super(gadgetSpec);
+    super(gadgetSpec, substituter);
 
     setModulePrefs(gadgetSpec.getModulePrefs().substitute(substituter));
 
@@ -103,12 +103,12 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   // ========================================================================
 
-  public Object getAttribute(final String key) {
-    return attributes.get(key);
+  public Object getSpecAttribute(final String key) {
+    return specAttributes.get(key);
   }
 
-  public void setAttribute(final String key, final Object o) {
-    attributes.put(key, o);
+  public void setSpecAttribute(final String key, final Object o) {
+    specAttributes.put(key, o);
   }
 
   // ========================================================================

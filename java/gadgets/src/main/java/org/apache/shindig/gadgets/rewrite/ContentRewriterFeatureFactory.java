@@ -89,11 +89,11 @@ public class ContentRewriterFeatureFactory {
 
   public ContentRewriterFeature get(GadgetSpec spec) {
     ContentRewriterFeature rewriterFeature =
-        (ContentRewriterFeature)spec.getAttribute("content-rewriter");
+        (ContentRewriterFeature)spec.getSpecAttribute("content-rewriter");
     if (rewriterFeature != null) return rewriterFeature;
     rewriterFeature
         = new ContentRewriterFeature(spec, includeUrls, excludeUrls, expires, includeTags);
-    spec.setAttribute("content-rewriter", rewriterFeature);
+    spec.setSpecAttribute("content-rewriter", rewriterFeature);
     return rewriterFeature;
   }
 }

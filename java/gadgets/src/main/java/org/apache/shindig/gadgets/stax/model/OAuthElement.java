@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class OAuthElement extends SpecElement {
@@ -47,7 +48,7 @@ public abstract class OAuthElement extends SpecElement {
   }
 
   protected OAuthElement(final OAuthElement oAuthElement, final Substitutions substituter) {
-      super(oAuthElement);
+      super(oAuthElement, substituter);
       this.request = oAuthElement.isRequest();
   }
 
@@ -88,40 +89,63 @@ public abstract class OAuthElement extends SpecElement {
     if (getUrl() == null) {
       throw new SpecParserException(name().getLocalPart() + "@url must be set!");
     }
+    if(!StaxUtils.isHttpUri(getUrl())) {
+      throw new SpecParserException(name().getLocalPart() + "@url value '" + attr(ATTR_URL) + "' is not a valid URL!");
+    }
+
+    if (Method.parse(attr(ATTR_METHOD)) == null) {
+      throw new SpecParserException(name().getLocalPart() + "@method attribute value '" + attr(ATTR_METHOD) + "' is invalid!");
+    }
+    if (Location.parse(attr(ATTR_PARAM_LOCATION)) == null) {
+      throw new SpecParserException(name().getLocalPart() + "@param_location attribute value '" + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
+    }
     if ((getMethod() == Method.GET) && (getParamLocation() == Location.BODY)) {
       throw new SpecParserException(name().getLocalPart()
           + "@method is GET but parameter location is body!");
     }
+
   }
 
   public static enum Method {
     GET, POST;
 
     public static Method parse(String value) {
+      if (value == null) {
+        return GET;
+      }
       for (Method method : Method.values()) {
         if (StringUtils.equalsIgnoreCase(method.toString(), value)) {
           return method;
         }
       }
-      return GET;
+      return null;
     }
   }
 
   public static enum Location {
-    HEADER, URL, BODY;
+    HEADER("auth-header"), URL("uri-query"), BODY("post-body");
+
+    private final String value;
+
+    private Location(final String value) {
+      this.value = value.toLowerCase();
+    }
 
     @Override
     public String toString() {
-      return name().toLowerCase();
+      return value;
     }
 
     public static Location parse(String value) {
+      if (value == null) {
+        return HEADER;
+      }
       for (Location location : Location.values()) {
         if (StringUtils.equalsIgnoreCase(location.toString(), value)) {
           return location;
         }
       }
-      return HEADER;
+      return null;
     }
   }
 

@@ -43,7 +43,7 @@ public class EnumValue extends SpecElement {
   }
 
   protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
-    super(enumValue);
+    super(enumValue, substituter);
     setAttr(ATTR_VALUE, substituter.substituteString(enumValue.getValue()));
     setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue
         .getDisplayValue()));

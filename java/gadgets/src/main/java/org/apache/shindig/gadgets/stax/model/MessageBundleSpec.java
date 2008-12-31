@@ -53,7 +53,7 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
   }
 
   protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec, final Substitutions substituter) {
-      super(messageBundleSpec);
+      super(messageBundleSpec, substituter);
   }
 
   @Override

@@ -39,7 +39,7 @@ public class GenericElement extends SpecElement {
   }
 
   protected GenericElement(final GenericElement genericElement, final Substitutions substituter) {
-      super(genericElement);
+      super(genericElement, substituter);
   }
 
   @Override

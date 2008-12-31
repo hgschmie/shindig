@@ -55,7 +55,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   }
 
   protected LocaleSpec(final LocaleSpec localeSpec, final Substitutions substituter) {
-      super(localeSpec);
+      super(localeSpec, substituter);
   }
 
   @Override
@@ -76,14 +76,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   }
 
   public Uri getMessages() {
-    final Uri baseUri = getBase();
-    final Uri messageUri = attrUriNull(ATTR_MESSAGES);
-
-    if (baseUri != null) {
-      return baseUri.resolve(messageUri);
-    } else {
-      return messageUri;
-    }
+      return attrUriBase(ATTR_MESSAGES);
   }
 
   public Set<LocaleMsg> getLocaleMsgs() {

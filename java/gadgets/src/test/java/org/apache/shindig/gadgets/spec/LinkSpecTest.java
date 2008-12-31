@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.model.LinkSpec;
-import org.apache.shindig.gadgets.stax.model.LinkSpec.Rel;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ import org.junit.Test;
  */
 public class LinkSpecTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
-  private static final LinkSpec.Rel REL_VALUE = Rel.GADGETS_HELP;
+  private static final String REL_VALUE = "foo";
   private static final Uri HREF_VALUE = Uri.parse("http://example.org/foo");
 
   @Test
@@ -59,15 +58,18 @@ public class LinkSpecTest {
 
   @Test
   public void substitutionsPerformed() throws Exception {
+    String rel = "foo.bar";
     String href = "jp-DE.xml";
     Uri expectedHref = Uri.parse("http://example.org/jp-DE.xml");
-    String xml = "<Link rel='icon' href='http://example.org/__MSG_href__'/>";
+    String xml = "<Link rel='__MSG_rel__' href='http://example.org/__MSG_href__'/>";
 
     LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
     Substitutions substitutions = new Substitutions();
+    substitutions.addSubstitution(Substitutions.Type.MESSAGE, "rel", rel);
     substitutions.addSubstitution(Substitutions.Type.MESSAGE, "href", href);
     LinkSpec substituted = link.substitute(substitutions);
 
+    assertEquals(rel, substituted.getRel());
     assertEquals(expectedHref, substituted.getHref());
   }
 

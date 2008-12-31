@@ -49,7 +49,7 @@ public class Icon extends SpecElement {
   }
 
   protected Icon(final Icon icon, final Substitutions substituter) {
-    super(icon);
+    super(icon, substituter);
     addText(substituter.substituteString(icon.getText()));
   }
 

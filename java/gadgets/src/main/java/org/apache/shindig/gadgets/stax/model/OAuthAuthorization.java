@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
+import org.apache.shindig.gadgets.stax.StaxUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAuthorization extends SpecElement {
@@ -43,7 +44,7 @@ public class OAuthAuthorization extends SpecElement {
   }
 
   protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
-      super(oAuthAuthorization);
+      super(oAuthAuthorization, substituter);
   }
 
   @Override
@@ -69,7 +70,11 @@ public class OAuthAuthorization extends SpecElement {
   public void validate() throws SpecParserException {
     if (getUrl() == null) {
       throw new SpecParserException(name().getLocalPart()
-          + "@url must not be empty!");
+          + "@url must be set!");
+    }
+    if (!StaxUtils.isHttpUri(getUrl())) {
+      throw new SpecParserException(name().getLocalPart()
+          + "@url must be http or https!");
     }
   }
 

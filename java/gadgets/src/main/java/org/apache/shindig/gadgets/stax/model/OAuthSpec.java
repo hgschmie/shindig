@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthSpec extends SpecElement {
@@ -47,7 +46,7 @@ public class OAuthSpec extends SpecElement {
   }
 
   protected OAuthSpec(final OAuthSpec oAuthSpec, final Substitutions substituter) {
-      super(oAuthSpec);
+      super(oAuthSpec, substituter);
   }
 
   @Override
@@ -68,14 +67,6 @@ public class OAuthSpec extends SpecElement {
       throws XMLStreamException {
     for (OAuthService oAuthService : services.values()) {
       oAuthService.toXml(writer);
-    }
-  }
-
-  @Override
-  public void validate() throws SpecParserException {
-    if (services.size() == 0) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must contain at least one 'service' element!");
     }
   }
 
