@@ -31,7 +31,7 @@ public enum AuthType {
   public static AuthType parse(final String value) {
       for (AuthType authType : AuthType.values())
       {
-          if (StringUtils.equalsIgnoreCase(authType.toString(), value))
+          if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils.trimToEmpty(value)))
           {
               return authType;
           }

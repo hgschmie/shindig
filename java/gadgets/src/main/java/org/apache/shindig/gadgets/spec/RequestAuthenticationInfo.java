@@ -51,5 +51,5 @@ public interface RequestAuthenticationInfo {
   /**
    * @return A map of all relevant auth-related attributes.
    */
-  Map<String, String> getAttributes();
+  Map<String, String> getOAuthAttributes();
 }

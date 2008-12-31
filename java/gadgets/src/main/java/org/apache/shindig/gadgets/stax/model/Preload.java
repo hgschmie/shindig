@@ -50,6 +50,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static final String ATTR_OAUTH_TOKEN_NAME = "oauth_token_name";
   public static final String ATTR_OAUTH_REQUEST_TOKEN = "oauth_request_token";
   public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
+  public static final String ATTR_OAUTH_USE_TOKEN = "oauth_use_token";
 
   public Preload(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
@@ -172,6 +173,11 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     }
   }
 
+  @Override
+  public Map<String, String> getOAuthAttributes() {
+    return attributes();
+  }
+
   public static class Parser extends SpecElement.Parser<Preload> {
 
     public Parser(final Uri base) {
@@ -183,7 +189,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
       register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER,
           ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME, ATTR_OAUTH_TOKEN_NAME,
-          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET);
+          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET, ATTR_OAUTH_USE_TOKEN);
     }
 
     @Override

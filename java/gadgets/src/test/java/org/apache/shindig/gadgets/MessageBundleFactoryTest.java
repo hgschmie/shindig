@@ -39,14 +39,15 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.stax.MessageBundle;
+import org.apache.shindig.gadgets.stax.ShindigMessageBundleFactory;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
 /**
- * Tests for DefaultMessageBundleFactory
+ * Tests for MessageBundleFactory
  */
-public class DefaultMessageBundleFactoryTest {
+public class MessageBundleFactoryTest {
   private static final Uri BUNDLE_URI = Uri.parse("http://example.org/messagex.xml");
   private static final Uri SPEC_URI = Uri.parse("http://example.org/gadget.xml");
 
@@ -89,12 +90,12 @@ public class DefaultMessageBundleFactoryTest {
   private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
   private final CacheProvider cacheProvider = new LruCacheProvider(10);
   private final Cache<String, MessageBundle> cache
-      = cacheProvider.createCache(DefaultMessageBundleFactory.CACHE_NAME);
-  private final DefaultMessageBundleFactory bundleFactory
-      = new DefaultMessageBundleFactory(fetcher, cacheProvider, MAX_AGE);
+      = cacheProvider.createCache(ShindigMessageBundleFactory.CACHE_NAME);
+  private final ShindigMessageBundleFactory bundleFactory
+      = new ShindigMessageBundleFactory(fetcher, cacheProvider, MAX_AGE);
   private final GadgetSpec gadgetSpec;
 
-  public DefaultMessageBundleFactoryTest() throws Exception {
+  public MessageBundleFactoryTest() throws Exception {
     try {
       gadgetSpec = StaxTestUtils.parseSpec(BASIC_SPEC, SPEC_URI);
     } catch (GadgetException e) {
@@ -106,7 +107,7 @@ public class DefaultMessageBundleFactoryTest {
   @Test
   public void getBundle() throws Exception {
     HttpResponse response = new HttpResponse(BASIC_BUNDLE);
-    expect(fetcher.fetch(isA(HttpRequest.class))).andReturn(response);
+    expect(fetcher.fetch(isA(HttpRequest.class))).andReturn(response).once();
     replay(fetcher);
 
     MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, LOCALE, true);
@@ -114,6 +115,8 @@ public class DefaultMessageBundleFactoryTest {
     assertEquals(MSG_0_VALUE, bundle.getMessages().get(MSG_0_NAME));
     assertEquals(MSG_1_VALUE, bundle.getMessages().get(MSG_1_NAME));
     assertEquals(MSG_2_VALUE, bundle.getMessages().get(MSG_2_NAME));
+
+    verify(fetcher);
   }
 
   @Test
@@ -126,6 +129,8 @@ public class DefaultMessageBundleFactoryTest {
     MessageBundle bundle1 = bundleFactory.getBundle(gadgetSpec, LOCALE, false);
 
     assertSame("Different objects returned out of the cache", bundle0, bundle1);
+
+    verify(fetcher);
   }
 
   @Test
@@ -165,7 +170,7 @@ public class DefaultMessageBundleFactoryTest {
 
     final AtomicLong time = new AtomicLong();
 
-    bundleFactory.cache.setTimeSource(new TimeSource() {
+    bundleFactory.getCache().setTimeSource(new TimeSource() {
       @Override
       public long currentTimeMillis() {
         return time.get();
@@ -205,7 +210,7 @@ public class DefaultMessageBundleFactoryTest {
     CapturingFetcher capturingFetcher = new CapturingFetcher();
 
     MessageBundleFactory factory
-        = new DefaultMessageBundleFactory(capturingFetcher, cacheProvider, MAX_AGE);
+        = new ShindigMessageBundleFactory(capturingFetcher, cacheProvider, MAX_AGE);
 
     factory.getBundle(gadgetSpec, LOCALE, false);
 

@@ -102,7 +102,7 @@ public class OAuthArguments {
 
   public OAuthArguments(RequestAuthenticationInfo info) throws GadgetException {
     Map<String, String> attrs = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
-    attrs.putAll(info.getAttributes());
+    attrs.putAll(info.getOAuthAttributes());
     useToken = parseUseToken(info.getAuthType(), getAuthInfoParam(attrs, USE_TOKEN_PARAM, ""));
     serviceName = getAuthInfoParam(attrs, SERVICE_PARAM, "");
     tokenName = getAuthInfoParam(attrs, TOKEN_PARAM, "");
