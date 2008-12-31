@@ -37,14 +37,13 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.SoftExpiringCache;
 import org.apache.shindig.common.cache.SoftExpiringCache.CachedObject;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleMsg;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.apache.shindig.gadgets.spec.MessageBundleSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 
