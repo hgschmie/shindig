@@ -10,7 +10,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
-import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.model.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.stax.model.SpecElement;
 import org.apache.shindig.gadgets.stax.model.SpecElement.Parser;
@@ -28,34 +27,30 @@ public final class StaxTestUtils {
   }
 
   public static final <T extends SpecElement> T parseElement(final String xml,
-      final Parser<T> parser) throws GadgetException {
+      final Parser<T> parser) throws GadgetException, XMLStreamException {
 
     XMLStreamReader reader = null;
-    try {
-      reader = factory.createXMLStreamReader(new StringReader(xml));
-      T element = null;
+    reader = factory.createXMLStreamReader(new StringReader(xml));
+    T element = null;
 
-      loop: while (true) {
-        final int event = reader.next();
-        switch (event) {
-        case XMLStreamConstants.END_DOCUMENT:
-          reader.close();
-          break loop;
-        case XMLStreamConstants.START_ELEMENT:
-          element = parser.parse(reader);
-          break;
-        default:
-          break;
-        }
+    loop: while (true) {
+      final int event = reader.next();
+      switch (event) {
+      case XMLStreamConstants.END_DOCUMENT:
+        reader.close();
+        break loop;
+      case XMLStreamConstants.START_ELEMENT:
+        element = parser.parse(reader);
+        break;
+      default:
+        break;
       }
-
-      return element;
-    } catch (XMLStreamException e) {
-      throw new SpecParserException("Could not parse XML:", e);
     }
+
+    return element;
   }
 
-    public static final GadgetSpec parseSpec(final String xml, final Uri base) throws GadgetException {
+    public static final GadgetSpec parseSpec(final String xml, final Uri base) throws GadgetException, XMLStreamException {
         return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(base, xml));
     }
 }

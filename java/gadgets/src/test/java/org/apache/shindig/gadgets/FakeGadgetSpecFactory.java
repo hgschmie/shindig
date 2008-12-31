@@ -20,6 +20,8 @@ package org.apache.shindig.gadgets;
 
 import java.net.URI;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
@@ -37,7 +39,7 @@ public class FakeGadgetSpecFactory implements GadgetSpecFactory {
     return null;
   }
 
-  public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache) throws GadgetException {
+  public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache) throws GadgetException, XMLStreamException {
     Uri uri = Uri.fromJavaUri(gadgetUri);
     String gadget = uri.toString();
     String baseSpec = GadgetTokenStoreTest.GADGET_SPEC;

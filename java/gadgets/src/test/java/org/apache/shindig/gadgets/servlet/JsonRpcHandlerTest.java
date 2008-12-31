@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.testing.TestExecutorService;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
@@ -251,7 +253,9 @@ public class JsonRpcHandlerTest {
             .setSpec(spec)
             .setCurrentView(view);
       } catch (GadgetException e) {
-        throw new RuntimeException(e);
+        throw new ProcessingException(e);
+      } catch (XMLStreamException xse) {
+        throw new ProcessingException(xse);
       }
     }
   }

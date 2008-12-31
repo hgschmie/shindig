@@ -38,7 +38,7 @@ import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.View;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
@@ -47,7 +47,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   private final String checksum;
 
-  private Multimap<String, Content> viewMap = new HashMultimap<String, Content>();
+  private Multimap<String, Content> viewMap = new LinkedListMultimap<String, Content>();
 
   private ConcurrentHashMap<String, View> views = new ConcurrentHashMap<String, View>();
 
@@ -80,12 +80,11 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
       addUserPref(pref.substitute(substituter));
     }
 
-    for (final Content content: getContents()) {
-        addContent(content);
+    for (final Content content: gadgetSpec.getContents()) {
+        addContent(content.substitute(substituter));
     }
 
     this.checksum = gadgetSpec.getChecksum();
-    this.views = new ConcurrentHashMap<String, View>(gadgetSpec.getViews());
   }
 
   @Override

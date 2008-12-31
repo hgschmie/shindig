@@ -30,6 +30,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.variables.Substitutions;
@@ -55,7 +57,7 @@ public class Content extends SpecElement {
 
   protected Content(final Content content, final Substitutions substituter) {
     super(content, substituter);
-    this.addText(content.getText());
+    this.addText(substituter.substituteString(content.getText()));
   }
 
   @Override
@@ -142,6 +144,34 @@ public class Content extends SpecElement {
           "Unknown type for Content@type encountered: " + getType());
     }
   }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other instanceof Content == false) {
+      return false;
+    }
+    if (this == other) {
+      return true;
+    }
+    Content rhs = (Content) other;
+    return new EqualsBuilder()
+                  .append(getType(), rhs.getType())
+                  .append(getHref(), rhs.getHref())
+                  .append(getViews(), rhs.getViews())
+                  .append(getText(), rhs.getText())
+                  .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+    .append(getType())
+    .append(getHref())
+    .append(getViews())
+    .append(getText())
+    .toHashCode();
+  }
+
 
   /**
    * Possible values for Content@type

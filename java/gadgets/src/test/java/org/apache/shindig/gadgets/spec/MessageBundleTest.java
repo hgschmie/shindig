@@ -20,15 +20,14 @@
 package org.apache.shindig.gadgets.spec;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.stax.MessageBundle;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
-import org.apache.shindig.gadgets.stax.model.LocaleMsg;
 import org.apache.shindig.gadgets.stax.model.LocaleSpec;
 import org.apache.shindig.gadgets.stax.model.MessageBundleSpec;
 import org.json.JSONException;
@@ -78,13 +77,13 @@ public class MessageBundleTest {
   }
 
   @Test(expected = SpecParserException.class)
-  public void missingNameThrows() throws GadgetException {
+  public void missingNameThrows() throws Exception {
     String xml = "<messagebundle><msg>foo</msg></messagebundle>";
     StaxTestUtils.parseElement(xml, new MessageBundleSpec.Parser(null));
   }
 
-  @Test(expected = SpecParserException.class)
-  public void malformedXmlThrows() throws GadgetException {
+  @Test(expected = XMLStreamException.class)
+  public void malformedXmlThrows() throws Exception {
     String xml = "</messagebundle>";
     StaxTestUtils.parseElement(xml, new MessageBundleSpec.Parser(null));
   }

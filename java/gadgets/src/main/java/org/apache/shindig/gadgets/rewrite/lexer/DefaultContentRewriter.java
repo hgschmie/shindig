@@ -28,6 +28,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetException;
@@ -113,6 +115,8 @@ public class DefaultContentRewriter implements ContentRewriter {
       throw new RuntimeException(uee);
     } catch (GadgetException ge) {
       // Couldn't retrieve gadgetSpec
+    } catch (XMLStreamException xse) {
+      // Error parsing the Gadget Spec
     }
     return null;
   }

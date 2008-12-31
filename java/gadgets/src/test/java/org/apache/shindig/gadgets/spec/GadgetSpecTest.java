@@ -19,17 +19,21 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.stax.StaxTestUtils;
 import org.apache.shindig.gadgets.stax.model.UserPref;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
+import org.junit.Test;
 
-public class GadgetSpecTest extends TestCase {
+public class GadgetSpecTest  {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
+
+  @Test
   public void testBasic() throws Exception {
     String xml = "<Module>" +
                  "<ModulePrefs title=\"title\"/>" +
@@ -43,6 +47,7 @@ public class GadgetSpecTest extends TestCase {
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
+  @Test
   public void testMultipleContentSections() throws Exception {
     String xml = "<Module>" +
                  "<ModulePrefs title=\"title\"/>" +
@@ -56,44 +61,31 @@ public class GadgetSpecTest extends TestCase {
     assertEquals("test", spec.getView("test").getContent());
   }
 
+  @Test(expected = SpecParserException.class)
   public void testMissingModulePrefs() throws Exception {
     String xml = "<Module>" +
                  "<Content type=\"html\"/>" +
                  "</Module>";
-    try {
       StaxTestUtils.parseSpec(xml, SPEC_URL);
-      fail("No exception thrown when ModulePrefs is missing.");
-    } catch (SpecParserException e) {
-      // OK
-    }
   }
 
+  @Test(expected = SpecParserException.class)
   public void testEnforceOneModulePrefs() throws Exception {
     String xml = "<Module>" +
                  "<ModulePrefs title=\"hello\"/>" +
                  "<ModulePrefs title=\"world\"/>" +
                  "<Content type=\"html\"/>" +
                  "</Module>";
-    try {
       StaxTestUtils.parseSpec(xml, SPEC_URL);
-      fail("No exception thrown when more than 1 ModulePrefs is specified.");
-    } catch (SpecParserException e) {
-      // OK
-    }
   }
 
+  @Test(expected = XMLStreamException.class)
   public void testMalformedXml() throws Exception {
-    String xml = "<Module><ModulePrefs/>";
-    try {
-      StaxTestUtils.parseSpec(xml, SPEC_URL);
-      fail("No exception thrown on malformed XML.");
-    } catch (SpecParserException e) {
-      // OK
-      assertEquals(GadgetException.Code.MALFORMED_XML_DOCUMENT, e.getCode());
-      assertTrue(e.getMessage().contains(SPEC_URL.toString()));
-    }
+    String xml = "<Module><ModulePrefs title=\"foo\"/>";
+    StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
+  @Test
   public void testSubstitutions() throws Exception {
     Substitutions substituter = new Substitutions();
     String title = "Hello, World!";

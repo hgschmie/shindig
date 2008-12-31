@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.ContainerConfigException;
 import org.apache.shindig.common.JsonContainerConfig;
 import org.apache.shindig.common.uri.Uri;
@@ -223,7 +225,9 @@ public class RendererTest {
             .setSpec(spec)
             .setCurrentView(view);
       } catch (GadgetException e) {
-        throw new RuntimeException(e);
+        throw new ProcessingException(e);
+      } catch (XMLStreamException xse) {
+        throw new ProcessingException(xse);
       }
     }
   }

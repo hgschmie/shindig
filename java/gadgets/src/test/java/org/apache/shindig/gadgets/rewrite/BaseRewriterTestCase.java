@@ -72,7 +72,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
   }
 
   public static GadgetSpec createSpecWithRewrite(String include, String exclude, String expires,
-      Set<String> tags) throws GadgetException {
+      Set<String> tags) throws Exception {
     String xml = "<Module>" +
                  "<ModulePrefs title=\"title\">" +
                  "<Optional feature=\"content-rewrite\">\n" +
@@ -87,7 +87,7 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
     return StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
-  public static GadgetSpec createSpecWithoutRewrite() throws GadgetException {
+  public static GadgetSpec createSpecWithoutRewrite() throws Exception {
     String xml = "<Module>" +
                  "<ModulePrefs title=\"title\">" +
                  "</ModulePrefs>" +

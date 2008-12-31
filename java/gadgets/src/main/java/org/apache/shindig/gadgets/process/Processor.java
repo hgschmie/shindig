@@ -20,6 +20,8 @@ package org.apache.shindig.gadgets.process;
 import java.net.URI;
 import java.util.logging.Logger;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetBlacklist;
@@ -88,6 +90,8 @@ public class Processor {
           .setCurrentView(getView(context, spec));
     } catch (GadgetException e) {
       throw new ProcessingException(e.getMessage(), e);
+    } catch (XMLStreamException xse) {
+      throw new ProcessingException(xse.getMessage(), xse);
     }
   }
 

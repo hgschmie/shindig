@@ -442,9 +442,10 @@ public abstract class SpecElement {
           addAttributes(reader, element);
           break;
         case XMLStreamConstants.END_ELEMENT:
-        case XMLStreamConstants.END_DOCUMENT:
           element.validate();
           return element;
+        case XMLStreamConstants.END_DOCUMENT:
+          throw new SpecParserException("Unexpected end of document encountered!");
 
         case XMLStreamConstants.START_ELEMENT:
           final QName elementName = reader.getName();
