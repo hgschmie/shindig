@@ -18,6 +18,8 @@
  */
 package org.apache.shindig.gadgets;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.ImplementedBy;
@@ -31,10 +33,10 @@ import java.net.URI;
 public interface GadgetSpecFactory {
 
   /** Return a gadget spec for a context */
-  public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException;
+  public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException, XMLStreamException;
 
   /** Return a gadget spec for a URI */
   public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache)
-      throws GadgetException;
+      throws GadgetException, XMLStreamException;
 
 }

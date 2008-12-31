@@ -124,7 +124,7 @@ public class RenderingContentRewriterTest {
     parser = injector.getInstance(GadgetHtmlParser.class);
   }
 
-  private Gadget makeGadgetWithSpec(String gadgetXml) throws GadgetException {
+  private Gadget makeGadgetWithSpec(String gadgetXml) throws Exception {
     GadgetSpec spec = StaxTestUtils.parseSpec(gadgetXml, SPEC_URL);
     return new Gadget()
         .setContext(new GadgetContext())
@@ -132,7 +132,7 @@ public class RenderingContentRewriterTest {
         .setSpec(spec);
   }
 
-  private Gadget makeDefaultGadget() throws GadgetException {
+  private Gadget makeDefaultGadget() throws Exception {
     String defaultXml = "<Module><ModulePrefs title=''/><Content type='html'/></Module>";
     return makeGadgetWithSpec(defaultXml);
   }

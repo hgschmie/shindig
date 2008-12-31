@@ -17,6 +17,12 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
@@ -26,10 +32,6 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Factory for content rewriter features
@@ -81,6 +83,8 @@ public class ContentRewriterFeatureFactory {
           return get(spec);
         }
       } catch (GadgetException ge) {
+        return defaultFeature;
+      } catch (XMLStreamException xse) {
         return defaultFeature;
       }
     }

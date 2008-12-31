@@ -26,6 +26,8 @@ import static org.easymock.EasyMock.isA;
 
 import java.util.Arrays;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
@@ -53,6 +55,8 @@ public class HashLockedDomainServiceTest extends EasyMockTestCase {
       return StaxTestUtils.parseSpec(gadgetXml, Uri.parse(url));
 
     } catch (GadgetException e) {
+      return null;
+    } catch (XMLStreamException xse) {
       return null;
     }
   }

@@ -59,7 +59,7 @@ public class EnumValue extends SpecElement {
   }
 
   public String getDisplayValue() {
-    return attrDefault(ATTR_VALUE, getValue());
+    return attrDefault(ATTR_DISPLAY_VALUE, getValue());
   }
 
   @Override

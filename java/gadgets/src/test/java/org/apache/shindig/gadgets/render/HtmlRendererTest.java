@@ -68,7 +68,7 @@ public class HtmlRendererTest {
   private final FakeContentRewriterRegistry rewriter = new FakeContentRewriterRegistry();
   private final HtmlRenderer renderer = new HtmlRenderer(fetcher, preloaderService, rewriter);
 
-  private Gadget makeGadget(String content) throws GadgetException {
+  private Gadget makeGadget(String content) throws Exception {
     GadgetSpec spec = StaxTestUtils.parseSpec("<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>", SPEC_URL);
 
     return new Gadget()

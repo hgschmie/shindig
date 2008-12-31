@@ -20,6 +20,8 @@ package org.apache.shindig.gadgets.oauth;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.xml.stream.XMLStreamException;
+
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
@@ -212,6 +214,8 @@ public class GadgetOAuthTokenStore {
           arguments.getBypassSpecCache());
     } catch (URISyntaxException e) {
       throw new UserVisibleOAuthException("could not fetch gadget spec, gadget URI invalid", e);
+    } catch (XMLStreamException xse) {
+      throw new UserVisibleOAuthException("could not fetch gadget spec, gadget Spec invalid", xse);
     }
   }
 

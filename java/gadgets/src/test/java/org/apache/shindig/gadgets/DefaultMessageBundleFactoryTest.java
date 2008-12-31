@@ -94,7 +94,7 @@ public class DefaultMessageBundleFactoryTest {
       = new DefaultMessageBundleFactory(fetcher, cacheProvider, MAX_AGE);
   private final GadgetSpec gadgetSpec;
 
-  public DefaultMessageBundleFactoryTest() {
+  public DefaultMessageBundleFactoryTest() throws Exception {
     try {
       gadgetSpec = StaxTestUtils.parseSpec(BASIC_SPEC, SPEC_URI);
     } catch (GadgetException e) {

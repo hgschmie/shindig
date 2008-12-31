@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import java.net.URI;
 import java.util.Arrays;
 
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.shindig.common.ContainerConfigException;
 import org.apache.shindig.common.JsonContainerConfig;
 import org.apache.shindig.common.uri.Uri;
@@ -171,7 +173,7 @@ public class ProcessorTest {
 
   private static class FakeGadgetSpecFactory implements GadgetSpecFactory {
     private GadgetException exception;
-    public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException {
+    public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException, XMLStreamException {
       if (exception != null) {
         throw exception;
       }
