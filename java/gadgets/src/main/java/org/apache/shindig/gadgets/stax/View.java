@@ -23,8 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 import org.apache.shindig.gadgets.spec.SpecParserException;
 import org.apache.shindig.gadgets.stax.model.Content;
 import org.apache.shindig.gadgets.stax.model.Content.Type;
@@ -33,7 +34,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 /**
  * Normalized Content views.
  */
-public class View {
+public class View implements RequestAuthenticationInfo {
 
   private final String name;
 
@@ -50,6 +51,14 @@ public class View {
   private final String content;
 
   private final String rawType;
+
+  private final AuthType authType;
+
+  private final boolean quirks;
+
+  private final boolean signOwner;
+
+  private final boolean signViewer;
 
   private final Map<String, String> attributes;
 
@@ -75,6 +84,10 @@ public class View {
     int preferredWidth = -1;
     StringBuilder text = new StringBuilder();
     String rawType = null;
+    AuthType authType = null;
+    boolean quirks = true;
+    boolean signOwner = false;
+    boolean signViewer = false;
     Map<String, String> attributes = new HashMap<String, String>();
 
     for (Content content : contents) {
@@ -111,6 +124,10 @@ public class View {
       }
 
       rawType = content.getRawType();
+      authType = content.getAuthType();
+      quirks = content.isQuirks();
+      signOwner = content.isSignOwner();
+      signViewer = content.isSignViewer();
       attributes = addAttributes(attributes, content.getAttributes());
     }
 
@@ -121,6 +138,10 @@ public class View {
     this.content = text.toString();
     this.attributes = attributes;
     this.rawType = rawType;
+    this.authType = authType;
+    this.quirks = quirks;
+    this.signOwner = signOwner;
+    this.signViewer = signViewer;
   }
 
   /**
@@ -135,6 +156,10 @@ public class View {
     this.preferredHeight = view.getPreferredHeight();
     this.preferredWidth = view.getPreferredWidth();
     this.rawType = view.getRawType();
+    this.authType = view.getAuthType();
+    this.quirks = view.isQuirks();
+    this.signOwner = view.isSignOwner();
+    this.signViewer = view.isSignViewer();
 
     this.content = substituter.substituteString(view.getContent());
 
@@ -188,7 +213,7 @@ public class View {
   /**
    * Creates a new view by performing hangman substitution. See field comments
    * for details on what gets substituted.
-   * 
+   *
    * @param substituter
    * @return The substituted view.
    */
@@ -199,24 +224,26 @@ public class View {
   // ========================================================================================
   // Non-0.8.1 methods
 
-  public boolean getQuirks() {
-    return BooleanUtils.toBoolean(getAttributes().get("quirks"));
+  @Override
+  public AuthType getAuthType() {
+    return authType;
+  }
+
+  @Override
+  public Map<String, String> getOAuthAttributes() {
+    return Collections.unmodifiableMap(attributes);
+  }
+
+  public boolean isQuirks() {
+    return quirks;
   }
 
   public boolean isSignOwner() {
-    final String value = getAttributes().get("sign_owner");
-    if (value == null) {
-      return true;
-    }
-    return BooleanUtils.toBoolean(value);
+    return signOwner;
   }
 
   public boolean isSignViewer() {
-    final String value = getAttributes().get("sign_viewer");
-    if (value == null) {
-      return true;
-    }
-    return BooleanUtils.toBoolean(value);
+    return signViewer;
   }
 
   public static final Map<String, String> addAttributes(
@@ -232,4 +259,5 @@ public class View {
 
     return existing;
   }
+
 }

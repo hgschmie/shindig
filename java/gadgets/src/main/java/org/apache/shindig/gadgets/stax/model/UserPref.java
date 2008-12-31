@@ -86,11 +86,11 @@ public class UserPref extends SpecElement {
   }
 
   public String getDefaultValue() {
-    return attr(ATTR_DEFAULT_VALUE);
+    return attrDefault(ATTR_DEFAULT_VALUE);
   }
 
   public String getDisplayName() {
-    return attr(ATTR_DISPLAY_NAME);
+    return attrDefault(ATTR_DISPLAY_NAME);
   }
 
   public boolean isRequired() {

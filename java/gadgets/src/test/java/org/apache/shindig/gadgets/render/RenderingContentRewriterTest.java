@@ -713,8 +713,8 @@ public class RenderingContentRewriterTest {
     Gadget gadget = makeDefaultGadget();
 
     String viewUrl = "http://example.org/view.html";
-    String xml = "<Content href='" + viewUrl + "'/>";
-    View fakeView = new View("foo", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser(SPEC_URL))), SPEC_URL);
+    String xml = "<Content type='url' href='" + viewUrl + "'/>";
+    View fakeView = new View("foo", Collections.singleton(StaxTestUtils.parseElement(xml, new Content.Parser(Uri.parse(viewUrl)))), SPEC_URL);
     gadget.setCurrentView(fakeView);
 
     expect(config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))

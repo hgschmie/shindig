@@ -29,14 +29,17 @@ public enum AuthType {
    * @return The parsed value (defaults to NONE)
    */
   public static AuthType parse(final String value) {
-      for (AuthType authType : AuthType.values())
-      {
+
+      if (value != null) {
+        for (AuthType authType : AuthType.values())
+        {
           if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils.trimToEmpty(value)))
           {
               return authType;
           }
+        }
       }
-      return NONE;
+      return NONE; // Explicit test for "garbage" -> NONE
   }
 
   /**

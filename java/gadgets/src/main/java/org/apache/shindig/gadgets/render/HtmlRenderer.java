@@ -25,6 +25,7 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.oauth.OAuthArguments;
 import org.apache.shindig.gadgets.preload.PreloaderService;
 import org.apache.shindig.gadgets.preload.Preloads;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
@@ -82,8 +83,8 @@ public class HtmlRenderer {
 
         HttpRequest request = new HttpRequest(uri.toUri())
             .setIgnoreCache(context.getIgnoreCache())
-            // .setOAuthArguments(new OAuthArguments(view)) TODO hps - Do we support oauth on the views?
-            // .setAuthType(view.getAuthType())
+            .setOAuthArguments(new OAuthArguments(view))  // TODO hps - Do we support oauth on the views?
+            .setAuthType(view.getAuthType())
             .setSecurityToken(context.getToken())
             .setContainer(context.getContainer())
             .setGadget(spec.getUrl());
