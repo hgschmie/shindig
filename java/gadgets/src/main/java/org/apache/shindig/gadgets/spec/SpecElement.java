@@ -321,12 +321,20 @@ public abstract class SpecElement {
 
   protected static void writeAttribute(final XMLStreamWriter writer,
       final QName name, final String value) throws XMLStreamException {
-    writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
+    if (XMLConstants.DEFAULT_NS_PREFIX.equals(name.getPrefix())) {
+      writer.writeAttribute(name.getLocalPart(), value);
+    } else {
+      writer.writeAttribute(name.getNamespaceURI(), name.getLocalPart(), value);
+    }
   }
 
   protected void writeAttribute(final XMLStreamWriter writer,
       final String localName, final String value) throws XMLStreamException {
-    writer.writeAttribute(qName.getPrefix(), qName.getNamespaceURI(), localName, value);
+    if (XMLConstants.DEFAULT_NS_PREFIX.equals(qName.getPrefix())) {
+      writer.writeAttribute(localName, value);
+    } else {
+      writer.writeAttribute(qName.getNamespaceURI(), localName, value);
+    }
   }
 
   // ======================================================================================================================================
