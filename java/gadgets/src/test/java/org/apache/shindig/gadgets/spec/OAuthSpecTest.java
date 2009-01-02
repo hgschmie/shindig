@@ -80,4 +80,17 @@ public class OAuthSpecTest {
     assertEquals(Uri.parse("http://three.example.com/authorize"),
         oauth.getServices().get("three").getAuthorization().getUrl());
   }
+
+  @Test
+  public void toStringIsSane() throws Exception {
+    String xml = "<OAuth><Service>" +
+      "<Request url='http://www.example.com/request'/>" +
+      "<Access url='http://www.example.com/access'/>" +
+      "<Authorization url='http://www.example.com/authorize'/>" +
+      "</Service></OAuth>";
+    OAuthSpec oauth = StaxTestUtils.parseElement(xml, new OAuthSpec.Parser(SPEC_URL));
+    assertEquals(1, oauth.getServices().size());
+    OAuthSpec oauth2 = StaxTestUtils.parseElement(oauth.toString(), new OAuthSpec.Parser(SPEC_URL));
+    assertEquals(oauth.getServices().size(), oauth2.getServices().size());
+  }
 }

@@ -19,13 +19,14 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import junit.framework.TestCase;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
+import org.junit.Test;
 
-public class UserPrefTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class UserPrefTest {
   public void testBasic() throws Exception {
     String xml = "<UserPref" +
                  " name=\"name\"" +
@@ -41,6 +42,7 @@ public class UserPrefTest extends TestCase {
     assertEquals(UserPref.DataType.HIDDEN, userPref.getDataType());
   }
 
+  @Test
   public void testEnum() throws Exception {
     String xml = "<UserPref name=\"foo\" datatype=\"enum\">" +
                  " <EnumValue value=\"0\" display_value=\"Zero\"/>" +
@@ -52,6 +54,7 @@ public class UserPrefTest extends TestCase {
     assertEquals("1", userPref.enumValues().get("1"));
   }
 
+  @Test
   public void testSubstitutions() throws Exception {
     String xml = "<UserPref name=\"name\" datatype=\"enum\"" +
                  " display_name=\"__MSG_display_name__\"" +
@@ -73,31 +76,48 @@ public class UserPrefTest extends TestCase {
     assertEquals(displayValue, userPref.enumValues().get("0"));
   }
 
+  @Test(expected = SpecParserException.class)
   public void testMissingName() throws Exception {
     String xml = "<UserPref datatype=\"string\"/>";
-    try {
-      StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
-      fail("No exception thrown when name is missing");
-    } catch (SpecParserException e) {
-      // OK
-    }
+    StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
   }
 
+  @Test
   public void testMissingDataType() throws Exception {
     String xml = "<UserPref name=\"name\"/>";
     UserPref pref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
     assertEquals(UserPref.DataType.STRING, pref.getDataType());
   }
 
+  @Test(expected = SpecParserException.class)
   public void testMissingEnumValue() throws Exception {
     String xml = "<UserPref name=\"foo\" datatype=\"enum\">" +
                  " <EnumValue/>" +
                  "</UserPref>";
-    try {
-      StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
-      fail("No exception thrown when EnumValue@value is missing");
-    } catch (SpecParserException e) {
-      // OK
-    }
+    StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
   }
+
+  @Test
+  public void toStringIsSane() throws Exception {
+    String xml = "<UserPref" +
+                 " name=\"name\"" +
+                 " display_name=\"display_name\"" +
+                 " default_value=\"default_value\"" +
+                 " required=\"true\"" +
+                 " datatype=\"hidden\"/>";
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
+    assertEquals("name", userPref.getName());
+    assertEquals("display_name", userPref.getDisplayName());
+    assertEquals("default_value", userPref.getDefaultValue());
+    assertEquals(true, userPref.isRequired());
+    assertEquals(UserPref.DataType.HIDDEN, userPref.getDataType());
+
+    UserPref userPref2 = StaxTestUtils.parseElement(userPref.toString(), new UserPref.Parser(Uri.EMPTY_URI));
+    assertEquals(userPref.getName(), userPref2.getName());
+    assertEquals(userPref.getDisplayName(), userPref2.getDisplayName());
+    assertEquals(userPref.getDefaultValue(), userPref2.getDefaultValue());
+    assertEquals(userPref.isRequired(), userPref2.isRequired());
+    assertEquals(userPref.getDataType(), userPref2.getDataType());
+  }
+
 }
