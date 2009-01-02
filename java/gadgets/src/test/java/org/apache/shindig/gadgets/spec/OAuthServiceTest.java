@@ -136,4 +136,27 @@ public class OAuthServiceTest {
         "</Service>";
     StaxTestUtils.parseElement(xml, new OAuthService.Parser(SPEC_URL));
   }
+
+  @Test
+  public void toStringIsSane() throws Exception {
+    String xml = "<Authorization url='http://azn.example.com'/>";
+    OAuthAuthorization authorization = StaxTestUtils.parseElement(xml, new OAuthAuthorization.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://azn.example.com"), authorization.getUrl());
+
+    String xml2 = "<Request url='http://www.example.com' method='POST' param_location='post-body'/>";
+    OAuthElement request = StaxTestUtils.parseElement(xml2, new OAuthRequest.Parser(SPEC_URL));
+    assertEquals(Uri.parse("http://www.example.com"), request.getUrl());
+    assertEquals(OAuthElement.Location.BODY, request.getParamLocation());
+    assertEquals(OAuthElement.Method.POST, request.getMethod());
+
+    OAuthAuthorization authorization2 = StaxTestUtils.parseElement(authorization.toString(), new OAuthAuthorization.Parser(SPEC_URL));
+    assertEquals(authorization.getUrl(), authorization2.getUrl());
+
+    OAuthElement request2 = StaxTestUtils.parseElement(request.toString(), new OAuthRequest.Parser(SPEC_URL));
+    assertEquals(request.getUrl(), request2.getUrl());
+    assertEquals(request.getParamLocation(), request2.getParamLocation());
+    assertEquals(request.getMethod(), request2.getMethod());
+  }
+
+
 }

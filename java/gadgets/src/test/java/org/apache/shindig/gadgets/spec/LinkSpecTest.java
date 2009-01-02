@@ -101,6 +101,5 @@ public class LinkSpecTest {
     assertEquals(link.getHref(), link2.getHref());
     assertEquals(REL_VALUE, link2.getRel());
     assertEquals(HREF_VALUE, link2.getHref());
-
   }
 }
