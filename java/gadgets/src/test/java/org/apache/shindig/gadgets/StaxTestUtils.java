@@ -21,15 +21,12 @@ package org.apache.shindig.gadgets;
  */
 
 
-import java.io.StringReader;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecElement;
@@ -42,6 +39,7 @@ public final class StaxTestUtils {
   static {
     factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+    factory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.FALSE);
   }
 
   private StaxTestUtils() {
@@ -50,8 +48,7 @@ public final class StaxTestUtils {
   public static final <T extends SpecElement> T parseElement(final String xml,
       final Parser<T> parser) throws GadgetException, XMLStreamException {
 
-    XMLStreamReader reader = null;
-    reader = factory.createXMLStreamReader(new StringReader(xml));
+    final XMLStreamReader reader = new StaxSupport().getReader(xml);
     T element = null;
 
     loop: while (true) {

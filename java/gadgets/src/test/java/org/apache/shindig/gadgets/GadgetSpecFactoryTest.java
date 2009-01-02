@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.net.URI;
 
 import org.apache.shindig.common.cache.CacheProvider;
@@ -36,6 +31,11 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * Tests for GadgetSpecFactory
  */
@@ -44,7 +44,6 @@ public class GadgetSpecFactoryTest {
   private final static Uri REMOTE_URL = Uri.parse("http://example.org/remote.html");
   private final static String LOCAL_CONTENT = "Hello, local content!";
   private final static String ALT_LOCAL_CONTENT = "Hello, local content!";
-  private final static String RAWXML_CONTENT = "Hello, rawxml content!";
   private final static String LOCAL_SPEC_XML
       = "<Module>" +
         "  <ModulePrefs title='GadgetSpecFactoryTest'/>" +
@@ -54,11 +53,6 @@ public class GadgetSpecFactoryTest {
       = "<Module>" +
         "  <ModulePrefs title='GadgetSpecFactoryTest'/>" +
         "  <Content type='html'>" + ALT_LOCAL_CONTENT + "</Content>" +
-        "</Module>";
-  private final static String RAWXML_SPEC_XML
-      = "<Module>" +
-        "  <ModulePrefs title='GadgetSpecFactoryTest'/>" +
-        "  <Content type='html'>" + RAWXML_CONTENT + "</Content>" +
         "</Module>";
   private final static String URL_SPEC_XML
       = "<Module>" +
@@ -77,37 +71,16 @@ public class GadgetSpecFactoryTest {
     }
   };
 
-  private final static GadgetContext RAWXML_GADGET_CONTEXT = new GadgetContext() {
-    @Override
-    public boolean getIgnoreCache() {
-      // This should be ignored by calling code.
-      return false;
-    }
-
-    @Override
-    public URI getUrl() {
-      return SPEC_URL.toJavaUri();
-    }
-
-    @Override
-    public String getParameter(String param) {
-        /*
-      if (param.equals(ShindigGadgetSpecFactory.RAW_GADGETSPEC_XML_PARAM_NAME)) {
-        return RAWXML_SPEC_XML;
-      }
-      */
-      return null;
-    }
-  };
-
   private static final int MAX_AGE = 10000;
 
   private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
 
   private final CacheProvider cacheProvider = new LruCacheProvider(5);
 
-  private final ShindigGadgetSpecFactory specFactory
-      = new ShindigGadgetSpecFactory(fetcher, cacheProvider, MAX_AGE);
+  private final StaxSupport staxSupport = new StaxSupport();
+
+  private final GadgetSpecFactory specFactory
+      = new ShindigGadgetSpecFactory(fetcher, cacheProvider, staxSupport, MAX_AGE);
 
   @Test
   public void specFetched() throws Exception {
@@ -190,8 +163,9 @@ public class GadgetSpecFactoryTest {
   public void ttlPropagatesToFetcher() throws Exception {
     CapturingFetcher capturingFetcher = new CapturingFetcher();
 
-    ShindigGadgetSpecFactory forcedCacheFactory
-        = new ShindigGadgetSpecFactory(capturingFetcher, cacheProvider, 10000);
+    StaxSupport staxSupport = new StaxSupport();
+    GadgetSpecFactory forcedCacheFactory
+        = new ShindigGadgetSpecFactory(capturingFetcher, cacheProvider, staxSupport, 10000);
 
     forcedCacheFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
 

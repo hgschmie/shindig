@@ -18,9 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.io.StringReader;
-
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -43,15 +40,15 @@ import com.google.inject.name.Named;
  */
 public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
-    private final XMLInputFactory factory;
+    private final StaxSupport staxSupport;
 
     @Inject
     public ShindigGadgetSpecFactory(final HttpFetcher fetcher,
             final CacheProvider cacheProvider,
+            final StaxSupport staxSupport,
             final@Named("shindig.cache.xml.refreshInterval") long refresh) {
         super (fetcher, cacheProvider, refresh);
-        factory = XMLInputFactory.newInstance();
-        factory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+        this.staxSupport = staxSupport;
     }
 
     @Override
@@ -60,7 +57,7 @@ public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
         ShindigGadgetSpec gadgetSpec = null;
 
         try {
-            XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
+            final XMLStreamReader reader = staxSupport.getReader(xml);
             final String checksum = HashUtil.checksum(xml.getBytes());
             final ShindigGadgetSpec.Parser<ShindigGadgetSpec> parser = new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(uri, checksum);
 

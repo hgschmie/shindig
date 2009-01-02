@@ -1,5 +1,3 @@
-package org.apache.shindig.gadgets.spec;
-
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -21,6 +19,8 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+package org.apache.shindig.gadgets.spec;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -45,21 +44,12 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.StaxSupport;
 import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.ctc.wstx.api.WstxOutputProperties;
 
 public abstract class SpecElement {
 
   public static final String OPENSOCIAL_NAMESPACE_URI = "http://ns.opensocial.org/specs/0.8/";
-
-  private static final XMLOutputFactory factory;
-
-  static {
-    factory = XMLOutputFactory.newInstance();
-    factory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.FALSE);
-    factory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR, Boolean.FALSE);
-  }
 
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
@@ -272,7 +262,7 @@ public abstract class SpecElement {
 
   public void toXml(final XMLStreamWriter writer) throws XMLStreamException {
 
-    writer.writeStartElement(qName.getPrefix(), qName.getLocalPart(), qName.getNamespaceURI());
+    writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
 
     writeAttributes(writer);
 
@@ -344,7 +334,9 @@ public abstract class SpecElement {
     final StringWriter sw = new StringWriter();
     XMLStreamWriter writer = null;
     try {
-      writer = factory.createXMLStreamWriter(sw);
+      // This is bad. But then again, don't really use toString() in
+      // a real world scenario, use toXml and manage the writer yourself.
+      writer = new StaxSupport().getWriter(sw);
       writer.setDefaultNamespace(name().getNamespaceURI());
       for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
         writer.setPrefix(namespace.getKey(), namespace.getValue());
@@ -355,7 +347,7 @@ public abstract class SpecElement {
     } catch (XMLStreamException xse) {
       LOG.warning("While writing output stream: " + xse.getMessage());
     } finally {
-      closeQuietly(writer);
+      StaxSupport.closeQuietly(writer);
     }
     sw.flush();
     return sw.toString();
@@ -392,15 +384,6 @@ public abstract class SpecElement {
       .append(children())
       .append(isCDATA())
       .toHashCode();
-  }
-
-  private static void closeQuietly(final XMLStreamWriter writer) {
-    if (writer != null) {
-      try {
-        writer.close();
-      } catch (XMLStreamException xse) {
-      }
-    }
   }
 
   public static abstract class Parser<T extends SpecElement> {
@@ -475,7 +458,7 @@ public abstract class SpecElement {
             parser = new GenericElement.Parser(elementName, getBase());
           }
 
-          SpecElement child = parser.parse(reader);
+          final SpecElement child = parser.parse(reader);
           addChild(reader, element, child);
           break;
         case XMLStreamConstants.CDATA:
@@ -522,8 +505,12 @@ public abstract class SpecElement {
 
     protected void addChild(final XMLStreamReader reader, final T element,
         final SpecElement child) throws GadgetException {
-      throw new IllegalStateException("The element" + element.name()
-          + " does not accept any nested elements, saw " + child.name());
+      if (child instanceof GenericElement) {
+        element.addChild(child);
+      } else {
+        throw new IllegalStateException("The element" + element.name()
+            + " does not accept any nested elements, saw " + child.name());
+      }
     }
   }
 }
