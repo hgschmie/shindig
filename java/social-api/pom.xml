@@ -141,7 +141,7 @@ under the License.
     </dependency>
     <dependency>
         <groupId>woodstox</groupId>
-        <artifactId>wstx</artifactId>
+        <artifactId>wstx-asl</artifactId>
         <scope>test</scope>
     </dependency>
   </dependencies>
