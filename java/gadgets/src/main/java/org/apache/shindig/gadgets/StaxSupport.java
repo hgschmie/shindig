@@ -21,6 +21,7 @@
 
 package org.apache.shindig.gadgets;
 
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.Writer;
 
@@ -29,6 +30,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.shindig.gadgets.spec.SpecElement;
 
 import com.ctc.wstx.api.WstxOutputProperties;
 
@@ -52,9 +55,17 @@ public class StaxSupport {
         return inputFactory.createXMLStreamReader(new StringReader(xml));
     }
 
-    public XMLStreamWriter getWriter(final Writer writer) throws XMLStreamException {
-        return outputFactory.createXMLStreamWriter(writer);
+    public XMLStreamWriter getWriter(final Writer writer, final SpecElement rootElement) throws XMLStreamException {
+        final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
+        rootElement.prepareWriter(xmlWriter);
+        return xmlWriter;
     }
+
+    public XMLStreamWriter getWriter(final OutputStream stream, final SpecElement rootElement) throws XMLStreamException {
+      final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stream);
+      rootElement.prepareWriter(xmlWriter);
+      return xmlWriter;
+  }
 
     public static final void closeQuietly(final XMLStreamWriter writer) {
         if (writer != null) {

@@ -260,6 +260,17 @@ public abstract class SpecElement {
 
   // ======================================================================================================================================
 
+  /**
+   * Should never be called directly, StaxSupport takes care of this and calls this for the root element that
+   * you want to write.
+   */
+  public void prepareWriter(final XMLStreamWriter writer) throws XMLStreamException {
+    writer.setDefaultNamespace(name().getNamespaceURI());
+    for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
+      writer.setPrefix(namespace.getKey(), namespace.getValue());
+    }
+  }
+
   public void toXml(final XMLStreamWriter writer) throws XMLStreamException {
 
     writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
@@ -336,11 +347,7 @@ public abstract class SpecElement {
     try {
       // This is bad. But then again, don't really use toString() in
       // a real world scenario, use toXml and manage the writer yourself.
-      writer = new StaxSupport().getWriter(sw);
-      writer.setDefaultNamespace(name().getNamespaceURI());
-      for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
-        writer.setPrefix(namespace.getKey(), namespace.getValue());
-      }
+      writer = new StaxSupport().getWriter(sw, this);
 
       toXml(writer);
       writer.flush();
