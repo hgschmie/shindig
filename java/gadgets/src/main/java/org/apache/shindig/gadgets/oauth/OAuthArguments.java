@@ -18,15 +18,15 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 
 import com.google.common.collect.Maps;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Arguments to an OAuth fetch sent by the client.
@@ -48,10 +48,7 @@ public class OAuthArguments {
   public static enum UseToken {
     /** Do not use the OAuth access token */
     NEVER,
-    /**
-     * Use the access token if it exists already, but don't prompt for
-     * permission
-     */
+    /** Use the access token if it exists already, but don't prompt for permission */
     IF_AVAILABLE,
     /** Use the access token if it exists, and prompt if it doesn't */
     ALWAYS,
@@ -60,10 +57,10 @@ public class OAuthArguments {
   /** Should we attempt to use an access token for the request */
   private UseToken useToken = UseToken.ALWAYS;
 
-  /** OAuth service nickname. Signed fetch uses the empty string */
+  /** OAuth service nickname.  Signed fetch uses the empty string */
   private String serviceName = "";
 
-  /** OAuth token nickname. Signed fetch uses the empty string */
+  /** OAuth token nickname.  Signed fetch uses the empty string */
   private String tokenName = "";
 
   /** Request token the client wants us to use, may be null */
@@ -86,42 +83,31 @@ public class OAuthArguments {
 
   /**
    * Parse OAuthArguments from parameters to the makeRequest servlet.
-   * 
-   * @param auth
-   *          authentication type for the request
-   * @param request
-   *          servlet request
-   * @throws GadgetException
-   *           if any parameters are invalid.
+   *
+   * @param auth authentication type for the request
+   * @param request servlet request
+   * @throws GadgetException if any parameters are invalid.
    */
-  public OAuthArguments(AuthType auth, HttpServletRequest request)
-      throws GadgetException {
-    useToken = parseUseToken(auth,
-        getRequestParam(request, USE_TOKEN_PARAM, ""));
+  public OAuthArguments(AuthType auth, HttpServletRequest request) throws GadgetException {
+    useToken = parseUseToken(auth, getRequestParam(request, USE_TOKEN_PARAM, ""));
     serviceName = getRequestParam(request, SERVICE_PARAM, "");
     tokenName = getRequestParam(request, TOKEN_PARAM, "");
     requestToken = getRequestParam(request, REQUEST_TOKEN_PARAM, null);
-    requestTokenSecret = getRequestParam(request, REQUEST_TOKEN_SECRET_PARAM,
-        null);
+    requestTokenSecret = getRequestParam(request, REQUEST_TOKEN_SECRET_PARAM, null);
     origClientState = getRequestParam(request, CLIENT_STATE_PARAM, null);
-    bypassSpecCache = "1".equals(getRequestParam(request,
-        BYPASS_SPEC_CACHE_PARAM, null));
-    signOwner = Boolean.parseBoolean(getRequestParam(request, SIGN_OWNER_PARAM,
-        "true"));
-    signViewer = Boolean.parseBoolean(getRequestParam(request,
-        SIGN_VIEWER_PARAM, "true"));
+    bypassSpecCache = "1".equals(getRequestParam(request, BYPASS_SPEC_CACHE_PARAM, null));
+    signOwner = Boolean.parseBoolean(getRequestParam(request, SIGN_OWNER_PARAM, "true"));
+    signViewer = Boolean.parseBoolean(getRequestParam(request, SIGN_VIEWER_PARAM, "true"));
   }
 
   public OAuthArguments(RequestAuthenticationInfo info) throws GadgetException {
     Map<String, String> attrs = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
     attrs.putAll(info.getOAuthAttributes());
-    useToken = parseUseToken(info.getAuthType(), getAuthInfoParam(attrs,
-        USE_TOKEN_PARAM, ""));
+    useToken = parseUseToken(info.getAuthType(), getAuthInfoParam(attrs, USE_TOKEN_PARAM, ""));
     serviceName = getAuthInfoParam(attrs, SERVICE_PARAM, "");
     tokenName = getAuthInfoParam(attrs, TOKEN_PARAM, "");
     requestToken = getAuthInfoParam(attrs, REQUEST_TOKEN_PARAM, null);
-    requestTokenSecret = getAuthInfoParam(attrs, REQUEST_TOKEN_SECRET_PARAM,
-        null);
+    requestTokenSecret = getAuthInfoParam(attrs, REQUEST_TOKEN_SECRET_PARAM, null);
     origClientState = null;
     bypassSpecCache = false;
     signOwner = info.isSignOwner();
@@ -129,11 +115,10 @@ public class OAuthArguments {
   }
 
   /**
-   * @return the named attribute from the Preload tag attributes, or default if
-   *         the attribute is not present.
+   * @return the named attribute from the Preload tag attributes, or default if the attribute is
+   * not present.
    */
-  private static String getAuthInfoParam(Map<String, String> attrs,
-      String name, String def) {
+  private static String getAuthInfoParam(Map<String, String> attrs, String name, String def) {
     String val = attrs.get(name);
     if (val == null) {
       val = def;
@@ -142,11 +127,9 @@ public class OAuthArguments {
   }
 
   /**
-   * @return the named parameter from the request, or default if the named
-   *         parameter is not present.
+   * @return the named parameter from the request, or default if the named parameter is not present.
    */
-  private static String getRequestParam(HttpServletRequest request,
-      String name, String def) {
+  private static String getRequestParam(HttpServletRequest request, String name, String def) {
     String val = request.getParameter(name);
     if (val == null) {
       val = def;
@@ -154,11 +137,11 @@ public class OAuthArguments {
     return val;
   }
 
+
   /**
    * Figure out what the client wants us to do with the OAuth access token.
    */
-  private static UseToken parseUseToken(AuthType auth, String useTokenStr)
-      throws GadgetException {
+  private static UseToken parseUseToken(AuthType auth, String useTokenStr) throws GadgetException {
     if (useTokenStr.length() == 0) {
       if (auth == AuthType.SIGNED) {
         // signed fetch defaults to not using the token
@@ -183,15 +166,15 @@ public class OAuthArguments {
   }
 
   /**
-   * Create an OAuthArguments object with all default values. The details can be
-   * filled in later using the setters.
-   * 
-   * Be careful using this in anything except test code. If you find yourself
-   * wanting to use this method in real code, consider writing a new constructor
-   * instead.
+   * Create an OAuthArguments object with all default values.  The details can be filled in later
+   * using the setters.
+   *
+   * Be careful using this in anything except test code.  If you find yourself wanting to use this
+   * method in real code, consider writing a new constructor instead.
    */
   public OAuthArguments() {
   }
+
 
   /**
    * Copy constructor.

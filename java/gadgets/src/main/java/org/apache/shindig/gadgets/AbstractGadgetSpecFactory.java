@@ -18,9 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
-import java.util.logging.Logger;
-
 import org.apache.shindig.common.cache.Cache;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.SoftExpiringCache;
@@ -30,6 +27,9 @@ import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
+import java.net.URI;
+import java.util.logging.Logger;
 
 /**
  * The basic scaffolding for setting up a GadgetSpec Factory.
@@ -41,26 +41,22 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
   public static final String CACHE_NAME = "gadgetSpecs";
 
-  private static final Logger LOG = Logger
-      .getLogger(AbstractGadgetSpecFactory.class.getName());
+  private static final Logger LOG = Logger.getLogger(AbstractGadgetSpecFactory.class.getName());
 
   private final HttpFetcher fetcher;
   private final SoftExpiringCache<Uri, GadgetSpec> cache;
   private final long refresh;
 
-  protected AbstractGadgetSpecFactory(final HttpFetcher fetcher,
-      final CacheProvider cacheProvider, final long refresh) {
+  protected AbstractGadgetSpecFactory(final HttpFetcher fetcher, final CacheProvider cacheProvider, final long refresh) {
     // TODO This definitely sucks.
-    final Cache<Uri, GadgetSpec> baseCache = cacheProvider
-        .createCache(CACHE_NAME);
+    final Cache<Uri, GadgetSpec> baseCache = cacheProvider.createCache(CACHE_NAME);
 
     this.fetcher = fetcher;
     this.cache = new SoftExpiringCache<Uri, GadgetSpec>(baseCache);
     this.refresh = refresh;
   }
 
-  public GadgetSpec getGadgetSpec(final GadgetContext context)
-      throws GadgetException {
+  public GadgetSpec getGadgetSpec(final GadgetContext context) throws GadgetException {
     // DefaultGadgetSpecFactory tries to squirrel some extra functionality into
     // this method by doing
     //
@@ -76,8 +72,7 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
     return getGadgetSpec(context.getUrl(), context.getIgnoreCache());
   }
 
-  public GadgetSpec getGadgetSpec(final URI gadgetUri, final boolean ignoreCache)
-      throws GadgetException {
+  public GadgetSpec getGadgetSpec(final URI gadgetUri, final boolean ignoreCache) throws GadgetException {
 
     final Uri uri = Uri.fromJavaUri(gadgetUri);
     SoftExpiringCache.CachedObject<GadgetSpec> cached = null;
@@ -91,8 +86,7 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
         // If we pulled the error gadget spec from the cache, this allows us to
         // re-throw the
         // cached exception.
-        final GadgetException cachedException = (GadgetException) spec
-            .getSpecAttribute(ERROR_KEY);
+        final GadgetException cachedException = (GadgetException) spec.getSpecAttribute(ERROR_KEY);
         if (cachedException != null) {
           throw cachedException;
         }
@@ -100,9 +94,8 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
       }
     }
 
-    final HttpRequest request = new HttpRequest(uri)
-        .setIgnoreCache(ignoreCache)
-        // Since we don't allow any variance in cache time, we should just force
+    final HttpRequest request = new HttpRequest(uri).setIgnoreCache(ignoreCache)
+    // Since we don't allow any variance in cache time, we should just force
         // the cache time
         // globally. This ensures propagation to shared caches when this is set.
         .setCacheTtl((int) (refresh / 1000));
@@ -110,10 +103,8 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
     final HttpResponse response = fetcher.fetch(request);
 
     if (response.getHttpStatusCode() != HttpResponse.SC_OK) {
-      throw new GadgetException(
-          GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
-          "Unable to retrieve gadget xml. HTTP error "
-              + response.getHttpStatusCode());
+      throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+          "Unable to retrieve gadget xml. HTTP error " + response.getHttpStatusCode());
     }
 
     GadgetSpec spec = null;
@@ -134,8 +125,7 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
         spec = cached.obj; // It might be stale, but this is better than
         // returning an error... TODO: This should be
         // configurable.
-        LOG.warning(String.format(
-            "Could not refresh '%s', keeping stale entry.", uri));
+        LOG.warning(String.format("Could not refresh '%s', keeping stale entry.", uri));
       } else {
         spec = buildGadgetSpec(uri, ERROR_SPEC);
         // That looks pretty brittle to me...
@@ -147,6 +137,5 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
     }
   }
 
-  protected abstract GadgetSpec buildGadgetSpec(final Uri uri, final String xml)
-      throws GadgetException;
+  protected abstract GadgetSpec buildGadgetSpec(final Uri uri, final String xml) throws GadgetException;
 }

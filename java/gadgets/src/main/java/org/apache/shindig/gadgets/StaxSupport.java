@@ -21,6 +21,10 @@
 
 package org.apache.shindig.gadgets;
 
+import com.ctc.wstx.api.WstxOutputProperties;
+
+import org.apache.shindig.gadgets.spec.SpecElement;
+
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.Writer;
@@ -31,10 +35,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.gadgets.spec.SpecElement;
-
-import com.ctc.wstx.api.WstxOutputProperties;
-
 public class StaxSupport {
 
   private final XMLInputFactory inputFactory;
@@ -43,32 +43,25 @@ public class StaxSupport {
   public StaxSupport() {
     this.inputFactory = XMLInputFactory.newInstance();
     this.inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-    this.inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE,
-        Boolean.FALSE);
+    this.inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.FALSE);
 
     this.outputFactory = XMLOutputFactory.newInstance();
-    this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
-        Boolean.TRUE);
-    this.outputFactory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR,
-        Boolean.FALSE);
+    this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
+    this.outputFactory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR, Boolean.FALSE);
   }
 
   public XMLStreamReader getReader(final String xml) throws XMLStreamException {
     return inputFactory.createXMLStreamReader(new StringReader(xml));
   }
 
-  public XMLStreamWriter getWriter(final Writer writer,
-      final SpecElement rootElement) throws XMLStreamException {
-    final XMLStreamWriter xmlWriter = outputFactory
-        .createXMLStreamWriter(writer);
+  public XMLStreamWriter getWriter(final Writer writer, final SpecElement rootElement) throws XMLStreamException {
+    final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
     rootElement.prepareWriter(xmlWriter);
     return xmlWriter;
   }
 
-  public XMLStreamWriter getWriter(final OutputStream stream,
-      final SpecElement rootElement) throws XMLStreamException {
-    final XMLStreamWriter xmlWriter = outputFactory
-        .createXMLStreamWriter(stream);
+  public XMLStreamWriter getWriter(final OutputStream stream, final SpecElement rootElement) throws XMLStreamException {
+    final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stream);
     rootElement.prepareWriter(xmlWriter);
     return xmlWriter;
   }

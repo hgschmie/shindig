@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.preload.HttpPreloader;
@@ -37,6 +32,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
+
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Creates a module to supply all of the Basic* classes
@@ -53,23 +53,20 @@ public class DefaultGuiceModule extends AbstractModule {
 
     this.install(new ParseModule());
 
-    bind(new TypeLiteral<List<ContentRewriter>>() {
-    }).toProvider(ContentRewritersProvider.class);
-    bind(new TypeLiteral<List<Preloader>>() {
-    }).toProvider(PreloaderProvider.class);
+    bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);
+    bind(new TypeLiteral<List<Preloader>>(){}).toProvider(PreloaderProvider.class);
 
     // We perform static injection on HttpResponse for cache TTLs.
     requestStaticInjection(HttpResponse.class);
   }
 
-  private static class ContentRewritersProvider implements
-      Provider<List<ContentRewriter>> {
+  private static class ContentRewritersProvider implements Provider<List<ContentRewriter>> {
     private final List<ContentRewriter> rewriters;
 
     @Inject
     public ContentRewritersProvider(DefaultContentRewriter optimizingRewriter,
-        CajaContentRewriter cajaRewriter,
-        RenderingContentRewriter renderingRewriter) {
+                                    CajaContentRewriter cajaRewriter,
+                                    RenderingContentRewriter renderingRewriter) {
       rewriters = Lists.newArrayList();
       rewriters.add(optimizingRewriter);
       rewriters.add(cajaRewriter);
@@ -86,7 +83,7 @@ public class DefaultGuiceModule extends AbstractModule {
 
     @Inject
     public PreloaderProvider(HttpPreloader httpPreloader) {
-      preloaders = Lists.<Preloader> newArrayList(httpPreloader);
+      preloaders = Lists.<Preloader>newArrayList(httpPreloader);
     }
 
     public List<Preloader> get() {

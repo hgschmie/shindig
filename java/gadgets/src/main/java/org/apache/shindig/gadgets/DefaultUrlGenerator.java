@@ -18,10 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
@@ -35,19 +31,21 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 /**
- * Default url generator. Produces js urls that include checksums for
- * cache-busting.
- * 
- * TODO: iframe and js url generation are two distinct things, and should
- * probably be different interfaces.
- * 
+ * Default url generator. Produces js urls that include checksums for cache-busting.
+ *
+ * TODO: iframe and js url generation are two distinct things, and should probably be different
+ * interfaces.
+ *
  * TODO: iframe and js urls should be able to be generated per container.
  */
 @Singleton
 public class DefaultUrlGenerator implements UrlGenerator {
-  protected static final Pattern ALLOWED_FEATURE_NAME = Pattern
-      .compile("[0-9a-zA-Z\\.\\-]+");
+  protected static final Pattern ALLOWED_FEATURE_NAME = Pattern.compile("[0-9a-zA-Z\\.\\-]+");
   protected static final String IFRAME_URI_PARAM = "gadgets.iframeBaseUri";
   protected static final String JS_URI_PARAM = "gadgets.jsUriTemplate";
   private final String jsChecksum;
@@ -57,14 +55,13 @@ public class DefaultUrlGenerator implements UrlGenerator {
 
   @Inject
   public DefaultUrlGenerator(ContainerConfig containerConfig,
-      LockedDomainService lockedDomainService, GadgetFeatureRegistry registry) {
+                             LockedDomainService lockedDomainService,
+                             GadgetFeatureRegistry registry) {
     iframeBaseUris = Maps.newHashMap();
     jsUriTemplates = Maps.newHashMap();
     for (String container : containerConfig.getContainers()) {
-      iframeBaseUris.put(container, Uri.parse(containerConfig.get(container,
-          IFRAME_URI_PARAM)));
-      jsUriTemplates.put(container, containerConfig
-          .get(container, JS_URI_PARAM));
+      iframeBaseUris.put(container, Uri.parse(containerConfig.get(container, IFRAME_URI_PARAM)));
+      jsUriTemplates.put(container, containerConfig.get(container, JS_URI_PARAM));
     }
 
     this.lockedDomainService = lockedDomainService;
@@ -79,19 +76,17 @@ public class DefaultUrlGenerator implements UrlGenerator {
 
   }
 
-  public String getBundledJsUrl(Collection<String> features,
-      GadgetContext context) {
+  public String getBundledJsUrl(Collection<String> features, GadgetContext context) {
     String jsPrefix = jsUriTemplates.get(context.getContainer());
     if (jsPrefix == null) {
       return "";
     }
 
-    return jsPrefix.replace("%host%", context.getHost()).replace("%js%",
-        getBundledJsParam(features, context));
+    return jsPrefix.replace("%host%", context.getHost())
+                   .replace("%js%", getBundledJsParam(features, context));
   }
 
-  public String getBundledJsParam(Collection<String> features,
-      GadgetContext context) {
+  public String getBundledJsParam(Collection<String> features, GadgetContext context) {
     StringBuilder buf = new StringBuilder();
     boolean first = false;
     for (String feature : features) {
@@ -107,15 +102,15 @@ public class DefaultUrlGenerator implements UrlGenerator {
     if (!first) {
       buf.append("core");
     }
-    buf.append(".js?v=").append(jsChecksum).append("&container=").append(
-        context.getContainer()).append("&debug=").append(
-        context.getDebug() ? "1" : "0");
+    buf.append(".js?v=").append(jsChecksum)
+       .append("&container=").append(context.getContainer())
+       .append("&debug=").append(context.getDebug() ? "1" : "0");
     return buf.toString();
   }
 
   /**
-   * TODO: This is in need of a rewrite most likely. It doesn't even take locked
-   * domain into consideration!
+   * TODO: This is in need of a rewrite most likely. It doesn't even take locked domain into
+   * consideration!
    */
   public String getIframeUrl(Gadget gadget) {
     GadgetContext context = gadget.getContext();
@@ -131,24 +126,23 @@ public class DefaultUrlGenerator implements UrlGenerator {
 
     UriBuilder uri;
     switch (type) {
-    case URL:
-      uri = new UriBuilder(view.getHref());
-      break;
-    case HTML:
-    default:
-      // TODO: Locked domain support.
-      Uri iframeBaseUri = iframeBaseUris.get(context.getContainer());
-      if (iframeBaseUri != null) {
-        uri = new UriBuilder(iframeBaseUri);
-      } else {
-        uri = new UriBuilder();
-      }
-      String host = lockedDomainService.getLockedDomainForGadget(spec, context
-          .getContainer());
-      if (host != null) {
-        uri.setAuthority(host);
-      }
-      break;
+      case URL:
+        uri = new UriBuilder(view.getHref());
+        break;
+      case HTML:
+      default:
+        // TODO: Locked domain support.
+        Uri iframeBaseUri = iframeBaseUris.get(context.getContainer());
+        if (iframeBaseUri != null) {
+          uri = new UriBuilder(iframeBaseUri);
+        } else {
+          uri = new UriBuilder();
+        }
+        String host = lockedDomainService.getLockedDomainForGadget(spec, context.getContainer());
+        if (host != null) {
+          uri.setAuthority(host);
+        }
+        break;
     }
 
     uri.addQueryParameter("container", context.getContainer());
@@ -175,7 +169,7 @@ public class DefaultUrlGenerator implements UrlGenerator {
       uri.addQueryParameter("up_" + pref.getName(), value);
     }
     // add url last to work around browser bugs
-    if (!type.equals(Content.Type.URL)) {
+    if(!type.equals(Content.Type.URL)) {
       uri.addQueryParameter("url", url);
     }
 

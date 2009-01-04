@@ -18,17 +18,18 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.ImplementedBy;
 
+import java.net.URI;
+
+import javax.xml.stream.XMLStreamException;
+
 /** Factory of gadget specs */
 
 @ImplementedBy(ShindigGadgetSpecFactory.class)
+
 public interface GadgetSpecFactory {
 
   /** Return a gadget spec for a context */

@@ -17,12 +17,6 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.GadgetSpecFactory;
@@ -32,6 +26,12 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+
+import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Factory for content rewriter features
@@ -48,12 +48,12 @@ public class ContentRewriterFeatureFactory {
   private ContentRewriterFeature defaultFeature;
 
   @Inject
-  public ContentRewriterFeatureFactory(GadgetSpecFactory specFactory,
-      @Named("shindig.content-rewrite.include-urls")
-      String includeUrls, @Named("shindig.content-rewrite.exclude-urls")
-      String excludeUrls, @Named("shindig.content-rewrite.expires")
-      String expires, @Named("shindig.content-rewrite.include-tags")
-      String includeTags) {
+  public ContentRewriterFeatureFactory(
+      GadgetSpecFactory specFactory,
+      @Named("shindig.content-rewrite.include-urls")String includeUrls,
+      @Named("shindig.content-rewrite.exclude-urls")String excludeUrls,
+      @Named("shindig.content-rewrite.expires")String expires,
+      @Named("shindig.content-rewrite.include-tags")String includeTags) {
     this.specFactory = specFactory;
     this.includeUrls = includeUrls;
     this.excludeUrls = excludeUrls;
@@ -64,8 +64,8 @@ public class ContentRewriterFeatureFactory {
         this.includeTags.add(s.trim().toLowerCase());
       }
     }
-    defaultFeature = new ContentRewriterFeature(null, includeUrls, excludeUrls,
-        expires, this.includeTags);
+    defaultFeature = new ContentRewriterFeature(null, includeUrls, excludeUrls, expires,
+        this.includeTags);
   }
 
   public ContentRewriterFeature getDefault() {
@@ -92,12 +92,11 @@ public class ContentRewriterFeatureFactory {
   }
 
   public ContentRewriterFeature get(GadgetSpec spec) {
-    ContentRewriterFeature rewriterFeature = (ContentRewriterFeature) spec
-        .getSpecAttribute("content-rewriter");
-    if (rewriterFeature != null)
-      return rewriterFeature;
-    rewriterFeature = new ContentRewriterFeature(spec, includeUrls,
-        excludeUrls, expires, includeTags);
+    ContentRewriterFeature rewriterFeature =
+        (ContentRewriterFeature)spec.getSpecAttribute("content-rewriter");
+    if (rewriterFeature != null) return rewriterFeature;
+    rewriterFeature
+        = new ContentRewriterFeature(spec, includeUrls, excludeUrls, expires, includeTags);
     spec.setSpecAttribute("content-rewriter", rewriterFeature);
     return rewriterFeature;
   }

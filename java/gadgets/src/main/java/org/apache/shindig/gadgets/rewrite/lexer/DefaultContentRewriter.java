@@ -17,19 +17,6 @@
  */
 package org.apache.shindig.gadgets.rewrite.lexer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetException;
@@ -49,6 +36,19 @@ import org.apache.shindig.gadgets.spec.View;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Default implementation of content rewriting.
@@ -71,14 +71,14 @@ public class DefaultContentRewriter implements ContentRewriter {
   private final String concatUrl;
 
   @Inject
-  public DefaultContentRewriter(GadgetSpecFactory specFactory,
-      @Named("shindig.content-rewrite.include-urls")
-      String includeUrls, @Named("shindig.content-rewrite.exclude-urls")
-      String excludeUrls, @Named("shindig.content-rewrite.expires")
-      String expires, @Named("shindig.content-rewrite.include-tags")
-      String includeTags, @Named("shindig.content-rewrite.proxy-url")
-      String proxyUrl, @Named("shindig.content-rewrite.concat-url")
-      String concatUrl) {
+  public DefaultContentRewriter(
+      GadgetSpecFactory specFactory,
+      @Named("shindig.content-rewrite.include-urls")String includeUrls,
+      @Named("shindig.content-rewrite.exclude-urls")String excludeUrls,
+      @Named("shindig.content-rewrite.expires")String expires,
+      @Named("shindig.content-rewrite.include-tags")String includeTags,
+      @Named("shindig.content-rewrite.proxy-url")String proxyUrl,
+      @Named("shindig.content-rewrite.concat-url")String concatUrl) {
     this.specFactory = specFactory;
     this.includeUrls = includeUrls;
     this.excludeUrls = excludeUrls;
@@ -96,18 +96,16 @@ public class DefaultContentRewriter implements ContentRewriter {
   public RewriterResults rewrite(HttpRequest request, HttpResponse original,
       MutableContent content) {
     try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream((content
-          .getContent().length() * 110) / 100);
-      OutputStreamWriter output = new OutputStreamWriter(baos, original
-          .getEncoding());
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(
+          (content.getContent().length() * 110) / 100);
+      OutputStreamWriter output = new OutputStreamWriter(baos, original.getEncoding());
       String mimeType = original.getHeader("Content-Type");
       if (request.getRewriteMimeType() != null) {
         mimeType = request.getRewriteMimeType();
       }
       GadgetSpec spec = null;
       if (request.getGadget() != null) {
-        spec = specFactory
-            .getGadgetSpec(request.getGadget().toJavaUri(), false);
+        spec = specFactory.getGadgetSpec(request.getGadget().toJavaUri(), false);
       }
       if (rewrite(spec, request.getUri(), content, mimeType, output)) {
         content.setContent(new String(baos.toByteArray()));
@@ -118,7 +116,7 @@ public class DefaultContentRewriter implements ContentRewriter {
     } catch (GadgetException ge) {
       // Couldn't retrieve gadgetSpec
     } catch (XMLStreamException xse) {
-      // Error parsing the Gadget Spec
+      // Could not parse retrieved XML
     }
     return null;
   }
@@ -138,25 +136,26 @@ public class DefaultContentRewriter implements ContentRewriter {
     return null;
   }
 
-  private boolean rewrite(GadgetSpec spec, Uri source, MutableContent mc,
-      String mimeType, Writer w) {
+  private boolean rewrite(GadgetSpec spec, Uri source, MutableContent mc, String mimeType, Writer w) {
     // Dont rewrite content if the spec is unavailable
     if (spec == null) {
       return false;
     }
 
-    ContentRewriterFeature rewriterFeature = new ContentRewriterFeature(spec,
-        includeUrls, excludeUrls, expires, includeTags);
+    ContentRewriterFeature rewriterFeature
+        = new ContentRewriterFeature(spec, includeUrls, excludeUrls, expires, includeTags);
 
     if (!rewriterFeature.isRewriteEnabled()) {
       return false;
     }
     if (isHTML(mimeType)) {
-      Map<String, HtmlTagTransformer> transformerMap = new HashMap<String, HtmlTagTransformer>();
+      Map<String, HtmlTagTransformer> transformerMap
+          = new HashMap<String, HtmlTagTransformer>();
 
       if (getProxyUrl() != null) {
         LinkRewriter linkRewriter = createLinkRewriter(spec, rewriterFeature);
-        LinkingTagRewriter rewriter = new LinkingTagRewriter(linkRewriter,
+        LinkingTagRewriter rewriter = new LinkingTagRewriter(
+            linkRewriter,
             source);
         Set<String> toProcess = new HashSet<String>(rewriter.getSupportedTags());
         toProcess.retainAll(rewriterFeature.getIncludedTags());
@@ -164,17 +163,14 @@ public class DefaultContentRewriter implements ContentRewriter {
           transformerMap.put(tag, rewriter);
         }
         if (rewriterFeature.getIncludedTags().contains("style")) {
-          transformerMap.put("style",
-              new StyleTagRewriter(source, linkRewriter));
+          transformerMap.put("style", new StyleTagRewriter(source, linkRewriter));
         }
       }
-      if (getConcatUrl() != null
-          && rewriterFeature.getIncludedTags().contains("script")) {
-        transformerMap.put("script", new JavascriptTagMerger(spec,
-            rewriterFeature, getConcatUrl(), source));
+      if (getConcatUrl() != null && rewriterFeature.getIncludedTags().contains("script")) {
+        transformerMap
+            .put("script", new JavascriptTagMerger(spec, rewriterFeature, getConcatUrl(), source));
       }
-      HtmlRewriter.rewrite(new StringReader(mc.getContent()), source,
-          transformerMap, w);
+      HtmlRewriter.rewrite(new StringReader(mc.getContent()), source, transformerMap, w);
       return true;
     } else if (isCSS(mimeType)) {
       if (getProxyUrl() != null) {
@@ -208,7 +204,6 @@ public class DefaultContentRewriter implements ContentRewriter {
 
   protected LinkRewriter createLinkRewriter(GadgetSpec spec,
       ContentRewriterFeature rewriterFeature) {
-    return new ProxyingLinkRewriter(spec.getUrl(), rewriterFeature,
-        getProxyUrl());
+    return new ProxyingLinkRewriter(spec.getUrl(), rewriterFeature, getProxyUrl());
   }
 }

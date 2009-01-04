@@ -32,8 +32,7 @@ public enum AuthType {
 
     if (value != null) {
       for (AuthType authType : AuthType.values()) {
-        if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils
-            .trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils.trimToEmpty(value))) {
           return authType;
         }
       }

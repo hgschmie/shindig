@@ -18,10 +18,6 @@
  */
 package org.apache.shindig.gadgets.preload;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.FetchResponseUtils;
 import org.apache.shindig.gadgets.GadgetContext;
@@ -31,14 +27,21 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.Preload;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 /**
  * Handles HTTP Preloading (/ModulePrefs/Preload elements).
+ *
+ * @see org.apache.shindig.gadgets.spec.Preload
  */
 public class HttpPreloader implements Preloader {
   // TODO: This needs to be fixed.
@@ -49,15 +52,14 @@ public class HttpPreloader implements Preloader {
     this.fetcher = fetcherFactory;
   }
 
-  public Map<String, Callable<PreloadedData>> createPreloadTasks(
-      GadgetContext context, GadgetSpec gadget) {
+  public Map<String, Callable<PreloadedData>> createPreloadTasks(GadgetContext context,
+      GadgetSpec gadget) {
     Map<String, Callable<PreloadedData>> preloads = Maps.newHashMap();
 
     for (Preload preload : gadget.getModulePrefs().getPreloads()) {
       Set<String> preloadViews = preload.getViews();
       if (preloadViews.isEmpty() || preloadViews.contains(context.getView())) {
-        preloads.put(preload.getHref().toString(), new PreloadTask(context,
-            preload));
+        preloads.put(preload.getHref().toString(), new PreloadTask(context, preload));
       }
     }
 
@@ -77,17 +79,17 @@ public class HttpPreloader implements Preloader {
       // TODO: This should be extracted into a common helper that takes any
       // org.apache.shindig.gadgets.spec.RequestAuthenticationInfo.
       HttpRequest request = new HttpRequest(preload.getHref())
-          .setSecurityToken(context.getToken()).setOAuthArguments(
-              new OAuthArguments(preload)).setAuthType(preload.getAuthType())
-          .setContainer(context.getContainer()).setGadget(
-              Uri.fromJavaUri(context.getUrl()));
+          .setSecurityToken(context.getToken())
+          .setOAuthArguments(new OAuthArguments(preload))
+          .setAuthType(preload.getAuthType())
+          .setContainer(context.getContainer())
+          .setGadget(Uri.fromJavaUri(context.getUrl()));
       return new HttpPreloadData(fetcher.fetch(request));
     }
   }
 
   /**
-   * Implements PreloadData by returning a Map that matches the output format
-   * used by makeRequest.
+   * Implements PreloadData by returning a Map that matches the output format used by makeRequest.
    */
   private static class HttpPreloadData implements PreloadedData {
     private final JSONObject data;
@@ -95,8 +97,7 @@ public class HttpPreloader implements Preloader {
     public HttpPreloadData(HttpResponse response) {
       JSONObject data = null;
       try {
-        data = FetchResponseUtils.getResponseAsJson(response, response
-            .getResponseAsString());
+        data = FetchResponseUtils.getResponseAsJson(response, response.getResponseAsString());
       } catch (JSONException e) {
         data = new JSONObject();
       }

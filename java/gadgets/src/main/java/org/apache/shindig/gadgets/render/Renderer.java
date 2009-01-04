@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.Gadget;
@@ -34,14 +29,19 @@ import org.apache.shindig.gadgets.process.Processor;
 import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.View;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.google.inject.Inject;
 
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+
 /**
- * Validates a rendering request parameters before calling an appropriate
- * renderer.
+ * Validates a rendering request parameters before calling an appropriate renderer.
  */
 public class Renderer {
   private static final Logger LOG = Logger.getLogger(Renderer.class.getName());
@@ -51,8 +51,10 @@ public class Renderer {
   private final LockedDomainService lockedDomainService;
 
   @Inject
-  public Renderer(Processor processor, HtmlRenderer renderer,
-      ContainerConfig containerConfig, LockedDomainService lockedDomainService) {
+  public Renderer(Processor processor,
+                  HtmlRenderer renderer,
+                  ContainerConfig containerConfig,
+                  LockedDomainService lockedDomainService) {
     this.processor = processor;
     this.renderer = renderer;
     this.containerConfig = containerConfig;
@@ -61,25 +63,23 @@ public class Renderer {
 
   /**
    * Attempts to render the requested gadget.
-   * 
+   *
    * @return The results of the rendering attempt.
-   * 
+   *
    * TODO: Localize error messages.
    */
   public RenderingResults render(GadgetContext context) {
     if (!validateParent(context)) {
-      return RenderingResults
-          .error("Unsupported parent parameter. Check your container code.");
+      return RenderingResults.error("Unsupported parent parameter. Check your container code.");
     }
 
     try {
       Gadget gadget = processor.process(context);
 
       if (gadget.getCurrentView() == null) {
-        return RenderingResults
-            .error("Unable to locate an appropriate view in this gadget. "
-                + "Requested: '" + gadget.getContext().getView()
-                + "' Available: " + gadget.getSpec().getViews().keySet());
+        return RenderingResults.error("Unable to locate an appropriate view in this gadget. " +
+            "Requested: '" + gadget.getContext().getView() +
+            "' Available: " + gadget.getSpec().getViews().keySet());
       }
 
       if (gadget.getCurrentView().getType() == Content.Type.URL) {
@@ -87,8 +87,7 @@ public class Renderer {
       }
 
       GadgetSpec spec = gadget.getSpec();
-      if (!lockedDomainService.gadgetCanRender(context.getHost(), spec, context
-          .getContainer())) {
+      if (!lockedDomainService.gadgetCanRender(context.getHost(), spec, context.getContainer())) {
         return RenderingResults.mustRedirect(getRedirect(gadget));
       }
 
@@ -112,7 +111,7 @@ public class Renderer {
 
   /**
    * Validates that the parent parameter was acceptable.
-   * 
+   *
    * @return True if the parent parameter is valid for the current container.
    */
   private boolean validateParent(GadgetContext context) {
@@ -126,8 +125,7 @@ public class Renderer {
     }
 
     try {
-      JSONArray parents = containerConfig.getJsonArray(container,
-          "gadgets.parent");
+      JSONArray parents = containerConfig.getJsonArray(container, "gadgets.parent");
       if (parents == null) {
         return true;
       }
@@ -144,8 +142,7 @@ public class Renderer {
   }
 
   private Uri getRedirect(Gadget gadget) {
-    // TODO: This should probably just call UrlGenerator.getIframeUrl(), but
-    // really it should
+    // TODO: This should probably just call UrlGenerator.getIframeUrl(), but really it should
     // never happen.
     View view = gadget.getCurrentView();
     if (view.getType() == Content.Type.URL) {
