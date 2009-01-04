@@ -361,7 +361,7 @@ public class RenderingContentRewriter implements ContentRewriter {
       JSONObject featureMap = new JSONObject();
 
       for (Feature feature : prefs.getFeatures().values()) {
-        featureMap.put(feature.getFeature(), feature.getParams());
+        featureMap.put(feature.getFeature(), feature.params());
       }
       config.put("core.util", featureMap);
 

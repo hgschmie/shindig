@@ -18,12 +18,6 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URI;
-import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
@@ -40,8 +34,15 @@ import org.apache.shindig.gadgets.rewrite.lexer.DefaultContentRewriter;
 import org.apache.shindig.gadgets.rewrite.lexer.HtmlTagTransformer;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URI;
+import java.util.Map;
 
 /**
  * Compare performance of lexer rewriter and dom rewriter.
@@ -72,13 +73,12 @@ public class LexerVsDomRewriteBenchmark {
   private LexerVsDomRewriteBenchmark(String file, int numRuns) throws Exception {
     File inputFile = new File(file);
     if (!inputFile.exists() || !inputFile.canRead()) {
-      System.err
-          .println("Input file: " + file + " not found or can't be read.");
+      System.err.println("Input file: " + file + " not found or can't be read.");
       System.exit(1);
     }
 
-    Injector injector = Guice.createInjector(new PropertiesModule(),
-        new OAuthModule(), new DefaultGuiceModule());
+    Injector injector = Guice.createInjector(new PropertiesModule(), new OAuthModule(),
+        new DefaultGuiceModule());
 
     // Lexer setup
     lexerRewriter = injector.getInstance(DefaultContentRewriter.class);
@@ -90,10 +90,8 @@ public class LexerVsDomRewriteBenchmark {
     // End DOM setup
 
     final Uri url = Uri.parse("http://www.example.org/dummy.xml");
-    GadgetSpec spec = StaxTestUtils
-        .parseSpec(
-            "<Module><ModulePrefs title=''/><Content><![CDATA[]]></Content></Module>",
-            url);
+    GadgetSpec spec =  StaxTestUtils.parseSpec(
+        "<Module><ModulePrefs title=''/><Content><![CDATA[]]></Content></Module>", url);
 
     GadgetContext context = new GadgetContext() {
       @Override
@@ -102,22 +100,24 @@ public class LexerVsDomRewriteBenchmark {
       }
     };
 
-    gadget = new Gadget().setContext(context).setSpec(spec);
+    gadget = new Gadget()
+        .setContext(context)
+        .setSpec(spec);
 
     content = new String(IOUtils.toByteArray(new FileInputStream(file)));
     this.numRuns = numRuns;
 
     warmup = true;
     runLexer();
-    // run(cajaParser);
+    //run(cajaParser);
     run(nekoParser);
     run(nekoSimpleParser);
     Thread.sleep(5000L);
     warmup = false;
     System.out.println("Lexer------");
     runLexer();
-    // System.out.println("Caja-------");
-    // run(cajaParser);
+    //System.out.println("Caja-------");
+    //run(cajaParser);
     System.out.println("Neko-------");
     run(nekoParser);
     System.out.println("NekoSimple-------");
@@ -131,36 +131,35 @@ public class LexerVsDomRewriteBenchmark {
   }
 
   private void runLexer() throws Exception {
-    long startTime = System.currentTimeMillis();
+   long startTime = System.currentTimeMillis();
     for (int i = 0; i < numRuns; i++) {
       MutableContent mc = new MutableContent(null, content);
       lexerRewriter.rewrite(gadget, mc);
       mc.getContent();
     }
     long time = System.currentTimeMillis() - startTime;
-    output("Lexer Rewrite [" + time + " ms total: " + ((double) time) / numRuns
-        + "ms/run]");
+    output("Lexer Rewrite [" + time + " ms total: " +
+          ((double)time)/numRuns + "ms/run]");
   }
 
   private void run(GadgetHtmlParser parser) throws Exception {
     long startTime = System.currentTimeMillis();
     for (int i = 0; i < numRuns; i++) {
       MutableContent mc = new MutableContent(parser, content);
-      // linkRewriter.rewrite(gadget, mc);
-      // jsConcatRewriter.rewrite(gadget, mc);
-      // styleLinksRewriter.rewrite(gadget, mc);
+      //linkRewriter.rewrite(gadget, mc);
+      //jsConcatRewriter.rewrite(gadget, mc);
+      //styleLinksRewriter.rewrite(gadget, mc);
       htmlRewriter.rewrite(gadget, mc);
       mc.getContent();
     }
     long time = System.currentTimeMillis() - startTime;
-    output("DOM Rewrite [" + time + " ms total: " + ((double) time) / numRuns
-        + "ms/run]");
+    output("DOM Rewrite [" + time + " ms total: " +
+          ((double)time)/numRuns + "ms/run]");
 
   }
 
   public static void main(String[] args) {
-    // Test can be run as standalone program to test out serialization and
-    // parsing
+    // Test can be run as standalone program to test out serialization and parsing
     // performance numbers, using Caja as a parser.
     if (args.length != 2) {
       System.err.println("Args: <input-file> <num-runs>");
@@ -173,8 +172,7 @@ public class LexerVsDomRewriteBenchmark {
     try {
       numRuns = Integer.parseInt(runsArg);
     } catch (Exception e) {
-      System.err.println("Invalid num-runs argument: " + runsArg + ", reason: "
-          + e);
+      System.err.println("Invalid num-runs argument: " + runsArg + ", reason: " + e);
     }
     try {
       new LexerVsDomRewriteBenchmark(fileArg, numRuns);

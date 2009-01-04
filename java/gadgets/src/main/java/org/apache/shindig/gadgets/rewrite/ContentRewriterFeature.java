@@ -23,6 +23,7 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -83,16 +84,18 @@ public class ContentRewriterFeature {
 
     List<String> expiresOptions = Lists.newArrayListWithCapacity(3);
     if (f != null) {
-      if (f.getParams().containsKey(INCLUDE_URLS)) {
-        includeRegex = normalizeParam(f.params().get(INCLUDE_URLS), includeRegex);
+      final Map<String, String> params = f.params();
+
+      if (params.containsKey(INCLUDE_URLS)) {
+        includeRegex = normalizeParam(params.get(INCLUDE_URLS), includeRegex);
       }
 
       // Note use of default for exclude as null here to allow clearing value in the
       // presence of a container default.
-      if (f.getParams().containsKey(EXCLUDE_URLS)) {
-        excludeRegex = normalizeParam(f.params().get(EXCLUDE_URLS), null);
+      if (params.containsKey(EXCLUDE_URLS)) {
+        excludeRegex = normalizeParam(params.get(EXCLUDE_URLS), null);
       }
-      String includeTagList = f.params().get(INCLUDE_TAGS);
+      String includeTagList = params.get(INCLUDE_TAGS);
       if (includeTagList != null) {
         TreeSet<String> tags = new TreeSet<String>();
         for (String tag : includeTagList.split(",")) {
@@ -103,8 +106,8 @@ public class ContentRewriterFeature {
         includeTags = tags;
       }
 
-      if (f.getParams().containsKey(EXPIRES)) {
-        expiresOptions.add(normalizeParam(f.params().get(EXPIRES), null));
+      if (params.containsKey(EXPIRES)) {
+        expiresOptions.add(normalizeParam(params.get(EXPIRES), null));
       }
     }
 

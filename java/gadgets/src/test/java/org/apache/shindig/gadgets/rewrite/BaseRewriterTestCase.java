@@ -17,10 +17,6 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import java.net.URI;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.EasyMockTestCase;
@@ -34,15 +30,19 @@ import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+
+import java.net.URI;
+import java.util.Set;
 
 /**
  * Base class for testing content rewriting functionality
  */
 public abstract class BaseRewriterTestCase extends EasyMockTestCase {
-  public static final Uri SPEC_URL = Uri
-      .parse("http://www.example.org/dir/g.xml");
+  public static final Uri SPEC_URL = Uri.parse("http://www.example.org/dir/g.xml");
   public static final String DEFAULT_PROXY_BASE = "http://www.test.com/dir/proxy?url=";
   public static final String DEFAULT_CONCAT_BASE = "http://www.test.com/dir/concat?";
 
@@ -57,38 +57,43 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    rewriterFeatureFactory = new ContentRewriterFeatureFactory(null, ".*", "",
-        "HTTP", "embed,img,script,link,style");
+    rewriterFeatureFactory = new ContentRewriterFeatureFactory(null, ".*", "", "HTTP",
+        "embed,img,script,link,style");
     defaultRewriterFeature = rewriterFeatureFactory.getDefault();
     tags = defaultRewriterFeature.getIncludedTags();
-    defaultLinkRewriter = new ProxyingLinkRewriter(SPEC_URL,
-        defaultRewriterFeature, DEFAULT_PROXY_BASE);
+    defaultLinkRewriter = new ProxyingLinkRewriter(
+        SPEC_URL,
+        defaultRewriterFeature,
+        DEFAULT_PROXY_BASE);
     injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
-    fakeResponse = new HttpResponseBuilder().setHeader("Content-Type",
-        "unknown").setResponse(new byte[] { (byte) 0xFE, (byte) 0xFF })
-        .create();
+    fakeResponse = new HttpResponseBuilder().setHeader("Content-Type", "unknown")
+        .setResponse(new byte[]{ (byte)0xFE, (byte)0xFF}).create();
   }
 
-  public static GadgetSpec createSpecWithRewrite(String include,
-      String exclude, String expires, Set<String> tags) throws Exception {
-    String xml = "<Module>" + "<ModulePrefs title=\"title\">"
-        + "<Optional feature=\"content-rewrite\">\n"
-        + "      <Param name=\"expires\">" + expires + "</Param>\n"
-        + "      <Param name=\"include-urls\">" + include + "</Param>\n"
-        + "      <Param name=\"exclude-urls\">" + exclude + "</Param>\n"
-        + "      <Param name=\"include-tags\">" + StringUtils.join(tags, ",")
-        + "</Param>\n" + "</Optional>" + "</ModulePrefs>"
-        + "<Content type=\"html\">Hello!</Content>" + "</Module>";
+  public static GadgetSpec createSpecWithRewrite(String include, String exclude, String expires,
+      Set<String> tags) throws Exception {
+    String xml = "<Module>" +
+                 "<ModulePrefs title=\"title\">" +
+                 "<Optional feature=\"content-rewrite\">\n" +
+                 "      <Param name=\"expires\">" + expires + "</Param>\n" +
+                 "      <Param name=\"include-urls\">" + include + "</Param>\n" +
+                 "      <Param name=\"exclude-urls\">" + exclude + "</Param>\n" +
+                 "      <Param name=\"include-tags\">" + StringUtils.join(tags, ",") + "</Param>\n" +
+                 "</Optional>" +
+                 "</ModulePrefs>" +
+                 "<Content type=\"html\">Hello!</Content>" +
+                 "</Module>";
     return StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
   public static GadgetSpec createSpecWithoutRewrite() throws Exception {
-    String xml = "<Module>" + "<ModulePrefs title=\"title\">"
-        + "</ModulePrefs>" + "<Content type=\"html\">Hello!</Content>"
-        + "</Module>";
+    String xml = "<Module>" +
+                 "<ModulePrefs title=\"title\">" +
+                 "</ModulePrefs>" +
+                 "<Content type=\"html\">Hello!</Content>" +
+                 "</Module>";
     return StaxTestUtils.parseSpec(xml, SPEC_URL);
-
   }
 
   ContentRewriterFeatureFactory mockContentRewriterFeatureFactory(
@@ -96,15 +101,16 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
     return new FakeRewriterFeatureFactory(feature);
   }
 
-  String rewriteHelper(ContentRewriter rewriter, String s) throws Exception {
+  String rewriteHelper(ContentRewriter rewriter, String s)
+      throws Exception {
     MutableContent mc = rewriteContent(rewriter, s);
     String rewrittenContent = mc.getContent();
 
     // Strip around the HTML tags for convenience
     int htmlTagIndex = rewrittenContent.indexOf("<HTML>");
     if (htmlTagIndex != -1) {
-      return rewrittenContent.substring(htmlTagIndex + 6, rewrittenContent
-          .lastIndexOf("</HTML>"));
+      return rewrittenContent.substring(htmlTagIndex + 6,
+          rewrittenContent.lastIndexOf("</HTML>"));
     }
     return rewrittenContent;
   }
@@ -114,8 +120,8 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
     MutableContent mc = new MutableContent(parser, s);
 
     GadgetSpec spec = StaxTestUtils.parseSpec(
-        "<Module><ModulePrefs title=''/><Content><![CDATA[" + s
-            + "]]></Content></Module>", SPEC_URL);
+        "<Module><ModulePrefs title=''/><Content><![CDATA[" + s + "]]></Content></Module>",
+        SPEC_URL);
 
     GadgetContext context = new GadgetContext() {
       @Override
@@ -124,13 +130,14 @@ public abstract class BaseRewriterTestCase extends EasyMockTestCase {
       }
     };
 
-    Gadget gadget = new Gadget().setContext(context).setSpec(spec);
+    Gadget gadget = new Gadget()
+        .setContext(context)
+        .setSpec(spec);
     rewriter.rewrite(gadget, mc);
     return mc;
   }
 
-  private static class FakeRewriterFeatureFactory extends
-      ContentRewriterFeatureFactory {
+  private static class FakeRewriterFeatureFactory extends ContentRewriterFeatureFactory {
     private final ContentRewriterFeature feature;
 
     public FakeRewriterFeatureFactory(ContentRewriterFeature feature) {

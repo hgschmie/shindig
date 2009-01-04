@@ -18,16 +18,13 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.PropertiesModule;
@@ -53,6 +50,7 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.apache.shindig.gadgets.spec.View;
+
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.json.JSONException;
@@ -67,25 +65,26 @@ import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Tests for RenderingContentRewriter.
  */
 public class RenderingContentRewriterTest {
-  private static final Uri SPEC_URL = Uri
-      .parse("http://example.org/gadget.xml");
+  private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
   private static final String BODY_CONTENT = "Some body content";
   private final IMocksControl control = EasyMock.createNiceControl();
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
-  private final ContainerConfig config = control
-      .createMock(ContainerConfig.class);
+  private final ContainerConfig config = control.createMock(ContainerConfig.class);
   private final UrlGenerator urlGenerator = new FakeUrlGenerator();
 
   private FakeGadgetFeatureRegistry featureRegistry;
@@ -93,8 +92,8 @@ public class RenderingContentRewriterTest {
   private GadgetHtmlParser parser;
 
   static final Pattern DOCUMENT_SPLIT_PATTERN = Pattern.compile(
-      "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)",
-      Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+      "(.*)<head>(.*?)<\\/head>(?:.*)<body(.*?)>(.*?)<\\/body>(?:.*)", Pattern.DOTALL |
+      Pattern.CASE_INSENSITIVE);
 
   static final int BEFORE_HEAD_GROUP = 1;
   static final int HEAD_GROUP = 2;
@@ -104,17 +103,18 @@ public class RenderingContentRewriterTest {
   @Before
   public void setUp() throws Exception {
     featureRegistry = new FakeGadgetFeatureRegistry();
-    rewriter = new RenderingContentRewriter(messageBundleFactory, config,
-        featureRegistry, urlGenerator);
-    Injector injector = Guice.createInjector(new ParseModule(),
-        new PropertiesModule());
+    rewriter
+        = new RenderingContentRewriter(messageBundleFactory, config, featureRegistry, urlGenerator);
+    Injector injector = Guice.createInjector(new ParseModule(), new PropertiesModule());
     parser = injector.getInstance(GadgetHtmlParser.class);
   }
 
   private Gadget makeGadgetWithSpec(String gadgetXml) throws Exception {
     GadgetSpec spec = StaxTestUtils.parseSpec(gadgetXml, SPEC_URL);
-    return new Gadget().setContext(new GadgetContext()).setPreloads(
-        new NullPreloads()).setSpec(spec);
+    return new Gadget()
+        .setContext(new GadgetContext())
+        .setPreloads(new NullPreloads())
+        .setSpec(spec);
   }
 
   private Gadget makeDefaultGadget() throws Exception {
@@ -138,17 +138,16 @@ public class RenderingContentRewriterTest {
 
     Matcher matcher = DOCUMENT_SPLIT_PATTERN.matcher(rewritten);
     assertTrue("Output is not valid HTML.", matcher.matches());
-    assertTrue("Missing opening html tag", matcher.group(BEFORE_HEAD_GROUP)
-        .toLowerCase().contains("<html>"));
-    assertTrue("Default CSS missing.", matcher.group(HEAD_GROUP).contains(
-        DEFAULT_CSS));
+    assertTrue("Missing opening html tag", matcher.group(BEFORE_HEAD_GROUP).
+        toLowerCase().contains("<html>"));
+    assertTrue("Default CSS missing.", matcher.group(HEAD_GROUP).contains(DEFAULT_CSS));
     // Not very accurate -- could have just been user prefs.
-    assertTrue("Default javascript not included.", matcher.group(HEAD_GROUP)
-        .contains("<script>"));
-    assertTrue("Original document not preserved.", matcher.group(BODY_GROUP)
-        .contains(BODY_CONTENT));
-    assertTrue("gadgets.util.runOnLoadHandlers not invoked.", matcher.group(
-        BODY_GROUP).contains("gadgets.util.runOnLoadHandlers();"));
+    assertTrue("Default javascript not included.",
+        matcher.group(HEAD_GROUP).contains("<script>"));
+    assertTrue("Original document not preserved.",
+        matcher.group(BODY_GROUP).contains(BODY_CONTENT));
+    assertTrue("gadgets.util.runOnLoadHandlers not invoked.",
+        matcher.group(BODY_GROUP).contains("gadgets.util.runOnLoadHandlers();"));
   }
 
   @Test
@@ -157,9 +156,14 @@ public class RenderingContentRewriterTest {
     String head = "<script src=\"foo.js\"></script><style type=\"text/css\">body{color:red;}</style>";
     String bodyAttr = " onload=\"foo();\"";
     String body = "hello, world.";
-    String doc = new StringBuilder().append(docType).append("<html><head>")
-        .append(head).append("</head><body").append(bodyAttr).append(">")
-        .append(body).append("</body></html>").toString();
+    String doc = new StringBuilder()
+        .append(docType)
+        .append("<html><head>")
+        .append(head)
+        .append("</head><body").append(bodyAttr).append(">")
+        .append(body)
+        .append("</body></html>")
+        .toString();
 
     GadgetContext context = new GadgetContext() {
       @Override
@@ -171,7 +175,8 @@ public class RenderingContentRewriterTest {
       }
     };
 
-    Gadget gadget = makeDefaultGadget().setContext(context);
+    Gadget gadget = makeDefaultGadget()
+        .setContext(context);
 
     featureRegistry.addInline("foo", "does-not-matter");
     control.replay();
@@ -180,31 +185,31 @@ public class RenderingContentRewriterTest {
 
     Matcher matcher = DOCUMENT_SPLIT_PATTERN.matcher(rewritten);
     assertTrue("Output is not valid HTML.", matcher.matches());
-    assertTrue("DOCTYPE not preserved", matcher.group(BEFORE_HEAD_GROUP)
-        .contains(docType));
-    assertTrue("Missing opening html tag", matcher.group(BEFORE_HEAD_GROUP)
-        .contains("<html>"));
-    assertTrue("Custom head content is missing.", matcher.group(HEAD_GROUP)
-        .contains(head));
-    assertTrue("Forced javascript not included.", matcher.group(HEAD_GROUP)
-        .contains("<script src=\"/js/foo\">"));
+    assertTrue("DOCTYPE not preserved", matcher.group(BEFORE_HEAD_GROUP).contains(docType));
+    assertTrue("Missing opening html tag", matcher.group(BEFORE_HEAD_GROUP).contains("<html>"));
+    assertTrue("Custom head content is missing.", matcher.group(HEAD_GROUP).contains(head));
+    assertTrue("Forced javascript not included.",
+        matcher.group(HEAD_GROUP).contains("<script src=\"/js/foo\">"));
     assertFalse("Default styling was injected when a doctype was specified.",
         matcher.group(HEAD_GROUP).contains(DEFAULT_CSS));
-    assertTrue("Custom body attributes missing.", matcher.group(
-        BODY_ATTRIBUTES_GROUP).contains(bodyAttr));
-    assertTrue("Original document not preserved.", matcher.group(BODY_GROUP)
-        .contains(body));
-    assertTrue("gadgets.util.runOnLoadHandlers not invoked.", matcher.group(
-        BODY_GROUP).contains("gadgets.util.runOnLoadHandlers();"));
+    assertTrue("Custom body attributes missing.",
+        matcher.group(BODY_ATTRIBUTES_GROUP).contains(bodyAttr));
+    assertTrue("Original document not preserved.",
+        matcher.group(BODY_GROUP).contains(body));
+    assertTrue("gadgets.util.runOnLoadHandlers not invoked.",
+        matcher.group(BODY_GROUP).contains("gadgets.util.runOnLoadHandlers();"));
 
     // Skipping other tests; code path should be the same for the rest.
   }
 
   @Test
   public void bidiSettings() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Locale language_direction='rtl'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Locale language_direction='rtl'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -212,14 +217,13 @@ public class RenderingContentRewriterTest {
 
     String rewritten = rewrite(gadget, "");
 
-    assertTrue("Bi-directional locale settings not preserved.", rewritten
-        .contains("<body dir=\"rtl\">"));
+    assertTrue("Bi-directional locale settings not preserved.",
+        rewritten.contains("<body dir=\"rtl\">"));
   }
 
   private Set<String> getInjectedScript(String content) {
-    Pattern featurePattern = Pattern
-        .compile("(?:.*)<script src=\"\\/js\\/(.*?)\"><\\/script>(?:.*)",
-            Pattern.DOTALL);
+    Pattern featurePattern
+        = Pattern.compile("(?:.*)<script src=\"\\/js\\/(.*?)\"><\\/script>(?:.*)", Pattern.DOTALL);
     Matcher matcher = featurePattern.matcher(content);
 
     assertTrue("Forced scripts not injected.", matcher.matches());
@@ -229,9 +233,12 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void forcedFeaturesInjectedExternal() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     final Collection<String> libs = Arrays.asList("foo", "bar", "baz");
     GadgetContext context = new GadgetContext() {
@@ -260,9 +267,12 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void inlinedFeaturesWhenNothingForced() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -271,15 +281,17 @@ public class RenderingContentRewriterTest {
 
     String rewritten = rewrite(gadget, "");
 
-    assertTrue("Requested scripts not inlined.", rewritten
-        .contains("foo_content();"));
+    assertTrue("Requested scripts not inlined.", rewritten.contains("foo_content();"));
   }
 
   @Test
   public void mixedExternalAndInline() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     final Collection<String> libs = Arrays.asList("bar", "baz");
     GadgetContext context = new GadgetContext() {
@@ -304,8 +316,7 @@ public class RenderingContentRewriterTest {
     Set<String> actual = getInjectedScript(rewritten);
     Set<String> expected = Sets.immutableSortedSet("bar", "baz");
     assertEquals(expected, actual);
-    assertTrue("Requested scripts not inlined.", rewritten
-        .contains("foo_content();"));
+    assertTrue("Requested scripts not inlined.", rewritten.contains("foo_content();"));
   }
 
   @Test
@@ -327,20 +338,21 @@ public class RenderingContentRewriterTest {
     // Anything else here, we added.
     int ourPosition = headContent.indexOf("<script>");
 
-    assertTrue("Injected script must come before user script.",
-        ourPosition < userPosition);
+    assertTrue("Injected script must come before user script.", ourPosition < userPosition);
   }
 
   @Test
   public void featuresDeclaredBeforeUsed() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
-    featureRegistry.addInline("foo",
-        "gadgets.Prefs.setMessages_ = function(){};");
+    featureRegistry.addInline("foo", "gadgets.Prefs.setMessages_ = function(){};");
     control.replay();
 
     String rewritten = rewrite(gadget, BODY_CONTENT);
@@ -356,15 +368,18 @@ public class RenderingContentRewriterTest {
     // Anything else here, we added.
     int usedPosition = headContent.indexOf("gadgets.Prefs.setMessages_");
 
-    assertTrue("Inline JS needs to exist before it is used.",
-        declaredPosition < usedPosition);
+    assertTrue("Inline JS needs to exist before it is used.", declaredPosition < usedPosition);
   }
 
   @Test
   public void urlFeaturesForcedExternal() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "  <Require feature='bar'/>"
-        + "</ModulePrefs>" + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "  <Require feature='bar'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     GadgetContext context = new GadgetContext() {
       @Override
@@ -388,15 +403,14 @@ public class RenderingContentRewriterTest {
     Set<String> actual = getInjectedScript(rewritten);
     Set<String> expected = Sets.immutableSortedSet("baz");
     assertEquals(expected, actual);
-    assertTrue("Requested scripts not inlined.", rewritten
-        .contains("foo_content();"));
-    assertTrue("Forced external file not forced.", rewritten
-        .contains("<script src=\"http://example.org/external.js\">"));
+    assertTrue("Requested scripts not inlined.", rewritten.contains("foo_content();"));
+    assertTrue("Forced external file not forced.",
+        rewritten.contains("<script src=\"http://example.org/external.js\">"));
   }
 
   private JSONObject getConfigJson(String content) throws JSONException {
-    Pattern prefsPattern = Pattern.compile(
-        "(?:.*)gadgets\\.config\\.init\\((.*)\\);(?:.*)", Pattern.DOTALL);
+    Pattern prefsPattern
+        = Pattern.compile("(?:.*)gadgets\\.config\\.init\\((.*)\\);(?:.*)", Pattern.DOTALL);
     Matcher matcher = prefsPattern.matcher(content);
     assertTrue("gadgets.config.init not invoked.", matcher.matches());
     return new JSONObject(matcher.group(1));
@@ -404,9 +418,12 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void featureConfigurationInjected() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -414,8 +431,7 @@ public class RenderingContentRewriterTest {
 
     JSONObject conf = new JSONObject();
     conf.put("foo", "blah");
-    expect(
-        config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
+    expect(config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
         .andReturn(conf);
     control.replay();
 
@@ -427,9 +443,12 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void featureConfigurationForced() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     GadgetContext context = new GadgetContext() {
       @Override
@@ -446,9 +465,9 @@ public class RenderingContentRewriterTest {
     featureRegistry.addInline("foo", "");
     featureRegistry.addInline("bar", "");
     JSONObject conf = new JSONObject();
-    conf.put("foo", "blah").put("bar", "baz");
-    expect(
-        config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
+    conf.put("foo", "blah")
+        .put("bar", "baz");
+    expect(config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
         .andReturn(conf);
     control.replay();
 
@@ -461,18 +480,21 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void gadgetsUtilConfigInjected() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'>" + "    <Param name='bar'>baz</Param>"
-        + "  </Require>" + "</ModulePrefs>" + "<Content type='html'/>"
-        + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'>" +
+      "    <Param name='bar'>baz</Param>" +
+      "  </Require>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
     featureRegistry.addInline("foo", "");
     JSONObject conf = new JSONObject();
     conf.put("foo", "blah");
-    expect(
-        config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
+    expect(config.getJsonObject(ContainerConfig.DEFAULT_CONTAINER, FEATURES_KEY))
         .andReturn(conf);
     control.replay();
 
@@ -490,12 +512,17 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void userPrefsInitializationInjected() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>" + "  <Locale>"
-        + "    <msg name='one'>foo</msg>" + "    <msg name='two'>bar</msg>"
-        + "  </Locale>" + "</ModulePrefs>"
-        + "<UserPref name='pref_one' default_value='default_one'/>"
-        + "<UserPref name='pref_two'/>" + "<Content type='html'/>"
-        + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Locale>" +
+      "    <msg name='one'>foo</msg>" +
+      "    <msg name='two'>bar</msg>" +
+      "  </Locale>" +
+      "</ModulePrefs>" +
+      "<UserPref name='pref_one' default_value='default_one'/>" +
+      "<UserPref name='pref_two'/>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -503,9 +530,8 @@ public class RenderingContentRewriterTest {
 
     String rewritten = rewrite(gadget, "");
 
-    Pattern prefsPattern = Pattern
-        .compile("(?:.*)gadgets\\.Prefs\\.setMessages_\\((.*)\\);(?:.*)",
-            Pattern.DOTALL);
+    Pattern prefsPattern
+        = Pattern.compile("(?:.*)gadgets\\.Prefs\\.setMessages_\\((.*)\\);(?:.*)", Pattern.DOTALL);
     Matcher matcher = prefsPattern.matcher(rewritten);
     assertTrue("gadgets.Prefs.setMessages_ not invoked.", matcher.matches());
     JSONObject json = new JSONObject(matcher.group(1));
@@ -513,11 +539,9 @@ public class RenderingContentRewriterTest {
     assertEquals("bar", json.get("two"));
 
     Pattern defaultsPattern = Pattern.compile(
-        "(?:.*)gadgets\\.Prefs\\.setDefaultPrefs_\\((.*)\\);(?:.*)",
-        Pattern.DOTALL);
+        "(?:.*)gadgets\\.Prefs\\.setDefaultPrefs_\\((.*)\\);(?:.*)", Pattern.DOTALL);
     Matcher defaultsMatcher = defaultsPattern.matcher(rewritten);
-    assertTrue("gadgets.Prefs.setDefaultPrefs_ not invoked.", defaultsMatcher
-        .matches());
+    assertTrue("gadgets.Prefs.setDefaultPrefs_ not invoked.", defaultsMatcher.matches());
     JSONObject defaultsJson = new JSONObject(defaultsMatcher.group(1));
     assertEquals(2, defaultsJson.length());
     assertEquals("default_one", defaultsJson.get("pref_one"));
@@ -526,9 +550,12 @@ public class RenderingContentRewriterTest {
 
   @Test(expected = RuntimeException.class)
   public void unsupportedFeatureThrows() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Require feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Require feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -539,9 +566,12 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void unsupportedOptionalFeatureDoesNotThrow() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Optional feature='foo'/>" + "</ModulePrefs>"
-        + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Optional feature='foo'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -553,9 +583,13 @@ public class RenderingContentRewriterTest {
 
   @Test
   public void multipleUnsupportedOptionalFeaturesDoNotThrow() throws Exception {
-    String gadgetXml = "<Module><ModulePrefs title=''>"
-        + "  <Optional feature='foo'/>" + "  <Optional feature='bar'/>"
-        + "</ModulePrefs>" + "<Content type='html'/>" + "</Module>";
+    String gadgetXml =
+      "<Module><ModulePrefs title=''>" +
+      "  <Optional feature='foo'/>" +
+      "  <Optional feature='bar'/>" +
+      "</ModulePrefs>" +
+      "<Content type='html'/>" +
+      "</Module>";
 
     Gadget gadget = makeGadgetWithSpec(gadgetXml);
 
@@ -566,8 +600,8 @@ public class RenderingContentRewriterTest {
   }
 
   private JSONObject getPreloadedJson(String content) throws JSONException {
-    Pattern preloadPattern = Pattern.compile(
-        "(?:.*)gadgets\\.io\\.preloaded_=\\{(.*?)\\};(?:.*)", Pattern.DOTALL);
+    Pattern preloadPattern
+        = Pattern.compile("(?:.*)gadgets\\.io\\.preloaded_=\\{(.*?)\\};(?:.*)", Pattern.DOTALL);
     Matcher matcher = preloadPattern.matcher(content);
     assertTrue("gadgets.io.preloaded not set.", matcher.matches());
     return new JSONObject('{' + matcher.group(1) + '}');
@@ -582,10 +616,8 @@ public class RenderingContentRewriterTest {
     preloadData.put("integer", 99);
     preloadData.put("double", 4343434.345345d);
 
-    // Other types are supported (anything valid for org.json.JSONObject), but
-    // equality comparisons
-    // are more complicated because JSON doesn't implement interfaces like
-    // Collection or Map, or
+    // Other types are supported (anything valid for org.json.JSONObject), but equality comparisons
+    // are more complicated because JSON doesn't implement interfaces like Collection or Map, or
     // implementing equals.
 
     Preloads preloads = new Preloads() {
@@ -620,7 +652,6 @@ public class RenderingContentRewriterTest {
       public PreloadedData getData(final String key) throws PreloadException {
         throw new PreloadException("broken");
       }
-
       public Set<String> getKeys() {
         return Sets.immutableSortedSet("foo");
       }
@@ -639,12 +670,10 @@ public class RenderingContentRewriterTest {
   private String getBaseElement(String content) {
     Matcher matcher = DOCUMENT_SPLIT_PATTERN.matcher(content);
     assertTrue("Output is not valid HTML.", matcher.matches());
-    Pattern baseElementPattern = Pattern.compile(
-        "^<base href=\"(.*?)\">(?:.*)", Pattern.DOTALL);
-    Matcher baseElementMatcher = baseElementPattern.matcher(matcher
-        .group(HEAD_GROUP));
-    assertTrue(
-        "Base element does not exist at the beginning of the head element.",
+    Pattern baseElementPattern
+        = Pattern.compile("^<base href=\"(.*?)\">(?:.*)", Pattern.DOTALL);
+    Matcher baseElementMatcher = baseElementPattern.matcher(matcher.group(HEAD_GROUP));
+    assertTrue("Base element does not exist at the beginning of the head element.",
         baseElementMatcher.matches());
     return baseElementMatcher.group(1);
   }
@@ -653,8 +682,7 @@ public class RenderingContentRewriterTest {
   public void baseElementInsertedWhenContentIsInline() throws Exception {
     Gadget gadget = makeDefaultGadget();
 
-    expect(
-        config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
+    expect(config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
         .andReturn("true");
 
     control.replay();
@@ -671,12 +699,11 @@ public class RenderingContentRewriterTest {
 
     String viewUrl = "http://example.org/view.html";
     String xml = "<Content type='url' href='" + viewUrl + "'/>";
-    View fakeView = new View("foo", Collections.singleton(StaxTestUtils
-        .parseElement(xml, new Content.Parser(Uri.parse(viewUrl)))), SPEC_URL);
+    View fakeView = new View("foo", Collections.singleton(StaxTestUtils.parseElement(xml,
+        new Content.Parser(Uri.parse(viewUrl)))), SPEC_URL);
     gadget.setCurrentView(fakeView);
 
-    expect(
-        config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
+    expect(config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
         .andReturn("true");
 
     control.replay();
@@ -691,23 +718,20 @@ public class RenderingContentRewriterTest {
   public void baseElementNotInsertedWhenConfigDoesNotAllowIt() throws Exception {
     Gadget gadget = makeDefaultGadget();
 
-    expect(
-        config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
+    expect(config.get(ContainerConfig.DEFAULT_CONTAINER, INSERT_BASE_ELEMENT_KEY))
         .andReturn("false");
 
     control.replay();
 
     String rewritten = rewrite(gadget, BODY_CONTENT);
-    assertFalse("Base element injected incorrectly.", rewritten
-        .contains("<base"));
+    assertFalse("Base element injected incorrectly.", rewritten.contains("<base"));
   }
 
   /**
    * Simple message bundle factory -- only honors inline bundles.
    */
   private static class FakeMessageBundleFactory implements MessageBundleFactory {
-    public MessageBundle getBundle(GadgetSpec spec, Locale locale,
-        boolean ignoreCache) {
+    public MessageBundle getBundle(GadgetSpec spec, Locale locale, boolean ignoreCache) {
       LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
       if (localeSpec == null) {
         return MessageBundle.EMPTY;
@@ -717,8 +741,7 @@ public class RenderingContentRewriterTest {
   }
 
   private static class FakeUrlGenerator implements UrlGenerator {
-    public String getBundledJsParam(Collection<String> features,
-        GadgetContext context) {
+    public String getBundledJsParam(Collection<String> features, GadgetContext context) {
       throw new UnsupportedOperationException();
     }
 
@@ -726,8 +749,7 @@ public class RenderingContentRewriterTest {
       throw new UnsupportedOperationException();
     }
 
-    public String getBundledJsUrl(Collection<String> features,
-        GadgetContext context) {
+    public String getBundledJsUrl(Collection<String> features, GadgetContext context) {
       return "/js/" + Join.join(":", features);
     }
   }

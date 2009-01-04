@@ -49,7 +49,7 @@ public class OAuthArgumentsTest {
     		"OAUTH_USE_TOKEN='never' " +
     		"/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri.parse("http://www.example.com/")));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri.EMPTY_URI));
 
     OAuthArguments params = new OAuthArguments(preload);
     assertEquals("service", params.getServiceName());
