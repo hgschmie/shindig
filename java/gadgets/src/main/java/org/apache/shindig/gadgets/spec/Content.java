@@ -58,7 +58,7 @@ public class Content extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Content(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected Content(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

@@ -36,7 +36,7 @@ public class OAuthAuthorization extends SpecElement {
 
   public static final String ATTR_URL = "url";
 
-  public OAuthAuthorization(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected OAuthAuthorization(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

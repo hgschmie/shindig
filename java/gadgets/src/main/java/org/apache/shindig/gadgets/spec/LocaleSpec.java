@@ -47,7 +47,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  public LocaleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected LocaleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

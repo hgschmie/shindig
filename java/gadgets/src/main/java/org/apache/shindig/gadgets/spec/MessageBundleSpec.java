@@ -46,7 +46,7 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
 
   private StringBuilder text = new StringBuilder();
 
-  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected MessageBundleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

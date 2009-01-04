@@ -45,7 +45,7 @@ public class LocaleMsg extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public LocaleMsg(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected LocaleMsg(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
