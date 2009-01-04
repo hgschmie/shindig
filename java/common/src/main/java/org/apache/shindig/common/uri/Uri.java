@@ -18,14 +18,14 @@
  */
 package org.apache.shindig.common.uri;
 
+import com.google.common.collect.Maps;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.Maps;
 
 /**
  * Represents a Uniform Resource Identifier (URI) reference as defined by <a
@@ -51,8 +51,7 @@ public final class Uri {
     path = builder.getPath();
     query = builder.getQuery();
     fragment = builder.getFragment();
-    queryParameters = Collections.unmodifiableMap(Maps.newLinkedHashMap(builder
-        .getQueryParameters()));
+    queryParameters = Collections.unmodifiableMap(Maps.newLinkedHashMap(builder.getQueryParameters()));
 
     StringBuilder out = new StringBuilder();
 
@@ -102,17 +101,20 @@ public final class Uri {
   }
 
   public final boolean isHttpUri() {
-    return "http".equalsIgnoreCase(getScheme())
-        || "https".equalsIgnoreCase(getScheme());
+    return "http".equalsIgnoreCase(getScheme()) || "https".equalsIgnoreCase(getScheme());
   }
 
   /**
    * Convert a java.net.URI to a Uri.
    */
   public static Uri fromJavaUri(URI uri) {
-    return new UriBuilder().setScheme(uri.getScheme()).setAuthority(
-        uri.getRawAuthority()).setPath(uri.getRawPath()).setQuery(
-        uri.getRawQuery()).setFragment(uri.getRawFragment()).toUri();
+    return new UriBuilder()
+        .setScheme(uri.getScheme())
+        .setAuthority(uri.getRawAuthority())
+        .setPath(uri.getRawPath())
+        .setQuery(uri.getRawQuery())
+        .setFragment(uri.getRawFragment())
+        .toUri();
   }
 
   /**
@@ -128,8 +130,7 @@ public final class Uri {
   }
 
   /**
-   * Resolves a given url relative to this url. Resolution rules are the same as
-   * for {@code java.net.URI.resolve(URI)}
+   * Resolves a given url relative to this url. Resolution rules are the same as for {@code java.net.URI.resolve(URI)}
    * 
    * @param other
    *          The url to resolve against.

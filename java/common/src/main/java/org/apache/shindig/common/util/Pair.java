@@ -44,7 +44,10 @@ public class Pair<K, V> {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).appendSuper(super.toString()).append(
-        "key", getKey()).append("value", getValue()).toString();
+    return new ToStringBuilder(this)
+      .appendSuper(super.toString())
+      .append("key", getKey())
+      .append("value", getValue())
+      .toString();
   }
 }
