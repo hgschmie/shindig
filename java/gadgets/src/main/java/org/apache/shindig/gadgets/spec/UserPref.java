@@ -65,7 +65,7 @@ public class UserPref extends SpecElement {
   private final List<Pair<String, String>> orderedEnums = new LinkedList<Pair<String, String>>();
   private final Map<String, String> enumMap = new HashMap<String, String>();
 
-  public UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  protected UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

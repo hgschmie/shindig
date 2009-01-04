@@ -61,8 +61,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   private List<Content> contents = new ArrayList<Content>();
 
-  public ShindigGadgetSpec(final QName name, final Uri base,
-      final String checksum) {
+  protected ShindigGadgetSpec(final QName name, final Uri base, final String checksum) {
     super(name, Collections.<String, QName> emptyMap(), base);
     this.checksum = checksum;
   }

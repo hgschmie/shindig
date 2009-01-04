@@ -74,8 +74,7 @@ public class ModulePrefs extends SpecElement {
 
   private OAuthSpec oauth = null;
 
-  public ModulePrefs(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected ModulePrefs(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

@@ -33,8 +33,7 @@ public class GenericElement extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public GenericElement(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected GenericElement(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

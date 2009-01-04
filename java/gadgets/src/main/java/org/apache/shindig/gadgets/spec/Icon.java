@@ -42,8 +42,7 @@ public class Icon extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Icon(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected Icon(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 

@@ -50,12 +50,11 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
   public static final String ATTR_OAUTH_USE_TOKEN = "oauth_use_token";
 
-  public Preload(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected Preload(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  private Preload(final Preload preload, final Substitutions substituter) {
+  protected Preload(final Preload preload, final Substitutions substituter) {
     super(preload, substituter);
 
     setAttr(ATTR_VIEWS, StringUtils.join(preload.getViews(), ','));

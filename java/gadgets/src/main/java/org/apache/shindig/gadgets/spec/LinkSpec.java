@@ -37,8 +37,7 @@ public class LinkSpec extends SpecElement {
   public static final String ATTR_REL = "rel";
   public static final String ATTR_HREF = "href";
 
-  public LinkSpec(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected LinkSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
