@@ -21,6 +21,14 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.ImmutableSet;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -28,17 +36,9 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.ImmutableSet;
-
 public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
 
   public static final String ATTR_HREF = "href";
   public static final String ATTR_AUTHZ = "authz";
@@ -51,8 +51,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   public static final String ATTR_OAUTH_REQUEST_TOKEN_SECRET = "oauth_request_token_secret";
   public static final String ATTR_OAUTH_USE_TOKEN = "oauth_use_token";
 
-  public Preload(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public Preload(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -63,15 +62,13 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     setAttr(ATTR_AUTHZ, preload.getAuthType().toString());
     setAttr(ATTR_SIGN_OWNER, String.valueOf(preload.isSignOwner()));
     setAttr(ATTR_SIGN_VIEWER, String.valueOf(preload.isSignViewer()));
-    setAttr(ATTR_HREF, getBase().resolve(
-        substituter.substituteUri(preload.getHref())).toString());
+    setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(preload.getHref())).toString());
   }
 
   /**
-   * Produces a new Preload by substituting hangman variables from substituter.
-   * See comments on individual fields to see what actually has substitutions
-   * performed.
-   *
+   * Produces a new Preload by substituting hangman variables from substituter. See comments on individual fields to see
+   * what actually has substitutions performed.
+   * 
    * @param substituter
    */
   @Override
@@ -96,8 +93,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   }
 
   public Set<String> getViews() {
-    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(
-        attrDefault(ATTR_VIEWS), ',')));
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(attrDefault(ATTR_VIEWS), ',')));
   }
 
   public String getOAuthServiceName() {
@@ -117,8 +113,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (getHref() != null) {
       writeAttribute(writer, ATTR_HREF, getHref().toString());
@@ -153,8 +148,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     }
 
     if (attr(ATTR_OAUTH_REQUEST_TOKEN_SECRET) != null) {
-      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
-          getOAuthRequestTokenSecret());
+      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN_SECRET, getOAuthRequestTokenSecret());
     }
 
   }
@@ -162,8 +156,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   @Override
   public void validate() throws SpecParserException {
     if (getHref() == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@href must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@href must be set!");
     }
   }
 
@@ -180,10 +173,8 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     public Parser(final QName name, final Uri base) {
       super(name, base);
 
-      register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER,
-          ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME, ATTR_OAUTH_TOKEN_NAME,
-          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
-          ATTR_OAUTH_USE_TOKEN);
+      register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER, ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME,
+          ATTR_OAUTH_TOKEN_NAME, ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET, ATTR_OAUTH_USE_TOKEN);
     }
 
     @Override

@@ -21,20 +21,18 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class Optional extends Feature {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Optional");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Optional");
 
-  public Optional(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public Optional(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base, false);
   }
 

@@ -21,25 +21,23 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class GenericElement extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public GenericElement(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public GenericElement(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected GenericElement(final GenericElement genericElement,
-      final Substitutions substituter) {
+  protected GenericElement(final GenericElement genericElement, final Substitutions substituter) {
     super(genericElement, substituter);
   }
 
@@ -68,16 +66,14 @@ public class GenericElement extends SpecElement {
     }
 
     @Override
-    protected void addText(final XMLStreamReader reader,
-        final GenericElement element) {
+    protected void addText(final XMLStreamReader reader, final GenericElement element) {
       if (!reader.isWhiteSpace()) {
         element.addText(reader.getText());
       }
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader,
-        final GenericElement element, SpecElement child) {
+    protected void addChild(XMLStreamReader reader, final GenericElement element, SpecElement child) {
       element.addChild(child);
     }
   }

@@ -21,6 +21,12 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,23 +34,16 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class Icon extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Icon");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Icon");
 
   public static final String ATTR_MODE = "mode";
   public static final String ATTR_TYPE = "type";
 
   private StringBuilder text = new StringBuilder();
 
-  public Icon(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public Icon(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -83,8 +82,7 @@ public class Icon extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_MODE) != null) {
       writeAttribute(writer, ATTR_MODE, getMode().toString());

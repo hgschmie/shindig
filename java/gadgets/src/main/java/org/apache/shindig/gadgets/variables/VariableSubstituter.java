@@ -23,7 +23,6 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.MessageBundleFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
-import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 
 import com.google.inject.Inject;
 
@@ -40,23 +39,20 @@ public class VariableSubstituter {
 
   /**
    * Substitutes all hangman variables into the gadget spec.
-   * 
+   *
    * @return A new GadgetSpec, with all fields substituted as needed.
    */
-  public GadgetSpec substitute(GadgetContext context, GadgetSpec spec)
-      throws GadgetException {
-    MessageBundle bundle = messageBundleFactory.getBundle(spec, context
-        .getLocale(), context.getIgnoreCache());
-    final Direction dir = bundle.getLanguageDirection();
+  public GadgetSpec substitute(GadgetContext context, GadgetSpec spec) throws GadgetException {
+    MessageBundle bundle =
+        messageBundleFactory.getBundle(spec, context.getLocale(), context.getIgnoreCache());
+    final MessageBundle.Direction dir = bundle.getLanguageDirection();
 
     Substitutions substituter = new Substitutions();
-    substituter.addSubstitutions(Substitutions.Type.MESSAGE, bundle
-        .getMessages());
+    substituter.addSubstitutions(Substitutions.Type.MESSAGE, bundle.getMessages());
     BidiSubstituter.addSubstitutions(substituter, dir);
-    substituter.addSubstitution(Substitutions.Type.MODULE, "ID", Integer
-        .toString(context.getModuleId()));
-    UserPrefSubstituter.addSubstitutions(substituter, spec, context
-        .getUserPrefs());
+    substituter.addSubstitution(Substitutions.Type.MODULE, "ID",
+        Integer.toString(context.getModuleId()));
+    UserPrefSubstituter.addSubstitutions(substituter, spec, context.getUserPrefs());
 
     return spec.substitute(substituter);
   }

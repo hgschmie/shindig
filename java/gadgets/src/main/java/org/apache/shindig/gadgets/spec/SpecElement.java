@@ -21,6 +21,18 @@
 
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.Pair;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.StaxSupport;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.math.NumberUtils;
+
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,17 +47,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.util.Pair;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.StaxSupport;
-import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class SpecElement {
 
@@ -71,8 +72,7 @@ public abstract class SpecElement {
 
   private boolean cdataFlag = false;
 
-  protected SpecElement(final QName qName, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected SpecElement(final QName qName, final Map<String, QName> attrNames, final Uri base) {
     this.qName = qName;
     this.attrNames = attrNames;
     this.base = base;
@@ -81,8 +81,7 @@ public abstract class SpecElement {
     namespaces = new HashMap<String, String>();
   }
 
-  protected SpecElement(final SpecElement specElement,
-      final Substitutions substituter) {
+  protected SpecElement(final SpecElement specElement, final Substitutions substituter) {
     this.qName = specElement.name();
     this.attrNames = specElement.attrNames();
     this.base = specElement.getBase();
@@ -106,14 +105,12 @@ public abstract class SpecElement {
     return base;
   }
 
-  public abstract SpecElement substitute(final Substitutions subs)
-      throws GadgetException;
+  public abstract SpecElement substitute(final Substitutions subs) throws GadgetException;
 
   // ======================================================================================================================================
 
   protected void setAttr(final QName key, final String value) {
-    if (StringUtils.equalsIgnoreCase(key.getNamespaceURI(), qName
-        .getNamespaceURI())) {
+    if (StringUtils.equalsIgnoreCase(key.getNamespaceURI(), qName.getNamespaceURI())) {
       final String keyName = key.getLocalPart().toLowerCase();
       if (attrNames.containsKey(keyName)) {
         setAttr(keyName, value);
@@ -263,11 +260,10 @@ public abstract class SpecElement {
   // ======================================================================================================================================
 
   /**
-   * Should never be called directly, StaxSupport takes care of this and calls
-   * this for the root element that you want to write.
+   * Should never be called directly, StaxSupport takes care of this and calls this for the root element that you want
+   * to write.
    */
-  public void prepareWriter(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  public void prepareWriter(final XMLStreamWriter writer) throws XMLStreamException {
     writer.setDefaultNamespace(name().getNamespaceURI());
     for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
       writer.setPrefix(namespace.getKey(), namespace.getValue());
@@ -281,8 +277,7 @@ public abstract class SpecElement {
     writeAttributes(writer);
 
     for (Pair<QName, String> attribute : otherAttrs.values()) {
-      writeAttribute(writer, attribute.getKey().getLocalPart(), attribute
-          .getValue());
+      writeAttribute(writer, attribute.getKey().getLocalPart(), attribute.getValue());
     }
 
     for (Map.Entry<QName, String> attribute : nsAttrs.entrySet()) {
@@ -300,16 +295,13 @@ public abstract class SpecElement {
     writer.writeEndElement();
   }
 
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
   }
 
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
   }
 
-  protected void writeText(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeText(final XMLStreamWriter writer) throws XMLStreamException {
 
     final String text = getText();
 
@@ -324,8 +316,8 @@ public abstract class SpecElement {
 
   // ======================================================================================================================================
 
-  protected static void writeAttribute(final XMLStreamWriter writer,
-      final QName name, final String value) throws XMLStreamException {
+  protected static void writeAttribute(final XMLStreamWriter writer, final QName name, final String value)
+      throws XMLStreamException {
     if (XMLConstants.DEFAULT_NS_PREFIX.equals(name.getPrefix())) {
       writer.writeAttribute(name.getLocalPart(), value);
     } else {
@@ -333,8 +325,8 @@ public abstract class SpecElement {
     }
   }
 
-  protected void writeAttribute(final XMLStreamWriter writer,
-      final String localName, final String value) throws XMLStreamException {
+  protected void writeAttribute(final XMLStreamWriter writer, final String localName, final String value)
+      throws XMLStreamException {
     if (XMLConstants.DEFAULT_NS_PREFIX.equals(qName.getPrefix())) {
       writer.writeAttribute(localName, value);
     } else {
@@ -373,23 +365,20 @@ public abstract class SpecElement {
       return true;
     }
     SpecElement rhs = (SpecElement) other;
-    return new EqualsBuilder().append(name(), rhs.name()).append(getBase(),
-        rhs.getBase()).append(namespaces(), rhs.namespaces()).append(nsAttrs(),
-        rhs.nsAttrs()).append(otherAttrs(), rhs.otherAttrs()).append(
-        children(), rhs.children()).append(isCDATA(), rhs.isCDATA()).isEquals();
+    return new EqualsBuilder().append(name(), rhs.name()).append(getBase(), rhs.getBase()).append(namespaces(),
+        rhs.namespaces()).append(nsAttrs(), rhs.nsAttrs()).append(otherAttrs(), rhs.otherAttrs()).append(children(),
+        rhs.children()).append(isCDATA(), rhs.isCDATA()).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(name()).append(getBase()).append(
-        namespaces()).append(nsAttrs()).append(otherAttrs()).append(children())
-        .append(isCDATA()).toHashCode();
+    return new HashCodeBuilder().append(name()).append(getBase()).append(namespaces()).append(nsAttrs()).append(
+        otherAttrs()).append(children()).append(isCDATA()).toHashCode();
   }
 
   public static abstract class Parser<T extends SpecElement> {
 
-    private static final Logger LOG = Logger.getLogger(SpecElement.class
-        .getName());
+    private static final Logger LOG = Logger.getLogger(SpecElement.class.getName());
 
     private final Map<QName, Parser<? extends SpecElement>> children = new HashMap<QName, Parser<? extends SpecElement>>();
 
@@ -422,15 +411,13 @@ public abstract class SpecElement {
 
     protected void register(final String... attrNames) {
       for (final String attrName : attrNames) {
-        this.attrNames.put(attrName.toLowerCase(), new QName(qName
-            .getNamespaceURI(), attrName));
+        this.attrNames.put(attrName.toLowerCase(), new QName(qName.getNamespaceURI(), attrName));
       }
     }
 
     protected abstract T newElement();
 
-    public T parse(final XMLStreamReader reader) throws GadgetException,
-        XMLStreamException {
+    public T parse(final XMLStreamReader reader) throws GadgetException, XMLStreamException {
 
       // This assumes, that parse it at the right element.
       T element = newElement();
@@ -441,35 +428,34 @@ public abstract class SpecElement {
         int event = reader.next();
 
         switch (event) {
-        case XMLStreamConstants.ATTRIBUTE:
-          addAttributes(reader, element);
-          break;
-        case XMLStreamConstants.END_ELEMENT:
-          element.validate();
-          return element;
-        case XMLStreamConstants.END_DOCUMENT:
-          throw new SpecParserException(
-              "Unexpected end of document encountered!");
+          case XMLStreamConstants.ATTRIBUTE:
+            addAttributes(reader, element);
+            break;
+          case XMLStreamConstants.END_ELEMENT:
+            element.validate();
+            return element;
+          case XMLStreamConstants.END_DOCUMENT:
+            throw new SpecParserException("Unexpected end of document encountered!");
 
-        case XMLStreamConstants.START_ELEMENT:
-          final QName elementName = buildQName(reader.getName());
-          Parser<? extends SpecElement> parser = children.get(elementName);
-          if (parser == null) {
-            LOG.fine("No idea what to do with " + elementName + ", ignoring!");
-            parser = new GenericElement.Parser(elementName, getBase());
-          }
+          case XMLStreamConstants.START_ELEMENT:
+            final QName elementName = buildQName(reader.getName());
+            Parser<? extends SpecElement> parser = children.get(elementName);
+            if (parser == null) {
+              LOG.fine("No idea what to do with " + elementName + ", ignoring!");
+              parser = new GenericElement.Parser(elementName, getBase());
+            }
 
-          final SpecElement child = parser.parse(reader);
-          addChild(reader, element, child);
-          break;
-        case XMLStreamConstants.CDATA:
-          element.setCDATAFlag();
-          /* FALLTHROUGH */
-        case XMLStreamConstants.CHARACTERS:
-          addText(reader, element);
-          break;
-        default:
-          break; // TODO: Do we need to parse more things?
+            final SpecElement child = parser.parse(reader);
+            addChild(reader, element, child);
+            break;
+          case XMLStreamConstants.CDATA:
+            element.setCDATAFlag();
+            /* FALLTHROUGH */
+          case XMLStreamConstants.CHARACTERS:
+            addText(reader, element);
+            break;
+          default:
+            break; // TODO: Do we need to parse more things?
         }
       }
     }
@@ -484,33 +470,29 @@ public abstract class SpecElement {
 
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
-        element.setAttr(buildQName(reader.getAttributeName(i)), reader
-            .getAttributeValue(i));
+        element.setAttr(buildQName(reader.getAttributeName(i)), reader.getAttributeValue(i));
       }
     }
 
     private void addNamespaces(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getNamespaceCount(); i++) {
-        element.addNamespace(reader.getNamespacePrefix(i), reader
-            .getNamespaceURI(i));
+        element.addNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
       }
     }
 
-    protected void addText(final XMLStreamReader reader, final T element)
-        throws SpecParserException {
+    protected void addText(final XMLStreamReader reader, final T element) throws SpecParserException {
       if (!reader.isWhiteSpace()) {
-        throw new IllegalStateException("The element" + element.name()
-            + " does not accept any nested text");
+        throw new IllegalStateException("The element" + element.name() + " does not accept any nested text");
       }
     }
 
-    protected void addChild(final XMLStreamReader reader, final T element,
-        final SpecElement child) throws GadgetException {
+    protected void addChild(final XMLStreamReader reader, final T element, final SpecElement child)
+        throws GadgetException {
       if (child instanceof GenericElement) {
         element.addChild(child);
       } else {
-        throw new IllegalStateException("The element" + element.name()
-            + " does not accept any nested elements, saw " + child.name());
+        throw new IllegalStateException("The element" + element.name() + " does not accept any nested elements, saw "
+            + child.name());
       }
     }
   }

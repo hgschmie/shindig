@@ -20,6 +20,13 @@
  */
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,17 +38,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
 public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
 
   private final String checksum;
 
@@ -50,9 +49,8 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
   private ConcurrentHashMap<String, View> views = new ConcurrentHashMap<String, View>();
 
   /**
-   * A map of attributes associated with the instance of the spec Used by
-   * handler classes to use specs to carry context. Not defined by the
-   * specification
+   * A map of attributes associated with the instance of the spec Used by handler classes to use specs to carry context.
+   * Not defined by the specification
    */
   private final Map<String, Object> specAttributes = new ConcurrentHashMap<String, Object>();
 
@@ -62,14 +60,13 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   private List<Content> contents = new ArrayList<Content>();
 
-  public ShindigGadgetSpec(final QName name, final Uri base,
-      final String checksum) {
+  public ShindigGadgetSpec(final QName name, final Uri base, final String checksum) {
     super(name, Collections.<String, QName> emptyMap(), base);
     this.checksum = checksum;
   }
 
-  protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec,
-      final Substitutions substituter) throws GadgetException {
+  protected ShindigGadgetSpec(final ShindigGadgetSpec gadgetSpec, final Substitutions substituter)
+      throws GadgetException {
     super(gadgetSpec, substituter);
 
     setModulePrefs(gadgetSpec.getModulePrefs().substitute(substituter));
@@ -86,8 +83,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
   }
 
   @Override
-  public ShindigGadgetSpec substitute(final Substitutions substituter)
-      throws GadgetException {
+  public ShindigGadgetSpec substitute(final Substitutions substituter) throws GadgetException {
     return new ShindigGadgetSpec(this, substituter);
   }
 
@@ -123,11 +119,9 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
     return Collections.unmodifiableList(contents);
   }
 
-  private void setModulePrefs(final ModulePrefs modulePrefs)
-      throws GadgetException {
+  private void setModulePrefs(final ModulePrefs modulePrefs) throws GadgetException {
     if (this.modulePrefs != null) {
-      throw new SpecParserException(
-          "Multiple <ModulePrefs> elements encountered!");
+      throw new SpecParserException("Multiple <ModulePrefs> elements encountered!");
     }
     this.modulePrefs = modulePrefs;
   }
@@ -141,8 +135,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
     for (String viewName : content.getViews()) {
       viewMap.put(viewName, content);
-      views.put(viewName, new View(viewName, viewMap.get(viewName),
-          Uri.EMPTY_URI));
+      views.put(viewName, new View(viewName, viewMap.get(viewName), Uri.EMPTY_URI));
     }
   }
 
@@ -157,8 +150,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
   // ========================================================================
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     if (modulePrefs != null) {
       modulePrefs.toXml(writer);
     }
@@ -174,19 +166,16 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
   public void validate() throws SpecParserException {
     // TODO - according to the spec, this is actually wrong.
     if (modulePrefs == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + " needs a ModulePrefs section!");
+      throw new SpecParserException(name().getLocalPart() + " needs a ModulePrefs section!");
     }
     if (contents.size() == 0) {
-      throw new SpecParserException(name().getLocalPart()
-          + " needs a Content section!");
+      throw new SpecParserException(name().getLocalPart() + " needs a Content section!");
     }
   }
 
   // ========================================================================
 
-  public static class Parser<T extends ShindigGadgetSpec> extends
-      SpecElement.Parser<ShindigGadgetSpec> {
+  public static class Parser<T extends ShindigGadgetSpec> extends SpecElement.Parser<ShindigGadgetSpec> {
     private final String checksum;
 
     public Parser(final Uri base, final String checksum) {
@@ -208,14 +197,12 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
     }
 
     @Override
-    public ShindigGadgetSpec parse(final XMLStreamReader reader)
-        throws XMLStreamException, GadgetException {
+    public ShindigGadgetSpec parse(final XMLStreamReader reader) throws XMLStreamException, GadgetException {
       return (ShindigGadgetSpec) super.parse(reader);
     }
 
     @Override
-    protected void addChild(final XMLStreamReader reader,
-        final ShindigGadgetSpec spec, final SpecElement child)
+    protected void addChild(final XMLStreamReader reader, final ShindigGadgetSpec spec, final SpecElement child)
         throws GadgetException {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);

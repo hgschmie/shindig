@@ -18,14 +18,14 @@
 
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.variables.Substitutions;
 
 /**
  * Normalized Content views.
@@ -62,15 +62,13 @@ public class View implements RequestAuthenticationInfo {
    * @param name
    *          The name of this view.
    * @param elements
-   *          List of all views, in order, that make up this view. An ordered
-   *          list is required per the spec, since values must overwrite one
-   *          another.
+   *          List of all views, in order, that make up this view. An ordered list is required per the spec, since
+   *          values must overwrite one another.
    * @param base
    *          The base url to resolve href against.
    * @throws SpecParserException
    */
-  public View(final String name, final Collection<Content> contents,
-      final Uri baseUri) throws SpecParserException {
+  public View(final String name, final Collection<Content> contents, final Uri baseUri) throws SpecParserException {
     this.name = name;
     this.baseUri = baseUri;
 
@@ -88,27 +86,25 @@ public class View implements RequestAuthenticationInfo {
 
     for (Content content : contents) {
       switch (content.getType()) {
-      case HTML:
-        if (type == Content.Type.URL) {
-          throw new SpecParserException(content.name().getLocalPart()
-              + " contains HTML code but View '" + name + "' already uses '"
-              + href + "' as content!");
-        }
-        text.append(content.getText());
-        type = Content.Type.HTML;
-        break;
-      case URL:
-        if (type == Content.Type.HTML) {
-          throw new SpecParserException(content.name().getLocalPart()
-              + " references '" + content.getHref() + " but View '" + name
-              + "' already has inline HTML code!");
-        }
-        href = content.getHref();
-        type = Content.Type.URL;
-        break;
-      default:
-        throw new SpecParserException(content.name().getLocalPart()
-            + " references unknown content type: " + content.getType());
+        case HTML:
+          if (type == Content.Type.URL) {
+            throw new SpecParserException(content.name().getLocalPart() + " contains HTML code but View '" + name
+                + "' already uses '" + href + "' as content!");
+          }
+          text.append(content.getText());
+          type = Content.Type.HTML;
+          break;
+        case URL:
+          if (type == Content.Type.HTML) {
+            throw new SpecParserException(content.name().getLocalPart() + " references '" + content.getHref()
+                + " but View '" + name + "' already has inline HTML code!");
+          }
+          href = content.getHref();
+          type = Content.Type.URL;
+          break;
+        default:
+          throw new SpecParserException(content.name().getLocalPart() + " references unknown content type: "
+              + content.getType());
       }
 
       if (content.getPreferredHeight() != -1) {
@@ -141,8 +137,7 @@ public class View implements RequestAuthenticationInfo {
   }
 
   /**
-   * Allows the creation of a view from an existing view so that localization
-   * can be performed.
+   * Allows the creation of a view from an existing view so that localization can be performed.
    */
   private View(final View view, final Substitutions substituter) {
     this.name = view.getName();
@@ -164,8 +159,7 @@ public class View implements RequestAuthenticationInfo {
     final Map<String, String> attributes = new HashMap<String, String>();
 
     for (Map.Entry<String, String> entry : view.getAttributes().entrySet()) {
-      attributes.put(entry.getKey(), substituter.substituteString(entry
-          .getValue()));
+      attributes.put(entry.getKey(), substituter.substituteString(entry.getValue()));
     }
     this.attributes = Collections.unmodifiableMap(attributes);
   }
@@ -207,9 +201,8 @@ public class View implements RequestAuthenticationInfo {
   }
 
   /**
-   * Creates a new view by performing hangman substitution. See field comments
-   * for details on what gets substituted.
-   *
+   * Creates a new view by performing hangman substitution. See field comments for details on what gets substituted.
+   * 
    * @param substituter
    * @return The substituted view.
    */
@@ -240,10 +233,9 @@ public class View implements RequestAuthenticationInfo {
     return signViewer;
   }
 
-  public static final Map<String, String> addAttributes(
-      final Map<String, String> existing, final Map<String, String> attributes) {
-    final Map<String, String> newAttributes = (existing != null) ? existing
-        : new HashMap<String, String>();
+  public static final Map<String, String> addAttributes(final Map<String, String> existing,
+                                                        final Map<String, String> attributes) {
+    final Map<String, String> newAttributes = (existing != null) ? existing : new HashMap<String, String>();
 
     if (attributes != null) {
       for (Map.Entry<String, String> entry : attributes.entrySet()) {

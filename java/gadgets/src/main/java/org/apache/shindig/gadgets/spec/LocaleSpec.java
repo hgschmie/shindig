@@ -21,6 +21,11 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,16 +36,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
-import org.apache.shindig.gadgets.variables.Substitutions;
+public class LocaleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-public class LocaleSpec extends SpecElement implements
-    MessageBundle.MessageBundleSource {
-
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
 
   public static final String ATTR_LANG = "lang";
   public static final String ATTR_COUNTRY = "country";
@@ -49,13 +47,11 @@ public class LocaleSpec extends SpecElement implements
 
   private Set<LocaleMsg> localeMsgs = new HashSet<LocaleMsg>();
 
-  public LocaleSpec(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public LocaleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected LocaleSpec(final LocaleSpec localeSpec,
-      final Substitutions substituter) {
+  protected LocaleSpec(final LocaleSpec localeSpec, final Substitutions substituter) {
     super(localeSpec, substituter);
   }
 
@@ -89,8 +85,7 @@ public class LocaleSpec extends SpecElement implements
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     if (attr(ATTR_LANG) != null) {
       writeAttribute(writer, ATTR_LANG, getLanguage());
     }
@@ -98,8 +93,7 @@ public class LocaleSpec extends SpecElement implements
       writeAttribute(writer, ATTR_COUNTRY, getCountry());
     }
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection()
-          .toString());
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection().toString());
     }
     if (getMessages() != null) {
       writeAttribute(writer, ATTR_MESSAGES, getMessages().toString());
@@ -107,8 +101,7 @@ public class LocaleSpec extends SpecElement implements
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (LocaleMsg localeMsg : localeMsgs) {
       localeMsg.toXml(writer);
     }
@@ -117,12 +110,10 @@ public class LocaleSpec extends SpecElement implements
   @Override
   public void validate() throws SpecParserException {
     if (getLanguageDirection() == null) {
-      throw new SpecParserException("Direction '"
-          + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
+      throw new SpecParserException("Direction '" + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_MESSAGES)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES) + "' is invalid!");
     }
   }
 
@@ -144,8 +135,8 @@ public class LocaleSpec extends SpecElement implements
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final LocaleSpec locale,
-        final SpecElement child) throws GadgetException {
+    protected void addChild(XMLStreamReader reader, final LocaleSpec locale, final SpecElement child)
+        throws GadgetException {
       if (child instanceof LocaleMsg) {
         locale.addLocaleMsg((LocaleMsg) child);
       } else {

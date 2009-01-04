@@ -21,6 +21,16 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.google.common.collect.ImmutableSet;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -29,19 +39,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.ImmutableSet;
-
 public class Content extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
 
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_HREF = "href";
@@ -58,8 +58,7 @@ public class Content extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public Content(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public Content(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -115,8 +114,8 @@ public class Content extends SpecElement {
   }
 
   public Set<String> getViews() {
-    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
-        .defaultString(attr(ATTR_VIEW), "default"), ',')));
+    return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(
+        StringUtils.defaultString(attr(ATTR_VIEW), "default"), ',')));
   }
 
   private void addText(final String text) {
@@ -124,8 +123,7 @@ public class Content extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     if (attr(ATTR_TYPE) != null) {
       writeAttribute(writer, ATTR_TYPE, getRawType());
     }
@@ -136,12 +134,10 @@ public class Content extends SpecElement {
       writeAttribute(writer, ATTR_VIEW, StringUtils.join(getViews(), ','));
     }
     if (attr(ATTR_PREFERRED_HEIGHT) != null) {
-      writeAttribute(writer, ATTR_PREFERRED_HEIGHT, String
-          .valueOf(getPreferredHeight()));
+      writeAttribute(writer, ATTR_PREFERRED_HEIGHT, String.valueOf(getPreferredHeight()));
     }
     if (attr(ATTR_PREFERRED_WIDTH) != null) {
-      writeAttribute(writer, ATTR_PREFERRED_WIDTH, String
-          .valueOf(getPreferredWidth()));
+      writeAttribute(writer, ATTR_PREFERRED_WIDTH, String.valueOf(getPreferredWidth()));
     }
 
     if (attr(ATTR_AUTHZ) != null) {
@@ -165,29 +161,26 @@ public class Content extends SpecElement {
   public void validate() throws SpecParserException {
 
     if (attr(ATTR_TYPE) != null && getType() == null) {
-      throw new SpecParserException(this, "@type value '" + attr(ATTR_TYPE)
-          + "' is unknown!");
+      throw new SpecParserException(this, "@type value '" + attr(ATTR_TYPE) + "' is unknown!");
     }
 
     if (attr(ATTR_AUTHZ) != null && getAuthType() == null) {
-      throw new SpecParserException(this, "@authz value '" + attr(ATTR_AUTHZ)
-          + "' is unknown!");
+      throw new SpecParserException(this, "@authz value '" + attr(ATTR_AUTHZ) + "' is unknown!");
     }
 
     switch (getType()) {
-    case HTML:
-      if (text == null) {
-        throw new SpecParserException(this, " body required for type='html'!");
-      }
-      break;
-    case URL:
-      if (getHref() == null) {
-        throw new SpecParserException(this, "@href required for type='url'!");
-      }
-      break;
-    default:
-      throw new SpecParserException(this,
-          "Unknown type for Content@type encountered: " + getType());
+      case HTML:
+        if (text == null) {
+          throw new SpecParserException(this, " body required for type='html'!");
+        }
+        break;
+      case URL:
+        if (getHref() == null) {
+          throw new SpecParserException(this, "@href required for type='url'!");
+        }
+        break;
+      default:
+        throw new SpecParserException(this, "Unknown type for Content@type encountered: " + getType());
     }
   }
 
@@ -200,19 +193,15 @@ public class Content extends SpecElement {
       return true;
     }
     Content rhs = (Content) other;
-    return new EqualsBuilder().append(getType(), rhs.getType()).append(
-        getHref(), rhs.getHref()).append(getViews(), rhs.getViews()).append(
-        getText(), rhs.getText()).append(getAuthType(), rhs.getAuthType())
-        .append(isQuirks(), rhs.isQuirks()).append(isSignOwner(),
-            rhs.isSignOwner()).append(isSignViewer(), rhs.isSignViewer())
-        .isEquals();
+    return new EqualsBuilder().append(getType(), rhs.getType()).append(getHref(), rhs.getHref()).append(getViews(),
+        rhs.getViews()).append(getText(), rhs.getText()).append(getAuthType(), rhs.getAuthType()).append(isQuirks(),
+        rhs.isQuirks()).append(isSignOwner(), rhs.isSignOwner()).append(isSignViewer(), rhs.isSignViewer()).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().append(getType()).append(getHref()).append(
-        getViews()).append(getText()).append(getAuthType()).append(isQuirks())
-        .append(isSignOwner()).append(isSignViewer()).toHashCode();
+    return new HashCodeBuilder().append(getType()).append(getHref()).append(getViews()).append(getText()).append(
+        getAuthType()).append(isQuirks()).append(isSignOwner()).append(isSignViewer()).toHashCode();
   }
 
   /**
@@ -236,8 +225,7 @@ public class Content extends SpecElement {
 
       if (value != null) {
         for (Type type : Type.values()) {
-          if (StringUtils.equalsIgnoreCase(type.name(), StringUtils
-              .trimToEmpty(value))) {
+          if (StringUtils.equalsIgnoreCase(type.name(), StringUtils.trimToEmpty(value))) {
             return type;
           }
         }
@@ -254,9 +242,8 @@ public class Content extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT,
-          ATTR_PREFERRED_WIDTH, ATTR_AUTHZ, ATTR_QUIRKS, ATTR_SIGN_OWNER,
-          ATTR_SIGN_VIEWER);
+      register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT, ATTR_PREFERRED_WIDTH, ATTR_AUTHZ, ATTR_QUIRKS,
+          ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER);
     }
 
     @Override

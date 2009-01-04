@@ -21,6 +21,10 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,19 +34,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class OAuthSpec extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "OAuth");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "OAuth");
 
   private Map<String, OAuthService> services = new HashMap<String, OAuthService>();
 
-  public OAuthSpec(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public OAuthSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -64,8 +62,7 @@ public class OAuthSpec extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (OAuthService oAuthService : services.values()) {
       oAuthService.toXml(writer);
     }
@@ -88,8 +85,8 @@ public class OAuthSpec extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final OAuthSpec oAuth,
-        final SpecElement child) throws GadgetException {
+    protected void addChild(XMLStreamReader reader, final OAuthSpec oAuth, final SpecElement child)
+        throws GadgetException {
       if (child instanceof OAuthService) {
         oAuth.addService((OAuthService) child);
       } else {

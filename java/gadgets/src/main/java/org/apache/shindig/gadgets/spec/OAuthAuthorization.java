@@ -21,29 +21,26 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class OAuthAuthorization extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Authorization");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Authorization");
 
   public static final String ATTR_URL = "url";
 
-  public OAuthAuthorization(final QName name,
-      final Map<String, QName> attrNames, final Uri base) {
+  public OAuthAuthorization(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization,
-      final Substitutions substituter) {
+  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
     super(oAuthAuthorization, substituter);
   }
 
@@ -57,8 +54,7 @@ public class OAuthAuthorization extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (getUrl() != null) {
       writeAttribute(writer, ATTR_URL, getUrl().toString());

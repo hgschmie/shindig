@@ -21,6 +21,12 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,15 +34,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class LocaleMsg extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
 
   public static final String ATTR_NAME = "name";
 
@@ -45,8 +45,7 @@ public class LocaleMsg extends SpecElement {
 
   private StringBuilder text = new StringBuilder();
 
-  public LocaleMsg(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public LocaleMsg(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -77,8 +76,7 @@ public class LocaleMsg extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     if (attr(ATTR_NAME) != null) {
       writeAttribute(writer, ATTR_NAME, getName());
     }
@@ -91,8 +89,7 @@ public class LocaleMsg extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_NAME) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@name must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@name must be set!");
     }
   }
 
@@ -105,15 +102,14 @@ public class LocaleMsg extends SpecElement {
       return true;
     }
     LocaleMsg rhs = (LocaleMsg) other;
-    return new EqualsBuilder().appendSuper(super.equals(other)).append(
-        getName(), rhs.getName()).append(getDesc(), rhs.getDesc()).append(
-        getText(), rhs.getText()).isEquals();
+    return new EqualsBuilder().appendSuper(super.equals(other)).append(getName(), rhs.getName()).append(getDesc(),
+        rhs.getDesc()).append(getText(), rhs.getText()).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().appendSuper(super.hashCode())
-        .append(getName()).append(getDesc()).append(getText()).toHashCode();
+    return new HashCodeBuilder().appendSuper(super.hashCode()).append(getName()).append(getDesc()).append(getText())
+        .toHashCode();
   }
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {

@@ -21,32 +21,29 @@
 
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class EnumValue extends SpecElement {
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "EnumValue");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "EnumValue");
 
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISPLAY_VALUE = "display_value";
 
-  protected EnumValue(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  protected EnumValue(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
   protected EnumValue(final EnumValue enumValue, final Substitutions substituter) {
     super(enumValue, substituter);
     setAttr(ATTR_VALUE, substituter.substituteString(enumValue.getValue()));
-    setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue
-        .getDisplayValue()));
+    setAttr(ATTR_DISPLAY_VALUE, substituter.substituteString(enumValue.getDisplayValue()));
   }
 
   @Override
@@ -63,8 +60,7 @@ public class EnumValue extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
     if (attr(ATTR_VALUE) != null) {
       writeAttribute(writer, ATTR_VALUE, getValue());
     }
@@ -76,8 +72,7 @@ public class EnumValue extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_VALUE) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@value must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@value must be set!");
     }
   }
 

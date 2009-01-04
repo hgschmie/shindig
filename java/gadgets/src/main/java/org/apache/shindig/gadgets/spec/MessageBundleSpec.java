@@ -20,6 +20,11 @@
  */
 package org.apache.shindig.gadgets.spec;
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -30,16 +35,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
-import org.apache.shindig.gadgets.variables.Substitutions;
+public class MessageBundleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-public class MessageBundleSpec extends SpecElement implements
-    MessageBundle.MessageBundleSource {
-
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
 
   /** Non-0.8 Attribute! */
   public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
@@ -48,13 +46,11 @@ public class MessageBundleSpec extends SpecElement implements
 
   private StringBuilder text = new StringBuilder();
 
-  public MessageBundleSpec(final QName name,
-      final Map<String, QName> attrNames, final Uri base) {
+  public MessageBundleSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec,
-      final Substitutions substituter) {
+  protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec, final Substitutions substituter) {
     super(messageBundleSpec, substituter);
   }
 
@@ -85,18 +81,15 @@ public class MessageBundleSpec extends SpecElement implements
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection()
-          .toString());
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection().toString());
     }
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (LocaleMsg localeMsg : localeMsgs) {
       localeMsg.toXml(writer);
     }
@@ -120,16 +113,14 @@ public class MessageBundleSpec extends SpecElement implements
     }
 
     @Override
-    protected void addText(final XMLStreamReader reader,
-        final MessageBundleSpec messageBundle) {
+    protected void addText(final XMLStreamReader reader, final MessageBundleSpec messageBundle) {
       if (!reader.isWhiteSpace()) {
         messageBundle.addText(reader.getText());
       }
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader,
-        final MessageBundleSpec messageBundle, final SpecElement child)
+    protected void addChild(XMLStreamReader reader, final MessageBundleSpec messageBundle, final SpecElement child)
         throws GadgetException {
       if (child instanceof LocaleMsg) {
         messageBundle.addLocaleMsg((LocaleMsg) child);

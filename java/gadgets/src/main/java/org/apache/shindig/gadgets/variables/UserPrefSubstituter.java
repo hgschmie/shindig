@@ -17,10 +17,11 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.UserPref;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  * Substitutes user prefs into the spec.

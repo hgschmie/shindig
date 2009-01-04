@@ -18,14 +18,13 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import java.util.Map;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 
+import java.util.Map;
+
 /**
- * Exposes authentication information to be extracted for making authenticated
- * requests.
+ * Exposes authentication information to be extracted for making authenticated requests.
  */
 public interface RequestAuthenticationInfo {
   /**

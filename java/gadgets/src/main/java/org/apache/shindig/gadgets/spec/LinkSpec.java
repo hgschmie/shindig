@@ -21,32 +21,29 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class LinkSpec extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Link");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Link");
 
   public static final String ATTR_REL = "rel";
   public static final String ATTR_HREF = "href";
 
-  public LinkSpec(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public LinkSpec(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
   protected LinkSpec(final LinkSpec linkSpec, final Substitutions substituter) {
     super(linkSpec, substituter);
-    setAttr(ATTR_HREF, getBase().resolve(
-        substituter.substituteUri(linkSpec.getHref())).toString());
+    setAttr(ATTR_HREF, getBase().resolve(substituter.substituteUri(linkSpec.getHref())).toString());
     setAttr(ATTR_REL, substituter.substituteString(linkSpec.getRel()));
   }
 
@@ -64,8 +61,7 @@ public class LinkSpec extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_REL) != null) {
       writeAttribute(writer, ATTR_REL, getRel());
@@ -81,8 +77,7 @@ public class LinkSpec extends SpecElement {
       throw new SpecParserException(name().getLocalPart() + "@rel must be set!");
     }
     if (getHref() == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@href must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@href must be set!");
     }
   }
 

@@ -21,6 +21,9 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,25 +31,19 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class FeatureParam extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Param");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Param");
 
   public static final String ATTR_NAME = "name";
 
   private StringBuilder text = new StringBuilder();
 
-  public FeatureParam(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public FeatureParam(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected FeatureParam(final FeatureParam featureParam,
-      final Substitutions substituter) {
+  protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
     super(featureParam, substituter);
   }
 
@@ -69,8 +66,7 @@ public class FeatureParam extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_NAME) != null) {
       writeAttribute(writer, ATTR_NAME, getName());
@@ -80,8 +76,7 @@ public class FeatureParam extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_NAME) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@name must be set!");
+      throw new SpecParserException(name().getLocalPart() + "@name must be set!");
     }
   }
 
@@ -102,8 +97,7 @@ public class FeatureParam extends SpecElement {
     }
 
     @Override
-    protected void addText(final XMLStreamReader reader,
-        final FeatureParam param) {
+    protected void addText(final XMLStreamReader reader, final FeatureParam param) {
       if (!reader.isWhiteSpace()) {
         param.addText(reader.getText());
       }

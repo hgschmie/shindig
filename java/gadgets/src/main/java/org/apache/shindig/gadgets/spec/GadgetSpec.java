@@ -17,13 +17,13 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public interface GadgetSpec {
   String DEFAULT_VIEW = "default";

@@ -21,15 +21,16 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.variables.Substitutions;
 
 public abstract class OAuthElement extends SpecElement {
 
@@ -39,14 +40,12 @@ public abstract class OAuthElement extends SpecElement {
 
   private boolean request = false;
 
-  protected OAuthElement(final QName name, final Map<String, QName> attrNames,
-      final Uri base, boolean request) {
+  protected OAuthElement(final QName name, final Map<String, QName> attrNames, final Uri base, boolean request) {
     super(name, attrNames, base);
     this.request = request;
   }
 
-  protected OAuthElement(final OAuthElement oAuthElement,
-      final Substitutions substituter) {
+  protected OAuthElement(final OAuthElement oAuthElement, final Substitutions substituter) {
     super(oAuthElement, substituter);
     this.request = oAuthElement.isRequest();
   }
@@ -68,8 +67,7 @@ public abstract class OAuthElement extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (getUrl() != null) {
       writeAttribute(writer, ATTR_URL, getUrl().toString());
@@ -88,21 +86,18 @@ public abstract class OAuthElement extends SpecElement {
       throw new SpecParserException(this, "@url must be set!");
     }
     if (!getUrl().isHttpUri()) {
-      throw new SpecParserException(this, "@url value '" + attr(ATTR_URL)
-          + "' is not a valid URL!");
+      throw new SpecParserException(this, "@url value '" + attr(ATTR_URL) + "' is not a valid URL!");
     }
 
     if (Method.parse(attr(ATTR_METHOD)) == null) {
-      throw new SpecParserException(this, "@method attribute value '"
-          + attr(ATTR_METHOD) + "' is invalid!");
+      throw new SpecParserException(this, "@method attribute value '" + attr(ATTR_METHOD) + "' is invalid!");
     }
     if (Location.parse(attr(ATTR_PARAM_LOCATION)) == null) {
-      throw new SpecParserException(this, "@param_location attribute value '"
-          + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
+      throw new SpecParserException(this, "@param_location attribute value '" + attr(ATTR_PARAM_LOCATION)
+          + "' is invalid!");
     }
     if ((getMethod() == Method.GET) && (getParamLocation() == Location.BODY)) {
-      throw new SpecParserException(this,
-          "@method is GET but parameter location is body!");
+      throw new SpecParserException(this, "@method is GET but parameter location is body!");
     }
 
   }
@@ -115,8 +110,7 @@ public abstract class OAuthElement extends SpecElement {
         return GET;
       }
       for (Method method : Method.values()) {
-        if (StringUtils.equalsIgnoreCase(method.toString(), StringUtils
-            .trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(method.toString(), StringUtils.trimToEmpty(value))) {
           return method;
         }
       }
@@ -143,8 +137,7 @@ public abstract class OAuthElement extends SpecElement {
         return HEADER;
       }
       for (Location location : Location.values()) {
-        if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils
-            .trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils.trimToEmpty(value))) {
           return location;
         }
       }

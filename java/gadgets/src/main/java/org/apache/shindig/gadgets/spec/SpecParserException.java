@@ -17,10 +17,10 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.common.xml.XmlException;
 import org.apache.shindig.gadgets.GadgetException;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Exceptions for Gadget Spec parsing.
@@ -50,9 +50,7 @@ public class SpecParserException extends GadgetException {
   }
 
   public SpecParserException(final SpecElement element, String message) {
-    super(GadgetException.Code.MALFORMED_XML_DOCUMENT, element.name()
-        .getLocalPart()
-        + message);
+    super(GadgetException.Code.MALFORMED_XML_DOCUMENT, element.name().getLocalPart() + message);
   }
 
 }

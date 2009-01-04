@@ -21,6 +21,10 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -28,14 +32,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class OAuthService extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
 
   public static final String ATTR_NAME = "name";
 
@@ -43,13 +42,11 @@ public class OAuthService extends SpecElement {
   private OAuthAccess oAuthAccess = null;
   private OAuthAuthorization oAuthAuthorization = null;
 
-  public OAuthService(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public OAuthService(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
-  protected OAuthService(final OAuthService oAuthService,
-      final Substitutions substituter) {
+  protected OAuthService(final OAuthService oAuthService, final Substitutions substituter) {
     super(oAuthService, substituter);
   }
 
@@ -87,8 +84,7 @@ public class OAuthService extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_NAME) != null) {
       writeAttribute(writer, ATTR_NAME, getName());
@@ -96,8 +92,7 @@ public class OAuthService extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     if (oAuthRequest != null) {
       oAuthRequest.toXml(writer);
     }
@@ -116,26 +111,21 @@ public class OAuthService extends SpecElement {
     // shindig parser allowed (and actually unit-tests) for
     // an empty service.
     /*
-     * if (attr(ATTR_NAME) == null) { throw new
-     * SpecParserException(name().getLocalPart() + "@name must be set!"); }
+     * if (attr(ATTR_NAME) == null) { throw new SpecParserException(name().getLocalPart() + "@name must be set!"); }
      */
 
     if (oAuthRequest == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must contain a 'Request' element!");
+      throw new SpecParserException(name().getLocalPart() + " must contain a 'Request' element!");
     }
     if (oAuthAccess == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must contain an 'Access' element!");
+      throw new SpecParserException(name().getLocalPart() + " must contain an 'Access' element!");
     }
     if (oAuthAuthorization == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + " must contain an 'Authorization' element!");
+      throw new SpecParserException(name().getLocalPart() + " must contain an 'Authorization' element!");
     }
 
     if (oAuthRequest.getMethod() != oAuthAccess.getMethod()) {
-      throw new SpecParserException(name().getLocalPart()
-          + " access@method is not equal request@method!");
+      throw new SpecParserException(name().getLocalPart() + " access@method is not equal request@method!");
     }
 
     if (oAuthRequest.getParamLocation() != oAuthAccess.getParamLocation()) {
@@ -164,8 +154,7 @@ public class OAuthService extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader,
-        final OAuthService oAuthService, final SpecElement child)
+    protected void addChild(XMLStreamReader reader, final OAuthService oAuthService, final SpecElement child)
         throws GadgetException {
       if (child instanceof OAuthRequest) {
         oAuthService.setOAuthRequest((OAuthRequest) child);

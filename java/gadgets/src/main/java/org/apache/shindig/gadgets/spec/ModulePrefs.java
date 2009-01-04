@@ -21,6 +21,10 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,14 +37,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
 public class ModulePrefs extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(
-      SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
 
   public static final String ATTR_TITLE = "title";
   public static final String ATTR_TITLE_URL = "title_url";
@@ -75,8 +74,7 @@ public class ModulePrefs extends SpecElement {
 
   private OAuthSpec oauth = null;
 
-  public ModulePrefs(final QName name, final Map<String, QName> attrNames,
-      final Uri base) {
+  public ModulePrefs(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base);
   }
 
@@ -115,9 +113,8 @@ public class ModulePrefs extends SpecElement {
   }
 
   /**
-   * Produces a new ModulePrefs by substituting hangman variables from
-   * substituter. See comments on individual fields to see what actually has
-   * substitutions performed.
+   * Produces a new ModulePrefs by substituting hangman variables from substituter. See comments on individual fields to
+   * see what actually has substitutions performed.
    * 
    * @param substituter
    */
@@ -290,8 +287,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
     for (Preload preload : preloads) {
       preload.toXml(writer);
     }
@@ -313,8 +309,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer)
-      throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
 
     if (attr(ATTR_TITLE) != null) {
       writeAttribute(writer, ATTR_TITLE, getTitle());
@@ -377,8 +372,7 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_SHOW_IN_DIRECTORY) != null) {
-      writeAttribute(writer, ATTR_SHOW_IN_DIRECTORY, String
-          .valueOf(isShowInDirectory()));
+      writeAttribute(writer, ATTR_SHOW_IN_DIRECTORY, String.valueOf(isShowInDirectory()));
     }
 
     if (attr(ATTR_SINGLETON) != null) {
@@ -402,8 +396,7 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_RENDER_INLINE) != null) {
-      writeAttribute(writer, ATTR_RENDER_INLINE, String
-          .valueOf(isRenderInline()));
+      writeAttribute(writer, ATTR_RENDER_INLINE, String.valueOf(isRenderInline()));
     }
 
     final List<String> categories = getCategories();
@@ -421,24 +414,19 @@ public class ModulePrefs extends SpecElement {
       throw new SpecParserException("ModulePrefs@title must be set!");
     }
     if (!attrIsValidUri(ATTR_TITLE_URL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_SCREENSHOT)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_THUMBNAIL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_PHOTO)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_LINK)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK)
-          + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
     }
   }
 
@@ -459,13 +447,11 @@ public class ModulePrefs extends SpecElement {
       register(new LinkSpec.Parser(base));
       register(new OAuthSpec.Parser(base));
 
-      register(ATTR_TITLE, ATTR_TITLE_URL, ATTR_DESCRIPTION, ATTR_AUTHOR,
-          ATTR_AUTHOR_EMAIL, ATTR_SCREENSHOT, ATTR_THUMBNAIL,
-          ATTR_DIRECTORY_TITLE, ATTR_AUTHOR_AFFILIATION, ATTR_AUTHOR_LOCATION,
-          ATTR_AUTHOR_PHOTO, ATTR_AUTHOR_ABOUTME, ATTR_AUTHOR_QUOTE,
-          ATTR_AUTHOR_LINK, ATTR_SHOW_STATS, ATTR_SHOW_IN_DIRECTORY,
-          ATTR_SINGLETON, ATTR_SCALING, ATTR_SCROLLING, ATTR_WIDTH,
-          ATTR_HEIGHT, ATTR_RENDER_INLINE, ATTR_CATEGORY, ATTR_CATEGORY2);
+      register(ATTR_TITLE, ATTR_TITLE_URL, ATTR_DESCRIPTION, ATTR_AUTHOR, ATTR_AUTHOR_EMAIL, ATTR_SCREENSHOT,
+          ATTR_THUMBNAIL, ATTR_DIRECTORY_TITLE, ATTR_AUTHOR_AFFILIATION, ATTR_AUTHOR_LOCATION, ATTR_AUTHOR_PHOTO,
+          ATTR_AUTHOR_ABOUTME, ATTR_AUTHOR_QUOTE, ATTR_AUTHOR_LINK, ATTR_SHOW_STATS, ATTR_SHOW_IN_DIRECTORY,
+          ATTR_SINGLETON, ATTR_SCALING, ATTR_SCROLLING, ATTR_WIDTH, ATTR_HEIGHT, ATTR_RENDER_INLINE, ATTR_CATEGORY,
+          ATTR_CATEGORY2);
     }
 
     @Override
@@ -474,8 +460,7 @@ public class ModulePrefs extends SpecElement {
     }
 
     @Override
-    protected void addChild(final XMLStreamReader reader,
-        final ModulePrefs prefs, final SpecElement child)
+    protected void addChild(final XMLStreamReader reader, final ModulePrefs prefs, final SpecElement child)
         throws GadgetException {
       if (child instanceof Feature) {
         prefs.addFeature((Feature) child);
