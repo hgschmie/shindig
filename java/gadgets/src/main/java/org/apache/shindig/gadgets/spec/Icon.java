@@ -103,7 +103,7 @@ public class Icon extends SpecElement {
       }
 
       for (Mode type : Mode.values()) {
-        if (StringUtils.equalsIgnoreCase(type.toString(), value)) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), StringUtils.trimToEmpty(value))) {
           return type;
         }
       }
