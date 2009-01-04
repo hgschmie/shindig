@@ -32,7 +32,8 @@ import org.easymock.classextension.EasyMock;
 import com.google.common.collect.Lists;
 
 public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
-  private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
+  private static final Uri SPEC_URL = Uri
+      .parse("http://example.org/gadget.xml");
   private List<CaptureRewriter> rewriters;
   private List<ContentRewriter> contentRewriters;
   private ContentRewriterRegistry registry;
@@ -41,23 +42,24 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     rewriters = Arrays.asList(new CaptureRewriter(), new CaptureRewriter());
-    contentRewriters = Lists.<ContentRewriter>newArrayList(rewriters);
+    contentRewriters = Lists.<ContentRewriter> newArrayList(rewriters);
     registry = new DefaultContentRewriterRegistry(contentRewriters, parser);
   }
 
   public void testRewriteGadget() throws Exception {
     String body = "Hello, world";
-    String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
+    String xml = "<Module><ModulePrefs title=''/><Content>" + body
+        + "</Content></Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetContext context = new GadgetContext();
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(spec);
+    Gadget gadget = new Gadget().setContext(context).setSpec(spec);
 
     String rewritten = registry.rewriteGadget(gadget, body);
 
-    assertTrue("First rewriter not invoked.", rewriters.get(0).viewWasRewritten());
-    assertTrue("Second rewriter not invoked.", rewriters.get(1).viewWasRewritten());
+    assertTrue("First rewriter not invoked.", rewriters.get(0)
+        .viewWasRewritten());
+    assertTrue("Second rewriter not invoked.", rewriters.get(1)
+        .viewWasRewritten());
 
     assertEquals(body, rewritten);
   }
@@ -69,20 +71,21 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
 
     HttpResponse rewritten = registry.rewriteHttpResponse(request, response);
 
-    assertTrue("First rewriter not invoked.", rewriters.get(0).responseWasRewritten());
-    assertTrue("Second rewriter not invoked.", rewriters.get(1).responseWasRewritten());
+    assertTrue("First rewriter not invoked.", rewriters.get(0)
+        .responseWasRewritten());
+    assertTrue("Second rewriter not invoked.", rewriters.get(1)
+        .responseWasRewritten());
 
     assertEquals(response, rewritten);
   }
 
   public void testRewriteView() throws Exception {
     String body = "Hello, world";
-    String xml = "<Module><ModulePrefs title=''/><Content>" + body + "</Content></Module>";
+    String xml = "<Module><ModulePrefs title=''/><Content>" + body
+        + "</Content></Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetContext context = new GadgetContext();
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(spec);
+    Gadget gadget = new Gadget().setContext(context).setSpec(spec);
 
     String rewritten = registry.rewriteGadget(gadget, spec.getView("default"));
 
@@ -93,10 +96,10 @@ public class DefaultContentRewriterRegistryTest extends BaseRewriterTestCase {
   }
 
   /**
-   * This test ensures that we dont call HttpRespose.getResponseAsString for content types
-   * that are not rewriteable by the default set of content rewriters. This is important
-   * from a performance and content consistency standpoint. Because HttpResonse is final
-   * we test that no new
+   * This test ensures that we dont call HttpRespose.getResponseAsString for
+   * content types that are not rewriteable by the default set of content
+   * rewriters. This is important from a performance and content consistency
+   * standpoint. Because HttpResonse is final we test that no new
    */
   public void testNoDecodeHttpResponseForUnRewriteableMimeTypes() {
     List<ContentRewriter> rewriters = Lists.newArrayList();

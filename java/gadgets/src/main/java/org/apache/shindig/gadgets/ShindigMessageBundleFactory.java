@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets;
+
 /*
  * 
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +20,6 @@ package org.apache.shindig.gadgets;
  * under the License.
  * 
  */
-
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -53,7 +53,7 @@ import com.google.inject.name.Named;
 public class ShindigMessageBundleFactory implements MessageBundleFactory {
 
   private static final Logger LOG = Logger
-  .getLogger(ShindigMessageBundleFactory.class.getName());
+      .getLogger(ShindigMessageBundleFactory.class.getName());
 
   public static final Locale LOCALE_ALL_ALL = new Locale("all", "ALL");
 
@@ -70,7 +70,7 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
       final long refresh) {
 
     final Cache<String, MessageBundle> baseCache = cacheProvider
-    .createCache(MessageBundleFactory.CACHE_NAME);
+        .createCache(MessageBundleFactory.CACHE_NAME);
 
     this.fetcher = fetcher;
     this.cache = new SoftExpiringCache<String, MessageBundle>(baseCache);
@@ -130,27 +130,29 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
           : new Locale(locale.getLanguage(), "ALL");
     }
 
-    final MessageBundle parentBundle = getBundle(spec, parentLocale, ignoreCache);
+    final MessageBundle parentBundle = getBundle(spec, parentLocale,
+        ignoreCache);
     final LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
 
     if (localeSpec == null) {
       return parentBundle; // This either exists or is MessageBundle.EMPTY;
     }
 
-
     final Uri messageUrl = localeSpec.getMessages();
     Map<String, String> messages = null;
     if (messageUrl != null) {
-      final MessageBundleSpec messageBundleSpec = fetchMessageBundle(messageUrl, ignoreCache);
+      final MessageBundleSpec messageBundleSpec = fetchMessageBundle(
+          messageUrl, ignoreCache);
       messages = addMessages(messages, messageBundleSpec.getLocaleMsgs());
     }
 
     messages = addMessages(messages, localeSpec.getLocaleMsgs());
 
-    return new MessageBundle(parentBundle.getMessages(), messages, localeSpec.getLanguageDirection());
+    return new MessageBundle(parentBundle.getMessages(), messages, localeSpec
+        .getLanguageDirection());
   }
 
-  private  static Map<String, String> addMessages(
+  private static Map<String, String> addMessages(
       final Map<String, String> messages, final Set<LocaleMsg> msgs) {
     final Map<String, String> targetMap = (messages != null) ? messages
         : new HashMap<String, String>((msgs != null) ? msgs.size() : 10);
@@ -177,8 +179,8 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
     if (response == null) {
       throw new GadgetException(
           GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, String.format(
-              "Unable to retrieve message bundle xml from '%s', got null!",
-              uri.toString()));
+              "Unable to retrieve message bundle xml from '%s', got null!", uri
+                  .toString()));
     }
 
     if (response.getHttpStatusCode() != HttpResponse.SC_OK) {
@@ -216,8 +218,7 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
   }
 
   // Code for unit tests.
-  public SoftExpiringCache<String, MessageBundle> getCache()
-  {
+  public SoftExpiringCache<String, MessageBundle> getCache() {
     return cache;
   }
 }

@@ -39,7 +39,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class ModulePrefs extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
 
   public static final String ATTR_TITLE = "title";
   public static final String ATTR_TITLE_URL = "title_url";
@@ -108,7 +109,7 @@ public class ModulePrefs extends SpecElement {
     this.oauth = prefs.getOAuth();
 
     // That is actually gross...
-    for (Map.Entry<String, String> entry: prefs.attributes().entrySet()) {
+    for (Map.Entry<String, String> entry : prefs.attributes().entrySet()) {
       setAttr(entry.getKey(), substituter.substituteString(entry.getValue()));
     }
   }
@@ -117,7 +118,7 @@ public class ModulePrefs extends SpecElement {
    * Produces a new ModulePrefs by substituting hangman variables from
    * substituter. See comments on individual fields to see what actually has
    * substitutions performed.
-   *
+   * 
    * @param substituter
    */
   @Override
@@ -154,7 +155,7 @@ public class ModulePrefs extends SpecElement {
   }
 
   public Uri getTitleUrl() {
-      return attrUriBase(ATTR_TITLE_URL);
+    return attrUriBase(ATTR_TITLE_URL);
   }
 
   public String getDescription() {
@@ -320,8 +321,7 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_TITLE_URL) != null) {
-      writeAttribute(writer, ATTR_TITLE_URL, getTitleUrl()
-          .toString());
+      writeAttribute(writer, ATTR_TITLE_URL, getTitleUrl().toString());
     }
 
     if (attr(ATTR_DESCRIPTION) != null) {
@@ -337,38 +337,31 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_SCREENSHOT) != null) {
-      writeAttribute(writer, ATTR_SCREENSHOT, getScreenshot()
-          .toString());
+      writeAttribute(writer, ATTR_SCREENSHOT, getScreenshot().toString());
     }
 
     if (attr(ATTR_THUMBNAIL) != null) {
-      writeAttribute(writer, ATTR_THUMBNAIL, getThumbnail()
-          .toString());
+      writeAttribute(writer, ATTR_THUMBNAIL, getThumbnail().toString());
     }
 
     if (attr(ATTR_DIRECTORY_TITLE) != null) {
-      writeAttribute(writer, ATTR_DIRECTORY_TITLE,
-          getDirectoryTitle());
+      writeAttribute(writer, ATTR_DIRECTORY_TITLE, getDirectoryTitle());
     }
 
     if (attr(ATTR_AUTHOR_AFFILIATION) != null) {
-      writeAttribute(writer, ATTR_AUTHOR_AFFILIATION,
-          getAuthorAffiliation());
+      writeAttribute(writer, ATTR_AUTHOR_AFFILIATION, getAuthorAffiliation());
     }
 
     if (attr(ATTR_AUTHOR_LOCATION) != null) {
-      writeAttribute(writer, ATTR_AUTHOR_LOCATION,
-          getAuthorLocation());
+      writeAttribute(writer, ATTR_AUTHOR_LOCATION, getAuthorLocation());
     }
 
     if (attr(ATTR_AUTHOR_PHOTO) != null) {
-      writeAttribute(writer, ATTR_AUTHOR_PHOTO, getAuthorPhoto()
-          .toString());
+      writeAttribute(writer, ATTR_AUTHOR_PHOTO, getAuthorPhoto().toString());
     }
 
     if (attr(ATTR_AUTHOR_ABOUTME) != null) {
-      writeAttribute(writer, ATTR_AUTHOR_ABOUTME,
-          getAuthorAboutme());
+      writeAttribute(writer, ATTR_AUTHOR_ABOUTME, getAuthorAboutme());
     }
 
     if (attr(ATTR_AUTHOR_QUOTE) != null) {
@@ -376,13 +369,11 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_AUTHOR_LINK) != null) {
-      writeAttribute(writer, ATTR_AUTHOR_LINK, getAuthorLink()
-          .toString());
+      writeAttribute(writer, ATTR_AUTHOR_LINK, getAuthorLink().toString());
     }
 
     if (attr(ATTR_SHOW_STATS) != null) {
-      writeAttribute(writer, ATTR_SHOW_STATS, String
-          .valueOf(isShowStats()));
+      writeAttribute(writer, ATTR_SHOW_STATS, String.valueOf(isShowStats()));
     }
 
     if (attr(ATTR_SHOW_IN_DIRECTORY) != null) {
@@ -391,28 +382,23 @@ public class ModulePrefs extends SpecElement {
     }
 
     if (attr(ATTR_SINGLETON) != null) {
-      writeAttribute(writer, ATTR_SINGLETON, String
-          .valueOf(isSingleton()));
+      writeAttribute(writer, ATTR_SINGLETON, String.valueOf(isSingleton()));
     }
 
     if (attr(ATTR_SCALING) != null) {
-      writeAttribute(writer, ATTR_SCALING, String
-          .valueOf(isScaling()));
+      writeAttribute(writer, ATTR_SCALING, String.valueOf(isScaling()));
     }
 
     if (attr(ATTR_SCROLLING) != null) {
-      writeAttribute(writer, ATTR_SCROLLING, String
-          .valueOf(isScrolling()));
+      writeAttribute(writer, ATTR_SCROLLING, String.valueOf(isScrolling()));
     }
 
     if (attr(ATTR_WIDTH) != null) {
-      writeAttribute(writer, ATTR_WIDTH, String
-          .valueOf(getWidth()));
+      writeAttribute(writer, ATTR_WIDTH, String.valueOf(getWidth()));
     }
 
     if (attr(ATTR_HEIGHT) != null) {
-      writeAttribute(writer, ATTR_HEIGHT, String
-          .valueOf(getHeight()));
+      writeAttribute(writer, ATTR_HEIGHT, String.valueOf(getHeight()));
     }
 
     if (attr(ATTR_RENDER_INLINE) != null) {
@@ -435,19 +421,24 @@ public class ModulePrefs extends SpecElement {
       throw new SpecParserException("ModulePrefs@title must be set!");
     }
     if (!attrIsValidUri(ATTR_TITLE_URL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL)
+          + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_SCREENSHOT)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT)
+          + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_THUMBNAIL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL)
+          + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_PHOTO)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO)
+          + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_LINK)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK)
+          + "' is invalid!");
     }
   }
 

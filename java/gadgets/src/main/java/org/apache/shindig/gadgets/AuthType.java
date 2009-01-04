@@ -30,20 +30,20 @@ public enum AuthType {
    */
   public static AuthType parse(final String value) {
 
-      if (value != null) {
-        for (AuthType authType : AuthType.values())
-        {
-          if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils.trimToEmpty(value)))
-          {
-              return authType;
-          }
+    if (value != null) {
+      for (AuthType authType : AuthType.values()) {
+        if (StringUtils.equalsIgnoreCase(authType.toString(), StringUtils
+            .trimToEmpty(value))) {
+          return authType;
         }
       }
-      return NONE; // Explicit test for "garbage" -> NONE
+    }
+    return NONE; // Explicit test for "garbage" -> NONE
   }
 
   /**
    * Use lowercase as toString form
+   * 
    * @return string value of Auth type
    */
   @Override

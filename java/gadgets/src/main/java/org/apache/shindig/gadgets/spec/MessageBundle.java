@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets.spec;
+
 /*
  * 
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -20,7 +21,6 @@ package org.apache.shindig.gadgets.spec;
  * 
  */
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +31,8 @@ import org.json.JSONObject;
 
 public class MessageBundle {
 
-  public static final MessageBundle EMPTY = new MessageBundle(Collections.<String, String> emptyMap());
+  public static final MessageBundle EMPTY = new MessageBundle(Collections
+      .<String, String> emptyMap());
 
   private final Direction languageDirection;
 
@@ -52,12 +53,15 @@ public class MessageBundle {
 
   public MessageBundle(final MessageBundleSource messageBundleSource) {
 
-    this(Collections.unmodifiableMap(convertToHash(null, messageBundleSource)), messageBundleSource.getLanguageDirection());
+    this(Collections.unmodifiableMap(convertToHash(null, messageBundleSource)),
+        messageBundleSource.getLanguageDirection());
   }
 
-  public MessageBundle(final Map<String, String> parentMessages, final Map<String, String> childMessages, final Direction languageDirection)
-  {
-    Map<String, String> messages = new HashMap<String, String>(parentMessages.size() + childMessages.size());
+  public MessageBundle(final Map<String, String> parentMessages,
+      final Map<String, String> childMessages, final Direction languageDirection) {
+    Map<String, String> messages = new HashMap<String, String>(parentMessages
+        .size()
+        + childMessages.size());
     messages.putAll(parentMessages);
     messages.putAll(childMessages);
 
@@ -66,25 +70,32 @@ public class MessageBundle {
     this.jsonString = new JSONObject(this.messages).toString();
   }
 
-  public MessageBundle(final MessageBundleSource parent, final MessageBundleSource child)
-  {
-    this(convertToHash(null, parent), convertToHash(null, child), child.getLanguageDirection());
+  public MessageBundle(final MessageBundleSource parent,
+      final MessageBundleSource child) {
+    this(convertToHash(null, parent), convertToHash(null, child), child
+        .getLanguageDirection());
   }
 
   public MessageBundle(final MessageBundle parent, final MessageBundle child) {
-    this(parent.getMessages(), child.getMessages(), child.getLanguageDirection());
+    this(parent.getMessages(), child.getMessages(), child
+        .getLanguageDirection());
   }
 
-  private static Map<String, String> convertToHash(final Map<String, String> messages, final MessageBundleSource messageBundleSource) {
+  private static Map<String, String> convertToHash(
+      final Map<String, String> messages,
+      final MessageBundleSource messageBundleSource) {
 
-    if (messageBundleSource == null || messageBundleSource.getLocaleMsgs().size() == 0) {
+    if (messageBundleSource == null
+        || messageBundleSource.getLocaleMsgs().size() == 0) {
       return messages != null ? messages : new HashMap<String, String>();
     }
 
-    final Map<String, String> localMessages = (messages != null) ? messages : new HashMap<String, String>(messageBundleSource.getLocaleMsgs().size());
+    final Map<String, String> localMessages = (messages != null) ? messages
+        : new HashMap<String, String>(messageBundleSource.getLocaleMsgs()
+            .size());
 
     for (final LocaleMsg msg : messageBundleSource.getLocaleMsgs()) {
-        localMessages.put(msg.getName(), msg.getText());
+      localMessages.put(msg.getName(), msg.getText());
     }
 
     return localMessages;
@@ -128,7 +139,6 @@ public class MessageBundle {
       return name().toLowerCase();
     }
   }
-
 
   public static interface MessageBundleSource {
     Set<LocaleMsg> getLocaleMsgs();

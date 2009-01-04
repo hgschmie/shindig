@@ -49,7 +49,8 @@ public class DefaultContentRewriterRegistry implements ContentRewriterRegistry {
   }
 
   /** {@inheritDoc} */
-  public String rewriteGadget(Gadget gadget, View currentView) throws GadgetException {
+  public String rewriteGadget(Gadget gadget, View currentView)
+      throws GadgetException {
     if (currentView == null) {
       // Nothing to rewrite.
       return null;
@@ -87,7 +88,8 @@ public class DefaultContentRewriterRegistry implements ContentRewriterRegistry {
     }
 
     if (wasRewritten) {
-      return new HttpResponseBuilder(resp).setResponseString(mc.getContent()).create();
+      return new HttpResponseBuilder(resp).setResponseString(mc.getContent())
+          .create();
     }
     return resp;
   }

@@ -32,7 +32,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAuthorization extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Authorization");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Authorization");
 
   public static final String ATTR_URL = "url";
 
@@ -41,8 +42,9 @@ public class OAuthAuthorization extends SpecElement {
     super(name, attrNames, base);
   }
 
-  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization, final Substitutions substituter) {
-      super(oAuthAuthorization, substituter);
+  protected OAuthAuthorization(final OAuthAuthorization oAuthAuthorization,
+      final Substitutions substituter) {
+    super(oAuthAuthorization, substituter);
   }
 
   @Override

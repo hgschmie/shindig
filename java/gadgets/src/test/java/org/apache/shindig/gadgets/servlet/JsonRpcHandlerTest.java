@@ -18,10 +18,6 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +44,10 @@ import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 public class JsonRpcHandlerTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
   private static final Uri SPEC_URL2 = Uri.parse("http://example.org/g2.xml");
@@ -57,32 +57,24 @@ public class JsonRpcHandlerTest {
   private static final int PREFERRED_WIDTH = 242;
   private static final String LINK_REL = "rel";
   private static final String LINK_HREF = "http://example.org/foo";
-  private static final String SPEC_XML =
-      "<Module>" +
-      "<ModulePrefs title=\"" + SPEC_TITLE + "\">" +
-      "  <Link rel='" + LINK_REL + "' href='" + LINK_HREF + "'/>" +
-      "</ModulePrefs>" +
-      "<UserPref name=\"up_one\">" +
-      "  <EnumValue value=\"val1\" display_value=\"disp1\"/>" +
-      "  <EnumValue value=\"abc\" display_value=\"disp2\"/>" +
-      "  <EnumValue value=\"z_xabc\" display_value=\"disp3\"/>" +
-      "  <EnumValue value=\"foo\" display_value=\"disp4\"/>" +
-      "</UserPref>" +
-      "<Content type=\"html\"" +
-      " preferred_height = \"" + PREFERRED_HEIGHT + '\"' +
-      " preferred_width = \"" + PREFERRED_WIDTH + '\"' +
-      ">Hello, world</Content>" +
-      "</Module>";
-  private static final String SPEC_XML2 =
-      "<Module>" +
-      "<ModulePrefs title=\"" + SPEC_TITLE2 + "\"/>" +
-      "<Content type=\"html\">Hello, world</Content>" +
-      "</Module>";
+  private static final String SPEC_XML = "<Module>" + "<ModulePrefs title=\""
+      + SPEC_TITLE + "\">" + "  <Link rel='" + LINK_REL + "' href='"
+      + LINK_HREF + "'/>" + "</ModulePrefs>" + "<UserPref name=\"up_one\">"
+      + "  <EnumValue value=\"val1\" display_value=\"disp1\"/>"
+      + "  <EnumValue value=\"abc\" display_value=\"disp2\"/>"
+      + "  <EnumValue value=\"z_xabc\" display_value=\"disp3\"/>"
+      + "  <EnumValue value=\"foo\" display_value=\"disp4\"/>" + "</UserPref>"
+      + "<Content type=\"html\"" + " preferred_height = \"" + PREFERRED_HEIGHT
+      + '\"' + " preferred_width = \"" + PREFERRED_WIDTH + '\"'
+      + ">Hello, world</Content>" + "</Module>";
+  private static final String SPEC_XML2 = "<Module>" + "<ModulePrefs title=\""
+      + SPEC_TITLE2 + "\"/>" + "<Content type=\"html\">Hello, world</Content>"
+      + "</Module>";
 
   private final FakeProcessor processor = new FakeProcessor();
   private final FakeUrlGenerator urlGenerator = new FakeUrlGenerator();
-  private final JsonRpcHandler jsonRpcHandler
-      = new JsonRpcHandler(new TestExecutorService(), processor, urlGenerator);
+  private final JsonRpcHandler jsonRpcHandler = new JsonRpcHandler(
+      new TestExecutorService(), processor, urlGenerator);
 
   private JSONObject createContext(String lang, String country)
       throws JSONException {
@@ -95,21 +87,18 @@ public class JsonRpcHandlerTest {
     processor.gadgets.put(SPEC_URL2.toJavaUri(), SPEC_XML2);
   }
 
-  private JSONObject createGadget(String url, int moduleId, Map<String, String> prefs)
-      throws JSONException {
-    return new JSONObject()
-        .put("url", url)
-        .put("moduleId", moduleId)
-        .put("prefs", prefs == null ? Collections.emptySet() : prefs);
+  private JSONObject createGadget(String url, int moduleId,
+      Map<String, String> prefs) throws JSONException {
+    return new JSONObject().put("url", url).put("moduleId", moduleId).put(
+        "prefs", prefs == null ? Collections.emptySet() : prefs);
   }
 
   @Test
   public void testSimpleRequest() throws Exception {
-    JSONArray gadgets = new JSONArray()
-        .put(createGadget(SPEC_URL.toString(), 0, null));
-    JSONObject input = new JSONObject()
-        .put("context", createContext("en", "US"))
-        .put("gadgets", gadgets);
+    JSONArray gadgets = new JSONArray().put(createGadget(SPEC_URL.toString(),
+        0, null));
+    JSONObject input = new JSONObject().put("context",
+        createContext("en", "US")).put("gadgets", gadgets);
 
     urlGenerator.iframeUrl = SPEC_URL.toString();
 
@@ -121,7 +110,8 @@ public class JsonRpcHandlerTest {
     assertEquals(SPEC_TITLE, gadget.getString("title"));
     assertEquals(0, gadget.getInt("moduleId"));
 
-    JSONObject view = gadget.getJSONObject("views").getJSONObject(GadgetSpec.DEFAULT_VIEW);
+    JSONObject view = gadget.getJSONObject("views").getJSONObject(
+        GadgetSpec.DEFAULT_VIEW);
     assertEquals(PREFERRED_HEIGHT, view.getInt("preferredHeight"));
     assertEquals(PREFERRED_WIDTH, view.getInt("preferredWidth"));
     assertEquals(LINK_HREF, gadget.getJSONObject("links").getString(LINK_REL));
@@ -150,11 +140,10 @@ public class JsonRpcHandlerTest {
 
   @Test(expected = RpcException.class)
   public void testUnexpectedError() throws Exception {
-    JSONArray gadgets = new JSONArray()
-        .put(createGadget(SPEC_URL.toString(), 0, null));
-    JSONObject input = new JSONObject()
-        .put("context", createContext("en", "US"))
-        .put("gadgets", gadgets);
+    JSONArray gadgets = new JSONArray().put(createGadget(SPEC_URL.toString(),
+        0, null));
+    JSONObject input = new JSONObject().put("context",
+        createContext("en", "US")).put("gadgets", gadgets);
 
     urlGenerator.throwRandomFault = true;
     jsonRpcHandler.process(input);
@@ -164,12 +153,11 @@ public class JsonRpcHandlerTest {
 
   @Test
   public void testMultipleGadgets() throws Exception {
-    JSONArray gadgets = new JSONArray()
-        .put(createGadget(SPEC_URL.toString(), 0, null))
-        .put(createGadget(SPEC_URL2.toString(), 1, null));
-    JSONObject input = new JSONObject()
-        .put("context", createContext("en", "US"))
-        .put("gadgets", gadgets);
+    JSONArray gadgets = new JSONArray().put(
+        createGadget(SPEC_URL.toString(), 0, null)).put(
+        createGadget(SPEC_URL2.toString(), 1, null));
+    JSONObject input = new JSONObject().put("context",
+        createContext("en", "US")).put("gadgets", gadgets);
 
     JSONObject response = jsonRpcHandler.process(input);
 
@@ -196,14 +184,14 @@ public class JsonRpcHandlerTest {
 
   @Test
   public void testMultipleGadgetsWithAnError() throws Exception {
-    JSONArray gadgets = new JSONArray()
-        .put(createGadget(SPEC_URL.toString(), 0, null))
-        .put(createGadget(SPEC_URL2.toString(), 1, null));
-    JSONObject input = new JSONObject()
-        .put("context", createContext("en", "US"))
-        .put("gadgets", gadgets);
+    JSONArray gadgets = new JSONArray().put(
+        createGadget(SPEC_URL.toString(), 0, null)).put(
+        createGadget(SPEC_URL2.toString(), 1, null));
+    JSONObject input = new JSONObject().put("context",
+        createContext("en", "US")).put("gadgets", gadgets);
 
-    processor.exceptions.put(SPEC_URL2.toJavaUri(), new ProcessingException("broken"));
+    processor.exceptions.put(SPEC_URL2.toJavaUri(), new ProcessingException(
+        "broken"));
 
     JSONObject response = jsonRpcHandler.process(input);
 
@@ -245,13 +233,12 @@ public class JsonRpcHandlerTest {
       }
 
       try {
-        GadgetSpec spec = StaxTestUtils.parseSpec(gadgets.get(context.getUrl()), Uri.parse("#"));
+        GadgetSpec spec = StaxTestUtils.parseSpec(
+            gadgets.get(context.getUrl()), Uri.parse("#"));
 
         View view = spec.getView(context.getView());
-        return new Gadget()
-            .setContext(context)
-            .setSpec(spec)
-            .setCurrentView(view);
+        return new Gadget().setContext(context).setSpec(spec).setCurrentView(
+            view);
       } catch (GadgetException e) {
         throw new ProcessingException(e);
       } catch (XMLStreamException xse) {
@@ -264,11 +251,13 @@ public class JsonRpcHandlerTest {
     private boolean throwRandomFault = false;
     private String iframeUrl = "http://example.org/gadgets/foo-does-not-matter";
 
-    public String getBundledJsParam(Collection<String> features, GadgetContext context) {
+    public String getBundledJsParam(Collection<String> features,
+        GadgetContext context) {
       throw new UnsupportedOperationException();
     }
 
-    public String getBundledJsUrl(Collection<String> features, GadgetContext context) {
+    public String getBundledJsUrl(Collection<String> features,
+        GadgetContext context) {
       throw new UnsupportedOperationException();
     }
 

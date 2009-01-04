@@ -42,11 +42,9 @@ public class Pair<K, V> {
     return value;
   }
 
-  @Override public String toString() {
-    return new ToStringBuilder(this)
-      .appendSuper(super.toString())
-      .append("key", getKey())
-      .append("value", getValue())
-      .toString();
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).appendSuper(super.toString()).append(
+        "key", getKey()).append("value", getValue()).toString();
   }
 }

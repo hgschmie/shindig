@@ -40,7 +40,8 @@ import com.google.common.collect.ImmutableSet;
 
 public class Content extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
 
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_HREF = "href";
@@ -132,8 +133,7 @@ public class Content extends SpecElement {
       writeAttribute(writer, ATTR_HREF, getHref().toString());
     }
     if (attr(ATTR_VIEW) != null) {
-      writeAttribute(writer, ATTR_VIEW, StringUtils.join(
-          getViews(), ','));
+      writeAttribute(writer, ATTR_VIEW, StringUtils.join(getViews(), ','));
     }
     if (attr(ATTR_PREFERRED_HEIGHT) != null) {
       writeAttribute(writer, ATTR_PREFERRED_HEIGHT, String
@@ -165,11 +165,13 @@ public class Content extends SpecElement {
   public void validate() throws SpecParserException {
 
     if (attr(ATTR_TYPE) != null && getType() == null) {
-      throw new SpecParserException(this, "@type value '" + attr(ATTR_TYPE) + "' is unknown!");
+      throw new SpecParserException(this, "@type value '" + attr(ATTR_TYPE)
+          + "' is unknown!");
     }
 
     if (attr(ATTR_AUTHZ) != null && getAuthType() == null) {
-      throw new SpecParserException(this, "@authz value '" + attr(ATTR_AUTHZ) + "' is unknown!");
+      throw new SpecParserException(this, "@authz value '" + attr(ATTR_AUTHZ)
+          + "' is unknown!");
     }
 
     switch (getType()) {
@@ -184,7 +186,8 @@ public class Content extends SpecElement {
       }
       break;
     default:
-      throw new SpecParserException(this, "Unknown type for Content@type encountered: " + getType());
+      throw new SpecParserException(this,
+          "Unknown type for Content@type encountered: " + getType());
     }
   }
 
@@ -197,32 +200,20 @@ public class Content extends SpecElement {
       return true;
     }
     Content rhs = (Content) other;
-    return new EqualsBuilder()
-                  .append(getType(), rhs.getType())
-                  .append(getHref(), rhs.getHref())
-                  .append(getViews(), rhs.getViews())
-                  .append(getText(), rhs.getText())
-                  .append(getAuthType(), rhs.getAuthType())
-                  .append(isQuirks(), rhs.isQuirks())
-                  .append(isSignOwner(), rhs.isSignOwner())
-                  .append(isSignViewer(), rhs.isSignViewer())
-                  .isEquals();
+    return new EqualsBuilder().append(getType(), rhs.getType()).append(
+        getHref(), rhs.getHref()).append(getViews(), rhs.getViews()).append(
+        getText(), rhs.getText()).append(getAuthType(), rhs.getAuthType())
+        .append(isQuirks(), rhs.isQuirks()).append(isSignOwner(),
+            rhs.isSignOwner()).append(isSignViewer(), rhs.isSignViewer())
+        .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-    .append(getType())
-    .append(getHref())
-    .append(getViews())
-    .append(getText())
-    .append(getAuthType())
-    .append(isQuirks())
-    .append(isSignOwner())
-    .append(isSignViewer())
-    .toHashCode();
+    return new HashCodeBuilder().append(getType()).append(getHref()).append(
+        getViews()).append(getText()).append(getAuthType()).append(isQuirks())
+        .append(isSignOwner()).append(isSignViewer()).toHashCode();
   }
-
 
   /**
    * Possible values for Content@type
@@ -237,7 +228,7 @@ public class Content extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */
@@ -245,7 +236,8 @@ public class Content extends SpecElement {
 
       if (value != null) {
         for (Type type : Type.values()) {
-          if (StringUtils.equalsIgnoreCase(type.name(), StringUtils.trimToEmpty(value))) {
+          if (StringUtils.equalsIgnoreCase(type.name(), StringUtils
+              .trimToEmpty(value))) {
             return type;
           }
         }
@@ -263,7 +255,8 @@ public class Content extends SpecElement {
     public Parser(final QName name, final Uri base) {
       super(name, base);
       register(ATTR_TYPE, ATTR_HREF, ATTR_VIEW, ATTR_PREFERRED_HEIGHT,
-          ATTR_PREFERRED_WIDTH, ATTR_AUTHZ, ATTR_QUIRKS, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER);
+          ATTR_PREFERRED_WIDTH, ATTR_AUTHZ, ATTR_QUIRKS, ATTR_SIGN_OWNER,
+          ATTR_SIGN_VIEWER);
     }
 
     @Override

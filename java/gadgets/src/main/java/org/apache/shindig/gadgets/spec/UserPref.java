@@ -39,7 +39,8 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class UserPref extends SpecElement {
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "UserPref");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "UserPref");
 
   public static final String ATTR_NAME = "name";
   public static final String ATTR_DISPLAY_NAME = "display_name";
@@ -60,19 +61,23 @@ public class UserPref extends SpecElement {
 
   private final List<EnumValue> enumValues = new LinkedList<EnumValue>();
 
-  // Shindig uses enums internally ordered and as user prefs attributes all the time.
+  // Shindig uses enums internally ordered and as user prefs attributes all the
+  // time.
   // So let's keep track of this here.
   private final List<Pair<String, String>> orderedEnums = new LinkedList<Pair<String, String>>();
   private final Map<String, String> enumMap = new HashMap<String, String>();
 
-  public UserPref(final QName name, final Map<String, QName> attrNames, final Uri base) {
+  public UserPref(final QName name, final Map<String, QName> attrNames,
+      final Uri base) {
     super(name, attrNames, base);
   }
 
   protected UserPref(final UserPref userPref, final Substitutions substituter) {
     super(userPref, substituter);
-    setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref.getDisplayName()));
-    setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref.getDefaultValue()));
+    setAttr(ATTR_DISPLAY_NAME, substituter.substituteString(userPref
+        .getDisplayName()));
+    setAttr(ATTR_DEFAULT_VALUE, substituter.substituteString(userPref
+        .getDefaultValue()));
 
     for (EnumValue enumValue : userPref.getEnumValues()) {
       addEnumValue(enumValue.substitute(substituter));
@@ -154,12 +159,14 @@ public class UserPref extends SpecElement {
 
   private void addEnumValue(final EnumValue enumValue) {
     this.enumValues.add(enumValue);
-    this.orderedEnums.add(new Pair<String, String>(enumValue.getValue(), enumValue.getDisplayValue()));
+    this.orderedEnums.add(new Pair<String, String>(enumValue.getValue(),
+        enumValue.getDisplayValue()));
     this.enumMap.put(enumValue.getValue(), enumValue.getDisplayValue());
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
 
     if (attr(ATTR_NAME) != null) {
       writeAttribute(writer, ATTR_NAME, getName());
@@ -202,11 +209,13 @@ public class UserPref extends SpecElement {
     }
 
     if (attr(ATTR_RESTRICT_TO_COMPLETIONS) != null) {
-      writeAttribute(writer, ATTR_RESTRICT_TO_COMPLETIONS, getRestrictToCompletions());
+      writeAttribute(writer, ATTR_RESTRICT_TO_COMPLETIONS,
+          getRestrictToCompletions());
     }
 
     if (attr(ATTR_PREFIX_MATCH) != null) {
-      writeAttribute(writer, ATTR_PREFIX_MATCH, String.valueOf(getPrefixMatch()));
+      writeAttribute(writer, ATTR_PREFIX_MATCH, String
+          .valueOf(getPrefixMatch()));
     }
 
     if (attr(ATTR_PUBLISH) != null) {
@@ -227,7 +236,8 @@ public class UserPref extends SpecElement {
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     for (EnumValue enumValue : enumValues) {
       enumValue.toXml(writer);
     }
@@ -236,11 +246,13 @@ public class UserPref extends SpecElement {
   @Override
   public void validate() throws SpecParserException {
     if (attr(ATTR_NAME) == null) {
-      throw new SpecParserException(name().getLocalPart() + "@name must be set!");
+      throw new SpecParserException(name().getLocalPart()
+          + "@name must be set!");
     }
   }
 
-  // Convenience Methods that deal with the underlying enum elements. These are not part of the model!
+  // Convenience Methods that deal with the underlying enum elements. These are
+  // not part of the model!
 
   public List<Pair<String, String>> orderEnumValues() {
     return Collections.unmodifiableList(orderedEnums);
@@ -258,13 +270,14 @@ public class UserPref extends SpecElement {
 
     /**
      * Parses a data type from the input string.
-     *
+     * 
      * @param value
      * @return The data type of the given value.
      */
     public static DataType parse(final String value) {
       for (DataType type : DataType.values()) {
-        if (StringUtils.equalsIgnoreCase(type.toString(), StringUtils.trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(type.toString(), StringUtils
+            .trimToEmpty(value))) {
           return type;
         }
       }
@@ -281,8 +294,11 @@ public class UserPref extends SpecElement {
     public Parser(final QName name, final Uri base) {
       super(name, base);
       register(new EnumValue.Parser(base));
-      register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED, ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
-          ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS, ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE, ATTR_GROUP);
+      register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED,
+          ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
+          ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS,
+          ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE,
+          ATTR_GROUP);
     }
 
     @Override
@@ -291,7 +307,8 @@ public class UserPref extends SpecElement {
     }
 
     @Override
-    protected void addChild(XMLStreamReader reader, final UserPref userPref, final SpecElement child) throws GadgetException {
+    protected void addChild(XMLStreamReader reader, final UserPref userPref,
+        final SpecElement child) throws GadgetException {
       if (child instanceof EnumValue) {
         userPref.addEnumValue((EnumValue) child);
       } else {

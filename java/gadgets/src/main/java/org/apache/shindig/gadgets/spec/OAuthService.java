@@ -34,7 +34,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthService extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
 
   public static final String ATTR_NAME = "name";
 
@@ -47,8 +48,9 @@ public class OAuthService extends SpecElement {
     super(name, attrNames, base);
   }
 
-  protected OAuthService(final OAuthService oAuthService, final Substitutions substituter) {
-      super(oAuthService, substituter);
+  protected OAuthService(final OAuthService oAuthService,
+      final Substitutions substituter) {
+    super(oAuthService, substituter);
   }
 
   @Override
@@ -114,11 +116,9 @@ public class OAuthService extends SpecElement {
     // shindig parser allowed (and actually unit-tests) for
     // an empty service.
     /*
-    if (attr(ATTR_NAME) == null) {
-      throw new SpecParserException(name().getLocalPart()
-          + "@name must be set!");
-    }
-    */
+     * if (attr(ATTR_NAME) == null) { throw new
+     * SpecParserException(name().getLocalPart() + "@name must be set!"); }
+     */
 
     if (oAuthRequest == null) {
       throw new SpecParserException(name().getLocalPart()

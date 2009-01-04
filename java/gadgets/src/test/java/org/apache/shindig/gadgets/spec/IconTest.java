@@ -48,7 +48,8 @@ public class IconTest extends TestCase {
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "domain",
         "example.org");
-    Icon icon = StaxTestUtils.parseElement(xml, new Icon.Parser(null)).substitute(substituter);
+    Icon icon = StaxTestUtils.parseElement(xml, new Icon.Parser(null))
+        .substitute(substituter);
     assertEquals("http://example.org/icon.png", icon.getText());
   }
 }

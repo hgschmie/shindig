@@ -49,9 +49,8 @@ public class Processor {
 
   @Inject
   public Processor(GadgetSpecFactory gadgetSpecFactory,
-                   VariableSubstituter substituter,
-                   ContainerConfig containerConfig,
-                   GadgetBlacklist blacklist) {
+      VariableSubstituter substituter, ContainerConfig containerConfig,
+      GadgetBlacklist blacklist) {
     this.gadgetSpecFactory = gadgetSpecFactory;
     this.substituter = substituter;
     this.blacklist = blacklist;
@@ -59,10 +58,12 @@ public class Processor {
   }
 
   /**
-   * Process a single gadget. Creates a gadget from a retrieved GadgetSpec and context object,
-   * automatically performing variable substitution on the spec for use elsewhere.
-   *
-   * @throws ProcessingException If there is a problem processing the gadget.
+   * Process a single gadget. Creates a gadget from a retrieved GadgetSpec and
+   * context object, automatically performing variable substitution on the spec
+   * for use elsewhere.
+   * 
+   * @throws ProcessingException
+   *           If there is a problem processing the gadget.
    */
   public Gadget process(GadgetContext context) throws ProcessingException {
     URI url = context.getUrl();
@@ -71,8 +72,10 @@ public class Processor {
       throw new ProcessingException("Missing or malformed url parameter");
     }
 
-    if (!"http".equalsIgnoreCase(url.getScheme()) && !"https".equalsIgnoreCase(url.getScheme())) {
-      throw new ProcessingException("Unsupported scheme (must be http or https).");
+    if (!"http".equalsIgnoreCase(url.getScheme())
+        && !"https".equalsIgnoreCase(url.getScheme())) {
+      throw new ProcessingException(
+          "Unsupported scheme (must be http or https).");
     }
 
     if (blacklist.isBlacklisted(context.getUrl())) {
@@ -84,10 +87,8 @@ public class Processor {
       GadgetSpec spec = gadgetSpecFactory.getGadgetSpec(context);
       spec = substituter.substitute(context, spec);
 
-      return new Gadget()
-          .setContext(context)
-          .setSpec(spec)
-          .setCurrentView(getView(context, spec));
+      return new Gadget().setContext(context).setSpec(spec).setCurrentView(
+          getView(context, spec));
     } catch (GadgetException e) {
       throw new ProcessingException(e.getMessage(), e);
     } catch (XMLStreamException xse) {

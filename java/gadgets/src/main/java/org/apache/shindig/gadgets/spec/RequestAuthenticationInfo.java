@@ -24,7 +24,8 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 
 /**
- * Exposes authentication information to be extracted for making authenticated requests.
+ * Exposes authentication information to be extracted for making authenticated
+ * requests.
  */
 public interface RequestAuthenticationInfo {
   /**
@@ -41,7 +42,6 @@ public interface RequestAuthenticationInfo {
    * @return True if owner signing is needed.
    */
   boolean isSignOwner();
-
 
   /**
    * @return True if viewer signing is needed.

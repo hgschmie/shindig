@@ -37,7 +37,8 @@ import com.google.common.collect.ImmutableSet;
 
 public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
 
   public static final String ATTR_HREF = "href";
   public static final String ATTR_AUTHZ = "authz";
@@ -70,7 +71,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
    * Produces a new Preload by substituting hangman variables from substituter.
    * See comments on individual fields to see what actually has substitutions
    * performed.
-   *
+   * 
    * @param substituter
    */
   @Override
@@ -128,33 +129,27 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     }
 
     if (attr(ATTR_SIGN_OWNER) != null) {
-      writeAttribute(writer, ATTR_SIGN_OWNER, String
-          .valueOf(isSignOwner()));
+      writeAttribute(writer, ATTR_SIGN_OWNER, String.valueOf(isSignOwner()));
     }
 
     if (attr(ATTR_SIGN_VIEWER) != null) {
-      writeAttribute(writer, ATTR_SIGN_VIEWER, String
-          .valueOf(isSignViewer()));
+      writeAttribute(writer, ATTR_SIGN_VIEWER, String.valueOf(isSignViewer()));
     }
 
     if (attr(ATTR_VIEWS) != null) {
-      writeAttribute(writer, ATTR_VIEWS, StringUtils.join(
-          getViews(), ','));
+      writeAttribute(writer, ATTR_VIEWS, StringUtils.join(getViews(), ','));
     }
 
     if (attr(ATTR_OAUTH_SERVICE_NAME) != null) {
-      writeAttribute(writer, ATTR_OAUTH_SERVICE_NAME,
-          getOAuthServiceName());
+      writeAttribute(writer, ATTR_OAUTH_SERVICE_NAME, getOAuthServiceName());
     }
 
     if (attr(ATTR_OAUTH_TOKEN_NAME) != null) {
-      writeAttribute(writer, ATTR_OAUTH_TOKEN_NAME,
-          getOAuthTokenName());
+      writeAttribute(writer, ATTR_OAUTH_TOKEN_NAME, getOAuthTokenName());
     }
 
     if (attr(ATTR_OAUTH_REQUEST_TOKEN) != null) {
-      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN,
-          getOAuthRequestToken());
+      writeAttribute(writer, ATTR_OAUTH_REQUEST_TOKEN, getOAuthRequestToken());
     }
 
     if (attr(ATTR_OAUTH_REQUEST_TOKEN_SECRET) != null) {
@@ -188,7 +183,8 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
       register(ATTR_HREF, ATTR_AUTHZ, ATTR_SIGN_OWNER, ATTR_SIGN_VIEWER,
           ATTR_VIEWS, ATTR_OAUTH_SERVICE_NAME, ATTR_OAUTH_TOKEN_NAME,
-          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET, ATTR_OAUTH_USE_TOKEN);
+          ATTR_OAUTH_REQUEST_TOKEN, ATTR_OAUTH_REQUEST_TOKEN_SECRET,
+          ATTR_OAUTH_USE_TOKEN);
     }
 
     @Override

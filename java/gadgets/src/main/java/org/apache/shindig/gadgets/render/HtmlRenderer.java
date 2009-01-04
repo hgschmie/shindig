@@ -44,25 +44,24 @@ public class HtmlRenderer {
 
   @Inject
   public HtmlRenderer(ContentFetcherFactory fetcher,
-                      PreloaderService preloader,
-                      ContentRewriterRegistry rewriter) {
+      PreloaderService preloader, ContentRewriterRegistry rewriter) {
     this.fetcher = fetcher;
     this.preloader = preloader;
     this.rewriter = rewriter;
   }
 
   /**
-   * Render the gadget into a string by performing the following steps:
+   * Render the gadget into a string by performing the following steps: -
+   * Retrieve gadget specification information (GadgetSpec, MessageBundle, etc.) -
+   * Fetch any preloaded data needed to handle the request, as handled by
+   * Preloader. - Perform rewriting operations on the output content, handled by
+   * Rewriter.
    *
-   * - Retrieve gadget specification information (GadgetSpec, MessageBundle, etc.)
-   *
-   * - Fetch any preloaded data needed to handle the request, as handled by Preloader.
-   *
-   * - Perform rewriting operations on the output content, handled by Rewriter.
-   *
-   * @param gadget The gadget for the rendering operation.
+   * @param gadget
+   *          The gadget for the rendering operation.
    * @return The rendered gadget content
-   * @throws RenderingException if any issues arise that prevent rendering.
+   * @throws RenderingException
+   *           if any issues arise that prevent rendering.
    */
   public String render(Gadget gadget) throws RenderingException {
     try {
@@ -76,22 +75,22 @@ public class HtmlRenderer {
       if (view.getHref() == null) {
         return rewriter.rewriteGadget(gadget, view.getContent());
       } else {
-        // TODO: Add current url to GadgetContext to support transitive proxying.
+        // TODO: Add current url to GadgetContext to support transitive
+        // proxying.
         UriBuilder uri = new UriBuilder(view.getHref());
         uri.addQueryParameter("lang", context.getLocale().getLanguage());
         uri.addQueryParameter("country", context.getLocale().getCountry());
 
-        HttpRequest request = new HttpRequest(uri.toUri())
-            .setIgnoreCache(context.getIgnoreCache())
-            .setOAuthArguments(new OAuthArguments(view))  // TODO hps - Do we support oauth on the views?
-            .setAuthType(view.getAuthType())
-            .setSecurityToken(context.getToken())
-            .setContainer(context.getContainer())
-            .setGadget(spec.getUrl());
+        HttpRequest request = new HttpRequest(uri.toUri()).setIgnoreCache(
+            context.getIgnoreCache()).setOAuthArguments(
+            new OAuthArguments(view)).setAuthType(view.getAuthType())
+            .setSecurityToken(context.getToken()).setContainer(
+                context.getContainer()).setGadget(spec.getUrl());
         HttpResponse response = fetcher.fetch(request);
         if (response.getHttpStatusCode() != HttpResponse.SC_OK) {
-          throw new RenderingException("Unable to reach remote host. HTTP status " +
-              response.getHttpStatusCode());
+          throw new RenderingException(
+              "Unable to reach remote host. HTTP status "
+                  + response.getHttpStatusCode());
         }
         return rewriter.rewriteGadget(gadget, response.getResponseAsString());
       }

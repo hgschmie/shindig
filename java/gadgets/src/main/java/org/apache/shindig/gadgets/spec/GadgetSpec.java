@@ -25,28 +25,26 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-
 public interface GadgetSpec {
-    String DEFAULT_VIEW = "default";
+  String DEFAULT_VIEW = "default";
 
-    Locale DEFAULT_LOCALE = new Locale("all", "ALL");
+  Locale DEFAULT_LOCALE = new Locale("all", "ALL");
 
+  Uri getUrl();
 
-    Uri getUrl();
+  String getChecksum();
 
-    String getChecksum();
+  ModulePrefs getModulePrefs();
 
-    ModulePrefs getModulePrefs();
+  List<UserPref> getUserPrefs();
 
-    List<UserPref> getUserPrefs();
+  Map<String, View> getViews();
 
-    Map<String, View> getViews();
+  View getView(String name);
 
-    View getView(String name);
+  Object getSpecAttribute(String key);
 
-    Object getSpecAttribute(String key);
+  void setSpecAttribute(String key, Object o);
 
-    void setSpecAttribute(String key, Object o);
-
-    GadgetSpec substitute(Substitutions substituter) throws GadgetException;
+  GadgetSpec substitute(Substitutions substituter) throws GadgetException;
 }

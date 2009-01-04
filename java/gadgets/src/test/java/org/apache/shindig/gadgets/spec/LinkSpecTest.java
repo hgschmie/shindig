@@ -18,12 +18,12 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Link.
@@ -37,7 +37,8 @@ public class LinkSpecTest {
   public void parseBasicLink() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='" + HREF_VALUE + "'/>";
 
-    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(
+        SPEC_URL));
 
     assertEquals(REL_VALUE, link.getRel());
     assertEquals(HREF_VALUE, link.getHref());
@@ -47,7 +48,8 @@ public class LinkSpecTest {
   public void parseRelativeLink() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='/foo'/>";
 
-    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(
+        SPEC_URL));
 
     link = link.substitute(new Substitutions());
 
@@ -62,7 +64,8 @@ public class LinkSpecTest {
     Uri expectedHref = Uri.parse("http://example.org/jp-DE.xml");
     String xml = "<Link rel='__MSG_rel__' href='http://example.org/__MSG_href__'/>";
 
-    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(
+        SPEC_URL));
     Substitutions substitutions = new Substitutions();
     substitutions.addSubstitution(Substitutions.Type.MESSAGE, "rel", rel);
     substitutions.addSubstitution(Substitutions.Type.MESSAGE, "href", href);
@@ -94,8 +97,10 @@ public class LinkSpecTest {
   public void toStringIsSane() throws Exception {
     String xml = "<Link rel='" + REL_VALUE + "' href='" + HREF_VALUE + "'/>";
 
-    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(SPEC_URL));
-    LinkSpec link2 = StaxTestUtils.parseElement(link.toString(), new LinkSpec.Parser(SPEC_URL));
+    LinkSpec link = StaxTestUtils.parseElement(xml, new LinkSpec.Parser(
+        SPEC_URL));
+    LinkSpec link2 = StaxTestUtils.parseElement(link.toString(),
+        new LinkSpec.Parser(SPEC_URL));
 
     assertEquals(link.getRel(), link2.getRel());
     assertEquals(link.getHref(), link2.getHref());

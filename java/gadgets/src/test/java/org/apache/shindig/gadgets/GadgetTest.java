@@ -18,41 +18,36 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Gadget
  */
 public class GadgetTest {
   private final static String SPEC_URL = "http://example.org/gadget.xml";
-  private final static String SPEC_XML
-      = "<Module>" +
-        "<ModulePrefs title='title'>" +
-        "  <Preload href='http://example.org/foo'/>" +
-        "  <Locale>" +
-        "    <msg name='name'>VALUE</msg>" +
-        "  </Locale>" +
-        "</ModulePrefs>" +
-        "<Content type='html'>DEFAULT VIEW</Content>" +
-        "<Content view='one' type='html'>VIEW ONE</Content>" +
-        "<Content view='two' type='html'>VIEW TWO</Content>" +
-        "</Module>";
+  private final static String SPEC_XML = "<Module>"
+      + "<ModulePrefs title='title'>"
+      + "  <Preload href='http://example.org/foo'/>" + "  <Locale>"
+      + "    <msg name='name'>VALUE</msg>" + "  </Locale>" + "</ModulePrefs>"
+      + "<Content type='html'>DEFAULT VIEW</Content>"
+      + "<Content view='one' type='html'>VIEW ONE</Content>"
+      + "<Content view='two' type='html'>VIEW TWO</Content>" + "</Module>";
 
   private final DummyContext context = new DummyContext();
 
   @Test
   public void getLocale() throws Exception {
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(StaxTestUtils.parseSpec(SPEC_XML, Uri.parse(SPEC_URL)));
+    Gadget gadget = new Gadget().setContext(context).setSpec(
+        StaxTestUtils.parseSpec(SPEC_XML, Uri.parse(SPEC_URL)));
 
     LocaleSpec localeSpec = gadget.getLocale();
-    assertEquals("VALUE", new MessageBundle(localeSpec).getMessages().get("name"));
+    assertEquals("VALUE", new MessageBundle(localeSpec).getMessages().get(
+        "name"));
   }
 
   private static class DummyContext extends GadgetContext {

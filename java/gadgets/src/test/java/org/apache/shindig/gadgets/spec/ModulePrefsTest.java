@@ -19,11 +19,6 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
@@ -32,49 +27,34 @@ import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class ModulePrefsTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
-  private static final String FULL_XML
-      = "<ModulePrefs" +
-        " title='title'" +
-        " title_url='title_url'" +
-        " description='description'" +
-        " author='author'" +
-        " author_email='author_email'" +
-        " screenshot='screenshot'" +
-        " thumbnail='thumbnail'" +
-        " directory_title='directory_title'" +
-        " width='1'" +
-        " height='2'" +
-        " scrolling='true'" +
-        " category='category'" +
-        " category2='category2'" +
-        " author_affiliation='author_affiliation'" +
-        " author_location='author_location'" +
-        " author_photo='author_photo'" +
-        " author_aboutme='author_aboutme'" +
-        " author_quote='author_quote'" +
-        " author_link='author_link'" +
-        " show_stats='true'" +
-        " show_in_directory='true'" +
-        " singleton='true'>" +
-        "  <Require feature='require'/>" +
-        "  <Optional feature='optional'/>" +
-        "  <Preload href='http://example.org' authz='signed'/>" +
-        "  <Icon/>" +
-        "  <Locale/>" +
-        "  <Link rel='link' href='http://example.org/link'/>" +
-        "  <OAuth>" +
-        "    <Service name='serviceOne'>" +
-        "      <Request url='http://www.example.com/request'" +
-        "          method='GET' param_location='auth-header' />" +
-        "      <Authorization url='http://www.example.com/authorize'/>" +
-        "      <Access url='http://www.example.com/access' method='GET'" +
-        "          param_location='auth-header' />" +
-        "    </Service>" +
-        "  </OAuth>" +
-        "</ModulePrefs>";
+  private static final String FULL_XML = "<ModulePrefs" + " title='title'"
+      + " title_url='title_url'" + " description='description'"
+      + " author='author'" + " author_email='author_email'"
+      + " screenshot='screenshot'" + " thumbnail='thumbnail'"
+      + " directory_title='directory_title'" + " width='1'" + " height='2'"
+      + " scrolling='true'" + " category='category'" + " category2='category2'"
+      + " author_affiliation='author_affiliation'"
+      + " author_location='author_location'" + " author_photo='author_photo'"
+      + " author_aboutme='author_aboutme'" + " author_quote='author_quote'"
+      + " author_link='author_link'" + " show_stats='true'"
+      + " show_in_directory='true'" + " singleton='true'>"
+      + "  <Require feature='require'/>" + "  <Optional feature='optional'/>"
+      + "  <Preload href='http://example.org' authz='signed'/>" + "  <Icon/>"
+      + "  <Locale/>" + "  <Link rel='link' href='http://example.org/link'/>"
+      + "  <OAuth>" + "    <Service name='serviceOne'>"
+      + "      <Request url='http://www.example.com/request'"
+      + "          method='GET' param_location='auth-header' />"
+      + "      <Authorization url='http://www.example.com/authorize'/>"
+      + "      <Access url='http://www.example.com/access' method='GET'"
+      + "          param_location='auth-header' />" + "    </Service>"
+      + "  </OAuth>" + "</ModulePrefs>";
 
   private void doAsserts(ModulePrefs prefs) {
     assertEquals("title", prefs.getTitle());
@@ -82,7 +62,8 @@ public class ModulePrefsTest {
     assertEquals("description", prefs.getDescription());
     assertEquals("author", prefs.getAuthor());
     assertEquals("author_email", prefs.getAuthorEmail());
-    assertEquals(SPEC_URL.resolve(Uri.parse("screenshot")), prefs.getScreenshot());
+    assertEquals(SPEC_URL.resolve(Uri.parse("screenshot")), prefs
+        .getScreenshot());
     assertEquals(SPEC_URL.resolve(Uri.parse("thumbnail")), prefs.getThumbnail());
     assertEquals("directory_title", prefs.getDirectoryTitle());
     assertEquals(1, prefs.getWidth());
@@ -93,8 +74,10 @@ public class ModulePrefsTest {
     assertEquals("category2", prefs.getCategories().get(1));
     assertEquals("author_affiliation", prefs.getAuthorAffiliation());
     assertEquals("author_location", prefs.getAuthorLocation());
-    assertEquals(SPEC_URL.resolve(Uri.parse("author_photo")), prefs.getAuthorPhoto());
-    assertEquals(SPEC_URL.resolve(Uri.parse("author_link")), prefs.getAuthorLink());
+    assertEquals(SPEC_URL.resolve(Uri.parse("author_photo")), prefs
+        .getAuthorPhoto());
+    assertEquals(SPEC_URL.resolve(Uri.parse("author_link")), prefs
+        .getAuthorLink());
     assertEquals("author_aboutme", prefs.getAuthorAboutme());
     assertEquals("author_quote", prefs.getAuthorQuote());
     assertEquals(true, prefs.isShowStats());
@@ -104,33 +87,39 @@ public class ModulePrefsTest {
     assertEquals(true, prefs.getFeatures().get("require").isRequired());
     assertEquals(false, prefs.getFeatures().get("optional").isRequired());
 
-    assertEquals("http://example.org",
-        prefs.getPreloads().get(0).getHref().toString());
+    assertEquals("http://example.org", prefs.getPreloads().get(0).getHref()
+        .toString());
 
     assertEquals(1, prefs.getIcons().size());
 
     assertEquals(1, prefs.getLocales().size());
 
-    assertEquals(Uri.parse("http://example.org/link"), prefs.getLinks().get("link").getHref());
+    assertEquals(Uri.parse("http://example.org/link"), prefs.getLinks().get(
+        "link").getHref());
 
     OAuthService oauth = prefs.getOAuth().getServices().get("serviceOne");
-    assertEquals(Uri.parse("http://www.example.com/request"), oauth.getRequest().getUrl());
+    assertEquals(Uri.parse("http://www.example.com/request"), oauth
+        .getRequest().getUrl());
     assertEquals(OAuthElement.Method.GET, oauth.getRequest().getMethod());
     assertEquals(OAuthElement.Method.GET, oauth.getAccess().getMethod());
-    assertEquals(OAuthElement.Location.HEADER, oauth.getAccess().getParamLocation());
-    assertEquals(Uri.parse("http://www.example.com/authorize"), oauth.getAuthorization().getUrl());
+    assertEquals(OAuthElement.Location.HEADER, oauth.getAccess()
+        .getParamLocation());
+    assertEquals(Uri.parse("http://www.example.com/authorize"), oauth
+        .getAuthorization().getUrl());
   }
 
   @Test
   public void basicElementsParseOk() throws Exception {
-    doAsserts(StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(SPEC_URL)));
+    doAsserts(StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(
+        SPEC_URL)));
   }
 
   @Test
   public void getAttribute() throws Exception {
-    String xml = "<ModulePrefs title='title' some_attribute='attribute' " +
-        "empty_attribute=''/>";
-    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
+    String xml = "<ModulePrefs title='title' some_attribute='attribute' "
+        + "empty_attribute=''/>";
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(
+        SPEC_URL));
     assertEquals("title", prefs.getTitle());
     assertEquals("attribute", prefs.getAttribute("some_attribute"));
     assertEquals("", prefs.getAttribute("empty_attribute"));
@@ -139,11 +128,11 @@ public class ModulePrefsTest {
 
   @Test
   public void getLocale() throws Exception {
-    String xml = "<ModulePrefs title='locales'>" +
-                 "  <Locale lang='en' messages='en.xml'/>" +
-                 "  <Locale lang='foo' language_direction='rtl'/>" +
-                 "</ModulePrefs>";
-    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
+    String xml = "<ModulePrefs title='locales'>"
+        + "  <Locale lang='en' messages='en.xml'/>"
+        + "  <Locale lang='foo' language_direction='rtl'/>" + "</ModulePrefs>";
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(
+        SPEC_URL));
     LocaleSpec spec = prefs.getLocale(new Locale("en", "uk"));
     assertEquals("http://example.org/en.xml", spec.getMessages().toString());
 
@@ -157,32 +146,32 @@ public class ModulePrefsTest {
     String link2Rel = "bar";
     Uri link1Href = Uri.parse("http://example.org/foo");
     Uri link2Href = Uri.parse("/bar");
-    String xml = "<ModulePrefs title='links'>" +
-                 "  <Link rel='" + link1Rel + "' href='" + link1Href + "'/>" +
-                 "  <Link rel='" + link2Rel + "' href='" + link2Href + "'/>" +
-                 "</ModulePrefs>";
+    String xml = "<ModulePrefs title='links'>" + "  <Link rel='" + link1Rel
+        + "' href='" + link1Href + "'/>" + "  <Link rel='" + link2Rel
+        + "' href='" + link2Href + "'/>" + "</ModulePrefs>";
 
-    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL))
-        .substitute(new Substitutions());
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml,
+        new ModulePrefs.Parser(SPEC_URL)).substitute(new Substitutions());
 
     assertEquals(link1Href, prefs.getLinks().get(link1Rel).getHref());
-    assertEquals(SPEC_URL.resolve(link2Href), prefs.getLinks().get(link2Rel).getHref());
+    assertEquals(SPEC_URL.resolve(link2Href), prefs.getLinks().get(link2Rel)
+        .getHref());
   }
 
   @Test
   public void doSubstitution() throws Exception {
-    String xml = "<ModulePrefs title='__MSG_title__'>" +
-                 "  <Icon>__MSG_icon__</Icon>" +
-                 "  <Link rel='__MSG_rel__' href='__MSG_link_href__'/>" +
-                 "  <Preload href='__MSG_pre_href__'/>" +
-                 "</ModulePrefs>";
+    String xml = "<ModulePrefs title='__MSG_title__'>"
+        + "  <Icon>__MSG_icon__</Icon>"
+        + "  <Link rel='__MSG_rel__' href='__MSG_link_href__'/>"
+        + "  <Preload href='__MSG_pre_href__'/>" + "</ModulePrefs>";
     String title = "blah";
     String icon = "http://example.org/icon.gif";
     String rel = "foo-bar";
     String linkHref = "http://example.org/link.html";
     String preHref = "http://example.org/preload.html";
 
-    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(
+        SPEC_URL));
     Substitutions subst = new Substitutions();
     subst.addSubstitution(Substitutions.Type.MESSAGE, "title", title);
     subst.addSubstitution(Substitutions.Type.MESSAGE, "icon", icon);
@@ -202,7 +191,8 @@ public class ModulePrefsTest {
   public void malformedIntAttributeTreatedAsZero() throws Exception {
     String xml = "<ModulePrefs title='' height='100px' width='foobar' arbitrary='0xff'/>";
 
-    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(SPEC_URL));
+    ModulePrefs prefs = StaxTestUtils.parseElement(xml, new ModulePrefs.Parser(
+        SPEC_URL));
 
     assertEquals(0, prefs.getHeight());
     assertEquals(0, prefs.getWidth());
@@ -217,7 +207,9 @@ public class ModulePrefsTest {
 
   @Test
   public void toStringIsSane() throws Exception {
-    ModulePrefs prefs = StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(SPEC_URL));
-    doAsserts(StaxTestUtils.parseElement(prefs.toString(), new ModulePrefs.Parser(SPEC_URL)));
+    ModulePrefs prefs = StaxTestUtils.parseElement(FULL_XML,
+        new ModulePrefs.Parser(SPEC_URL));
+    doAsserts(StaxTestUtils.parseElement(prefs.toString(),
+        new ModulePrefs.Parser(SPEC_URL)));
   }
 }

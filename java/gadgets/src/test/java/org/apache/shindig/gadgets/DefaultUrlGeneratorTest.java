@@ -18,10 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +37,10 @@ import org.json.JSONObject;
 
 import com.google.common.collect.Maps;
 
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+
 /**
  * Tests for DefaultUrlGenerator.
  */
@@ -51,8 +51,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
   private static final String TYPE_URL_HREF_HOST = "opensocial.org";
   private static final String TYPE_URL_HREF_PATH = "/app/foo";
   private static final String TYPE_URL_HREF_QUERY = "foo=bar&bar=baz";
-  private static final String TYPE_URL_HREF
-      = "http://" + TYPE_URL_HREF_HOST + TYPE_URL_HREF_PATH + '?' + TYPE_URL_HREF_QUERY;
+  private static final String TYPE_URL_HREF = "http://" + TYPE_URL_HREF_HOST
+      + TYPE_URL_HREF_PATH + '?' + TYPE_URL_HREF_QUERY;
   private static final String UP_NAME = "user-pref-name";
   private static final String UP_VALUE = "user-pref-value";
   private static final String CONTAINER = "shindig";
@@ -78,7 +78,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
 
     config.properties.put(DefaultUrlGenerator.IFRAME_URI_PARAM, IFR_BASE);
     config.properties.put(DefaultUrlGenerator.JS_URI_PARAM, JS_BASE);
-    realUrlGenerator = new DefaultUrlGenerator(config, lockedDomainService, registry);
+    realUrlGenerator = new DefaultUrlGenerator(config, lockedDomainService,
+        registry);
   }
 
   public void testGetBundledJsParam() throws Exception {
@@ -90,8 +91,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
 
     String jsParam = realUrlGenerator.getBundledJsParam(features, context);
 
-    assertTrue(
-        jsParam.matches("foo:bar\\.js\\?v=[0-9a-zA-Z]*&container=" + CONTAINER + "&debug=1"));
+    assertTrue(jsParam.matches("foo:bar\\.js\\?v=[0-9a-zA-Z]*&container="
+        + CONTAINER + "&debug=1"));
   }
 
   public void testGetBundledJsParamWithBadFeatureName() throws Exception {
@@ -103,7 +104,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
 
     String jsParam = realUrlGenerator.getBundledJsParam(features, context);
 
-    assertTrue(jsParam.matches("bar\\.js\\?v=[0-9a-zA-Z]*&container=" + CONTAINER + "&debug=1"));
+    assertTrue(jsParam.matches("bar\\.js\\?v=[0-9a-zA-Z]*&container="
+        + CONTAINER + "&debug=1"));
   }
 
   public void testGetBundledJsParamWithNoFeatures() throws Exception {
@@ -113,7 +115,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
 
     String jsParam = realUrlGenerator.getBundledJsParam(features, context);
 
-    assertTrue(jsParam.matches("core\\.js\\?v=[0-9a-zA-Z]*&container=" + CONTAINER + "&debug=0"));
+    assertTrue(jsParam.matches("core\\.js\\?v=[0-9a-zA-Z]*&container="
+        + CONTAINER + "&debug=0"));
   }
 
   public void testGetBundledJsUrl() throws Exception {
@@ -128,24 +131,20 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
 
     assertEquals("example.org", uri.getAuthority());
     assertEquals("/get-together/livescript/foo:bar.js", uri.getPath());
-    assertTrue("Missing checksum.", uri.getQueryParameter("v").matches("[0-9a-zA-Z]*"));
+    assertTrue("Missing checksum.", uri.getQueryParameter("v").matches(
+        "[0-9a-zA-Z]*"));
     assertEquals(CONTAINER, uri.getQueryParameter("container"));
     assertEquals("0", uri.getQueryParameter("debug"));
   }
 
   public void testGetIframeUrlTypeHtml() throws Exception {
-    String xml
-        = "<Module>" +
-          " <ModulePrefs title='test'/>" +
-          " <Content type='html'/>" +
-          " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
-          "</Module>";
+    String xml = "<Module>" + " <ModulePrefs title='test'/>"
+        + " <Content type='html'/>" + " <UserPref name='" + UP_NAME
+        + "' datatype='string'/>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, Uri.parse(SPEC_URL));
     replay();
 
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(spec)
+    Gadget gadget = new Gadget().setContext(context).setSpec(spec)
         .setCurrentView(spec.getView("default"));
 
     Uri iframeUrl = Uri.parse(realUrlGenerator.getIframeUrl(gadget));
@@ -153,26 +152,23 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
     assertEquals(IFR_BASE, iframeUrl.getPath());
     assertEquals(CONTAINER, iframeUrl.getQueryParameter("container"));
     assertEquals(UP_VALUE, iframeUrl.getQueryParameter("up_" + UP_NAME));
-    assertEquals(Integer.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
+    assertEquals(Integer.toString(MODULE_ID), iframeUrl
+        .getQueryParameter("mid"));
     assertEquals(VIEW, iframeUrl.getQueryParameter("view"));
   }
 
   public void testGetIframeUrlTypeHtmlWithLockedDomain() throws Exception {
-    String xml
-        = "<Module>" +
-          " <ModulePrefs title='test'/>" +
-          " <Content type='html'/>" +
-          " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
-          "</Module>";
+    String xml = "<Module>" + " <ModulePrefs title='test'/>"
+        + " <Content type='html'/>" + " <UserPref name='" + UP_NAME
+        + "' datatype='string'/>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, Uri.parse(SPEC_URL));
 
-    expect(lockedDomainService.getLockedDomainForGadget(isA(GadgetSpec.class), eq(CONTAINER)))
-        .andReturn("locked.example.org");
+    expect(
+        lockedDomainService.getLockedDomainForGadget(isA(GadgetSpec.class),
+            eq(CONTAINER))).andReturn("locked.example.org");
     replay();
 
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(spec)
+    Gadget gadget = new Gadget().setContext(context).setSpec(spec)
         .setCurrentView(spec.getView("default"));
 
     Uri iframeUrl = Uri.parse(realUrlGenerator.getIframeUrl(gadget));
@@ -181,23 +177,20 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
     assertEquals(IFR_BASE, iframeUrl.getPath());
     assertEquals(CONTAINER, iframeUrl.getQueryParameter("container"));
     assertEquals(UP_VALUE, iframeUrl.getQueryParameter("up_" + UP_NAME));
-    assertEquals(Integer.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
+    assertEquals(Integer.toString(MODULE_ID), iframeUrl
+        .getQueryParameter("mid"));
     assertEquals(VIEW, iframeUrl.getQueryParameter("view"));
   }
 
   public void testGetIframeUrlTypeUrl() throws Exception {
-    String xml
-        = "<Module>" +
-          " <ModulePrefs title='test'/>" +
-          " <Content type='url' href='" + StringEscapeUtils.escapeHtml(TYPE_URL_HREF) + "'/>" +
-          " <UserPref name='" + UP_NAME + "' datatype='string'/>" +
-          "</Module>";
+    String xml = "<Module>" + " <ModulePrefs title='test'/>"
+        + " <Content type='url' href='"
+        + StringEscapeUtils.escapeHtml(TYPE_URL_HREF) + "'/>"
+        + " <UserPref name='" + UP_NAME + "' datatype='string'/>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, Uri.parse(SPEC_URL));
     replay();
 
-    Gadget gadget = new Gadget()
-        .setContext(context)
-        .setSpec(spec)
+    Gadget gadget = new Gadget().setContext(context).setSpec(spec)
         .setCurrentView(spec.getView("default"));
 
     URI iframeUrl = URI.create(realUrlGenerator.getIframeUrl(gadget));
@@ -206,7 +199,8 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
     assertEquals(TYPE_URL_HREF_PATH, iframeUrl.getPath());
     StringAssert.assertContains(TYPE_URL_HREF_QUERY, iframeUrl.getQuery());
     StringAssert.assertContains("container=" + CONTAINER, iframeUrl.getQuery());
-    StringAssert.assertContains("up_" + UP_NAME + '=' + UP_VALUE, iframeUrl.getQuery());
+    StringAssert.assertContains("up_" + UP_NAME + '=' + UP_VALUE, iframeUrl
+        .getQuery());
     StringAssert.assertContains("mid=" + MODULE_ID, iframeUrl.getQuery());
   }
 

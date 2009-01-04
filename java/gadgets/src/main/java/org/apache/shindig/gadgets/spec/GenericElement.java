@@ -38,8 +38,9 @@ public class GenericElement extends SpecElement {
     super(name, attrNames, base);
   }
 
-  protected GenericElement(final GenericElement genericElement, final Substitutions substituter) {
-      super(genericElement, substituter);
+  protected GenericElement(final GenericElement genericElement,
+      final Substitutions substituter) {
+    super(genericElement, substituter);
   }
 
   @Override

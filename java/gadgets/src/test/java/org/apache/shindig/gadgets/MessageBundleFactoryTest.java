@@ -18,13 +18,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.verify;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -42,12 +35,21 @@ import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.verify;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+
 /**
  * Tests for MessageBundleFactory
  */
 public class MessageBundleFactoryTest {
-  private static final Uri BUNDLE_URI = Uri.parse("http://example.org/messagex.xml");
-  private static final Uri SPEC_URI = Uri.parse("http://example.org/gadget.xml");
+  private static final Uri BUNDLE_URI = Uri
+      .parse("http://example.org/messagex.xml");
+  private static final Uri SPEC_URI = Uri
+      .parse("http://example.org/gadget.xml");
 
   private static final String MSG_0_NAME = "messageZero";
   private static final String MSG_1_NAME = "message1";
@@ -60,37 +62,57 @@ public class MessageBundleFactoryTest {
   private static final Locale PARENT_LOCALE = new Locale("en", "ALL");
   private static final Locale LOCALE = new Locale("en", "US");
 
-  private static final String BASIC_BUNDLE
-      = "<messagebundle>" +
-        "  <msg name='" + MSG_0_NAME + "'>" + MSG_0_VALUE + "</msg>" +
-        "  <msg name='" + MSG_1_NAME + "'>" + MSG_1_VALUE + "</msg>" +
-        "</messagebundle>";
+  private static final String BASIC_BUNDLE = "<messagebundle>"
+      + "  <msg name='" + MSG_0_NAME + "'>" + MSG_0_VALUE + "</msg>"
+      + "  <msg name='" + MSG_1_NAME + "'>" + MSG_1_VALUE + "</msg>"
+      + "</messagebundle>";
 
-  private static final String BASIC_SPEC
-      = "<Module>" +
-        "<ModulePrefs title='foo'>" +
-        " <Locale lang='all' country='ALL'>" +
-        "  <msg name='" + MSG_0_NAME + "'>" + MSG_0_VALUE + "</msg>" +
-        " </Locale>" +
-        " <Locale lang='" + LOCALE.getLanguage() + "'>" +
-        "  <msg name='" + MSG_0_NAME + "'>" + MSG_0_ALT_VALUE + "</msg>" +
-        "  <msg name='" + MSG_1_NAME + "'>" + MSG_1_VALUE + "</msg>" +
-        "  <msg name='" + MSG_2_NAME + "'>" + MSG_2_VALUE + "</msg>" +
-        " </Locale>" +
-        " <Locale lang='" + LOCALE.getLanguage() + "' country='" + LOCALE.getCountry() + "' " +
-        "  messages='" + BUNDLE_URI + "'/>" +
-        "</ModulePrefs>" +
-        "<Content type='html'/>" +
-        "</Module>";
+  private static final String BASIC_SPEC = "<Module>"
+      + "<ModulePrefs title='foo'>" + " <Locale lang='all' country='ALL'>"
+      + "  <msg name='"
+      + MSG_0_NAME
+      + "'>"
+      + MSG_0_VALUE
+      + "</msg>"
+      + " </Locale>"
+      + " <Locale lang='"
+      + LOCALE.getLanguage()
+      + "'>"
+      + "  <msg name='"
+      + MSG_0_NAME
+      + "'>"
+      + MSG_0_ALT_VALUE
+      + "</msg>"
+      + "  <msg name='"
+      + MSG_1_NAME
+      + "'>"
+      + MSG_1_VALUE
+      + "</msg>"
+      + "  <msg name='"
+      + MSG_2_NAME
+      + "'>"
+      + MSG_2_VALUE
+      + "</msg>"
+      + " </Locale>"
+      + " <Locale lang='"
+      + LOCALE.getLanguage()
+      + "' country='"
+      + LOCALE.getCountry()
+      + "' "
+      + "  messages='"
+      + BUNDLE_URI
+      + "'/>"
+      + "</ModulePrefs>" + "<Content type='html'/>" + "</Module>";
 
   private static final int MAX_AGE = 10000;
 
-  private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
+  private final HttpFetcher fetcher = EasyMock
+      .createNiceMock(HttpFetcher.class);
   private final CacheProvider cacheProvider = new LruCacheProvider(10);
-  private final Cache<String, MessageBundle> cache
-      = cacheProvider.createCache(ShindigMessageBundleFactory.CACHE_NAME);
-  private final ShindigMessageBundleFactory bundleFactory
-      = new ShindigMessageBundleFactory(fetcher, cacheProvider, MAX_AGE);
+  private final Cache<String, MessageBundle> cache = cacheProvider
+      .createCache(ShindigMessageBundleFactory.CACHE_NAME);
+  private final ShindigMessageBundleFactory bundleFactory = new ShindigMessageBundleFactory(
+      fetcher, cacheProvider, MAX_AGE);
   private final GadgetSpec gadgetSpec;
 
   public MessageBundleFactoryTest() throws Exception {
@@ -100,7 +122,6 @@ public class MessageBundleFactoryTest {
       throw new RuntimeException(e);
     }
   }
-
 
   @Test
   public void getBundle() throws Exception {
@@ -133,7 +154,8 @@ public class MessageBundleFactoryTest {
 
   @Test
   public void getParentBundle() throws Exception {
-    MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, PARENT_LOCALE, true);
+    MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, PARENT_LOCALE,
+        true);
 
     assertEquals(MSG_0_ALT_VALUE, bundle.getMessages().get(MSG_0_NAME));
     assertEquals(MSG_1_VALUE, bundle.getMessages().get(MSG_1_NAME));
@@ -142,7 +164,8 @@ public class MessageBundleFactoryTest {
 
   @Test
   public void getAllAllBundle() throws Exception {
-    MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, new Locale("all", "ALL"), true);
+    MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, new Locale(
+        "all", "ALL"), true);
     assertEquals(MSG_0_VALUE, bundle.getMessages().get(MSG_0_NAME));
   }
 
@@ -154,16 +177,14 @@ public class MessageBundleFactoryTest {
 
   @Test
   public void badResponseServedFromCache() throws Exception {
-    HttpResponse expiredResponse = new HttpResponseBuilder()
-        .setResponse(BASIC_BUNDLE.getBytes("UTF-8"))
-        .addHeader("Pragma", "no-cache")
+    HttpResponse expiredResponse = new HttpResponseBuilder().setResponse(
+        BASIC_BUNDLE.getBytes("UTF-8")).addHeader("Pragma", "no-cache")
         .create();
     HttpResponse badResponse = HttpResponse.error();
 
-    expect(fetcher.fetch(isA(HttpRequest.class)))
-        .andReturn(expiredResponse).once();
-    expect(fetcher.fetch(isA(HttpRequest.class)))
-        .andReturn(badResponse).once();
+    expect(fetcher.fetch(isA(HttpRequest.class))).andReturn(expiredResponse)
+        .once();
+    expect(fetcher.fetch(isA(HttpRequest.class))).andReturn(badResponse).once();
     replay(fetcher);
 
     final AtomicLong time = new AtomicLong();
@@ -185,15 +206,15 @@ public class MessageBundleFactoryTest {
 
     verify(fetcher);
 
-    assertSame("Did not respond from cache when refresh failed.", bundle0, bundle1);
+    assertSame("Did not respond from cache when refresh failed.", bundle0,
+        bundle1);
   }
 
   @Test
   public void badResponseIsEmptyWhenNotInCache() throws Exception {
     HttpResponse badResponse = HttpResponse.error();
 
-    expect(fetcher.fetch(isA(HttpRequest.class)))
-        .andReturn(badResponse).once();
+    expect(fetcher.fetch(isA(HttpRequest.class))).andReturn(badResponse).once();
     replay(fetcher);
 
     MessageBundle bundle = bundleFactory.getBundle(gadgetSpec, LOCALE, false);
@@ -207,8 +228,8 @@ public class MessageBundleFactoryTest {
   public void ttlPropagatesToFetcher() throws Exception {
     CapturingFetcher capturingFetcher = new CapturingFetcher();
 
-    MessageBundleFactory factory
-        = new ShindigMessageBundleFactory(capturingFetcher, cacheProvider, MAX_AGE);
+    MessageBundleFactory factory = new ShindigMessageBundleFactory(
+        capturingFetcher, cacheProvider, MAX_AGE);
 
     factory.getBundle(gadgetSpec, LOCALE, false);
 

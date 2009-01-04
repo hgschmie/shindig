@@ -18,27 +18,32 @@
 
 package org.apache.shindig.gadgets.servlet;
 
-import org.apache.shindig.common.servlet.InjectedServlet;
-import org.apache.shindig.gadgets.GadgetException;
-
-import com.google.inject.Inject;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import org.apache.shindig.common.servlet.InjectedServlet;
+import org.apache.shindig.gadgets.GadgetException;
+
+import com.google.inject.Inject;
+
 /**
  * Servlet which concatenates the content of several proxied HTTP responses
- *
+ * 
  * @see org.apache.shindig.gadgets.rewrite.HTMLContentRewriter
  */
 public class ConcatProxyServlet extends InjectedServlet {
 
-  private static final Logger logger
-      = Logger.getLogger(ConcatProxyServlet.class.getName());
+  private static final Logger logger = Logger
+      .getLogger(ConcatProxyServlet.class.getName());
 
   private transient ProxyHandler proxyHandler;
 
@@ -55,12 +60,12 @@ public class ConcatProxyServlet extends InjectedServlet {
       return;
     }
     if (request.getParameter(ProxyBase.REWRITE_MIME_TYPE_PARAM) != null) {
-      response.setHeader("Content-Type",
-          request.getParameter(ProxyBase.REWRITE_MIME_TYPE_PARAM));
+      response.setHeader("Content-Type", request
+          .getParameter(ProxyBase.REWRITE_MIME_TYPE_PARAM));
     }
     if (request.getParameter(ProxyBase.REFRESH_PARAM) != null) {
-      HttpUtil.setCachingHeaders(response,
-          Integer.valueOf(request.getParameter(ProxyBase.REFRESH_PARAM)));
+      HttpUtil.setCachingHeaders(response, Integer.valueOf(request
+          .getParameter(ProxyBase.REFRESH_PARAM)));
     }
     response.setHeader("Content-Disposition", "attachment;filename=p.txt");
     for (int i = 1; i < Integer.MAX_VALUE; i++) {
@@ -85,7 +90,8 @@ public class ConcatProxyServlet extends InjectedServlet {
           outputError(ge, url, response);
           return;
         } else {
-          response.getOutputStream().println("/* ---- End " + url + " 404 ---- */");
+          response.getOutputStream().println(
+              "/* ---- End " + url + " 404 ---- */");
         }
       }
     }
@@ -105,8 +111,8 @@ public class ConcatProxyServlet extends InjectedServlet {
     return err.toString();
   }
 
-  private void outputError(GadgetException excep, String url, HttpServletResponse resp)
-      throws IOException {
+  private void outputError(GadgetException excep, String url,
+      HttpServletResponse resp) throws IOException {
     StringBuilder err = new StringBuilder();
     err.append(excep.getCode().toString());
     err.append(" concat(");
@@ -142,8 +148,8 @@ public class ConcatProxyServlet extends InjectedServlet {
   }
 
   /**
-   * Wrap the response to prevent writing through of the status code and to hold a reference to the
-   * stream across multiple proxied parts
+   * Wrap the response to prevent writing through of the status code and to hold
+   * a reference to the stream across multiple proxied parts
    */
   private static class ResponseWrapper extends HttpServletResponseWrapper {
 
@@ -159,7 +165,7 @@ public class ConcatProxyServlet extends InjectedServlet {
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
       // For errors, we don't want the content returned by the remote
-      // server;  we'll just include an HTTP error code to avoid creating
+      // server; we'll just include an HTTP error code to avoid creating
       // syntactically invalid output overall.
       if (errorCode != SC_OK) {
         outputStream = new NullServletOutputStream();
@@ -261,8 +267,8 @@ public class ConcatProxyServlet extends InjectedServlet {
   }
 
   /**
-   * Small ServletOutputStream class, overriding just enough to ensure
-   * there's no output.
+   * Small ServletOutputStream class, overriding just enough to ensure there's
+   * no output.
    */
   private static class NullServletOutputStream extends ServletOutputStream {
     @Override
@@ -278,4 +284,3 @@ public class ConcatProxyServlet extends InjectedServlet {
     }
   }
 }
-

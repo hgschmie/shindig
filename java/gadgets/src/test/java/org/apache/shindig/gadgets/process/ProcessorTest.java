@@ -17,10 +17,6 @@
  */
 package org.apache.shindig.gadgets.process;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.util.Arrays;
 
@@ -42,17 +38,22 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public class ProcessorTest {
-  private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
-  private static final Uri TYPE_URL_HREF = Uri.parse("http://example.org/gadget.php");
+  private static final Uri SPEC_URL = Uri
+      .parse("http://example.org/gadget.xml");
+  private static final Uri TYPE_URL_HREF = Uri
+      .parse("http://example.org/gadget.php");
   private static final String BASIC_HTML_CONTENT = "Hello, World!";
-  private static final String GADGET =
-      "<Module>" +
-      " <ModulePrefs title='foo'/>" +
-      " <Content view='html' type='html'>" + BASIC_HTML_CONTENT + "</Content>" +
-      " <Content view='url' type='url' href='" + TYPE_URL_HREF + "'/>" +
-      " <Content view='alias' type='html'>" + BASIC_HTML_CONTENT + "</Content>" +
-      "</Module>";
+  private static final String GADGET = "<Module>"
+      + " <ModulePrefs title='foo'/>" + " <Content view='html' type='html'>"
+      + BASIC_HTML_CONTENT + "</Content>"
+      + " <Content view='url' type='url' href='" + TYPE_URL_HREF + "'/>"
+      + " <Content view='alias' type='html'>" + BASIC_HTML_CONTENT
+      + "</Content>" + "</Module>";
 
   private final FakeGadgetSpecFactory gadgetSpecFactory = new FakeGadgetSpecFactory();
   private final FakeVariableSubstituter substituter = new FakeVariableSubstituter();
@@ -64,7 +65,8 @@ public class ProcessorTest {
   @Before
   public void setUp() throws Exception {
     containerConfig = new FakeContainerConfig();
-    processor = new Processor(gadgetSpecFactory, substituter, containerConfig, blacklist);
+    processor = new Processor(gadgetSpecFactory, substituter, containerConfig,
+        blacklist);
   }
 
   private GadgetContext makeContext(final String view, final Uri specUrl) {
@@ -96,7 +98,8 @@ public class ProcessorTest {
 
   @Test(expected = ProcessingException.class)
   public void handlesGadgetExceptionGracefully() throws Exception {
-    gadgetSpecFactory.exception = new GadgetException(GadgetException.Code.INVALID_PATH);
+    gadgetSpecFactory.exception = new GadgetException(
+        GadgetException.Code.INVALID_PATH);
     processor.process(makeContext("url"));
   }
 
@@ -173,7 +176,9 @@ public class ProcessorTest {
 
   private static class FakeGadgetSpecFactory implements GadgetSpecFactory {
     private GadgetException exception;
-    public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException, XMLStreamException {
+
+    public GadgetSpec getGadgetSpec(GadgetContext context)
+        throws GadgetException, XMLStreamException {
       if (exception != null) {
         throw exception;
       }
@@ -199,5 +204,3 @@ public class ProcessorTest {
     }
   }
 }
-
-

@@ -17,11 +17,12 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
-import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
 import junit.framework.TestCase;
 
 import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
+
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
+import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
 
 public class BidiSubstituterTest extends TestCase {
 
@@ -42,17 +43,17 @@ public class BidiSubstituterTest extends TestCase {
   }
 
   private void assertRightToLeft(final String direction) {
-    assertSubstitutions(direction, BidiSubstituter.RIGHT,
-        BidiSubstituter.LEFT, RTL, LTR);
+    assertSubstitutions(direction, BidiSubstituter.RIGHT, BidiSubstituter.LEFT,
+        RTL, LTR);
   }
 
   private void assertLeftToRight(final String direction) {
-    assertSubstitutions(direction, BidiSubstituter.LEFT,
-        BidiSubstituter.RIGHT, LTR, RTL);
+    assertSubstitutions(direction, BidiSubstituter.LEFT, BidiSubstituter.RIGHT,
+        LTR, RTL);
   }
 
-  private void assertSubstitutions(String direction,
-      String startEdge, String endEdge, Direction dir, Direction reverseDir) {
+  private void assertSubstitutions(String direction, String startEdge,
+      String endEdge, Direction dir, Direction reverseDir) {
     Substitutions substitutions = new Substitutions();
     BidiSubstituter.addSubstitutions(substitutions, Direction.parse(direction));
 

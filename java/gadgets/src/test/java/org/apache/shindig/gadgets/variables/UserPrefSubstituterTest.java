@@ -39,18 +39,14 @@ public class UserPrefSubstituterTest extends TestCase {
   private final static String OVERRIDE_NAME = "override";
   private final static String OVERRIDE_VALUE = "override value";
   private final static String UNESCAPED_USER_VALUE = "<hello, & world > \"";
-  private final static String ESCAPED_USER_VALUE
-      = "&lt;hello, &amp; world &gt; &quot;";
-  private static final String DEFAULT_XML
-      = "<Module>" +
-        "<ModulePrefs title=\"Hello, __UP_world__\"/>" +
-        "<UserPref name=\"" + DEFAULT_NAME + "\" datatype=\"string\"" +
-        " default_value=\"" + DEFAULT_VALUE + "\"/>" +
-        "<UserPref name=\"" + USER_NAME + "\" datatype=\"string\"/>" +
-        "<UserPref name=\"" + OVERRIDE_NAME + "\" datatype=\"string\"" +
-        "  default_value=\"FOOOOOOOOOOBAR!\"/>" +
-        "<Content type=\"html\"/>" +
-        "</Module>";
+  private final static String ESCAPED_USER_VALUE = "&lt;hello, &amp; world &gt; &quot;";
+  private static final String DEFAULT_XML = "<Module>"
+      + "<ModulePrefs title=\"Hello, __UP_world__\"/>" + "<UserPref name=\""
+      + DEFAULT_NAME + "\" datatype=\"string\"" + " default_value=\""
+      + DEFAULT_VALUE + "\"/>" + "<UserPref name=\"" + USER_NAME
+      + "\" datatype=\"string\"/>" + "<UserPref name=\"" + OVERRIDE_NAME
+      + "\" datatype=\"string\"" + "  default_value=\"FOOOOOOOOOOBAR!\"/>"
+      + "<Content type=\"html\"/>" + "</Module>";
   private GadgetSpec spec;
 
   @Override
@@ -67,12 +63,12 @@ public class UserPrefSubstituterTest extends TestCase {
     UserPrefs prefs = new UserPrefs(map);
     UserPrefSubstituter.addSubstitutions(substituter, spec, prefs);
 
-    assertEquals(DEFAULT_VALUE,
-        substituter.getSubstitution(Type.USER_PREF, DEFAULT_NAME));
-    assertEquals(USER_VALUE,
-        substituter.getSubstitution(Type.USER_PREF, USER_NAME));
-    assertEquals(OVERRIDE_VALUE,
-        substituter.getSubstitution(Type.USER_PREF, OVERRIDE_NAME));
+    assertEquals(DEFAULT_VALUE, substituter.getSubstitution(Type.USER_PREF,
+        DEFAULT_NAME));
+    assertEquals(USER_VALUE, substituter.getSubstitution(Type.USER_PREF,
+        USER_NAME));
+    assertEquals(OVERRIDE_VALUE, substituter.getSubstitution(Type.USER_PREF,
+        OVERRIDE_NAME));
   }
 
   public void testEscaping() throws Exception {
@@ -80,7 +76,7 @@ public class UserPrefSubstituterTest extends TestCase {
     map.put(USER_NAME, UNESCAPED_USER_VALUE);
     UserPrefs prefs = new UserPrefs(map);
     UserPrefSubstituter.addSubstitutions(substituter, spec, prefs);
-    assertEquals(ESCAPED_USER_VALUE,
-        substituter.getSubstitution(Type.USER_PREF, USER_NAME));
+    assertEquals(ESCAPED_USER_VALUE, substituter.getSubstitution(
+        Type.USER_PREF, USER_NAME));
   }
 }

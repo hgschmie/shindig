@@ -33,7 +33,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class FeatureParam extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Param");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Param");
 
   public static final String ATTR_NAME = "name";
 
@@ -44,8 +45,9 @@ public class FeatureParam extends SpecElement {
     super(name, attrNames, base);
   }
 
-  protected FeatureParam(final FeatureParam featureParam, final Substitutions substituter) {
-      super(featureParam, substituter);
+  protected FeatureParam(final FeatureParam featureParam,
+      final Substitutions substituter) {
+    super(featureParam, substituter);
   }
 
   @Override

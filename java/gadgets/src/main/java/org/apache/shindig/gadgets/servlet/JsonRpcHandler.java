@@ -45,8 +45,8 @@ import org.json.JSONObject;
 import com.google.inject.Inject;
 
 /**
- * Processes JSON-RPC requests by retrieving all necessary meta data in parallel and coalescing into
- * a single output JSON construct.
+ * Processes JSON-RPC requests by retrieving all necessary meta data in parallel
+ * and coalescing into a single output JSON construct.
  */
 public class JsonRpcHandler {
   private final ExecutorService executor;
@@ -54,7 +54,8 @@ public class JsonRpcHandler {
   private final UrlGenerator urlGenerator;
 
   @Inject
-  public JsonRpcHandler(ExecutorService executor, Processor processor, UrlGenerator urlGenerator) {
+  public JsonRpcHandler(ExecutorService executor, Processor processor,
+      UrlGenerator urlGenerator) {
     this.executor = executor;
     this.processor = processor;
     this.urlGenerator = urlGenerator;
@@ -62,11 +63,13 @@ public class JsonRpcHandler {
 
   /**
    * Processes a JSON request.
-   *
-   * @param request Original JSON request
+   * 
+   * @param request
+   *          Original JSON request
    * @return The JSON response.
    */
-  public JSONObject process(JSONObject request) throws RpcException, JSONException {
+  public JSONObject process(JSONObject request) throws RpcException,
+      JSONException {
     List<GadgetContext> gadgets;
 
     JSONObject requestContext = request.getJSONObject("context");
@@ -76,15 +79,17 @@ public class JsonRpcHandler {
     // a JSONException is thrown.
     gadgets = new ArrayList<GadgetContext>(requestedGadgets.length());
     for (int i = 0, j = requestedGadgets.length(); i < j; ++i) {
-      GadgetContext context = new JsonRpcGadgetContext(
-          requestContext, requestedGadgets.getJSONObject(i));
+      GadgetContext context = new JsonRpcGadgetContext(requestContext,
+          requestedGadgets.getJSONObject(i));
       gadgets.add(context);
     }
 
     // Dispatch a separate thread for each gadget that we wish to render.
-    // We could probably just submit these directly to the ExecutorService, but if it's an async
+    // We could probably just submit these directly to the ExecutorService, but
+    // if it's an async
     // service instead of a threaded one we would just block.
-    CompletionService<JSONObject> processor =  new ExecutorCompletionService<JSONObject>(executor);
+    CompletionService<JSONObject> processor = new ExecutorCompletionService<JSONObject>(
+        executor);
 
     for (GadgetContext context : gadgets) {
       processor.submit(new Job(context));
@@ -103,13 +108,13 @@ public class JsonRpcHandler {
         if (!(ee.getCause() instanceof RpcException)) {
           throw new RpcException("Processing interrupted", ee);
         }
-        RpcException e = (RpcException)ee.getCause();
+        RpcException e = (RpcException) ee.getCause();
         // Just one gadget failed; mark it as such.
         try {
           GadgetContext context = e.getContext();
           JSONObject errorObj = new JSONObject();
-          errorObj.put("url", context.getUrl())
-                  .put("moduleId", context.getModuleId());
+          errorObj.put("url", context.getUrl()).put("moduleId",
+              context.getModuleId());
           errorObj.append("errors", e.getCause().getLocalizedMessage());
           response.append("gadgets", errorObj);
         } catch (JSONException je) {
@@ -144,10 +149,10 @@ public class JsonRpcHandler {
         JSONObject views = new JSONObject();
         for (View view : spec.getViews().values()) {
           views.put(view.getName(), new JSONObject()
-               // .put("content", view.getContent())
-               .put("type", view.getType().toString())
-               .put("preferredHeight", view.getPreferredHeight())
-               .put("preferredWidth", view.getPreferredWidth()));
+          // .put("content", view.getContent())
+              .put("type", view.getType().toString()).put("preferredHeight",
+                  view.getPreferredHeight()).put("preferredWidth",
+                  view.getPreferredWidth()));
         }
 
         // Features.
@@ -164,48 +169,42 @@ public class JsonRpcHandler {
 
         // User pref specs
         for (UserPref pref : spec.getUserPrefs()) {
-          JSONObject up = new JSONObject()
-              .put("displayName", pref.getDisplayName())
-              .put("type", pref.getDataType().toString().toLowerCase())
-              .put("default", pref.getDefaultValue())
-              .put("enumValues", pref.enumValues())
-              .put("orderedEnumValues", getOrderedEnums(pref));
+          JSONObject up = new JSONObject().put("displayName",
+              pref.getDisplayName()).put("type",
+              pref.getDataType().toString().toLowerCase()).put("default",
+              pref.getDefaultValue()).put("enumValues", pref.enumValues()).put(
+              "orderedEnumValues", getOrderedEnums(pref));
           userPrefs.put(pref.getName(), up);
         }
 
         // TODO: This should probably just copy all data from
         // ModulePrefs.getAttributes(), but names have to be converted to
         // camel case.
-        gadgetJson.put("iframeUrl", urlGenerator.getIframeUrl(gadget))
-                  .put("url",context.getUrl())
-                  .put("moduleId", context.getModuleId())
-                  .put("title", prefs.getTitle())
-                  .put("titleUrl", prefs.getTitleUrl())
-                  .put("views", views)
-                  .put("features", features)
-                  .put("userPrefs", userPrefs)
-                  .put("links", links)
+        gadgetJson.put("iframeUrl", urlGenerator.getIframeUrl(gadget)).put(
+            "url", context.getUrl()).put("moduleId", context.getModuleId())
+            .put("title", prefs.getTitle())
+            .put("titleUrl", prefs.getTitleUrl()).put("views", views)
+            .put("features", features)
+            .put("userPrefs", userPrefs)
+            .put("links", links)
 
-                  // extended meta data
-                  .put("directoryTitle", prefs.getDirectoryTitle())
-                  .put("thumbnail", prefs.getThumbnail())
-                  .put("screenshot", prefs.getScreenshot())
-                  .put("author", prefs.getAuthor())
-                  .put("authorEmail", prefs.getAuthorEmail())
-                  .put("authorAffiliation", prefs.getAuthorAffiliation())
-                  .put("authorLocation", prefs.getAuthorLocation())
-                  .put("authorPhoto", prefs.getAuthorPhoto())
-                  .put("authorAboutme", prefs.getAuthorAboutme())
-                  .put("authorQuote", prefs.getAuthorQuote())
-                  .put("authorLink", prefs.getAuthorLink())
-                  .put("categories", prefs.getCategories())
-                  .put("height", prefs.getHeight())
-                  .put("width", prefs.getWidth())
-                  .put("showStats", prefs.isShowStats())
-                  .put("showInDirectory", prefs.isShowInDirectory())
-                  .put("singleton", prefs.isSingleton())
-                  .put("scaling", prefs.isScaling())
-                  .put("scrolling", prefs.isScrolling());
+            // extended meta data
+            .put("directoryTitle", prefs.getDirectoryTitle()).put("thumbnail",
+                prefs.getThumbnail()).put("screenshot", prefs.getScreenshot())
+            .put("author", prefs.getAuthor()).put("authorEmail",
+                prefs.getAuthorEmail()).put("authorAffiliation",
+                prefs.getAuthorAffiliation()).put("authorLocation",
+                prefs.getAuthorLocation()).put("authorPhoto",
+                prefs.getAuthorPhoto()).put("authorAboutme",
+                prefs.getAuthorAboutme()).put("authorQuote",
+                prefs.getAuthorQuote())
+            .put("authorLink", prefs.getAuthorLink()).put("categories",
+                prefs.getCategories()).put("height", prefs.getHeight()).put(
+                "width", prefs.getWidth())
+            .put("showStats", prefs.isShowStats()).put("showInDirectory",
+                prefs.isShowInDirectory())
+            .put("singleton", prefs.isSingleton()).put("scaling",
+                prefs.isScaling()).put("scrolling", prefs.isScrolling());
         return gadgetJson;
       } catch (ProcessingException e) {
         throw new RpcException(context, e);
@@ -215,9 +214,11 @@ public class JsonRpcHandler {
       }
     }
 
-    private List<JSONObject> getOrderedEnums(UserPref pref) throws JSONException {
+    private List<JSONObject> getOrderedEnums(UserPref pref)
+        throws JSONException {
       List<Pair<String, String>> orderedEnums = pref.orderEnumValues();
-      List<JSONObject> jsonEnums = new ArrayList<JSONObject>(orderedEnums.size());
+      List<JSONObject> jsonEnums = new ArrayList<JSONObject>(orderedEnums
+          .size());
       for (Pair<String, String> evp : orderedEnums) {
         JSONObject curEnum = new JSONObject();
         curEnum.put("value", evp.getKey());

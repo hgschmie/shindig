@@ -81,7 +81,8 @@ public abstract class SpecElement {
     namespaces = new HashMap<String, String>();
   }
 
-  protected SpecElement(final SpecElement specElement, final Substitutions substituter) {
+  protected SpecElement(final SpecElement specElement,
+      final Substitutions substituter) {
     this.qName = specElement.name();
     this.attrNames = specElement.attrNames();
     this.base = specElement.getBase();
@@ -105,7 +106,8 @@ public abstract class SpecElement {
     return base;
   }
 
-  public abstract SpecElement substitute(final Substitutions subs) throws GadgetException;
+  public abstract SpecElement substitute(final Substitutions subs)
+      throws GadgetException;
 
   // ======================================================================================================================================
 
@@ -213,11 +215,11 @@ public abstract class SpecElement {
 
   protected Uri attrUriBase(final String key) {
     final Uri uri = attrUriNull(key);
-      if (base != null && uri !=  null) {
-          return base.resolve(uri);
-      } else {
-          return uri;
-      }
+    if (base != null && uri != null) {
+      return base.resolve(uri);
+    } else {
+      return uri;
+    }
   }
 
   protected boolean attrIsValidUri(final String key) {
@@ -261,10 +263,11 @@ public abstract class SpecElement {
   // ======================================================================================================================================
 
   /**
-   * Should never be called directly, StaxSupport takes care of this and calls this for the root element that
-   * you want to write.
+   * Should never be called directly, StaxSupport takes care of this and calls
+   * this for the root element that you want to write.
    */
-  public void prepareWriter(final XMLStreamWriter writer) throws XMLStreamException {
+  public void prepareWriter(final XMLStreamWriter writer)
+      throws XMLStreamException {
     writer.setDefaultNamespace(name().getNamespaceURI());
     for (Map.Entry<String, String> namespace : namespaces.entrySet()) {
       writer.setPrefix(namespace.getKey(), namespace.getValue());
@@ -278,7 +281,8 @@ public abstract class SpecElement {
     writeAttributes(writer);
 
     for (Pair<QName, String> attribute : otherAttrs.values()) {
-      writeAttribute(writer, attribute.getKey().getLocalPart(), attribute.getValue());
+      writeAttribute(writer, attribute.getKey().getLocalPart(), attribute
+          .getValue());
     }
 
     for (Map.Entry<QName, String> attribute : nsAttrs.entrySet()) {
@@ -369,28 +373,17 @@ public abstract class SpecElement {
       return true;
     }
     SpecElement rhs = (SpecElement) other;
-    return new EqualsBuilder()
-                  .append(name(), rhs.name())
-                  .append(getBase(), rhs.getBase())
-                  .append(namespaces(), rhs.namespaces())
-                  .append(nsAttrs(), rhs.nsAttrs())
-                  .append(otherAttrs(), rhs.otherAttrs())
-                  .append(children(), rhs.children())
-                  .append(isCDATA(), rhs.isCDATA())
-                  .isEquals();
+    return new EqualsBuilder().append(name(), rhs.name()).append(getBase(),
+        rhs.getBase()).append(namespaces(), rhs.namespaces()).append(nsAttrs(),
+        rhs.nsAttrs()).append(otherAttrs(), rhs.otherAttrs()).append(
+        children(), rhs.children()).append(isCDATA(), rhs.isCDATA()).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-      .append(name())
-      .append(getBase())
-      .append(namespaces())
-      .append(nsAttrs())
-      .append(otherAttrs())
-      .append(children())
-      .append(isCDATA())
-      .toHashCode();
+    return new HashCodeBuilder().append(name()).append(getBase()).append(
+        namespaces()).append(nsAttrs()).append(otherAttrs()).append(children())
+        .append(isCDATA()).toHashCode();
   }
 
   public static abstract class Parser<T extends SpecElement> {
@@ -455,7 +448,8 @@ public abstract class SpecElement {
           element.validate();
           return element;
         case XMLStreamConstants.END_DOCUMENT:
-          throw new SpecParserException("Unexpected end of document encountered!");
+          throw new SpecParserException(
+              "Unexpected end of document encountered!");
 
         case XMLStreamConstants.START_ELEMENT:
           final QName elementName = buildQName(reader.getName());
@@ -490,8 +484,8 @@ public abstract class SpecElement {
 
     private void addAttributes(final XMLStreamReader reader, final T element) {
       for (int i = 0; i < reader.getAttributeCount(); i++) {
-        element
-            .setAttr(buildQName(reader.getAttributeName(i)), reader.getAttributeValue(i));
+        element.setAttr(buildQName(reader.getAttributeName(i)), reader
+            .getAttributeValue(i));
       }
     }
 

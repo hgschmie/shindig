@@ -68,29 +68,28 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
- * Produces a valid HTML document for the gadget output, automatically inserting appropriate HTML
- * document wrapper data as needed.
- *
- * Currently, this is only invoked directly since the rewriting infrastructure doesn't properly
- * deal with uncacheable rewrite operations.
- *
- * TODO: Break this up into multiple rewriters if and when rewriting infrastructure supports
- * parse tree manipulation without worrying about caching.
- *
+ * Produces a valid HTML document for the gadget output, automatically inserting
+ * appropriate HTML document wrapper data as needed.
+ * 
+ * Currently, this is only invoked directly since the rewriting infrastructure
+ * doesn't properly deal with uncacheable rewrite operations.
+ * 
+ * TODO: Break this up into multiple rewriters if and when rewriting
+ * infrastructure supports parse tree manipulation without worrying about
+ * caching.
+ * 
  * Should be:
- *
- * - UserPrefs injection
- * - Javascript injection (including configuration)
- * - html document normalization
+ *  - UserPrefs injection - Javascript injection (including configuration) -
+ * html document normalization
  */
 public class RenderingContentRewriter implements ContentRewriter {
-  private static final Logger LOG = Logger.getLogger(RenderingContentRewriter.class.getName());
+  private static final Logger LOG = Logger
+      .getLogger(RenderingContentRewriter.class.getName());
 
-  static final String DEFAULT_CSS =
-      "body,td,div,span,p{font-family:arial,sans-serif;}" +
-      "a {color:#0000cc;}a:visited {color:#551a8b;}" +
-      "a:active {color:#ff0000;}" +
-      "body{margin: 0px;padding: 0px;background-color:white;}";
+  static final String DEFAULT_CSS = "body,td,div,span,p{font-family:arial,sans-serif;}"
+      + "a {color:#0000cc;}a:visited {color:#551a8b;}"
+      + "a:active {color:#ff0000;}"
+      + "body{margin: 0px;padding: 0px;background-color:white;}";
   static final String INSERT_BASE_ELEMENT_KEY = "gadgets.insertBaseElement";
   static final String FEATURES_KEY = "gadgets.features";
 
@@ -100,20 +99,21 @@ public class RenderingContentRewriter implements ContentRewriter {
   private final UrlGenerator urlGenerator;
 
   /**
-   * @param messageBundleFactory Used for injecting message bundles into gadget output.
+   * @param messageBundleFactory
+   *          Used for injecting message bundles into gadget output.
    */
   @Inject
   public RenderingContentRewriter(MessageBundleFactory messageBundleFactory,
-                                  ContainerConfig containerConfig,
-                                  GadgetFeatureRegistry featureRegistry,
-                                  UrlGenerator urlGenerator) {
+      ContainerConfig containerConfig, GadgetFeatureRegistry featureRegistry,
+      UrlGenerator urlGenerator) {
     this.messageBundleFactory = messageBundleFactory;
     this.containerConfig = containerConfig;
     this.featureRegistry = featureRegistry;
     this.urlGenerator = urlGenerator;
   }
 
-  public RewriterResults rewrite(HttpRequest req, HttpResponse resp, MutableContent content) {
+  public RewriterResults rewrite(HttpRequest req, HttpResponse resp,
+      MutableContent content) {
     // Rendering does not rewrite arbitrary HTTP responses currently
     return null;
   }
@@ -122,11 +122,14 @@ public class RenderingContentRewriter implements ContentRewriter {
     try {
       Document document = mutableContent.getDocument();
 
-      Element head = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "head");
+      Element head = (Element) DomUtil.getFirstNamedChildNode(document
+          .getDocumentElement(), "head");
 
-      // Remove all the elements currently in head and add them back after we inject content
+      // Remove all the elements currently in head and add them back after we
+      // inject content
       NodeList children = head.getChildNodes();
-      List<Node> existingHeadContent = Lists.newArrayListWithCapacity(children.getLength());
+      List<Node> existingHeadContent = Lists.newArrayListWithCapacity(children
+          .getLength());
       for (int i = 0; i < children.getLength(); i++) {
         existingHeadContent.add(children.item(i));
       }
@@ -135,14 +138,13 @@ public class RenderingContentRewriter implements ContentRewriter {
         head.removeChild(n);
       }
 
-
       // Only inject default styles if no doctype was specified.
       if (document.getDoctype() == null) {
         Element defaultStyle = document.createElement("style");
         defaultStyle.setAttribute("type", "text/css");
         head.appendChild(defaultStyle);
-        defaultStyle.appendChild(defaultStyle.getOwnerDocument().
-            createTextNode(DEFAULT_CSS));
+        defaultStyle.appendChild(defaultStyle.getOwnerDocument()
+            .createTextNode(DEFAULT_CSS));
       }
 
       injectBaseTag(gadget, head);
@@ -157,7 +159,8 @@ public class RenderingContentRewriter implements ContentRewriter {
       // We need to inject our script before any developer scripts.
       head.appendChild(mainScriptTag);
 
-      Element body = (Element)DomUtil.getFirstNamedChildNode(document.getDocumentElement(), "body");
+      Element body = (Element) DomUtil.getFirstNamedChildNode(document
+          .getDocumentElement(), "body");
 
       LocaleSpec localeSpec = gadget.getLocale();
       if (localeSpec != null) {
@@ -174,7 +177,8 @@ public class RenderingContentRewriter implements ContentRewriter {
       mutableContent.documentChanged();
       return RewriterResults.notCacheable();
     } catch (GadgetException e) {
-      // TODO: Rewriter interface needs to be modified to handle GadgetException or
+      // TODO: Rewriter interface needs to be modified to handle GadgetException
+      // or
       // RewriterException or something along those lines.
       throw new RuntimeException(e);
     }
@@ -182,7 +186,8 @@ public class RenderingContentRewriter implements ContentRewriter {
 
   private void injectBaseTag(Gadget gadget, Node headTag) {
     GadgetContext context = gadget.getContext();
-    if ("true".equals(containerConfig.get(context.getContainer(), INSERT_BASE_ELEMENT_KEY))) {
+    if ("true".equals(containerConfig.get(context.getContainer(),
+        INSERT_BASE_ELEMENT_KEY))) {
       Uri base = gadget.getSpec().getUrl();
       View view = gadget.getCurrentView();
       if (view != null && view.getHref() != null) {
@@ -204,8 +209,10 @@ public class RenderingContentRewriter implements ContentRewriter {
   /**
    * Injects javascript libraries needed to satisfy feature dependencies.
    */
-  private void injectFeatureLibraries(Gadget gadget, Node headTag) throws GadgetException {
-    // TODO: If there isn't any js in the document, we can skip this. Unfortunately, that means
+  private void injectFeatureLibraries(Gadget gadget, Node headTag)
+      throws GadgetException {
+    // TODO: If there isn't any js in the document, we can skip this.
+    // Unfortunately, that means
     // both script tags (easy to detect) and event handlers (much more complex).
     GadgetContext context = gadget.getContext();
     GadgetSpec spec = gadget.getSpec();
@@ -224,8 +231,10 @@ public class RenderingContentRewriter implements ContentRewriter {
       libsTag.setAttribute("src", jsUrl.toString());
       headTag.appendChild(libsTag);
 
-      // Forced transitive deps need to be added as well so that they don't get pulled in twice.
-      // Without this, a shared dependency between forced and non-forced libs would get pulled into
+      // Forced transitive deps need to be added as well so that they don't get
+      // pulled in twice.
+      // Without this, a shared dependency between forced and non-forced libs
+      // would get pulled into
       // both the external forced script and the inlined script.
       // TODO: Figure out a clean way to avoid having to call getFeatures twice.
       for (GadgetFeature dep : featureRegistry.getFeatures(forced)) {
@@ -233,15 +242,19 @@ public class RenderingContentRewriter implements ContentRewriter {
       }
     }
 
-    // Inline any libs that weren't forced. The ugly context switch between inline and external
-    // Js is needed to allow both inline and external scripts declared in feature.xml.
+    // Inline any libs that weren't forced. The ugly context switch between
+    // inline and external
+    // Js is needed to allow both inline and external scripts declared in
+    // feature.xml.
     String container = context.getContainer();
     Collection<GadgetFeature> features = getFeatures(spec, forced);
 
-    // Precalculate the maximum length in order to avoid excessive garbage generation.
+    // Precalculate the maximum length in order to avoid excessive garbage
+    // generation.
     int size = 0;
     for (GadgetFeature feature : features) {
-      for (JsLibrary library : feature.getJsLibraries(RenderingContext.GADGET, container)) {
+      for (JsLibrary library : feature.getJsLibraries(RenderingContext.GADGET,
+          container)) {
         if (library.getType().equals(JsLibrary.Type.URL)) {
           size += library.getContent().length();
         }
@@ -252,15 +265,19 @@ public class RenderingContentRewriter implements ContentRewriter {
     StringBuilder inlineJs = new StringBuilder(size);
 
     for (GadgetFeature feature : features) {
-      for (JsLibrary library : feature.getJsLibraries(RenderingContext.GADGET, container)) {
+      for (JsLibrary library : feature.getJsLibraries(RenderingContext.GADGET,
+          container)) {
         if (library.getType().equals(JsLibrary.Type.URL)) {
           if (inlineJs.length() > 0) {
-            Element inlineTag = headTag.getOwnerDocument().createElement("script");
+            Element inlineTag = headTag.getOwnerDocument().createElement(
+                "script");
             headTag.appendChild(inlineTag);
-            inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(inlineJs.toString()));
+            inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(
+                inlineJs.toString()));
             inlineJs.setLength(0);
           }
-          Element referenceTag = headTag.getOwnerDocument().createElement("script");
+          Element referenceTag = headTag.getOwnerDocument().createElement(
+              "script");
           referenceTag.setAttribute("src", library.getContent());
           headTag.appendChild(referenceTag);
         } else {
@@ -282,18 +299,20 @@ public class RenderingContentRewriter implements ContentRewriter {
     if (inlineJs.length() > 0) {
       Element inlineTag = headTag.getOwnerDocument().createElement("script");
       headTag.appendChild(inlineTag);
-      inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(inlineJs.toString()));
+      inlineTag.appendChild(headTag.getOwnerDocument().createTextNode(
+          inlineJs.toString()));
     }
   }
 
   /**
    * Get all features needed to satisfy this rendering request.
-   *
-   * @param forced Forced libraries; added in addition to those found in the spec. Defaults to
-   * "core".
+   * 
+   * @param forced
+   *          Forced libraries; added in addition to those found in the spec.
+   *          Defaults to "core".
    */
-  private Collection<GadgetFeature> getFeatures(GadgetSpec spec, Collection<String> forced)
-      throws GadgetException {
+  private Collection<GadgetFeature> getFeatures(GadgetSpec spec,
+      Collection<String> forced) throws GadgetException {
     Map<String, Feature> features = spec.getModulePrefs().getFeatures();
     Set<String> libs = Sets.newHashSet(features.keySet());
     if (!forced.isEmpty()) {
@@ -301,7 +320,8 @@ public class RenderingContentRewriter implements ContentRewriter {
     }
 
     Set<String> unsupported = new HashSet<String>();
-    Collection<GadgetFeature> feats = featureRegistry.getFeatures(libs, unsupported);
+    Collection<GadgetFeature> feats = featureRegistry.getFeatures(libs,
+        unsupported);
 
     unsupported.removeAll(forced);
 
@@ -324,22 +344,26 @@ public class RenderingContentRewriter implements ContentRewriter {
   }
 
   /**
-   * Creates a set of all configuration needed to satisfy the requested feature set.
-   *
-   * Appends special configuration for gadgets.util.hasFeature and gadgets.util.getFeatureParams to
-   * the output js.
-   *
-   * This can't be handled via the normal configuration mechanism because it is something that
-   * varies per request.
-   *
-   * @param reqs The features needed to satisfy the request.
-   * @throws GadgetException If there is a problem with the gadget auth token
+   * Creates a set of all configuration needed to satisfy the requested feature
+   * set.
+   * 
+   * Appends special configuration for gadgets.util.hasFeature and
+   * gadgets.util.getFeatureParams to the output js.
+   * 
+   * This can't be handled via the normal configuration mechanism because it is
+   * something that varies per request.
+   * 
+   * @param reqs
+   *          The features needed to satisfy the request.
+   * @throws GadgetException
+   *           If there is a problem with the gadget auth token
    */
   private String getLibraryConfig(Gadget gadget, Collection<GadgetFeature> reqs)
       throws GadgetException {
     GadgetContext context = gadget.getContext();
 
-    JSONObject features = containerConfig.getJsonObject(context.getContainer(), FEATURES_KEY);
+    JSONObject features = containerConfig.getJsonObject(context.getContainer(),
+        FEATURES_KEY);
 
     try {
       // Discard what we don't care about.
@@ -355,7 +379,8 @@ public class RenderingContentRewriter implements ContentRewriter {
         config = new JSONObject(features, properties);
       }
 
-      // Add gadgets.util support. This is calculated dynamically based on request inputs.
+      // Add gadgets.util support. This is calculated dynamically based on
+      // request inputs.
       ModulePrefs prefs = gadget.getSpec().getModulePrefs();
       JSONObject featureMap = new JSONObject();
 
@@ -387,16 +412,20 @@ public class RenderingContentRewriter implements ContentRewriter {
 
   /**
    * Injects message bundles into the gadget output.
-   * @throws GadgetException If we are unable to retrieve the message bundle.
+   * 
+   * @throws GadgetException
+   *           If we are unable to retrieve the message bundle.
    */
-  private void injectMessageBundles(Gadget gadget, Node scriptTag) throws GadgetException {
+  private void injectMessageBundles(Gadget gadget, Node scriptTag)
+      throws GadgetException {
     GadgetContext context = gadget.getContext();
-    MessageBundle bundle = messageBundleFactory.getBundle(
-        gadget.getSpec(), context.getLocale(), context.getIgnoreCache());
+    MessageBundle bundle = messageBundleFactory.getBundle(gadget.getSpec(),
+        context.getLocale(), context.getIgnoreCache());
 
     String msgs = bundle.toJSONString();
 
-    Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.Prefs.setMessages_(");
+    Text text = scriptTag.getOwnerDocument().createTextNode(
+        "gadgets.Prefs.setMessages_(");
     text.appendData(msgs);
     text.appendData(");");
     scriptTag.appendChild(text);
@@ -412,9 +441,11 @@ public class RenderingContentRewriter implements ContentRewriter {
         defaultPrefs.put(up.getName(), up.getDefaultValue());
       }
     } catch (JSONException e) {
-      // Never happens. Name is required (cannot be null). Default value is a String.
+      // Never happens. Name is required (cannot be null). Default value is a
+      // String.
     }
-    Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.Prefs.setDefaultPrefs_(");
+    Text text = scriptTag.getOwnerDocument().createTextNode(
+        "gadgets.Prefs.setDefaultPrefs_(");
     text.appendData(defaultPrefs.toString());
     text.appendData(");");
     scriptTag.appendChild(text);
@@ -422,7 +453,7 @@ public class RenderingContentRewriter implements ContentRewriter {
 
   /**
    * Injects preloads into the gadget output.
-   *
+   * 
    * If preloading fails for any reason, we just output an empty object.
    */
   private void injectPreloads(Gadget gadget, Node scriptTag) {
@@ -433,14 +464,18 @@ public class RenderingContentRewriter implements ContentRewriter {
       try {
         preload.put(name, preloads.getData(name).toJson());
       } catch (PreloadException e) {
-        // This will be thrown in the event of some unexpected exception. We can move on.
-        LOG.log(Level.WARNING, "Unexpected error attempting to preload " + name, e);
+        // This will be thrown in the event of some unexpected exception. We can
+        // move on.
+        LOG.log(Level.WARNING,
+            "Unexpected error attempting to preload " + name, e);
       } catch (JSONException e) {
-        // Shouldn't ever happen. Probably indicates a big problem, so we'll abort.
+        // Shouldn't ever happen. Probably indicates a big problem, so we'll
+        // abort.
         throw new RuntimeException(e);
       }
     }
-    Text text = scriptTag.getOwnerDocument().createTextNode("gadgets.io.preloaded_=");
+    Text text = scriptTag.getOwnerDocument().createTextNode(
+        "gadgets.io.preloaded_=");
     text.appendData(preload.toString());
     text.appendData(";");
     scriptTag.appendChild(text);

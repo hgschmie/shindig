@@ -38,7 +38,8 @@ public class FakeGadgetSpecFactory implements GadgetSpecFactory {
     return null;
   }
 
-  public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache) throws GadgetException, XMLStreamException {
+  public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache)
+      throws GadgetException, XMLStreamException {
     Uri uri = Uri.fromJavaUri(gadgetUri);
     String gadget = uri.toString();
     String baseSpec = GadgetTokenStoreTest.GADGET_SPEC;

@@ -25,55 +25,49 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class NamespaceGadgetSpecTest  {
+public class NamespaceGadgetSpecTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
 
   @Test
   public void testParseBasic() throws Exception {
-    String xml = "<Module xmlns:conf='http://mynamespace'>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
-                 "<Content type=\"html\">Hello!</Content>" +
-                 "</Module>";
+    String xml = "<Module xmlns:conf='http://mynamespace'>"
+        + "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>"
+        + "<ModulePrefs title=\"title\"/>"
+        + "<UserPref name=\"foo\" datatype=\"string\"/>"
+        + "<Content type=\"html\">Hello!</Content>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
-    assertEquals(UserPref.DataType.STRING,
-        spec.getUserPrefs().get(0).getDataType());
+    assertEquals(UserPref.DataType.STRING, spec.getUserPrefs().get(0)
+        .getDataType());
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
   public void testParseBasicNoNS() throws Exception {
-    String xml = "<Module>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
-                 "<Content type=\"html\">Hello!</Content>" +
-                 "</Module>";
+    String xml = "<Module>"
+        + "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>"
+        + "<ModulePrefs title=\"title\"/>"
+        + "<UserPref name=\"foo\" datatype=\"string\"/>"
+        + "<Content type=\"html\">Hello!</Content>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
-    assertEquals(UserPref.DataType.STRING,
-        spec.getUserPrefs().get(0).getDataType());
+    assertEquals(UserPref.DataType.STRING, spec.getUserPrefs().get(0)
+        .getDataType());
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
-
   @Test
   public void toStringIsSane() throws Exception {
-    String xml = "<Module xmlns:conf='http://mynamespace'>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
-                 "<Content type=\"html\">Hello!</Content>" +
-                 "</Module>";
+    String xml = "<Module xmlns:conf='http://mynamespace'>"
+        + "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>"
+        + "<ModulePrefs title=\"title\"/>"
+        + "<UserPref name=\"foo\" datatype=\"string\"/>"
+        + "<Content type=\"html\">Hello!</Content>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetSpec spec2 = StaxTestUtils.parseSpec(spec.toString(), SPEC_URL);
     assertEquals("title", spec2.getModulePrefs().getTitle());
-    assertEquals(UserPref.DataType.STRING,
-        spec2.getUserPrefs().get(0).getDataType());
+    assertEquals(UserPref.DataType.STRING, spec2.getUserPrefs().get(0)
+        .getDataType());
     assertEquals("Hello!", spec2.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 }
-
-

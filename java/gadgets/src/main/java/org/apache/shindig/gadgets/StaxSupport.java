@@ -35,47 +35,51 @@ import org.apache.shindig.gadgets.spec.SpecElement;
 
 import com.ctc.wstx.api.WstxOutputProperties;
 
-
 public class StaxSupport {
 
   private final XMLInputFactory inputFactory;
   private final XMLOutputFactory outputFactory;
 
-    public StaxSupport() {
-        this.inputFactory = XMLInputFactory.newInstance();
-        this.inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
-        this.inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, Boolean.FALSE);
+  public StaxSupport() {
+    this.inputFactory = XMLInputFactory.newInstance();
+    this.inputFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.FALSE);
+    this.inputFactory.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE,
+        Boolean.FALSE);
 
-        this.outputFactory = XMLOutputFactory.newInstance();
-        this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, Boolean.TRUE);
-        this.outputFactory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR, Boolean.FALSE);
-    }
-
-    public XMLStreamReader getReader(final String xml) throws XMLStreamException {
-        return inputFactory.createXMLStreamReader(new StringReader(xml));
-    }
-
-    public XMLStreamWriter getWriter(final Writer writer, final SpecElement rootElement) throws XMLStreamException {
-        final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
-        rootElement.prepareWriter(xmlWriter);
-        return xmlWriter;
-    }
-
-    public XMLStreamWriter getWriter(final OutputStream stream, final SpecElement rootElement) throws XMLStreamException {
-      final XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(stream);
-      rootElement.prepareWriter(xmlWriter);
-      return xmlWriter;
+    this.outputFactory = XMLOutputFactory.newInstance();
+    this.outputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES,
+        Boolean.TRUE);
+    this.outputFactory.setProperty(WstxOutputProperties.P_OUTPUT_ESCAPE_CR,
+        Boolean.FALSE);
   }
 
-    public static final void closeQuietly(final XMLStreamWriter writer) {
-        if (writer != null) {
-            try {
-                writer.close();
-            } catch (XMLStreamException xse) {
-                // Not much we can do here. Just ignore it.
-            }
-        }
+  public XMLStreamReader getReader(final String xml) throws XMLStreamException {
+    return inputFactory.createXMLStreamReader(new StringReader(xml));
+  }
+
+  public XMLStreamWriter getWriter(final Writer writer,
+      final SpecElement rootElement) throws XMLStreamException {
+    final XMLStreamWriter xmlWriter = outputFactory
+        .createXMLStreamWriter(writer);
+    rootElement.prepareWriter(xmlWriter);
+    return xmlWriter;
+  }
+
+  public XMLStreamWriter getWriter(final OutputStream stream,
+      final SpecElement rootElement) throws XMLStreamException {
+    final XMLStreamWriter xmlWriter = outputFactory
+        .createXMLStreamWriter(stream);
+    rootElement.prepareWriter(xmlWriter);
+    return xmlWriter;
+  }
+
+  public static final void closeQuietly(final XMLStreamWriter writer) {
+    if (writer != null) {
+      try {
+        writer.close();
+      } catch (XMLStreamException xse) {
+        // Not much we can do here. Just ignore it.
+      }
     }
+  }
 }
-
-

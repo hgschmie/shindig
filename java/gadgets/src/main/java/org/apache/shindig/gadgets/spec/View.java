@@ -209,7 +209,7 @@ public class View implements RequestAuthenticationInfo {
   /**
    * Creates a new view by performing hangman substitution. See field comments
    * for details on what gets substituted.
-   *
+   * 
    * @param substituter
    * @return The substituted view.
    */

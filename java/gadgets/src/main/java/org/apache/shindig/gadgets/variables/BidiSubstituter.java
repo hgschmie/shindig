@@ -17,10 +17,10 @@
  */
 package org.apache.shindig.gadgets.variables;
 
+import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
+
 import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
 import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
-
-import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 
 /**
  * Provides static hangman substitutions for bidirectional language support.
@@ -35,15 +35,16 @@ public class BidiSubstituter {
   public static final String RIGHT = "right";
   public static final String LEFT = "left";
 
-  public static void addSubstitutions(Substitutions substituter, final Direction dir) {
+  public static void addSubstitutions(Substitutions substituter,
+      final Direction dir) {
     boolean rtl = dir == RTL;
     substituter.addSubstitution(Substitutions.Type.BIDI, START_EDGE,
         rtl ? RIGHT : LEFT);
-    substituter.addSubstitution(Substitutions.Type.BIDI, END_EDGE,
-        rtl ? LEFT : RIGHT);
-    substituter.addSubstitution(Substitutions.Type.BIDI, DIR,
-        rtl ? RTL.toString() : LTR.toString());
-    substituter.addSubstitution(Substitutions.Type.BIDI, REVERSE_DIR,
-        rtl ? LTR.toString() : RTL.toString());
+    substituter.addSubstitution(Substitutions.Type.BIDI, END_EDGE, rtl ? LEFT
+        : RIGHT);
+    substituter.addSubstitution(Substitutions.Type.BIDI, DIR, rtl ? RTL
+        .toString() : LTR.toString());
+    substituter.addSubstitution(Substitutions.Type.BIDI, REVERSE_DIR, rtl ? LTR
+        .toString() : RTL.toString());
   }
 }

@@ -40,7 +40,8 @@ import com.google.common.collect.Multimap;
 
 public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
 
   private final String checksum;
 
@@ -77,15 +78,16 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
       addUserPref(pref.substitute(substituter));
     }
 
-    for (final Content content: gadgetSpec.getContents()) {
-        addContent(content.substitute(substituter));
+    for (final Content content : gadgetSpec.getContents()) {
+      addContent(content.substitute(substituter));
     }
 
     this.checksum = gadgetSpec.getChecksum();
   }
 
   @Override
-  public ShindigGadgetSpec substitute(final Substitutions substituter) throws GadgetException {
+  public ShindigGadgetSpec substitute(final Substitutions substituter)
+      throws GadgetException {
     return new ShindigGadgetSpec(this, substituter);
   }
 
@@ -121,9 +123,11 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
     return Collections.unmodifiableList(contents);
   }
 
-  private void setModulePrefs(final ModulePrefs modulePrefs) throws GadgetException {
+  private void setModulePrefs(final ModulePrefs modulePrefs)
+      throws GadgetException {
     if (this.modulePrefs != null) {
-      throw new SpecParserException("Multiple <ModulePrefs> elements encountered!");
+      throw new SpecParserException(
+          "Multiple <ModulePrefs> elements encountered!");
     }
     this.modulePrefs = modulePrefs;
   }
@@ -190,7 +194,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
     }
 
     public Parser(final QName name, final Uri base, final String checksum) {
-        super(name, base);
+      super(name, base);
       register(new ModulePrefs.Parser(base));
       register(new UserPref.Parser(base));
       register(new Content.Parser(base));
@@ -211,7 +215,8 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
     @Override
     protected void addChild(final XMLStreamReader reader,
-        final ShindigGadgetSpec spec, final SpecElement child) throws GadgetException {
+        final ShindigGadgetSpec spec, final SpecElement child)
+        throws GadgetException {
       if (child instanceof ModulePrefs) {
         spec.setModulePrefs((ModulePrefs) child);
       } else if (child instanceof UserPref) {

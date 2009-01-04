@@ -36,9 +36,11 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class LocaleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
+public class LocaleSpec extends SpecElement implements
+    MessageBundle.MessageBundleSource {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
 
   public static final String ATTR_LANG = "lang";
   public static final String ATTR_COUNTRY = "country";
@@ -52,8 +54,9 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
     super(name, attrNames, base);
   }
 
-  protected LocaleSpec(final LocaleSpec localeSpec, final Substitutions substituter) {
-      super(localeSpec, substituter);
+  protected LocaleSpec(final LocaleSpec localeSpec,
+      final Substitutions substituter) {
+    super(localeSpec, substituter);
   }
 
   @Override
@@ -74,7 +77,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   }
 
   public Uri getMessages() {
-      return attrUriBase(ATTR_MESSAGES);
+    return attrUriBase(ATTR_MESSAGES);
   }
 
   public Set<LocaleMsg> getLocaleMsgs() {
@@ -95,12 +98,11 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
       writeAttribute(writer, ATTR_COUNTRY, getCountry());
     }
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION,
-          getLanguageDirection().toString());
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection()
+          .toString());
     }
     if (getMessages() != null) {
-      writeAttribute(writer, ATTR_MESSAGES, getMessages()
-          .toString());
+      writeAttribute(writer, ATTR_MESSAGES, getMessages().toString());
     }
   }
 
@@ -115,10 +117,12 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   @Override
   public void validate() throws SpecParserException {
     if (getLanguageDirection() == null) {
-      throw new SpecParserException("Direction '" + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
+      throw new SpecParserException("Direction '"
+          + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_MESSAGES)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES) + "' is invalid!");
+      throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES)
+          + "' is invalid!");
     }
   }
 

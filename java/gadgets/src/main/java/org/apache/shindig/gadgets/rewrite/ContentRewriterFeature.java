@@ -31,12 +31,14 @@ import com.google.common.collect.Lists;
 
 /**
  * Parser for the "content-rewrite" feature. The supported params are
- * include-urls,exclude-urls,include-tags. Default values are container specific.
- *
- * TODO: This really needs to be fixed, because it makes GadgetSpec mutable. It is *ONLY* needed
- * by code in the rewrite package, and that code isn't even being used, and can't be used the way
- * that they are currently written -- they require values from the gadget during construction, which
- * are, of course, unavailable.
+ * include-urls,exclude-urls,include-tags. Default values are container
+ * specific.
+ * 
+ * TODO: This really needs to be fixed, because it makes GadgetSpec mutable. It
+ * is *ONLY* needed by code in the rewrite package, and that code isn't even
+ * being used, and can't be used the way that they are currently written -- they
+ * require values from the gadget during construction, which are, of course,
+ * unavailable.
  */
 public class ContentRewriterFeature {
 
@@ -56,24 +58,27 @@ public class ContentRewriterFeature {
   private Pattern include;
   private Pattern exclude;
 
-  // If null then dont enforce a min TTL for proxied content. Use contents headers
+  // If null then dont enforce a min TTL for proxied content. Use contents
+  // headers
   private Integer expires;
 
   private Integer fingerprint;
 
   /**
    * Constructor which takes a gadget spec and the default container settings
-   *
+   * 
    * @param spec
-   * @param defaultInclude As a regex
-   * @param defaultExclude As a regex
-   * @param defaultExpires Either "HTTP" or a ttl in seconds
-   * @param defaultTags    Set of default tags that can be rewritten
+   * @param defaultInclude
+   *          As a regex
+   * @param defaultExclude
+   *          As a regex
+   * @param defaultExpires
+   *          Either "HTTP" or a ttl in seconds
+   * @param defaultTags
+   *          Set of default tags that can be rewritten
    */
   public ContentRewriterFeature(GadgetSpec spec, String defaultInclude,
-                                String defaultExclude,
-                                String defaultExpires,
-      Set<String> defaultTags) {
+      String defaultExclude, String defaultExpires, Set<String> defaultTags) {
     Feature f = null;
     if (spec != null) {
       f = spec.getModulePrefs().getFeatures().get("content-rewrite");
@@ -88,10 +93,12 @@ public class ContentRewriterFeature {
       final Map<String, FeatureParam> params = f.getParams();
 
       if (params.containsKey(INCLUDE_URLS)) {
-        includeRegex = normalizeParam(params.get(INCLUDE_URLS).getText(), includeRegex);
+        includeRegex = normalizeParam(params.get(INCLUDE_URLS).getText(),
+            includeRegex);
       }
 
-      // Note use of default for exclude as null here to allow clearing value in the
+      // Note use of default for exclude as null here to allow clearing value in
+      // the
       // presence of a container default.
       if (params.containsKey(EXCLUDE_URLS)) {
         excludeRegex = normalizeParam(params.get(EXCLUDE_URLS).getText(), null);
@@ -197,11 +204,12 @@ public class ContentRewriterFeature {
     if (fingerprint == null) {
       int result;
       result = (include != null ? include.pattern().hashCode() : 0);
-      result = 31 * result + (exclude != null ? exclude.pattern().hashCode() : 0);
+      result = 31 * result
+          + (exclude != null ? exclude.pattern().hashCode() : 0);
       for (String s : includeTags) {
         result = 31 * result + s.hashCode();
       }
-      fingerprint =  result;
+      fingerprint = result;
     }
     return fingerprint;
   }

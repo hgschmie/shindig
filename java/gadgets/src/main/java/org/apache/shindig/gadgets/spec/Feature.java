@@ -46,7 +46,8 @@ public abstract class Feature extends SpecElement {
   // So let's keep track of this here.
   private final Map<String, String> paramMap = new HashMap<String, String>();
 
-  protected Feature(final QName name, final Map<String, QName> attrNames, final Uri base, final boolean required) {
+  protected Feature(final QName name, final Map<String, QName> attrNames,
+      final Uri base, final boolean required) {
     super(name, attrNames, base);
     this.required = required;
   }
@@ -78,14 +79,16 @@ public abstract class Feature extends SpecElement {
   }
 
   @Override
-  protected void writeAttributes(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeAttributes(final XMLStreamWriter writer)
+      throws XMLStreamException {
     if (attr(ATTR_FEATURE) != null) {
       writeAttribute(writer, ATTR_FEATURE, getFeature());
     }
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
     for (final FeatureParam param : params.values()) {
       param.toXml(writer);
     }
@@ -98,7 +101,8 @@ public abstract class Feature extends SpecElement {
     }
   }
 
-  // Convenience Methods that deal with the underlying featureParam elements. These are not part of the model!
+  // Convenience Methods that deal with the underlying featureParam elements.
+  // These are not part of the model!
   public Map<String, String> params() {
     return Collections.unmodifiableMap(paramMap);
   }
@@ -115,7 +119,8 @@ public abstract class Feature extends SpecElement {
     protected abstract Feature newElement();
 
     @Override
-    protected void addChild(final XMLStreamReader reader, final Feature feature, final SpecElement child) throws GadgetException {
+    protected void addChild(final XMLStreamReader reader,
+        final Feature feature, final SpecElement child) throws GadgetException {
       if (child instanceof FeatureParam) {
         feature.addParam((FeatureParam) child);
       } else {

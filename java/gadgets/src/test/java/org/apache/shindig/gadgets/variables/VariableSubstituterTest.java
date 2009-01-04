@@ -18,8 +18,6 @@
  */
 package org.apache.shindig.gadgets.variables;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Locale;
 
 import org.apache.shindig.common.uri.Uri;
@@ -35,25 +33,24 @@ import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
+import static org.junit.Assert.assertEquals;
+
 public class VariableSubstituterTest {
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
-  private final VariableSubstituter substituter = new VariableSubstituter(messageBundleFactory);
+  private final VariableSubstituter substituter = new VariableSubstituter(
+      messageBundleFactory);
 
   private GadgetSpec substitute(String xml) throws Exception {
-    return substituter.substitute(new GadgetContext(), StaxTestUtils.parseSpec(xml, Uri.parse("#")));
+    return substituter.substitute(new GadgetContext(), StaxTestUtils.parseSpec(
+        xml, Uri.parse("#")));
   }
 
   @Test
   public void messageBundlesSubstituted() throws Exception {
-    String xml =
-        "<Module><ModulePrefs title=''>" +
-        "  <Locale>" +
-        "    <msg name='foo'>bar</msg>" +
-        "    <msg name='bar'>baz</msg>" +
-        "  </Locale>" +
-        "</ModulePrefs>" +
-        "<Content>__MSG_foo__ - __MSG_bar__</Content>" +
-        "</Module>";
+    String xml = "<Module><ModulePrefs title=''>" + "  <Locale>"
+        + "    <msg name='foo'>bar</msg>" + "    <msg name='bar'>baz</msg>"
+        + "  </Locale>" + "</ModulePrefs>"
+        + "<Content>__MSG_foo__ - __MSG_bar__</Content>" + "</Module>";
     GadgetSpec spec = substitute(xml);
 
     assertEquals("bar - baz", spec.getView("default").getContent());
@@ -77,11 +74,8 @@ public class VariableSubstituterTest {
 
   @Test
   public void userPrefsSubstituted() throws Exception {
-    String xml = "<Module>" +
-    		         "<ModulePrefs title='I heart __UP_foo__'/>" +
-    		         "<UserPref name='foo'/>" +
-    		         "<Content/>" +
-    		         "</Module>";
+    String xml = "<Module>" + "<ModulePrefs title='I heart __UP_foo__'/>"
+        + "<UserPref name='foo'/>" + "<Content/>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, Uri.parse("#"));
     GadgetContext context = new GadgetContext() {
       @Override
@@ -97,8 +91,8 @@ public class VariableSubstituterTest {
 
   private static class FakeMessageBundleFactory implements MessageBundleFactory {
 
-    public MessageBundle getBundle(GadgetSpec spec, Locale locale, boolean ignoreCache)
-        throws GadgetException {
+    public MessageBundle getBundle(GadgetSpec spec, Locale locale,
+        boolean ignoreCache) throws GadgetException {
       LocaleSpec localeSpec = spec.getModulePrefs().getLocale(locale);
       if (localeSpec == null) {
         return MessageBundle.EMPTY;

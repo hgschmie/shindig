@@ -35,7 +35,8 @@ public class FeatureTest extends TestCase {
 
   public void testOptional() throws Exception {
     String xml = "<Optional feature=\"foo\"/>";
-    Feature feature = StaxTestUtils.parseElement(xml, new Optional.Parser(null));
+    Feature feature = StaxTestUtils
+        .parseElement(xml, new Optional.Parser(null));
     assertEquals("foo", feature.getFeature());
     assertEquals(false, feature.isRequired());
   }
@@ -43,9 +44,8 @@ public class FeatureTest extends TestCase {
   public void testParams() throws Exception {
     String key = "bar";
     String value = "Hello, World!";
-    String xml = "<Require feature=\"foo\">" +
-                 "  <Param name=\"" + key + "\">" + value + "</Param>" +
-                 "</Require>";
+    String xml = "<Require feature=\"foo\">" + "  <Param name=\"" + key + "\">"
+        + value + "</Param>" + "</Require>";
     Feature feature = StaxTestUtils.parseElement(xml, new Require.Parser(null));
     Map<String, FeatureParam> params = feature.getParams();
     assertEquals(1, params.size());

@@ -1,4 +1,5 @@
 package org.apache.shindig.gadgets;
+
 /*
  *
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +20,6 @@ package org.apache.shindig.gadgets;
  * under the License.
  *
  */
-
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -68,7 +68,9 @@ public final class StaxTestUtils {
     return element;
   }
 
-    public static final GadgetSpec parseSpec(final String xml, final Uri base) throws GadgetException, XMLStreamException {
-        return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(base, xml));
-    }
+  public static final GadgetSpec parseSpec(final String xml, final Uri base)
+      throws GadgetException, XMLStreamException {
+    return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(
+        base, xml));
+  }
 }

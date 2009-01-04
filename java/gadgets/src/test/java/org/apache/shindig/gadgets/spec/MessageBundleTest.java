@@ -19,8 +19,6 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -34,15 +32,16 @@ import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
+import static org.junit.Assert.assertEquals;
+
 public class MessageBundleTest {
   private static final Uri BUNDLE_URL = Uri.parse("http://example.org/m.xml");
-  private static final String LOCALE
-      = "<Locale lang='en' country='US' messages='" + BUNDLE_URL + "'/>";
-  private static final String PARENT_LOCALE
-      = "<Locale lang='en' country='ALL' language_direction='rtl'>" +
-        " <msg name='one'>VALUE</msg>" +
-        " <msg name='foo'>adfdfdf</msg>" +
-        "</Locale>";
+  private static final String LOCALE = "<Locale lang='en' country='US' messages='"
+      + BUNDLE_URL + "'/>";
+  private static final String PARENT_LOCALE = "<Locale lang='en' country='ALL' language_direction='rtl'>"
+      + " <msg name='one'>VALUE</msg>"
+      + " <msg name='foo'>adfdfdf</msg>"
+      + "</Locale>";
   private static final Map<String, String> MESSAGES = Maps.newHashMap();
   private static final String XML;
   static {
@@ -51,9 +50,8 @@ public class MessageBundleTest {
     StringBuilder buf = new StringBuilder();
     buf.append("<messagebundle>");
     for (Map.Entry<String, String> entry : MESSAGES.entrySet()) {
-      buf.append("<msg name='").append(entry.getKey()).append("'>")
-         .append(entry.getValue())
-         .append("</msg>");
+      buf.append("<msg name='").append(entry.getKey()).append("'>").append(
+          entry.getValue()).append("</msg>");
     }
     buf.append("</messagebundle>");
     XML = buf.toString();
@@ -63,12 +61,14 @@ public class MessageBundleTest {
 
   @Before
   public void setUp() throws Exception {
-    locale = StaxTestUtils.parseElement(LOCALE, new LocaleSpec.Parser(Uri.parse("http://example.org/gadget")));
+    locale = StaxTestUtils.parseElement(LOCALE, new LocaleSpec.Parser(Uri
+        .parse("http://example.org/gadget")));
   }
 
   @Test
   public void normalMessageBundleParsesOk() throws Exception {
-    MessageBundleSpec messageBundleSpec = StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null));
+    MessageBundleSpec messageBundleSpec = StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null));
     MessageBundle bundle = new MessageBundle(locale, messageBundleSpec);
     assertEquals(MESSAGES, bundle.getMessages());
   }
@@ -87,14 +87,16 @@ public class MessageBundleTest {
 
   @Test
   public void extractFromElement() throws Exception {
-    MessageBundleSpec element = StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null));
+    MessageBundleSpec element = StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null));
     MessageBundle bundle = new MessageBundle(element);
     assertEquals(MESSAGES, bundle.getMessages());
   }
 
   @Test
   public void extractFromElementWithLanguageDir() throws Exception {
-    LocaleSpec element = StaxTestUtils.parseElement(PARENT_LOCALE, new LocaleSpec.Parser(null));
+    LocaleSpec element = StaxTestUtils.parseElement(PARENT_LOCALE,
+        new LocaleSpec.Parser(null));
     MessageBundle bundle = new MessageBundle(element);
     assertEquals(MessageBundle.Direction.RTL, bundle.getLanguageDirection());
   }
@@ -102,13 +104,16 @@ public class MessageBundleTest {
   @Test(expected = SpecParserException.class)
   public void extractFromElementsWithNoName() throws Exception {
     String xml = "<messagebundle><msg>foo</msg></messagebundle>";
-    new MessageBundle(StaxTestUtils.parseElement(xml, new MessageBundleSpec.Parser(null)));
+    new MessageBundle(StaxTestUtils.parseElement(xml,
+        new MessageBundleSpec.Parser(null)));
   }
 
   @Test
   public void merge() throws Exception {
-    MessageBundle parent = new MessageBundle(StaxTestUtils.parseElement(PARENT_LOCALE, new LocaleSpec.Parser(null)));
-    MessageBundle child = new MessageBundle(StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null)));
+    MessageBundle parent = new MessageBundle(StaxTestUtils.parseElement(
+        PARENT_LOCALE, new LocaleSpec.Parser(null)));
+    MessageBundle child = new MessageBundle(StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null)));
     MessageBundle bundle = new MessageBundle(parent, child);
     assertEquals(MessageBundle.Direction.LTR, bundle.getLanguageDirection());
     assertEquals("VALUE", bundle.getMessages().get("one"));
@@ -117,12 +122,15 @@ public class MessageBundleTest {
 
   @Test
   public void toStringIsSane() throws Exception {
-    MessageBundleSpec b0 = StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null));
-    MessageBundleSpec b1 = StaxTestUtils.parseElement(b0.toString(), new MessageBundleSpec.Parser(null));
+    MessageBundleSpec b0 = StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null));
+    MessageBundleSpec b1 = StaxTestUtils.parseElement(b0.toString(),
+        new MessageBundleSpec.Parser(null));
     assertEquals(b0.getLocaleMsgs(), b1.getLocaleMsgs());
   }
 
-  private static void assertJsonEquals(JSONObject left, JSONObject right) throws JSONException {
+  private static void assertJsonEquals(JSONObject left, JSONObject right)
+      throws JSONException {
     assertEquals(left.length(), right.length());
     for (String key : JSONObject.getNames(left)) {
       assertEquals(left.get(key), right.get(key));
@@ -131,7 +139,8 @@ public class MessageBundleTest {
 
   @Test
   public void toJSONStringMatchesValues() throws Exception {
-    MessageBundle simple = new MessageBundle(StaxTestUtils.parseElement(PARENT_LOCALE, new LocaleSpec.Parser(null)));
+    MessageBundle simple = new MessageBundle(StaxTestUtils.parseElement(
+        PARENT_LOCALE, new LocaleSpec.Parser(null)));
 
     JSONObject fromString = new JSONObject(simple.toJSONString());
     JSONObject fromMap = new JSONObject(simple.getMessages());
@@ -140,7 +149,8 @@ public class MessageBundleTest {
 
   @Test
   public void toJSONStringMatchesValuesLocaleCtor() throws Exception {
-    MessageBundle bundle = new MessageBundle(StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null)));
+    MessageBundle bundle = new MessageBundle(StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null)));
 
     JSONObject fromString = new JSONObject(bundle.toJSONString());
     JSONObject fromMap = new JSONObject(bundle.getMessages());
@@ -149,8 +159,10 @@ public class MessageBundleTest {
 
   @Test
   public void toJSONStringMatchesValuesWithChild() throws Exception {
-    MessageBundle parent = new MessageBundle(StaxTestUtils.parseElement(PARENT_LOCALE, new LocaleSpec.Parser(null)));
-    MessageBundle child = new MessageBundle(StaxTestUtils.parseElement(XML, new MessageBundleSpec.Parser(null)));
+    MessageBundle parent = new MessageBundle(StaxTestUtils.parseElement(
+        PARENT_LOCALE, new LocaleSpec.Parser(null)));
+    MessageBundle child = new MessageBundle(StaxTestUtils.parseElement(XML,
+        new MessageBundleSpec.Parser(null)));
     MessageBundle bundle = new MessageBundle(parent, child);
 
     JSONObject fromString = new JSONObject(bundle.toJSONString());

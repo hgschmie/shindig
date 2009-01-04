@@ -28,11 +28,11 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 /**
-* Represents a Uniform Resource Identifier (URI) reference as defined by <a
-* href="http://tools.ietf.org/html/rfc3986">RFC 3986</a>.
-*
-* Assumes that all url components are UTF-8 encoded.
-*/
+ * Represents a Uniform Resource Identifier (URI) reference as defined by <a
+ * href="http://tools.ietf.org/html/rfc3986">RFC 3986</a>.
+ * 
+ * Assumes that all url components are UTF-8 encoded.
+ */
 public final class Uri {
   public static final Uri EMPTY_URI = Uri.parse("");
 
@@ -45,15 +45,14 @@ public final class Uri {
 
   private final Map<String, List<String>> queryParameters;
 
-
   Uri(UriBuilder builder) {
     scheme = builder.getScheme();
     authority = builder.getAuthority();
     path = builder.getPath();
     query = builder.getQuery();
     fragment = builder.getFragment();
-    queryParameters
-        = Collections.unmodifiableMap(Maps.newLinkedHashMap(builder.getQueryParameters()));
+    queryParameters = Collections.unmodifiableMap(Maps.newLinkedHashMap(builder
+        .getQueryParameters()));
 
     StringBuilder out = new StringBuilder();
 
@@ -77,8 +76,9 @@ public final class Uri {
 
   /**
    * Produces a new Uri from a text representation.
-   *
-   * @param text The text uri.
+   * 
+   * @param text
+   *          The text uri.
    * @return A new Uri, parsed into components.
    */
   public static Uri parse(String text) {
@@ -89,33 +89,30 @@ public final class Uri {
     }
   }
 
-    public static final Uri toUri(final String value, final Uri defaultValue) {
+  public static final Uri toUri(final String value, final Uri defaultValue) {
     if (value != null) {
       try {
         return Uri.parse(value);
       } catch (IllegalArgumentException e) {
-          return defaultValue;
+        return defaultValue;
       }
     } else {
-        return defaultValue;
+      return defaultValue;
     }
   }
 
   public final boolean isHttpUri() {
-    return "http".equalsIgnoreCase(getScheme()) || "https".equalsIgnoreCase(getScheme());
+    return "http".equalsIgnoreCase(getScheme())
+        || "https".equalsIgnoreCase(getScheme());
   }
 
   /**
    * Convert a java.net.URI to a Uri.
    */
   public static Uri fromJavaUri(URI uri) {
-    return new UriBuilder()
-        .setScheme(uri.getScheme())
-        .setAuthority(uri.getRawAuthority())
-        .setPath(uri.getRawPath())
-        .setQuery(uri.getRawQuery())
-        .setFragment(uri.getRawFragment())
-        .toUri();
+    return new UriBuilder().setScheme(uri.getScheme()).setAuthority(
+        uri.getRawAuthority()).setPath(uri.getRawPath()).setQuery(
+        uri.getRawQuery()).setFragment(uri.getRawFragment()).toUri();
   }
 
   /**
@@ -131,14 +128,16 @@ public final class Uri {
   }
 
   /**
-   * Resolves a given url relative to this url. Resolution rules are the same as for
-   * {@code java.net.URI.resolve(URI)}
-   *
-   * @param other The url to resolve against.
+   * Resolves a given url relative to this url. Resolution rules are the same as
+   * for {@code java.net.URI.resolve(URI)}
+   * 
+   * @param other
+   *          The url to resolve against.
    * @return The new url.
    */
   public Uri resolve(Uri other) {
-    // TODO: We can probably make this more efficient by implementing resolve ourselves.
+    // TODO: We can probably make this more efficient by implementing resolve
+    // ourselves.
     if (other == null) {
       return null;
     }
@@ -224,9 +223,13 @@ public final class Uri {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == this) {return true;}
-    if (!(obj instanceof Uri)) {return false;}
+    if (obj == this) {
+      return true;
+    }
+    if (!(obj instanceof Uri)) {
+      return false;
+    }
 
-    return text.equals(((Uri)obj).text);
+    return text.equals(((Uri) obj).text);
   }
 }

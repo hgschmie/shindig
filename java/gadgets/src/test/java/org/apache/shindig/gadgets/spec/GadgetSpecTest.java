@@ -19,8 +19,6 @@
 
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.shindig.common.uri.Uri;
@@ -29,31 +27,30 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
 import org.junit.Test;
 
-public class GadgetSpecTest  {
+import static org.junit.Assert.assertEquals;
+
+public class GadgetSpecTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
 
   @Test
   public void testBasic() throws Exception {
-    String xml = "<Module>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
-                 "<Content type=\"html\">Hello!</Content>" +
-                 "</Module>";
+    String xml = "<Module>" + "<ModulePrefs title=\"title\"/>"
+        + "<UserPref name=\"foo\" datatype=\"string\"/>"
+        + "<Content type=\"html\">Hello!</Content>" + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
-    assertEquals(UserPref.DataType.STRING,
-        spec.getUserPrefs().get(0).getDataType());
+    assertEquals(UserPref.DataType.STRING, spec.getUserPrefs().get(0)
+        .getDataType());
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
   public void testMultipleContentSections() throws Exception {
-    String xml = "<Module>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<Content type=\"html\" view=\"hello\">hello </Content>" +
-                 "<Content type=\"html\" view=\"world\">world</Content>" +
-                 "<Content type=\"html\" view=\"hello, test\">test</Content>" +
-                 "</Module>";
+    String xml = "<Module>" + "<ModulePrefs title=\"title\"/>"
+        + "<Content type=\"html\" view=\"hello\">hello </Content>"
+        + "<Content type=\"html\" view=\"world\">world</Content>"
+        + "<Content type=\"html\" view=\"hello, test\">test</Content>"
+        + "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("hello test", spec.getView("hello").getContent());
     assertEquals("world", spec.getView("world").getContent());
@@ -62,20 +59,16 @@ public class GadgetSpecTest  {
 
   @Test(expected = SpecParserException.class)
   public void testMissingModulePrefs() throws Exception {
-    String xml = "<Module>" +
-                 "<Content type=\"html\"/>" +
-                 "</Module>";
-      StaxTestUtils.parseSpec(xml, SPEC_URL);
+    String xml = "<Module>" + "<Content type=\"html\"/>" + "</Module>";
+    StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
   @Test(expected = SpecParserException.class)
   public void testEnforceOneModulePrefs() throws Exception {
-    String xml = "<Module>" +
-                 "<ModulePrefs title=\"hello\"/>" +
-                 "<ModulePrefs title=\"world\"/>" +
-                 "<Content type=\"html\"/>" +
-                 "</Module>";
-      StaxTestUtils.parseSpec(xml, SPEC_URL);
+    String xml = "<Module>" + "<ModulePrefs title=\"hello\"/>"
+        + "<ModulePrefs title=\"world\"/>" + "<Content type=\"html\"/>"
+        + "</Module>";
+    StaxTestUtils.parseSpec(xml, SPEC_URL);
   }
 
   @Test(expected = XMLStreamException.class)
@@ -89,14 +82,13 @@ public class GadgetSpecTest  {
     Substitutions substituter = new Substitutions();
     String title = "Hello, World!";
     String content = "Goodbye, world :(";
-    String xml = "<Module>" +
-                 "<ModulePrefs title=\"__UP_title__\"/>" +
-                 "<Content type=\"html\">__MSG_content__</Content>" +
-                 "</Module>";
+    String xml = "<Module>" + "<ModulePrefs title=\"__UP_title__\"/>"
+        + "<Content type=\"html\">__MSG_content__</Content>" + "</Module>";
     substituter.addSubstitution(Type.USER_PREF, "title", title);
     substituter.addSubstitution(Type.MESSAGE, "content", content);
 
-    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL).substitute(substituter);
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL).substitute(
+        substituter);
     assertEquals(title, spec.getModulePrefs().getTitle());
     assertEquals(content, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }

@@ -18,9 +18,6 @@
  */
 package org.apache.shindig.gadgets.spec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,35 +29,40 @@ import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.variables.Substitutions;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests for Preload
  */
 public class PreloadTest {
   private static final Uri SPEC_URL = Uri.parse("http://example.org/g.xml");
   private final static String HREF = "http://example.org/preload.xml";
-  private final static Set<String> VIEWS
-      = new HashSet<String>(Arrays.asList("view0", "view1"));
+  private final static Set<String> VIEWS = new HashSet<String>(Arrays.asList(
+      "view0", "view1"));
 
   @Test
   public void basicPreload() throws Exception {
     String xml = "<Preload href='" + HREF + "'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
 
     assertEquals(HREF, preload.getHref().toString());
     assertEquals(AuthType.NONE, preload.getAuthType());
     assertEquals(0, preload.getAttributes().size());
-    assertTrue("Default value for sign_owner should be true.",
-                preload.isSignOwner());
-    assertTrue("Default value for sign_viewer should be true.",
-               preload.isSignViewer());
+    assertTrue("Default value for sign_owner should be true.", preload
+        .isSignOwner());
+    assertTrue("Default value for sign_viewer should be true.", preload
+        .isSignViewer());
   }
 
   @Test
   public void authzSigned() throws Exception {
     String xml = "<Preload href='" + HREF + "' authz='signed'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
 
     assertEquals(AuthType.SIGNED, preload.getAuthType());
   }
@@ -69,7 +71,8 @@ public class PreloadTest {
   public void authzOAuth() throws Exception {
     String xml = "<Preload href='" + HREF + "' authz='oauth'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
 
     assertEquals(AuthType.OAUTH, preload.getAuthType());
   }
@@ -78,17 +81,19 @@ public class PreloadTest {
   public void authzUnknownTreatedAsNone() throws Exception {
     String xml = "<Preload href='foo' authz='bad-bad-bad value!'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
 
     assertEquals(AuthType.NONE, preload.getAuthType());
   }
 
   @Test
   public void multipleViews() throws Exception {
-    String xml = "<Preload href='" + HREF + '\'' +
-    		     " views='" + StringUtils.join(VIEWS, ',') + "'/>";
+    String xml = "<Preload href='" + HREF + '\'' + " views='"
+        + StringUtils.join(VIEWS, ',') + "'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
 
     assertEquals(VIEWS, preload.getViews());
   }
@@ -97,7 +102,8 @@ public class PreloadTest {
   public void substitutionsOk() throws Exception {
     String xml = "<Preload href='__MSG_preload__'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "preload", HREF);
     Preload substituted = preload.substitute(substituter);
@@ -109,9 +115,11 @@ public class PreloadTest {
   public void relativeSubstitutionsOk() throws Exception {
     String xml = "<Preload href='__MSG_preload__'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
     Substitutions substituter = new Substitutions();
-    substituter.addSubstitution(Substitutions.Type.MESSAGE, "preload", "relative");
+    substituter.addSubstitution(Substitutions.Type.MESSAGE, "preload",
+        "relative");
     Preload substituted = preload.substitute(substituter);
 
     assertEquals(SPEC_URL.resolve(Uri.parse("relative")), substituted.getHref());
@@ -119,9 +127,11 @@ public class PreloadTest {
 
   @Test
   public void arbitraryAttributes() throws Exception {
-    String xml = "<Preload href='" + HREF + "' foo='bar' yo='momma' sub='__MSG_preload__'/>";
+    String xml = "<Preload href='" + HREF
+        + "' foo='bar' yo='momma' sub='__MSG_preload__'/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
     Substitutions substituter = new Substitutions();
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "preload", "stuff");
     Preload substituted = preload.substitute(substituter);
@@ -132,14 +142,14 @@ public class PreloadTest {
 
   @Test
   public void toStringIsSane() throws Exception {
-    String xml = "<Preload" +
-    		     " href='" + HREF + '\'' +
-    		     " authz='signed'" +
-    		     " views='" + StringUtils.join(VIEWS, ',') + "'" +
-    		     " some_attribute='yes' />";
+    String xml = "<Preload" + " href='" + HREF + '\'' + " authz='signed'"
+        + " views='" + StringUtils.join(VIEWS, ',') + "'"
+        + " some_attribute='yes' />";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(SPEC_URL));
-    Preload preload2 = StaxTestUtils.parseElement(preload.toString(), new Preload.Parser(SPEC_URL));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(
+        SPEC_URL));
+    Preload preload2 = StaxTestUtils.parseElement(preload.toString(),
+        new Preload.Parser(SPEC_URL));
 
     assertEquals(VIEWS, preload2.getViews());
     assertEquals(HREF, preload2.getHref().toString());

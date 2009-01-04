@@ -23,16 +23,18 @@ import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.View;
 
 /**
- * Intermediary representation of all state associated with processing
- * of a single gadget request.
+ * Intermediary representation of all state associated with processing of a
+ * single gadget request.
  */
 public class Gadget {
   private GadgetContext context;
   private GadgetSpec spec;
   private Preloads preloads;
   private View currentView;
+
   /**
-   * @param context The request that the gadget is being processed for.
+   * @param context
+   *          The request that the gadget is being processed for.
    */
   public Gadget setContext(GadgetContext context) {
     this.context = context;
@@ -44,7 +46,8 @@ public class Gadget {
   }
 
   /**
-   * @param spec The spec for the gadget that is being processed.
+   * @param spec
+   *          The spec for the gadget that is being processed.
    */
   public Gadget setSpec(GadgetSpec spec) {
     this.spec = spec;
@@ -56,7 +59,8 @@ public class Gadget {
   }
 
   /**
-   * @param preloads The preloads for the gadget that is being processed.
+   * @param preloads
+   *          The preloads for the gadget that is being processed.
    */
   public Gadget setPreloads(Preloads preloads) {
     this.preloads = preloads;
@@ -81,9 +85,8 @@ public class Gadget {
 
   /**
    * Convenience function for getting the locale spec for the current context.
-   *
-   * Identical to:
-   * Locale locale = gadget.getContext().getLocale();
+   * 
+   * Identical to: Locale locale = gadget.getContext().getLocale();
    * gadget.getSpec().getModulePrefs().getLocale(locale);
    */
   public LocaleSpec getLocale() {

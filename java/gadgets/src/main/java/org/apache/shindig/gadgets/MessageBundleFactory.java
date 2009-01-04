@@ -18,11 +18,12 @@
  */
 package org.apache.shindig.gadgets;
 
-import com.google.inject.ImplementedBy;
+import java.util.Locale;
+
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 
-import java.util.Locale;
+import com.google.inject.ImplementedBy;
 
 /**
  * Factory of message bundles
@@ -30,17 +31,23 @@ import java.util.Locale;
 @ImplementedBy(ShindigMessageBundleFactory.class)
 public interface MessageBundleFactory {
 
-    String CACHE_NAME = "messageBundles";
+  String CACHE_NAME = "messageBundles";
 
   /**
-   * Retrieves a messagMessageBundle for the provided GadgetSpec and Locale. Implementations must be
-   * sure to perform proper merging of message bundles of lower specifity with exact matches.
-   *
-   * @param spec The gadet to inspect for Locales.
-   * @param locale The language and country to get a message bundle for.
-   * @param ignoreCache  True to bypass any caching of message bundles for debugging purposes.
+   * Retrieves a messagMessageBundle for the provided GadgetSpec and Locale.
+   * Implementations must be sure to perform proper merging of message bundles
+   * of lower specifity with exact matches.
+   * 
+   * @param spec
+   *          The gadet to inspect for Locales.
+   * @param locale
+   *          The language and country to get a message bundle for.
+   * @param ignoreCache
+   *          True to bypass any caching of message bundles for debugging
+   *          purposes.
    * @return The newly created MesageBundle.
-   * @throws GadgetException if retrieval fails for any reason.
+   * @throws GadgetException
+   *           if retrieval fails for any reason.
    */
   MessageBundle getBundle(GadgetSpec spec, Locale locale, boolean ignoreCache)
       throws GadgetException;

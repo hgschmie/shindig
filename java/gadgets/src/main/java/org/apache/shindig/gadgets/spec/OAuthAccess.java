@@ -30,14 +30,16 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAccess extends OAuthElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Access");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Access");
 
   public OAuthAccess(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
     super(name, attrNames, base, false);
   }
 
-  protected OAuthAccess(final OAuthAccess oAuthAccess, final Substitutions substituter) {
+  protected OAuthAccess(final OAuthAccess oAuthAccess,
+      final Substitutions substituter) {
     super(oAuthAccess, substituter);
   }
 

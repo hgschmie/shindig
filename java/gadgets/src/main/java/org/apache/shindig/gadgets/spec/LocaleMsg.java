@@ -35,7 +35,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleMsg extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
 
   public static final String ATTR_NAME = "name";
 
@@ -50,7 +51,7 @@ public class LocaleMsg extends SpecElement {
   }
 
   protected LocaleMsg(final LocaleMsg localeMsg, final Substitutions substituter) {
-      super(localeMsg, substituter);
+    super(localeMsg, substituter);
   }
 
   @Override
@@ -104,22 +105,15 @@ public class LocaleMsg extends SpecElement {
       return true;
     }
     LocaleMsg rhs = (LocaleMsg) other;
-    return new EqualsBuilder()
-                  .appendSuper(super.equals(other))
-                  .append(getName(), rhs.getName())
-                  .append(getDesc(), rhs.getDesc())
-                  .append(getText(), rhs.getText())
-                  .isEquals();
+    return new EqualsBuilder().appendSuper(super.equals(other)).append(
+        getName(), rhs.getName()).append(getDesc(), rhs.getDesc()).append(
+        getText(), rhs.getText()).isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder()
-      .appendSuper(super.hashCode())
-      .append(getName())
-      .append(getDesc())
-      .append(getText())
-      .toHashCode();
+    return new HashCodeBuilder().appendSuper(super.hashCode())
+        .append(getName()).append(getDesc()).append(getText()).toHashCode();
   }
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {

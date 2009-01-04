@@ -35,9 +35,11 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
-public class MessageBundleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
+public class MessageBundleSpec extends SpecElement implements
+    MessageBundle.MessageBundleSource {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
 
   /** Non-0.8 Attribute! */
   public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
@@ -51,8 +53,9 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
     super(name, attrNames, base);
   }
 
-  protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec, final Substitutions substituter) {
-      super(messageBundleSpec, substituter);
+  protected MessageBundleSpec(final MessageBundleSpec messageBundleSpec,
+      final Substitutions substituter) {
+    super(messageBundleSpec, substituter);
   }
 
   @Override
@@ -86,14 +89,15 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
       throws XMLStreamException {
 
     if (attr(ATTR_LANGUAGE_DIRECTION) != null) {
-      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION,
-          getLanguageDirection().toString());
+      writeAttribute(writer, ATTR_LANGUAGE_DIRECTION, getLanguageDirection()
+          .toString());
     }
   }
 
   @Override
-  protected void writeChildren(final XMLStreamWriter writer) throws XMLStreamException {
-    for (LocaleMsg localeMsg: localeMsgs) {
+  protected void writeChildren(final XMLStreamWriter writer)
+      throws XMLStreamException {
+    for (LocaleMsg localeMsg : localeMsgs) {
       localeMsg.toXml(writer);
     }
   }

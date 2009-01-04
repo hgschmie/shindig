@@ -28,13 +28,11 @@ import static org.junit.Assert.assertEquals;
 
 public class UserPrefTest {
   public void testBasic() throws Exception {
-    String xml = "<UserPref" +
-                 " name=\"name\"" +
-                 " display_name=\"display_name\"" +
-                 " default_value=\"default_value\"" +
-                 " required=\"true\"" +
-                 " datatype=\"hidden\"/>";
-    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
+    String xml = "<UserPref" + " name=\"name\""
+        + " display_name=\"display_name\"" + " default_value=\"default_value\""
+        + " required=\"true\"" + " datatype=\"hidden\"/>";
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(
+        Uri.EMPTY_URI));
     assertEquals("name", userPref.getName());
     assertEquals("display_name", userPref.getDisplayName());
     assertEquals("default_value", userPref.getDefaultValue());
@@ -44,11 +42,11 @@ public class UserPrefTest {
 
   @Test
   public void testEnum() throws Exception {
-    String xml = "<UserPref name=\"foo\" datatype=\"enum\">" +
-                 " <EnumValue value=\"0\" display_value=\"Zero\"/>" +
-                 " <EnumValue value=\"1\"/>" +
-                 "</UserPref>";
-    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
+    String xml = "<UserPref name=\"foo\" datatype=\"enum\">"
+        + " <EnumValue value=\"0\" display_value=\"Zero\"/>"
+        + " <EnumValue value=\"1\"/>" + "</UserPref>";
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(
+        Uri.EMPTY_URI));
     assertEquals(2, userPref.getEnumValues().size());
     assertEquals("Zero", userPref.enumValues().get("0"));
     assertEquals("1", userPref.enumValues().get("1"));
@@ -56,21 +54,22 @@ public class UserPrefTest {
 
   @Test
   public void testSubstitutions() throws Exception {
-    String xml = "<UserPref name=\"name\" datatype=\"enum\"" +
-                 " display_name=\"__MSG_display_name__\"" +
-                 " default_value=\"__MSG_default_value__\">" +
-                 " <EnumValue value=\"0\" display_value=\"__MSG_dv__\"/>" +
-                 "</UserPref>";
+    String xml = "<UserPref name=\"name\" datatype=\"enum\""
+        + " display_name=\"__MSG_display_name__\""
+        + " default_value=\"__MSG_default_value__\">"
+        + " <EnumValue value=\"0\" display_value=\"__MSG_dv__\"/>"
+        + "</UserPref>";
     String displayName = "This is the display name";
     String defaultValue = "This is the default value";
     String displayValue = "This is the display value";
     Substitutions substituter = new Substitutions();
-    substituter.addSubstitution(Substitutions.Type.MESSAGE,
-        "display_name", displayName);
-    substituter.addSubstitution(Substitutions.Type.MESSAGE,
-        "default_value", defaultValue);
+    substituter.addSubstitution(Substitutions.Type.MESSAGE, "display_name",
+        displayName);
+    substituter.addSubstitution(Substitutions.Type.MESSAGE, "default_value",
+        defaultValue);
     substituter.addSubstitution(Substitutions.Type.MESSAGE, "dv", displayValue);
-    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI)).substitute(substituter);
+    UserPref userPref = StaxTestUtils.parseElement(xml,
+        new UserPref.Parser(Uri.EMPTY_URI)).substitute(substituter);
     assertEquals(displayName, userPref.getDisplayName());
     assertEquals(defaultValue, userPref.getDefaultValue());
     assertEquals(displayValue, userPref.enumValues().get("0"));
@@ -85,34 +84,33 @@ public class UserPrefTest {
   @Test
   public void testMissingDataType() throws Exception {
     String xml = "<UserPref name=\"name\"/>";
-    UserPref pref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
+    UserPref pref = StaxTestUtils.parseElement(xml, new UserPref.Parser(
+        Uri.EMPTY_URI));
     assertEquals(UserPref.DataType.STRING, pref.getDataType());
   }
 
   @Test(expected = SpecParserException.class)
   public void testMissingEnumValue() throws Exception {
-    String xml = "<UserPref name=\"foo\" datatype=\"enum\">" +
-                 " <EnumValue/>" +
-                 "</UserPref>";
+    String xml = "<UserPref name=\"foo\" datatype=\"enum\">" + " <EnumValue/>"
+        + "</UserPref>";
     StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
   }
 
   @Test
   public void toStringIsSane() throws Exception {
-    String xml = "<UserPref" +
-                 " name=\"name\"" +
-                 " display_name=\"display_name\"" +
-                 " default_value=\"default_value\"" +
-                 " required=\"true\"" +
-                 " datatype=\"hidden\"/>";
-    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(Uri.EMPTY_URI));
+    String xml = "<UserPref" + " name=\"name\""
+        + " display_name=\"display_name\"" + " default_value=\"default_value\""
+        + " required=\"true\"" + " datatype=\"hidden\"/>";
+    UserPref userPref = StaxTestUtils.parseElement(xml, new UserPref.Parser(
+        Uri.EMPTY_URI));
     assertEquals("name", userPref.getName());
     assertEquals("display_name", userPref.getDisplayName());
     assertEquals("default_value", userPref.getDefaultValue());
     assertEquals(true, userPref.isRequired());
     assertEquals(UserPref.DataType.HIDDEN, userPref.getDataType());
 
-    UserPref userPref2 = StaxTestUtils.parseElement(userPref.toString(), new UserPref.Parser(Uri.EMPTY_URI));
+    UserPref userPref2 = StaxTestUtils.parseElement(userPref.toString(),
+        new UserPref.Parser(Uri.EMPTY_URI));
     assertEquals(userPref.getName(), userPref2.getName());
     assertEquals(userPref.getDisplayName(), userPref2.getDisplayName());
     assertEquals(userPref.getDefaultValue(), userPref2.getDefaultValue());

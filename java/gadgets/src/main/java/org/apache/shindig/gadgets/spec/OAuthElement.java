@@ -45,9 +45,10 @@ public abstract class OAuthElement extends SpecElement {
     this.request = request;
   }
 
-  protected OAuthElement(final OAuthElement oAuthElement, final Substitutions substituter) {
-      super(oAuthElement, substituter);
-      this.request = oAuthElement.isRequest();
+  protected OAuthElement(final OAuthElement oAuthElement,
+      final Substitutions substituter) {
+    super(oAuthElement, substituter);
+    this.request = oAuthElement.isRequest();
   }
 
   public boolean isRequest() {
@@ -77,8 +78,7 @@ public abstract class OAuthElement extends SpecElement {
       writeAttribute(writer, ATTR_METHOD, getMethod().toString());
     }
     if (attr(ATTR_PARAM_LOCATION) != null) {
-      writeAttribute(writer, ATTR_PARAM_LOCATION,
-          getParamLocation().toString());
+      writeAttribute(writer, ATTR_PARAM_LOCATION, getParamLocation().toString());
     }
   }
 
@@ -87,18 +87,22 @@ public abstract class OAuthElement extends SpecElement {
     if (getUrl() == null) {
       throw new SpecParserException(this, "@url must be set!");
     }
-    if(!getUrl().isHttpUri()) {
-      throw new SpecParserException(this, "@url value '" + attr(ATTR_URL) + "' is not a valid URL!");
+    if (!getUrl().isHttpUri()) {
+      throw new SpecParserException(this, "@url value '" + attr(ATTR_URL)
+          + "' is not a valid URL!");
     }
 
     if (Method.parse(attr(ATTR_METHOD)) == null) {
-      throw new SpecParserException(this, "@method attribute value '" + attr(ATTR_METHOD) + "' is invalid!");
+      throw new SpecParserException(this, "@method attribute value '"
+          + attr(ATTR_METHOD) + "' is invalid!");
     }
     if (Location.parse(attr(ATTR_PARAM_LOCATION)) == null) {
-      throw new SpecParserException(this, "@param_location attribute value '" + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
+      throw new SpecParserException(this, "@param_location attribute value '"
+          + attr(ATTR_PARAM_LOCATION) + "' is invalid!");
     }
     if ((getMethod() == Method.GET) && (getParamLocation() == Location.BODY)) {
-      throw new SpecParserException(this, "@method is GET but parameter location is body!");
+      throw new SpecParserException(this,
+          "@method is GET but parameter location is body!");
     }
 
   }
@@ -111,7 +115,8 @@ public abstract class OAuthElement extends SpecElement {
         return GET;
       }
       for (Method method : Method.values()) {
-        if (StringUtils.equalsIgnoreCase(method.toString(), StringUtils.trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(method.toString(), StringUtils
+            .trimToEmpty(value))) {
           return method;
         }
       }
@@ -138,7 +143,8 @@ public abstract class OAuthElement extends SpecElement {
         return HEADER;
       }
       for (Location location : Location.values()) {
-        if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils.trimToEmpty(value))) {
+        if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils
+            .trimToEmpty(value))) {
           return location;
         }
       }

@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 
 import javax.xml.stream.XMLStreamException;
@@ -44,30 +39,37 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests for Renderer.
  */
 public class RendererTest {
-  private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
-  private static final Uri TYPE_URL_HREF = Uri.parse("http://example.org/gadget.php");
+  private static final Uri SPEC_URL = Uri
+      .parse("http://example.org/gadget.xml");
+  private static final Uri TYPE_URL_HREF = Uri
+      .parse("http://example.org/gadget.php");
   private static final String BASIC_HTML_CONTENT = "Hello, World!";
-  private static final String GADGET =
-      "<Module>" +
-      " <ModulePrefs title='foo'/>" +
-      " <Content view='html' type='html'>" + BASIC_HTML_CONTENT + "</Content>" +
-      " <Content view='url' type='url' href='" + TYPE_URL_HREF + "'/>" +
-      "</Module>";
+  private static final String GADGET = "<Module>"
+      + " <ModulePrefs title='foo'/>" + " <Content view='html' type='html'>"
+      + BASIC_HTML_CONTENT + "</Content>"
+      + " <Content view='url' type='url' href='" + TYPE_URL_HREF + "'/>"
+      + "</Module>";
 
   private final FakeHtmlRenderer htmlRenderer = new FakeHtmlRenderer();
   private final FakeProcessor processor = new FakeProcessor();
-  private final FakeLockedDomainService lockedDomainService =  new FakeLockedDomainService();
+  private final FakeLockedDomainService lockedDomainService = new FakeLockedDomainService();
   private FakeContainerConfig containerConfig;
   private Renderer renderer;
 
   @Before
   public void setUp() throws Exception {
     containerConfig = new FakeContainerConfig();
-    renderer = new Renderer(processor, htmlRenderer, containerConfig, lockedDomainService);
+    renderer = new Renderer(processor, htmlRenderer, containerConfig,
+        lockedDomainService);
   }
 
   private GadgetContext makeContext(final String view) {
@@ -119,8 +121,8 @@ public class RendererTest {
 
   @Test
   public void handlesRuntimeWrappedGadgetExceptionGracefully() {
-    htmlRenderer.runtimeException = new RuntimeException(
-        new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, "oh no!"));
+    htmlRenderer.runtimeException = new RuntimeException(new GadgetException(
+        GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, "oh no!"));
     RenderingResults results = renderer.render(makeContext("html"));
     assertEquals(RenderingResults.Status.ERROR, results.getStatus());
     assertEquals("oh no!", results.getErrorMessage());
@@ -134,8 +136,8 @@ public class RendererTest {
 
   @Test
   public void validateParent() throws Exception {
-    containerConfig.json.put("gadgets.parent",
-        new JSONArray(Arrays.asList("http:\\/\\/example\\.org\\/[a-z]+", "localhost")));
+    containerConfig.json.put("gadgets.parent", new JSONArray(Arrays.asList(
+        "http:\\/\\/example\\.org\\/[a-z]+", "localhost")));
 
     RenderingResults results = renderer.render(makeContext("html"));
     assertEquals(RenderingResults.Status.OK, results.getStatus());
@@ -143,18 +145,20 @@ public class RendererTest {
 
   @Test
   public void validateBadParent() throws Exception {
-    containerConfig.json.put("gadgets.parent",
-        new JSONArray(Arrays.asList("http:\\/\\/example\\.com\\/[a-z]+", "localhost")));
+    containerConfig.json.put("gadgets.parent", new JSONArray(Arrays.asList(
+        "http:\\/\\/example\\.com\\/[a-z]+", "localhost")));
     RenderingResults results = renderer.render(makeContext("html"));
     assertEquals(RenderingResults.Status.ERROR, results.getStatus());
-    assertNotNull("No error message provided for bad parent.", results.getErrorMessage());
+    assertNotNull("No error message provided for bad parent.", results
+        .getErrorMessage());
   }
 
   @Test
   public void handlesNoCurrentViewGracefully() throws Exception {
     RenderingResults results = renderer.render(makeContext("bad-view-name"));
     assertEquals(RenderingResults.Status.ERROR, results.getStatus());
-    assertNotNull("No error message for missing current view", results.getErrorMessage());
+    assertNotNull("No error message for missing current view", results
+        .getErrorMessage());
   }
 
   @Test
@@ -220,10 +224,8 @@ public class RendererTest {
       try {
         GadgetSpec spec = StaxTestUtils.parseSpec(GADGET, SPEC_URL);
         View view = spec.getView(context.getView());
-        return new Gadget()
-            .setContext(context)
-            .setSpec(spec)
-            .setCurrentView(view);
+        return new Gadget().setContext(context).setSpec(spec).setCurrentView(
+            view);
       } catch (GadgetException e) {
         throw new ProcessingException(e);
       } catch (XMLStreamException xse) {
@@ -235,7 +237,9 @@ public class RendererTest {
   private static class FakeLockedDomainService implements LockedDomainService {
     private boolean wasChecked = false;
     private boolean canRender = true;
-    public boolean gadgetCanRender(String host, GadgetSpec gadget, String container) {
+
+    public boolean gadgetCanRender(String host, GadgetSpec gadget,
+        String container) {
       wasChecked = true;
       return canRender;
     }

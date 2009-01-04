@@ -30,7 +30,8 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class Optional extends Feature {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Optional");
+  public static final QName ELEMENT_NAME = new QName(
+      SpecElement.OPENSOCIAL_NAMESPACE_URI, "Optional");
 
   public Optional(final QName name, final Map<String, QName> attrNames,
       final Uri base) {
