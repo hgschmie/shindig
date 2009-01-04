@@ -171,7 +171,6 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     }
   }
 
-  @Override
   public Map<String, String> getOAuthAttributes() {
     return attributes();
   }

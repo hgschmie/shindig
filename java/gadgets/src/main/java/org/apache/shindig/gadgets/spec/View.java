@@ -220,12 +220,10 @@ public class View implements RequestAuthenticationInfo {
   // ========================================================================================
   // Non-0.8.1 methods
 
-  @Override
   public AuthType getAuthType() {
     return authType;
   }
 
-  @Override
   public Map<String, String> getOAuthAttributes() {
     return Collections.unmodifiableMap(attributes);
   }
@@ -234,12 +232,10 @@ public class View implements RequestAuthenticationInfo {
     return quirks;
   }
 
-  @Override
   public boolean isSignOwner() {
     return signOwner;
   }
 
-  @Override
   public boolean isSignViewer() {
     return signViewer;
   }
