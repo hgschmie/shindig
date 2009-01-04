@@ -82,7 +82,7 @@ public class CajaHtmlParser extends GadgetHtmlParser {
     } catch (URISyntaxException e) {
       // Never happens. Dummy URI needed to satisfy API.
       // We may want to pass in the gadget URI for auditing
-      // purposes at some point.
+      // purposes at some point.                                      
     }
     CharProducer producer = CharProducer.Factory.create(
         new StringReader(content), source);
@@ -140,7 +140,6 @@ public class CajaHtmlParser extends GadgetHtmlParser {
       outputFormat.setPreserveEmptyAttributes(false);
     }
 
-    @Override
     public String serializeImpl(Document doc) {
       StringWriter sw = createWriter(doc);
       HTMLSerializer serializer = new HTMLSerializer(sw, outputFormat);
