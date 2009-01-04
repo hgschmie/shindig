@@ -18,7 +18,10 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
@@ -28,33 +31,25 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
 import org.easymock.EasyMock;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import java.net.URI;
 
 /**
  * Tests for GadgetSpecFactory
  */
 public class GadgetSpecFactoryTest {
-  private final static Uri SPEC_URL = Uri
-      .parse("http://example.org/gadget.xml");
-  private final static Uri REMOTE_URL = Uri
-      .parse("http://example.org/remote.html");
+  private final static Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
+  private final static Uri REMOTE_URL = Uri.parse("http://example.org/remote.html");
   private final static String LOCAL_CONTENT = "Hello, local content!";
   private final static String ALT_LOCAL_CONTENT = "Hello, local content!";
-  private final static String LOCAL_SPEC_XML = "<Module>"
-      + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
+  private final static String LOCAL_SPEC_XML = "<Module>" + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
       + "  <Content type='html'>" + LOCAL_CONTENT + "</Content>" + "</Module>";
-  private final static String ALT_LOCAL_SPEC_XML = "<Module>"
-      + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
-      + "  <Content type='html'>" + ALT_LOCAL_CONTENT + "</Content>"
-      + "</Module>";
-  private final static String URL_SPEC_XML = "<Module>"
-      + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
+  private final static String ALT_LOCAL_SPEC_XML = "<Module>" + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
+      + "  <Content type='html'>" + ALT_LOCAL_CONTENT + "</Content>" + "</Module>";
+  private final static String URL_SPEC_XML = "<Module>" + "  <ModulePrefs title='GadgetSpecFactoryTest'/>"
       + "  <Content type='url' href='" + REMOTE_URL + "'/>" + "</Module>";
 
   private final static GadgetContext NO_CACHE_CONTEXT = new GadgetContext() {
@@ -71,15 +66,14 @@ public class GadgetSpecFactoryTest {
 
   private static final int MAX_AGE = 10000;
 
-  private final HttpFetcher fetcher = EasyMock
-      .createNiceMock(HttpFetcher.class);
+  private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
 
   private final CacheProvider cacheProvider = new LruCacheProvider(5);
 
   private final StaxSupport staxSupport = new StaxSupport();
 
-  private final GadgetSpecFactory specFactory = new ShindigGadgetSpecFactory(
-      fetcher, cacheProvider, staxSupport, MAX_AGE);
+  private final GadgetSpecFactory specFactory = new ShindigGadgetSpecFactory(fetcher, cacheProvider, staxSupport,
+      MAX_AGE);
 
   @Test
   public void specFetched() throws Exception {
@@ -90,8 +84,7 @@ public class GadgetSpecFactoryTest {
 
     GadgetSpec spec = specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
 
-    assertEquals(LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW)
-        .getContent());
+    assertEquals(LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
@@ -103,8 +96,7 @@ public class GadgetSpecFactoryTest {
 
     GadgetSpec spec = specFactory.getGadgetSpec(NO_CACHE_CONTEXT);
 
-    assertEquals(LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW)
-        .getContent());
+    assertEquals(LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
@@ -119,8 +111,7 @@ public class GadgetSpecFactoryTest {
     /*
      * GadgetSpec spec = specFactory.getGadgetSpec(RAWXML_GADGET_CONTEXT);
      * 
-     * assertEquals(RAWXML_CONTENT,
-     * spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
+     * assertEquals(RAWXML_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
      * assertEquals(ShindigGadgetSpecFactory.RAW_GADGET_URI, spec.getUrl());
      */
   }
@@ -128,11 +119,9 @@ public class GadgetSpecFactoryTest {
   @Test
   public void staleSpecIsRefetched() throws Exception {
     HttpRequest request = new HttpRequest(SPEC_URL).setIgnoreCache(true);
-    HttpRequest retriedRequest = new HttpRequest(SPEC_URL)
-        .setIgnoreCache(false);
-    HttpResponse expiredResponse = new HttpResponseBuilder().addHeader(
-        "Pragma", "no-cache").setResponse(LOCAL_SPEC_XML.getBytes("UTF-8"))
-        .create();
+    HttpRequest retriedRequest = new HttpRequest(SPEC_URL).setIgnoreCache(false);
+    HttpResponse expiredResponse = new HttpResponseBuilder().addHeader("Pragma", "no-cache").setResponse(
+        LOCAL_SPEC_XML.getBytes("UTF-8")).create();
     HttpResponse updatedResponse = new HttpResponse(ALT_LOCAL_SPEC_XML);
     expect(fetcher.fetch(request)).andReturn(expiredResponse).once();
     expect(fetcher.fetch(retriedRequest)).andReturn(updatedResponse).once();
@@ -141,28 +130,23 @@ public class GadgetSpecFactoryTest {
     specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
     GadgetSpec spec = specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
 
-    assertEquals(ALT_LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW)
-        .getContent());
+    assertEquals(ALT_LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
   public void staleSpecReturnedFromCacheOnError() throws Exception {
     HttpRequest request = new HttpRequest(SPEC_URL).setIgnoreCache(true);
-    HttpRequest retriedRequest = new HttpRequest(SPEC_URL)
-        .setIgnoreCache(false);
-    HttpResponse expiredResponse = new HttpResponseBuilder().setResponse(
-        LOCAL_SPEC_XML.getBytes("UTF-8")).addHeader("Pragma", "no-cache")
-        .create();
+    HttpRequest retriedRequest = new HttpRequest(SPEC_URL).setIgnoreCache(false);
+    HttpResponse expiredResponse = new HttpResponseBuilder().setResponse(LOCAL_SPEC_XML.getBytes("UTF-8")).addHeader(
+        "Pragma", "no-cache").create();
     expect(fetcher.fetch(request)).andReturn(expiredResponse);
-    expect(fetcher.fetch(retriedRequest)).andReturn(HttpResponse.notFound())
-        .once();
+    expect(fetcher.fetch(retriedRequest)).andReturn(HttpResponse.notFound()).once();
     replay(fetcher);
 
     specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
     GadgetSpec spec = specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
 
-    assertEquals(ALT_LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW)
-        .getContent());
+    assertEquals(ALT_LOCAL_CONTENT, spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
   }
 
   @Test
@@ -170,8 +154,8 @@ public class GadgetSpecFactoryTest {
     CapturingFetcher capturingFetcher = new CapturingFetcher();
 
     StaxSupport staxSupport = new StaxSupport();
-    GadgetSpecFactory forcedCacheFactory = new ShindigGadgetSpecFactory(
-        capturingFetcher, cacheProvider, staxSupport, 10000);
+    GadgetSpecFactory forcedCacheFactory = new ShindigGadgetSpecFactory(capturingFetcher, cacheProvider, staxSupport,
+        10000);
 
     forcedCacheFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
 
@@ -203,14 +187,12 @@ public class GadgetSpecFactoryTest {
   @Test(expected = GadgetException.class)
   public void badFetchServesCached() throws Exception {
     HttpRequest firstRequest = new HttpRequest(SPEC_URL).setIgnoreCache(false);
-    expect(fetcher.fetch(firstRequest)).andReturn(
-        new HttpResponse(LOCAL_SPEC_XML)).once();
+    expect(fetcher.fetch(firstRequest)).andReturn(new HttpResponse(LOCAL_SPEC_XML)).once();
     HttpRequest secondRequest = new HttpRequest(SPEC_URL).setIgnoreCache(true);
     expect(fetcher.fetch(secondRequest)).andReturn(HttpResponse.error()).once();
     replay(fetcher);
 
-    GadgetSpec original = specFactory
-        .getGadgetSpec(SPEC_URL.toJavaUri(), false);
+    GadgetSpec original = specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), false);
     GadgetSpec cached = specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
 
     assertEquals(original.getUrl(), cached.getUrl());
@@ -220,8 +202,7 @@ public class GadgetSpecFactoryTest {
   @Test(expected = GadgetException.class)
   public void malformedGadgetSpecThrows() throws Exception {
     HttpRequest request = new HttpRequest(SPEC_URL).setIgnoreCache(true);
-    expect(fetcher.fetch(request))
-        .andReturn(new HttpResponse("malformed junk"));
+    expect(fetcher.fetch(request)).andReturn(new HttpResponse("malformed junk"));
     replay(fetcher);
 
     specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
@@ -230,8 +211,7 @@ public class GadgetSpecFactoryTest {
   @Test(expected = GadgetException.class)
   public void malformedGadgetSpecIsCachedAndThrows() throws Exception {
     HttpRequest request = new HttpRequest(SPEC_URL).setIgnoreCache(false);
-    expect(fetcher.fetch(request))
-        .andReturn(new HttpResponse("malformed junk")).once();
+    expect(fetcher.fetch(request)).andReturn(new HttpResponse("malformed junk")).once();
     replay(fetcher);
 
     try {
@@ -246,8 +226,7 @@ public class GadgetSpecFactoryTest {
   @Test(expected = GadgetException.class)
   public void throwingFetcherRethrows() throws Exception {
     HttpRequest request = new HttpRequest(SPEC_URL).setIgnoreCache(true);
-    expect(fetcher.fetch(request)).andThrow(
-        new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT));
+    expect(fetcher.fetch(request)).andThrow(new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT));
     replay(fetcher);
 
     specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);

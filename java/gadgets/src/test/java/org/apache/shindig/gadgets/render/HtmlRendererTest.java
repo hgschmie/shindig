@@ -18,9 +18,8 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.shindig.auth.AnonymousSecurityToken;
 import org.apache.shindig.auth.SecurityToken;
@@ -39,25 +38,25 @@ import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.View;
+
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Tests for HtmlRenderer
  */
 public class HtmlRendererTest {
-  private static final Uri SPEC_URL = Uri
-      .parse("http://example.org/gadget.xml");
+  private static final Uri SPEC_URL = Uri.parse("http://example.org/gadget.xml");
   private static final String BASIC_HTML_CONTENT = "Hello, World!";
   private static final String PROXIED_HTML_CONTENT = "Hello, Universe!";
-  private static final Uri PROXIED_HTML_HREF = Uri
-      .parse("http://example.org/proxied.php");
-  private static final Uri EXPECTED_PROXIED_HTML_HREF = Uri
-      .parse("http://example.org/proxied.php?lang=all&country=ALL");
+  private static final Uri PROXIED_HTML_HREF = Uri.parse("http://example.org/proxied.php");
+  private static final Uri EXPECTED_PROXIED_HTML_HREF
+      = Uri.parse("http://example.org/proxied.php?lang=all&country=ALL");
   private static final GadgetContext CONTEXT = new GadgetContext() {
     @Override
     public SecurityToken getToken() {
@@ -68,24 +67,24 @@ public class HtmlRendererTest {
   private final FakeContentFetcherFactory fetcher = new FakeContentFetcherFactory();
   private final FakePreloaderService preloaderService = new FakePreloaderService();
   private final FakeContentRewriterRegistry rewriter = new FakeContentRewriterRegistry();
-  private final HtmlRenderer renderer = new HtmlRenderer(fetcher,
-      preloaderService, rewriter);
+  private final HtmlRenderer renderer = new HtmlRenderer(fetcher, preloaderService, rewriter);
 
   private Gadget makeGadget(String content) throws Exception {
-    GadgetSpec spec = StaxTestUtils.parseSpec(
-        "<Module><ModulePrefs title=''/><Content><![CDATA[" + content
-            + "]]></Content></Module>", SPEC_URL);
+    GadgetSpec spec =  StaxTestUtils.parseSpec(
+        "<Module><ModulePrefs title=''/><Content><![CDATA[" + content + "]]></Content></Module>", SPEC_URL);
 
-    return new Gadget().setSpec(spec).setContext(CONTEXT).setCurrentView(
-        spec.getView("default"));
+    return new Gadget()
+        .setSpec(spec)
+        .setContext(CONTEXT)
+        .setCurrentView(spec.getView("default"));
   }
 
   private Gadget makeHrefGadget(String authz) throws Exception {
     Gadget gadget = makeGadget("");
-    String doc = "<Content type='url' href='" + PROXIED_HTML_HREF + "' authz='"
-        + authz + "'/>";
+    String doc = "<Content type='url' href='" + PROXIED_HTML_HREF + "' authz='" + authz + "'/>";
     View view = new View("proxied", Collections.singleton(StaxTestUtils
         .parseElement(doc, new Content.Parser(SPEC_URL))), SPEC_URL);
+
     gadget.setCurrentView(view);
     return gadget;
   }
@@ -98,16 +97,14 @@ public class HtmlRendererTest {
 
   @Test
   public void renderProxied() throws Exception {
-    fetcher.plainResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(
-        PROXIED_HTML_CONTENT));
+    fetcher.plainResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(PROXIED_HTML_CONTENT));
     String content = renderer.render(makeHrefGadget("none"));
     assertEquals(PROXIED_HTML_CONTENT, content);
   }
 
   @Test
   public void renderProxiedSigned() throws Exception {
-    fetcher.signedResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(
-        PROXIED_HTML_CONTENT));
+    fetcher.signedResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(PROXIED_HTML_CONTENT));
     String content = renderer.render(makeHrefGadget("signed"));
     assertEquals(PROXIED_HTML_CONTENT, content);
   }
@@ -115,8 +112,7 @@ public class HtmlRendererTest {
   @Test
   public void renderProxiedOAuth() throws Exception {
     // TODO: We need to disambiguate between oauth and signed.
-    fetcher.oauthResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(
-        PROXIED_HTML_CONTENT));
+    fetcher.oauthResponses.put(EXPECTED_PROXIED_HTML_HREF, new HttpResponse(PROXIED_HTML_CONTENT));
     String content = renderer.render(makeHrefGadget("oauth"));
     assertEquals(PROXIED_HTML_CONTENT, content);
   }
@@ -139,8 +135,7 @@ public class HtmlRendererTest {
       }
     });
 
-    fetcher.plainResponses.put(uri.toUri(), new HttpResponse(
-        PROXIED_HTML_CONTENT));
+    fetcher.plainResponses.put(uri.toUri(), new HttpResponse(PROXIED_HTML_CONTENT));
     String content = renderer.render(gadget);
     assertEquals(PROXIED_HTML_CONTENT, content);
   }
@@ -169,48 +164,43 @@ public class HtmlRendererTest {
     @Override
     public HttpResponse fetch(HttpRequest request) throws GadgetException {
       if (request.getGadget() == null) {
-        throw new GadgetException(
-            GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+        throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
             "No gadget associated with rendering request.");
       }
 
       if (request.getContainer() == null) {
-        throw new GadgetException(
-            GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+        throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
             "No container associated with rendering request.");
       }
 
       if (request.getSecurityToken() == null) {
-        throw new GadgetException(
-            GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+        throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
             "No security token associated with rendering request.");
       }
 
       if (request.getOAuthArguments() == null) {
-        throw new GadgetException(
-            GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+        throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
             "No oauth arguments associated with rendering request.");
       }
 
       HttpResponse response;
       switch (request.getAuthType()) {
-      case NONE:
-        response = plainResponses.get(request.getUri());
-        break;
-      case SIGNED:
-        response = signedResponses.get(request.getUri());
-        break;
-      case OAUTH:
-        response = oauthResponses.get(request.getUri());
-        break;
-      default:
-        response = null;
-        break;
+        case NONE:
+          response = plainResponses.get(request.getUri());
+          break;
+        case SIGNED:
+          response = signedResponses.get(request.getUri());
+          break;
+        case OAUTH:
+          response = oauthResponses.get(request.getUri());
+          break;
+        default:
+          response = null;
+          break;
       }
       if (response == null) {
-        throw new GadgetException(
-            GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT, "Unknown file: "
-                + request.getUri());
+        throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,
+            "Unknown file: " + request.getUri());
       }
       return response;
     }
@@ -218,19 +208,16 @@ public class HtmlRendererTest {
 
   private static class FakePreloaderService implements PreloaderService {
     private boolean wasPreloaded;
-
     public Preloads preload(GadgetContext context, GadgetSpec gadget) {
       wasPreloaded = true;
       return null;
     }
   }
 
-  private static class FakeContentRewriterRegistry implements
-      ContentRewriterRegistry {
+  private static class FakeContentRewriterRegistry implements ContentRewriterRegistry {
     private boolean wasRewritten = false;
 
-    public String rewriteGadget(Gadget gadget, View currentView)
-        throws GadgetException {
+    public String rewriteGadget(Gadget gadget, View currentView) throws GadgetException {
       throw new UnsupportedOperationException();
     }
 

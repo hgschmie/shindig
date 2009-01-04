@@ -18,13 +18,13 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
+import java.net.URI;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Fakes out a gadget spec factory

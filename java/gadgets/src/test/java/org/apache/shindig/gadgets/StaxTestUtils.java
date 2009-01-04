@@ -21,16 +21,16 @@ package org.apache.shindig.gadgets;
  *
  */
 
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecElement;
 import org.apache.shindig.gadgets.spec.SpecElement.Parser;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 public final class StaxTestUtils {
 
@@ -45,8 +45,8 @@ public final class StaxTestUtils {
   private StaxTestUtils() {
   }
 
-  public static final <T extends SpecElement> T parseElement(final String xml,
-      final Parser<T> parser) throws GadgetException, XMLStreamException {
+  public static final <T extends SpecElement> T parseElement(final String xml, final Parser<T> parser)
+      throws GadgetException, XMLStreamException {
 
     final XMLStreamReader reader = new StaxSupport().getReader(xml);
     T element = null;
@@ -54,23 +54,21 @@ public final class StaxTestUtils {
     loop: while (true) {
       final int event = reader.next();
       switch (event) {
-      case XMLStreamConstants.END_DOCUMENT:
-        reader.close();
-        break loop;
-      case XMLStreamConstants.START_ELEMENT:
-        element = parser.parse(reader);
-        break;
-      default:
-        break;
+        case XMLStreamConstants.END_DOCUMENT:
+          reader.close();
+          break loop;
+        case XMLStreamConstants.START_ELEMENT:
+          element = parser.parse(reader);
+          break;
+        default:
+          break;
       }
     }
 
     return element;
   }
 
-  public static final GadgetSpec parseSpec(final String xml, final Uri base)
-      throws GadgetException, XMLStreamException {
-    return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(
-        base, xml));
+  public static final GadgetSpec parseSpec(final String xml, final Uri base) throws GadgetException, XMLStreamException {
+    return parseElement(xml, new ShindigGadgetSpec.Parser<ShindigGadgetSpec>(base, xml));
   }
 }

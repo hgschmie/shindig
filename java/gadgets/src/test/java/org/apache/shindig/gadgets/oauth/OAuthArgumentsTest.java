@@ -17,7 +17,10 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.apache.shindig.common.testing.FakeHttpServletRequest;
 import org.apache.shindig.common.uri.Uri;
@@ -26,12 +29,10 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.oauth.OAuthArguments.UseToken;
 import org.apache.shindig.gadgets.spec.Preload;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Tests parameter parsing
@@ -40,14 +41,16 @@ public class OAuthArgumentsTest {
 
   @Test
   public void testInitFromPreload() throws Exception {
-    String xml = "<Preload href='http://www.example.com' "
-        + "oauth_service_name='service' " + "OAUTH_TOKEN_NAME='token' "
-        + "OAUTH_REQuest_token='requesttoken' "
-        + "oauth_request_token_secret='tokensecret' "
-        + "OAUTH_USE_TOKEN='never' " + "/>";
+    String xml = "<Preload href='http://www.example.com' " +
+    		"oauth_service_name='service' " +
+    		"OAUTH_TOKEN_NAME='token' " +
+    		"OAUTH_REQuest_token='requesttoken' " +
+    		"oauth_request_token_secret='tokensecret' " +
+    		"OAUTH_USE_TOKEN='never' " +
+    		"/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri
-        .parse("http://www.example.com/")));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri.parse("http://www.example.com/")));
+
     OAuthArguments params = new OAuthArguments(preload);
     assertEquals("service", params.getServiceName());
     assertEquals("token", params.getTokenName());
