@@ -19,47 +19,44 @@ package org.apache.shindig.gadgets.variables;
 
 import junit.framework.TestCase;
 
-import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
-
-import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.LTR;
-import static org.apache.shindig.gadgets.spec.MessageBundle.Direction.RTL;
+import org.apache.shindig.gadgets.spec.MessageBundle;
 
 public class BidiSubstituterTest extends TestCase {
 
   public void testBidiWithRtl() {
-    assertRightToLeft(RTL.toString());
+    assertRightToLeft(MessageBundle.Direction.RTL);
   }
 
   public void testBidiWithLtr() {
-    assertLeftToRight(LTR.toString());
+    assertLeftToRight(MessageBundle.Direction.LTR);
   }
 
   public void testBidiWithEmpty() {
-    assertLeftToRight("");
+    assertLeftToRight(null);
   }
 
   public void testBidiWithNull() {
     assertLeftToRight(null);
   }
 
-  private void assertRightToLeft(final String direction) {
-    assertSubstitutions(direction, BidiSubstituter.RIGHT, BidiSubstituter.LEFT,
-        RTL, LTR);
+  private void assertRightToLeft(MessageBundle.Direction direction) {
+    assertSubstitutions(direction, BidiSubstituter.RIGHT,
+        BidiSubstituter.LEFT, MessageBundle.Direction.RTL, MessageBundle.Direction.LTR);
   }
 
-  private void assertLeftToRight(final String direction) {
-    assertSubstitutions(direction, BidiSubstituter.LEFT, BidiSubstituter.RIGHT,
-        LTR, RTL);
+  private void assertLeftToRight(MessageBundle.Direction direction) {
+    assertSubstitutions(direction, BidiSubstituter.LEFT,
+        BidiSubstituter.RIGHT, MessageBundle.Direction.LTR, MessageBundle.Direction.RTL);
   }
 
-  private void assertSubstitutions(String direction, String startEdge,
-      String endEdge, Direction dir, Direction reverseDir) {
+  private void assertSubstitutions(MessageBundle.Direction direction,
+      String startEdge, String endEdge, MessageBundle.Direction dir, MessageBundle.Direction reverseDir) {
     Substitutions substitutions = new Substitutions();
-    BidiSubstituter.addSubstitutions(substitutions, Direction.parse(direction));
+    BidiSubstituter.addSubstitutions(substitutions, direction);
 
-    assertEquals(startEdge.toString(), substitutions.getSubstitution(
+    assertEquals(startEdge, substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.START_EDGE));
-    assertEquals(endEdge.toString(), substitutions.getSubstitution(
+    assertEquals(endEdge, substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.END_EDGE));
     assertEquals(dir.toString(), substitutions.getSubstitution(
         Substitutions.Type.BIDI, BidiSubstituter.DIR));

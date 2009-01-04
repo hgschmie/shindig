@@ -19,9 +19,6 @@
 
 package org.apache.shindig.gadgets.variables;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.uri.Uri;
@@ -29,6 +26,9 @@ import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.variables.Substitutions.Type;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserPrefSubstituterTest extends TestCase {
   private final Substitutions substituter = new Substitutions();
@@ -39,21 +39,24 @@ public class UserPrefSubstituterTest extends TestCase {
   private final static String OVERRIDE_NAME = "override";
   private final static String OVERRIDE_VALUE = "override value";
   private final static String UNESCAPED_USER_VALUE = "<hello, & world > \"";
-  private final static String ESCAPED_USER_VALUE = "&lt;hello, &amp; world &gt; &quot;";
-  private static final String DEFAULT_XML = "<Module>"
-      + "<ModulePrefs title=\"Hello, __UP_world__\"/>" + "<UserPref name=\""
-      + DEFAULT_NAME + "\" datatype=\"string\"" + " default_value=\""
-      + DEFAULT_VALUE + "\"/>" + "<UserPref name=\"" + USER_NAME
-      + "\" datatype=\"string\"/>" + "<UserPref name=\"" + OVERRIDE_NAME
-      + "\" datatype=\"string\"" + "  default_value=\"FOOOOOOOOOOBAR!\"/>"
-      + "<Content type=\"html\"/>" + "</Module>";
+  private final static String ESCAPED_USER_VALUE
+      = "&lt;hello, &amp; world &gt; &quot;";
+  private static final String DEFAULT_XML
+      = "<Module>" +
+        "<ModulePrefs title=\"Hello, __UP_world__\"/>" +
+        "<UserPref name=\"" + DEFAULT_NAME + "\" datatype=\"string\"" +
+        " default_value=\"" + DEFAULT_VALUE + "\"/>" +
+        "<UserPref name=\"" + USER_NAME + "\" datatype=\"string\"/>" +
+        "<UserPref name=\"" + OVERRIDE_NAME + "\" datatype=\"string\"" +
+        "  default_value=\"FOOOOOOOOOOBAR!\"/>" +
+        "<Content type=\"html\"/>" +
+        "</Module>";
   private GadgetSpec spec;
 
   @Override
   public void setUp() throws Exception {
     super.setUp();
     spec = StaxTestUtils.parseSpec(DEFAULT_XML, Uri.parse("#"));
-
   }
 
   public void testSubstitutions() throws Exception {
@@ -63,12 +66,12 @@ public class UserPrefSubstituterTest extends TestCase {
     UserPrefs prefs = new UserPrefs(map);
     UserPrefSubstituter.addSubstitutions(substituter, spec, prefs);
 
-    assertEquals(DEFAULT_VALUE, substituter.getSubstitution(Type.USER_PREF,
-        DEFAULT_NAME));
-    assertEquals(USER_VALUE, substituter.getSubstitution(Type.USER_PREF,
-        USER_NAME));
-    assertEquals(OVERRIDE_VALUE, substituter.getSubstitution(Type.USER_PREF,
-        OVERRIDE_NAME));
+    assertEquals(DEFAULT_VALUE,
+        substituter.getSubstitution(Type.USER_PREF, DEFAULT_NAME));
+    assertEquals(USER_VALUE,
+        substituter.getSubstitution(Type.USER_PREF, USER_NAME));
+    assertEquals(OVERRIDE_VALUE,
+        substituter.getSubstitution(Type.USER_PREF, OVERRIDE_NAME));
   }
 
   public void testEscaping() throws Exception {
@@ -76,7 +79,7 @@ public class UserPrefSubstituterTest extends TestCase {
     map.put(USER_NAME, UNESCAPED_USER_VALUE);
     UserPrefs prefs = new UserPrefs(map);
     UserPrefSubstituter.addSubstitutions(substituter, spec, prefs);
-    assertEquals(ESCAPED_USER_VALUE, substituter.getSubstitution(
-        Type.USER_PREF, USER_NAME));
+    assertEquals(ESCAPED_USER_VALUE,
+        substituter.getSubstitution(Type.USER_PREF, USER_NAME));
   }
 }
