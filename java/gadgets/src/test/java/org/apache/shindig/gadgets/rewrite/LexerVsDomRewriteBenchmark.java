@@ -18,20 +18,19 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
-import org.apache.shindig.common.PropertiesModule;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URI;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.shindig.common.guice.DefaultCommonModule;
+import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.DefaultGuiceModule;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
-import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.StaxTestUtils;
+import org.apache.shindig.gadgets.oauth.OAuthModule;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
 import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.parse.caja.CajaHtmlParser;

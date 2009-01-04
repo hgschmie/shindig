@@ -28,7 +28,7 @@ import java.net.URI;
 
 /** Factory of gadget specs */
 
-@ImplementedBy(DefaultGadgetSpecFactory.class)
+@ImplementedBy(ShindigGadgetSpecFactory.class)
 
 public interface GadgetSpecFactory {
 

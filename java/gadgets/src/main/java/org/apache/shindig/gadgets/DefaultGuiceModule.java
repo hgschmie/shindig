@@ -60,22 +60,6 @@ public class DefaultGuiceModule extends AbstractModule {
     bind(Executor.class).toInstance(service);
     bind(ExecutorService.class).toInstance(service);
 
-<<<<<<< HEAD:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
-=======
-    // Bind the configurable stuff
-    bind(HttpCache.class).to(DefaultHttpCache.class);
-    bind(HttpFetcher.class).to(BasicHttpFetcher.class);
-    bind(PreloaderService.class).to(ConcurrentPreloaderService.class);
-    bind(ContentRewriterRegistry.class).to(DefaultContentRewriterRegistry.class);
-    bind(GadgetBlacklist.class).to(BasicGadgetBlacklist.class);
-    bind(GadgetSpecFactory.class).to(ShindigGadgetSpecFactory.class);
-    // bind(GadgetSpec.class).to(DefaultGadgetSpec.class);
-    bind(LockedDomainService.class).to(HashLockedDomainService.class);
-    bind(MessageBundleFactory.class).to(ShindigMessageBundleFactory.class);
-    bind(UrlGenerator.class).to(DefaultUrlGenerator.class);
-
-
->>>>>>> 56ebe5c... add default binding for GadgetSpec:java/gadgets/src/main/java/org/apache/shindig/gadgets/DefaultGuiceModule.java
     this.install(new ParseModule());
 
     bind(new TypeLiteral<List<ContentRewriter>>(){}).toProvider(ContentRewritersProvider.class);

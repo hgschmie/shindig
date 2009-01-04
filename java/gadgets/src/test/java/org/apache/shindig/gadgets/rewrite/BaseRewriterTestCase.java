@@ -17,9 +17,12 @@
  */
 package org.apache.shindig.gadgets.rewrite;
 
+import java.net.URI;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.xml.StaxTestUtils;
 import org.apache.shindig.gadgets.EasyMockTestCase;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
@@ -28,15 +31,11 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.parse.GadgetHtmlParser;
+import org.apache.shindig.gadgets.parse.ParseModule;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-
-import org.apache.commons.lang.StringUtils;
-
-import java.net.URI;
-import java.util.Set;
 
 /**
  * Base class for testing content rewriting functionality

@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * Factory of message bundles
  */
-@ImplementedBy(DefaultMessageBundleFactory.class)
+@ImplementedBy(ShindigMessageBundleFactory.class)
 public interface MessageBundleFactory {
 
     String CACHE_NAME = "messageBundles";

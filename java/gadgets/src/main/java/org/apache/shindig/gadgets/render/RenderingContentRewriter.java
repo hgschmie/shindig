@@ -18,6 +18,15 @@
  */
 package org.apache.shindig.gadgets.render;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
@@ -43,6 +52,7 @@ import org.apache.shindig.gadgets.spec.Feature;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
+import org.apache.shindig.gadgets.spec.ModulePrefs;
 import org.apache.shindig.gadgets.spec.UserPref;
 import org.apache.shindig.gadgets.spec.View;
 import org.json.JSONException;
@@ -53,14 +63,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 
 /**
  * Produces a valid HTML document for the gadget output, automatically inserting appropriate HTML
@@ -355,7 +360,7 @@ public class RenderingContentRewriter implements ContentRewriter {
       JSONObject featureMap = new JSONObject();
 
       for (Feature feature : prefs.getFeatures().values()) {
-        featureMap.put(feature.getFeature(), feature.getParams());
+        featureMap.put(feature.getFeature(), feature.params());
       }
       config.put("core.util", featureMap);
 

@@ -18,14 +18,6 @@
  */
 package org.apache.shindig.gadgets.render;
 
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
-import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,12 +29,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
-import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.PropertiesModule;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.util.ArrayListProvider;
 import org.apache.shindig.gadgets.Gadget;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
@@ -58,7 +47,6 @@ import org.apache.shindig.gadgets.preload.NullPreloads;
 import org.apache.shindig.gadgets.preload.PreloadException;
 import org.apache.shindig.gadgets.preload.PreloadedData;
 import org.apache.shindig.gadgets.preload.Preloads;
-import static org.apache.shindig.gadgets.render.RenderingContentRewriter.*;
 import org.apache.shindig.gadgets.rewrite.MutableContent;
 import org.apache.shindig.gadgets.spec.Content;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
@@ -78,18 +66,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import static org.easymock.EasyMock.expect;
-import org.easymock.classextension.EasyMock;
-import org.easymock.classextension.IMocksControl;
-import org.json.JSONException;
-import org.json.JSONObject;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.DEFAULT_CSS;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.FEATURES_KEY;
+import static org.apache.shindig.gadgets.render.RenderingContentRewriter.INSERT_BASE_ELEMENT_KEY;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for RenderingContentRewriter.
