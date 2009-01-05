@@ -127,9 +127,13 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new LocaleMsg.Parser(base));
+      register(new LocaleMsg.Parser(name, null, base));
       register(ATTR_LANG, ATTR_COUNTRY, ATTR_LANGUAGE_DIRECTION, ATTR_MESSAGES);
     }
 

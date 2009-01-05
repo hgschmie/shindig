@@ -278,9 +278,13 @@ public class UserPref extends SpecElement {
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new EnumValue.Parser(base));
+      register(new EnumValue.Parser(name, null, base));
       register(ATTR_NAME, ATTR_DISPLAY_NAME, ATTR_DEFAULT_VALUE, ATTR_REQUIRED, ATTR_DATATYPE, ATTR_URLPARAM, ATTR_AUTOCOMPLETE_URL, ATTR_NUM_MINVAL,
           ATTR_NUM_MAXVAL, ATTR_STR_MAXLEN, ATTR_RESTRICT_TO_COMPLETIONS, ATTR_PREFIX_MATCH, ATTR_PUBLISH, ATTR_LISTEN, ATTR_ON_CHANGE, ATTR_GROUP);
     }

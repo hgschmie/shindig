@@ -456,16 +456,20 @@ public class ModulePrefs extends SpecElement {
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
 
-      register(new Require.Parser(base));
-      register(new Optional.Parser(base));
-      register(new Preload.Parser(base));
-      register(new Icon.Parser(base));
-      register(new LocaleSpec.Parser(base));
-      register(new LinkSpec.Parser(base));
-      register(new OAuthSpec.Parser(base));
+      register(new Require.Parser(name, null, base));
+      register(new Optional.Parser(name, null, base));
+      register(new Preload.Parser(name, null, base));
+      register(new Icon.Parser(name, null, base));
+      register(new LocaleSpec.Parser(name, null, base));
+      register(new LinkSpec.Parser(name, null, base));
+      register(new OAuthSpec.Parser(name, null, base));
 
       register(ATTR_TITLE, ATTR_TITLE_URL, ATTR_DESCRIPTION, ATTR_AUTHOR,
           ATTR_AUTHOR_EMAIL, ATTR_SCREENSHOT, ATTR_THUMBNAIL,

@@ -75,9 +75,13 @@ public class OAuthSpec extends SpecElement {
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new OAuthService.Parser(base));
+      register(new OAuthService.Parser(name, null, base));
     }
 
     @Override
