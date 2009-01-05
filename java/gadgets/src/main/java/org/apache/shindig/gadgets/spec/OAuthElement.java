@@ -140,6 +140,10 @@ public abstract class OAuthElement extends SpecElement {
       for (Location location : Location.values()) {
         if (StringUtils.equalsIgnoreCase(location.toString(), StringUtils.trimToEmpty(value))) {
           return location;
+          // Work around spec bug. The parser should actually accept not just "auth-header", "uri-query" and "post-body"
+          // but also "header", "url" and "body".
+        } else if (StringUtils.equalsIgnoreCase(location.name(), StringUtils.trimToEmpty(value))) {
+          return location;
         }
       }
       return null;
