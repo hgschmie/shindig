@@ -17,7 +17,7 @@
           </xs:complexType>
         </xs:element>
       </xs:sequence>
-      <!--  Process additional attributes to allow 'language_direction' to go through. -->
+      <!-- TODO e.g. Shindig understands language_direction parameter on message bundles. -->
       <xs:anyAttribute processContents="lax" />
     </xs:complexType>
   </xs:element>

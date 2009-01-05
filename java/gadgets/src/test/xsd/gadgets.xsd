@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <xs:schema xmlns="http://ns.opensocial.org/specs/0.8"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://ns.opensocial.org/specs/0.8"
            elementFormDefault="qualified">
   <xs:element name="Module">
@@ -30,7 +30,9 @@
                   <xs:attribute name="oauth_token_name" type="xs:string" use="optional"/>
                   <xs:attribute name="oauth_request_token" type="xs:string" use="optional"/>
                   <xs:attribute name="oauth_request_token_secret" type="xs:string" use="optional"/>
-                </xs:complexType>                
+                  <!-- TODO needed for parsing arbitrary elements such as required by the spec -->
+                  <xs:anyAttribute processContents="lax" />
+                </xs:complexType>
               </xs:element>
               <xs:element name="Icon">
                 <xs:complexType>
@@ -79,7 +81,7 @@
                 <xs:complexType>
                   <xs:attribute name="href" type="xs:string" use="required"/>
                   <xs:attribute name="rel" type="xs:string" use="required">
-                    <!--  HPS HPS This part violates the XSD spec                  
+                    <!--  TODO  This part would violate the XSD spec
                     <xs:simpleType>
                       <xs:restriction base="xs:string">
                         <xs:enumeration value="gadgets.help"/>
@@ -105,10 +107,13 @@
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
+                        <!--  TODO: not part of the spec, but needed by Shindig -->
+                        <xs:attribute name="name" type="xs:string" use="optional"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="name" type="xs:string" use="optional"/>
+                  <!--  TODO: This makes no sense here. This should be an attribute of service -->
+                  <!-- <xs:attribute name="name" type="xs:string" use="optional"/> -->
                 </xs:complexType>
               </xs:element>
             </xs:choice>
@@ -165,9 +170,8 @@
                 <xs:attribute name="view" type="xs:string" use="optional"/>
                 <xs:attribute name="preferred_height" type="xs:integer" use="optional"/>
                 <xs:attribute name="preferred_width" type="xs:integer" use="optional"/>
-<!--  HPS HPS                 
+                <!-- TODO needed for parsing arbitrary elements such as quirks on content -->
                 <xs:anyAttribute processContents="lax" />
--->
               </xs:extension>
             </xs:simpleContent>
           </xs:complexType>
