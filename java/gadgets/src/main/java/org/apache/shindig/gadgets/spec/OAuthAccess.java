@@ -30,7 +30,7 @@ import javax.xml.namespace.QName;
 
 public class OAuthAccess extends OAuthElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Access");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Access");
 
   protected OAuthAccess(final QName name, final Map<String, QName> attrNames, final Uri base) {
     super(name, attrNames, base, false);

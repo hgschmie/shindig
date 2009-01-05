@@ -40,7 +40,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Module");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Module");
 
   private final String checksum;
 

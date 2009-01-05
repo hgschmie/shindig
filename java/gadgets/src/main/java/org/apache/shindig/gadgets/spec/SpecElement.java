@@ -50,7 +50,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public abstract class SpecElement {
 
-  public static final String OPENSOCIAL_NAMESPACE_URI = "http://ns.opensocial.org/specs/0.8/";
+  public static final String GADGET_SPEC_NAMESPACE_URI = "http://ns.opensocial.org/specs/0.8/";
 
   public static final String MESSAGEBUNDLE_NAMESPACE_URI = "http://ns.opensocial.org/messagebundle/0.8/";
 

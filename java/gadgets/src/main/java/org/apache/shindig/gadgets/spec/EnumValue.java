@@ -31,7 +31,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 public class EnumValue extends SpecElement {
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "EnumValue");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "EnumValue");
 
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISPLAY_VALUE = "display_value";

@@ -39,7 +39,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class ModulePrefs extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "ModulePrefs");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "ModulePrefs");
 
   public static final String ATTR_TITLE = "title";
   public static final String ATTR_TITLE_URL = "title_url";

@@ -36,7 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class Icon extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Icon");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Icon");
 
   public static final String ATTR_MODE = "mode";
   public static final String ATTR_TYPE = "type";

@@ -41,7 +41,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class Content extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Content");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Content");
 
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_HREF = "href";

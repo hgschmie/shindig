@@ -36,7 +36,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class LocaleMsg extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "msg");
 
   public static final String ATTR_NAME = "name";
   public static final String ATTR_DESC = "desc";

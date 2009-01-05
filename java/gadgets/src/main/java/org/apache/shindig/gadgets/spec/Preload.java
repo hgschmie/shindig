@@ -38,7 +38,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Preload");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Preload");
 
   public static final String ATTR_HREF = "href";
   public static final String ATTR_AUTHZ = "authz";
