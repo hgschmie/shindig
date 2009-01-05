@@ -39,8 +39,6 @@ public class LocaleMsg extends SpecElement {
   public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "msg");
 
   public static final String ATTR_NAME = "name";
-
-  /** Non 0.8 in gadgetspec, present in message bundle */
   public static final String ATTR_DESC = "desc";
 
   private StringBuilder text = new StringBuilder();
@@ -102,20 +100,30 @@ public class LocaleMsg extends SpecElement {
       return true;
     }
     LocaleMsg rhs = (LocaleMsg) other;
-    return new EqualsBuilder().appendSuper(super.equals(other)).append(getName(), rhs.getName()).append(getDesc(),
-        rhs.getDesc()).append(getText(), rhs.getText()).isEquals();
+    return new EqualsBuilder()
+                  .appendSuper(super.equals(other))
+                  .append(getName(), rhs.getName())
+                  .append(getText(), rhs.getText())
+                  .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder().appendSuper(super.hashCode()).append(getName()).append(getDesc()).append(getText())
-        .toHashCode();
+    return new HashCodeBuilder()
+      .appendSuper(super.hashCode())
+      .append(getName())
+      .append(getText())
+      .toHashCode();
   }
 
   public static class Parser extends SpecElement.Parser<LocaleMsg> {
 
     public Parser(final Uri base) {
       this(ELEMENT_NAME, base);
+    }
+    
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
     }
 
     public Parser(final QName name, final Uri base) {
