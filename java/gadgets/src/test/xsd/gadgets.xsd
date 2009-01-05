@@ -165,6 +165,9 @@
                 <xs:attribute name="view" type="xs:string" use="optional"/>
                 <xs:attribute name="preferred_height" type="xs:integer" use="optional"/>
                 <xs:attribute name="preferred_width" type="xs:integer" use="optional"/>
+<!--  HPS HPS                 
+                <xs:anyAttribute processContents="lax" />
+-->
               </xs:extension>
             </xs:simpleContent>
           </xs:complexType>

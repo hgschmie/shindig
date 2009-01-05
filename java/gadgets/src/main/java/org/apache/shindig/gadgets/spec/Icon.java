@@ -121,6 +121,10 @@ public class Icon extends SpecElement {
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
       register(ATTR_MODE, ATTR_TYPE);

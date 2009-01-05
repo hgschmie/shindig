@@ -140,11 +140,15 @@ public class OAuthService extends SpecElement {
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new OAuthRequest.Parser(base));
-      register(new OAuthAccess.Parser(base));
-      register(new OAuthAuthorization.Parser(base));
+      register(new OAuthRequest.Parser(name, null, base));
+      register(new OAuthAccess.Parser(name, null, base));
+      register(new OAuthAuthorization.Parser(name, null, base));
       register(ATTR_NAME);
     }
 

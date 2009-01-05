@@ -182,11 +182,15 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
       this(ELEMENT_NAME, base, checksum);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base, final String checksum) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base, checksum);
+    }
+
     public Parser(final QName name, final Uri base, final String checksum) {
       super(name, base);
-      register(new ModulePrefs.Parser(base));
-      register(new UserPref.Parser(base));
-      register(new Content.Parser(base));
+      register(new ModulePrefs.Parser(name, null, base));
+      register(new UserPref.Parser(name, null, base));
+      register(new Content.Parser(name, null, base));
 
       this.checksum = checksum;
     }

@@ -108,7 +108,7 @@ public abstract class Feature extends SpecElement {
 
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new FeatureParam.Parser(base));
+      register(new FeatureParam.Parser(name, null, base));
       register(ATTR_FEATURE);
     }
 
