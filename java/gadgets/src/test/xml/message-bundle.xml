@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<messagebundle xmlns="http://ns.opensocial.org/messagebundle/0.8"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://ns.opensocial.org/messagebundle/0.8 http://ns.opensocial.org/messagebundle/0.8 "
+               language_direction="ltr">
+  <msg name="test" desc="Description for test.">Versuch</msg>
+</messagebundle>
