@@ -34,7 +34,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthService extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Service");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Service");
 
   public static final String ATTR_NAME = "name";
 

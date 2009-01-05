@@ -38,7 +38,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class LocaleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Locale");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Locale");
 
   public static final String ATTR_LANG = "lang";
   public static final String ATTR_COUNTRY = "country";

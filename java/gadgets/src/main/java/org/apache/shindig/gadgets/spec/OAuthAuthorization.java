@@ -32,7 +32,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class OAuthAuthorization extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Authorization");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Authorization");
 
   public static final String ATTR_URL = "url";
 

@@ -33,7 +33,7 @@ import org.apache.shindig.gadgets.variables.Substitutions;
 
 public class FeatureParam extends SpecElement {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "Param");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.GADGET_SPEC_NAMESPACE_URI, "Param");
 
   public static final String ATTR_NAME = "name";
 
