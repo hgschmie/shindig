@@ -52,6 +52,8 @@ public abstract class SpecElement {
 
   public static final String OPENSOCIAL_NAMESPACE_URI = "http://ns.opensocial.org/specs/0.8/";
 
+  public static final String MESSAGEBUNDLE_NAMESPACE_URI = "http://ns.opensocial.org/messagebundle/0.8/";
+
   private final Logger LOG = Logger.getLogger(getClass().getName());
 
   private final QName qName;
@@ -391,6 +393,10 @@ public abstract class SpecElement {
     protected Parser(final QName qName, final Uri base) {
       this.qName = qName;
       this.base = base;
+    }
+    
+    protected static QName buildChildName(final QName parent, final QName child, final QName defaultName) {
+      return new QName(parent.getNamespaceURI(), child != null ? child.getLocalPart() : defaultName.getLocalPart());
     }
 
     public QName name() {

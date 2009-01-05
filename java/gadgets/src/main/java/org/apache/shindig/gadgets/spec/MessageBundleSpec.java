@@ -37,7 +37,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 public class MessageBundleSpec extends SpecElement implements MessageBundle.MessageBundleSource {
 
-  public static final QName ELEMENT_NAME = new QName(SpecElement.OPENSOCIAL_NAMESPACE_URI, "messageBundle");
+  public static final QName ELEMENT_NAME = new QName(SpecElement.MESSAGEBUNDLE_NAMESPACE_URI, "messageBundle");
 
   /** Non-0.8 Attribute! */
   public static final String ATTR_LANGUAGE_DIRECTION = "language_direction";
@@ -101,9 +101,13 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
       this(ELEMENT_NAME, base);
     }
 
+    public Parser(final QName parent, final QName child, final Uri base) {
+      this(buildChildName(parent, child, ELEMENT_NAME), base);
+    }
+
     public Parser(final QName name, final Uri base) {
       super(name, base);
-      register(new LocaleMsg.Parser(base));
+      register(new LocaleMsg.Parser(name, null, base));
       register(ATTR_LANGUAGE_DIRECTION);
     }
 
