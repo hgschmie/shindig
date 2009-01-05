@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns="http://ns.opensocial.org/specs/0.8" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://ns.opensocial.org/specs/0.8 http://ns.opensocial.org/specs/0.8 ">
+  <Content preferred_height="10" authz="none" foo="bar"  preferred_width="20" />
+</Module>
