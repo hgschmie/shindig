@@ -30,42 +30,67 @@ public class NamespaceGadgetSpecTest  {
 
   @Test
   public void testParseBasic() throws Exception {
-    String xml = "<Module xmlns:conf='http://mynamespace'>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
+    String xml = "<Module xmlns:conf=\"http://mynamespace\">" +
+                 "<ModulePrefs title=\"title\" />" +
+                 "<UserPref name=\"foo\" datatype=\"STRING\" />" +
                  "<Content type=\"html\">Hello!</Content>" +
+                 "<conf:foo conf:blo=\"blu\" bar=\"baz\">content</conf:foo>" +
                  "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
     assertEquals(UserPref.DataType.STRING,
         spec.getUserPrefs().get(0).getDataType());
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
+
+    final String rebuilt = spec.toString();
+    assertEquals(xml, rebuilt);
   }
 
   @Test
   public void testParseBasicNoNS() throws Exception {
-    String xml = "<Module>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
-                 "<Content type=\"html\">Hello!</Content>" +
-                 "</Module>";
+    String xml = "<Module><ModulePrefs title=\"title\" />"
+      + "<UserPref name=\"foo\" datatype=\"STRING\" />"
+      + "<Content type=\"html\">Hello!</Content>"
+      + "<conf:foo conf:blo=\"blu\" bar=\"baz\">"
+      + "content</conf:foo></Module>";
+
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     assertEquals("title", spec.getModulePrefs().getTitle());
     assertEquals(UserPref.DataType.STRING,
         spec.getUserPrefs().get(0).getDataType());
     assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
+
+    final String rebuilt = spec.toString();
+    assertEquals(xml, rebuilt);
   }
 
+  /*
+  @Test
+  public void testParseExplicitNamespace() throws Exception {
+    String xml = "<osoc:Module xmlns:osoc=\"" + SpecElement.GADGET_SPEC_NAMESPACE_URI + "\" xmlns:conf=\"http://mynamespace\">" +
+                 "<osoc:ModulePrefs title=\"title\" />" +
+                 "<osoc:UserPref name=\"foo\" datatype=\"STRING\" />" +
+                 "<osoc:Content type=\"html\">Hello!</osoc:Content>" +
+                 "<conf:foo conf:blo=\"blu\" bar=\"baz\">content</conf:foo>" +
+                 "</osoc:Module>";
+    GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
+    assertEquals("title", spec.getModulePrefs().getTitle());
+    assertEquals(UserPref.DataType.STRING,
+        spec.getUserPrefs().get(0).getDataType());
+    assertEquals("Hello!", spec.getView(GadgetSpec.DEFAULT_VIEW).getContent());
+
+    final String rebuilt = spec.toString();
+    assertEquals(xml, rebuilt);
+  }
+  */
 
   @Test
   public void toStringIsSane() throws Exception {
-    String xml = "<Module xmlns:conf='http://mynamespace'>" +
-                 "<conf:foo bar='baz' conf:blo='blu'>content</conf:foo>" +
-                 "<ModulePrefs title=\"title\"/>" +
-                 "<UserPref name=\"foo\" datatype=\"string\"/>" +
+    String xml = "<Module xmlns:conf=\"http://mynamespace\">" +
+                 "<ModulePrefs title=\"title\" />" +
+                 "<UserPref name=\"foo\" datatype=\"STRING\" />" +
                  "<Content type=\"html\">Hello!</Content>" +
+                 "<conf:foo conf:blo=\"blu\" bar=\"baz\">content</conf:foo>" +
                  "</Module>";
     GadgetSpec spec = StaxTestUtils.parseSpec(xml, SPEC_URL);
     GadgetSpec spec2 = StaxTestUtils.parseSpec(spec.toString(), SPEC_URL);
@@ -73,6 +98,9 @@ public class NamespaceGadgetSpecTest  {
     assertEquals(UserPref.DataType.STRING,
         spec2.getUserPrefs().get(0).getDataType());
     assertEquals("Hello!", spec2.getView(GadgetSpec.DEFAULT_VIEW).getContent());
+
+    final String rebuilt = spec.toString();
+    assertEquals(xml, rebuilt);
   }
 }
 
