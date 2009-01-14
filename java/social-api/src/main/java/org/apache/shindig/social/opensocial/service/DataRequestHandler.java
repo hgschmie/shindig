@@ -30,8 +30,8 @@ import java.util.concurrent.Future;
 public abstract class DataRequestHandler {
 
   private static final Set<String> GET_SYNONYMS = Sets.newHashSet("get");
-  private static final Set<String> CREATE_SYNONYMS = Sets.newHashSet("put", "create");
-  private static final Set<String> UPDATE_SYNONYMS = Sets.newHashSet("post", "update");
+  private static final Set<String> CREATE_SYNONYMS = Sets.newHashSet("post", "create");
+  private static final Set<String> UPDATE_SYNONYMS = Sets.newHashSet("put", "update");
   private static final Set<String> DELETE_SYNONYMS = Sets.newHashSet("delete");
 
   public Future<?> handleItem(RequestItem request) {
@@ -44,9 +44,9 @@ public abstract class DataRequestHandler {
     try {
       if (GET_SYNONYMS.contains(operation)) {
         responseItem = handleGet(request);
-      } else if (UPDATE_SYNONYMS.contains(operation)) {
-        responseItem = handlePost(request);
       } else if (CREATE_SYNONYMS.contains(operation)) {
+        responseItem = handlePost(request);
+      } else if (UPDATE_SYNONYMS.contains(operation)) {
         responseItem = handlePut(request);
       } else if (DELETE_SYNONYMS.contains(operation)) {
         responseItem = handleDelete(request);
