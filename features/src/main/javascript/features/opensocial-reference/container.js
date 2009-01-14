@@ -409,7 +409,7 @@ opensocial.Container.prototype.newMessage = function(body, opt_params) {
  * @private
  */
 opensocial.Container.prototype.newIdSpec = function(params) {
-  return opensocial.newIdSpec(params);
+  return new opensocial.IdSpec(params);
 };
 
 
