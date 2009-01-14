@@ -275,7 +275,7 @@ public abstract class SpecElement {
 
   public void toXml(final XMLStreamWriter writer) throws XMLStreamException {
 
-    writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
+    writeElement(writer);
 
     writeAttributes(writer);
 
@@ -337,6 +337,14 @@ public abstract class SpecElement {
       writer.writeAttribute(localName, value);
     } else {
       writer.writeAttribute(qName.getNamespaceURI(), localName, value);
+    }
+  }
+
+  protected void writeElement(final XMLStreamWriter writer) throws XMLStreamException {
+    if (XMLConstants.DEFAULT_NS_PREFIX.equals(qName.getPrefix())) {
+      writer.writeStartElement(qName.getLocalPart());
+    } else {
+      writer.writeStartElement(qName.getNamespaceURI(), qName.getLocalPart());
     }
   }
 
@@ -412,7 +420,7 @@ public abstract class SpecElement {
       this.qName = qName;
       this.base = base;
     }
-    
+
     protected static QName buildChildName(final QName parent, final QName child, final QName defaultName) {
       return new QName(parent.getNamespaceURI(), child != null ? child.getLocalPart() : defaultName.getLocalPart());
     }
