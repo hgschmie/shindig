@@ -476,19 +476,3 @@ opensocial.DataRequest.prototype.newFetchActivitiesRequest = function(idSpec,
   return opensocial.Container.get().newFetchActivitiesRequest(idSpec,
       opt_params);
 };
-
-/**
- * This is non-standards compliant but I expect people to use
- * opensocial.DataRequest.PersonId.<stuff> for a long time to come.
- *
- * Silently accept it and return the IdSpec values.
- */
-opensocial.DataRequest.PersonId = {
-	OWNER : opensocial.newIdSpec({ opensocial.IdSpec.Field.USER_ID : opensocial.IdSpec.PersonId.OWNER, opensocial.IdSpec.Field.GROUP_ID : opensocial.IdSpec.GroupId.SELF });
-	VIEWER : opensocial.newIdSpec({ opensocial.IdSpec.Field.USER_ID : opensocial.IdSpec.PersonId.VIEWER, opensocial.IdSpec.Field.GROUP_ID : opensocial.IdSpec.GroupId.SELF });
-};
-
-opensocial.DataRequest.Group = {
-	OWNER_FRIENDS : opensocial.newIdSpec({ opensocial.IdSpec.Field.USER_ID : opensocial.IdSpec.PersonId.OWNER, opensocial.IdSpec.Field.GROUP_ID : opensocial.IdSpec.GroupId.FRIENDS });
-	VIEWER_FRIENDS : opensocial.newIdSpec({ opensocial.IdSpec.Field.USER_ID : opensocial.IdSpec.PersonId.VIEWER, opensocial.IdSpec.Field.GROUP_ID : opensocial.IdSpec.GroupId.FRIENDS });
-};
