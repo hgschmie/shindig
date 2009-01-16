@@ -28,7 +28,7 @@
 
   <groupId>org.apache.shindig</groupId>
   <artifactId>shindig-project</artifactId>
-  <version>ning-20090102.2-SNAPSHOT</version>
+  <version>ning-20090115.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache Shindig Project</name>
@@ -827,6 +827,20 @@
       <id>local</id>
       <url>${site.localurl}</url>
     </site>
+
+    <!-- use the following if you're not using a snapshot version. -->
+    <repository>
+      <id>dev-repo</id>
+      <name>Ning Internal Repo</name>
+      <url>http://mavenrepo.ningops.net:8081/artifactory/libs-releases</url>
+    </repository>
+
+    <!-- use the following if you ARE using a snapshot version. -->
+    <snapshotRepository>
+      <id>dev-repo</id>
+      <name>Ning Internal Snapshot Repo</name>
+      <url>http://mavenrepo.ningops.net:8081/artifactory/libs-snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <!-- ====================================================================== -->
@@ -885,27 +899,27 @@
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-features</artifactId>
-        <version>ning-20090102.2-SNAPSHOT</version>
+        <version>ning-20090115.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-common</artifactId>
-        <version>ning-20090102.2-SNAPSHOT</version>
+        <version>ning-20090115.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-gadgets</artifactId>
-        <version>ning-20090102.2-SNAPSHOT</version>
+        <version>ning-20090115.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-server</artifactId>
-        <version>ning-20090102.2-SNAPSHOT</version>
+        <version>ning-20090115.1-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-social-api</artifactId>
-        <version>ning-20090102.2-SNAPSHOT</version>
+        <version>ning-20090115.1-SNAPSHOT</version>
       </dependency>
 
       <!-- external dependencies -->
