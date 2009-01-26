@@ -61,7 +61,8 @@
 var gadgets = gadgets || {};
 
 gadgets.config = function() {
-  var components = {};
+  var components_ = {};
+  var configuration_ = {};
 
   return {
     /**
@@ -84,13 +85,21 @@ gadgets.config = function() {
      * @throws {Error} If the component has already been registered.
      */
     register: function(component, opt_validators, opt_callback) {
-      if (components[component]) {
-        throw new Error('Component "' + component + '" is already registered.');
+
+      if (!components_[component]) {
+        components_[component] = [];
       }
-      components[component] = {
+
+      for (i = 0; i < components_[component].length; i++) {
+        if (components_[component][i].callback === opt_callback) {
+          throw new Error('Callback for component "' + component + '" is already registered.');
+        }
+      }
+
+      components_[component].push({
         validators: opt_validators || {},
         callback: opt_callback
-      };
+      });
     },
 
     /**
@@ -103,12 +112,12 @@ gadgets.config = function() {
      */
     get: function(opt_component) {
       if (opt_component) {
-        if (!components[opt_component]) {
+        if (!configuration_[opt_component]) {
           throw new Error('Component "' + opt_component + '" not registered.');
         }
-        return configuration[opt_component] || {};
+        return configuration_[opt_component] || {};
       }
-      return configuration;
+      return configuration_;
     },
 
     /**
@@ -119,27 +128,34 @@ gadgets.config = function() {
      * @throws {Error} If there is a configuration error.
      */
     init: function(config, opt_noValidation) {
+
       configuration = config;
-      for (var name in components) {
-	if (components.hasOwnProperty(name)) {
-          var component = components[name],
-              conf = config[name],
-              validators = component.validators;
-          if (!opt_noValidation) {
-            for (var v in validators) {
-	      if (validators.hasOwnProperty(v)) {
-                if (!validators[v](conf[v])) {
-                  throw new Error('Invalid config value "' + conf[v] +
+      for (var name in components_) {
+        if (components_.hasOwnProperty(name)) {
+          configuration_[name] = config[name];
+
+          var component = components_[name],
+            conf = config[name];
+
+          for (i = 0; i < component.length; i++) {
+            if (!opt_noValidation) {
+              validators = component[i].validators;
+
+              for (var v in validators) {
+                if (validators.hasOwnProperty(v)) {
+                  if (!validators[v](conf[v])) {
+                    throw new Error('Invalid config value "' + conf[v] +
                       '" for parameter "' + v + '" in component "' +
-                      name + '"');
+                        name + '"');
+                  }
                 }
               }
             }
+            if (component[i].callback) {
+              component[i].callback(config);
+            }
           }
-          if (component.callback) {
-            component.callback(config);
-          }
-	}
+        }
       }
     },
 
@@ -165,6 +181,7 @@ gadgets.config = function() {
             return true;
           }
         }
+        return false;
       };
     },
 
@@ -218,12 +235,12 @@ gadgets.config = function() {
     LikeValidator : function(test) {
       return function(data) {
         for (var member in test) {
-	  if (test.hasOwnProperty(member)) {
+          if (test.hasOwnProperty(member)) {
             var t = test[member];
             if (!t(data[member])) {
               return false;
             }
-	  }
+          }
         }
         return true;
       };
