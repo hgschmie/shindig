@@ -39,6 +39,7 @@ public class GenericElement extends SpecElement {
 
   protected GenericElement(final GenericElement genericElement, final Substitutions substituter) {
       super(genericElement, substituter);
+      this.addText(genericElement.getText());
   }
 
   @Override

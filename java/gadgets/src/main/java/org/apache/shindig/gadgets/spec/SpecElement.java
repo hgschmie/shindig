@@ -101,6 +101,12 @@ public abstract class SpecElement {
     for (Pair<QName, String> pair : specElement.otherAttrs().values()) {
       setAttr(pair.getKey(), substituter.substituteString(pair.getValue()));
     }
+
+    for (SpecElement sp : specElement.children()) {
+        if (sp instanceof GenericElement) {
+            addChild(((GenericElement)sp).substitute(substituter));
+        }
+      }
   }
 
   protected Uri getBase() {
