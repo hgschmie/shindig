@@ -28,6 +28,6 @@ public class BasicHttpFetcherTest extends AbstractHttpFetcherTest {
   public void setUp() {
     CacheProvider cacheProvider = new LruCacheProvider(10);
     HttpCache cache = new DefaultHttpCache(cacheProvider);
-    fetcher = new BasicHttpFetcher(cache, Integer.MAX_VALUE);
+    fetcher = new BasicHttpFetcher(cache, Integer.MAX_VALUE, "Test User Agent");
   }
 }
