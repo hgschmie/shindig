@@ -37,6 +37,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
  * Implementation of a {@code RemoteObjectFetcher} using standard java.net
@@ -51,6 +52,8 @@ public class BasicHttpFetcher implements HttpFetcher {
   private final HttpCache cache;
   private Provider<Proxy> proxyProvider;
 
+  private final String userAgent;
+
   /**
    * Creates a new fetcher for fetching HTTP objects.  Not really suitable
    * for production use.  Someone should probably go and implement maxObjSize,
@@ -60,16 +63,17 @@ public class BasicHttpFetcher implements HttpFetcher {
    * @param maxObjSize Maximum size, in bytes, of object to fetch.  Except this
    * isn't actually implemented.
    */
-  public BasicHttpFetcher(HttpCache cache, int maxObjSize) {
+  public BasicHttpFetcher(HttpCache cache, int maxObjSize, String userAgent) {
     this.cache = cache;
+    this.userAgent = userAgent;
   }
 
   /**
    * Creates a new fetcher using the default maximum object size.
    */
   @Inject
-  public BasicHttpFetcher(HttpCache cache) {
-    this(cache, DEFAULT_MAX_OBJECT_SIZE);
+  public BasicHttpFetcher(HttpCache cache, final @Named("shindig.fetcher.user-agent") String userAgent) {
+    this(cache, DEFAULT_MAX_OBJECT_SIZE, userAgent);
   }
 
   @Inject(optional=true)
@@ -90,6 +94,7 @@ public class BasicHttpFetcher implements HttpFetcher {
         url.openConnection() : url.openConnection(proxyProvider.get()));
     fetcher.setConnectTimeout(CONNECT_TIMEOUT_MS);
     fetcher.setRequestProperty("Accept-Encoding", "gzip, deflate");
+    fetcher.setRequestProperty("User-Agent", userAgent);
     fetcher.setInstanceFollowRedirects(request.getFollowRedirects());
     for (Map.Entry<String, List<String>> entry : request.getHeaders().entrySet()) {
       fetcher.setRequestProperty(entry.getKey(), StringUtils.join(entry.getValue(), ','));
