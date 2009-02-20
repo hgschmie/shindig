@@ -43,6 +43,7 @@ public class GadgetRenderingServletTest {
   private final HttpServletRequest request = control.createMock(HttpServletRequest.class);
   private final HttpServletResponse response = control.createMock(HttpServletResponse.class);
   private final Renderer renderer = control.createMock(Renderer.class);
+  private final HttpGadgetContextFactory contextFactory = control.createMock(HttpGadgetContextFactory.class);
   public final HttpServletResponseRecorder recorder = new HttpServletResponseRecorder(response);
   private final GadgetRenderingServlet servlet = new GadgetRenderingServlet();
 
@@ -59,8 +60,11 @@ public class GadgetRenderingServletTest {
   @Test
   public void normalResponse() throws Exception {
     servlet.setRenderer(renderer);
+    servlet.setHttpGadgetContextFactory(contextFactory);
     expect(renderer.render(isA(GadgetContext.class)))
         .andReturn(RenderingResults.ok("working"));
+    expect(contextFactory.getNewGadgetContext(isA(HttpServletRequest.class), isA(HttpServletResponse.class)))
+        .andReturn(control.createMock(GadgetContext.class));
     control.replay();
 
     servlet.doGet(request, recorder);
@@ -74,8 +78,11 @@ public class GadgetRenderingServletTest {
   @Test
   public void errorsPassedThrough() throws Exception {
     servlet.setRenderer(renderer);
+    servlet.setHttpGadgetContextFactory(contextFactory);
     expect(renderer.render(isA(GadgetContext.class)))
         .andReturn(RenderingResults.error("busted"));
+    expect(contextFactory.getNewGadgetContext(isA(HttpServletRequest.class), isA(HttpServletResponse.class)))
+        .andReturn(control.createMock(GadgetContext.class));
     control.replay();
 
     servlet.doGet(request, recorder);
@@ -89,8 +96,11 @@ public class GadgetRenderingServletTest {
   @Test
   public void outputEncodingIsUtf8() throws Exception {
     servlet.setRenderer(renderer);
+    servlet.setHttpGadgetContextFactory(contextFactory);
     expect(renderer.render(isA(GadgetContext.class)))
         .andReturn(RenderingResults.ok(NON_ASCII_STRING));
+    expect(contextFactory.getNewGadgetContext(isA(HttpServletRequest.class), isA(HttpServletResponse.class)))
+        .andReturn(control.createMock(GadgetContext.class));
     control.replay();
 
     servlet.doGet(request, recorder);
