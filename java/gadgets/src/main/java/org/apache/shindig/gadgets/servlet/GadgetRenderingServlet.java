@@ -17,6 +17,11 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shindig.common.servlet.InjectedServlet;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.http.HttpRequest;
@@ -25,21 +30,22 @@ import org.apache.shindig.gadgets.render.RenderingResults;
 
 import com.google.inject.Inject;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * Servlet for rendering Gadgets.
  */
 public class GadgetRenderingServlet extends InjectedServlet {
   static final int DEFAULT_CACHE_TTL = 60 * 5;
   private Renderer renderer;
+  private HttpGadgetContextFactory httpGadgetContextFactory;
 
   @Inject
-  public void setRenderer(Renderer renderer) {
+  public void setRenderer(final Renderer renderer) {
     this.renderer = renderer;
+  }
+
+  @Inject
+  public void setHttpGadgetContextFactory(final HttpGadgetContextFactory httpGadgetContextFactory) {
+      this.httpGadgetContextFactory = httpGadgetContextFactory;
   }
 
   private void render(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -54,7 +60,7 @@ public class GadgetRenderingServlet extends InjectedServlet {
     resp.setContentType("text/html");
     resp.setCharacterEncoding("UTF-8");
 
-    GadgetContext context = new HttpGadgetContext(req);
+    GadgetContext context = httpGadgetContextFactory.getNewGadgetContext(req, resp);
     RenderingResults results = renderer.render(context);
     switch (results.getStatus()) {
       case OK:
