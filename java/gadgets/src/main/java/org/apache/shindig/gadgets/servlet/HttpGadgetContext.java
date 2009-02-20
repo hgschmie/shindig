@@ -46,7 +46,7 @@ public class HttpGadgetContext extends GadgetContext {
   private final Boolean debug;
   private final Boolean ignoreCache;
   private final Locale locale;
-  private final Integer moduleId;
+  private final Long moduleId;
   private final RenderingContext renderingContext;
   private final URI url;
   private final UserPrefs userPrefs;
@@ -122,7 +122,7 @@ public class HttpGadgetContext extends GadgetContext {
   }
 
   @Override
-  public int getModuleId() {
+  public long getModuleId() {
     if (moduleId == null) {
       return super.getModuleId();
     }
@@ -228,12 +228,12 @@ public class HttpGadgetContext extends GadgetContext {
    * @param req
    * @return module id, if specified
    */
-  private static Integer getModuleId(HttpServletRequest req) {
+  private static Long getModuleId(HttpServletRequest req) {
     String mid = req.getParameter("mid");
     if (mid == null) {
       return null;
     }
-    return Integer.parseInt(mid);
+    return Long.parseLong(mid);
   }
 
   /**

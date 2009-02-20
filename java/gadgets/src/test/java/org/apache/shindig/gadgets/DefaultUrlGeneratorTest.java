@@ -57,7 +57,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
   private static final String UP_VALUE = "user-pref-value";
   private static final String CONTAINER = "shindig";
   private static final String VIEW = "canvas";
-  private static final int MODULE_ID = 3435;
+  private static final long MODULE_ID = 3435;
 
   private final GadgetContext context = mock(GadgetContext.class);
   private final LockedDomainService lockedDomainService = mock(LockedDomainService.class);
@@ -153,7 +153,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
     assertEquals(IFR_BASE, iframeUrl.getPath());
     assertEquals(CONTAINER, iframeUrl.getQueryParameter("container"));
     assertEquals(UP_VALUE, iframeUrl.getQueryParameter("up_" + UP_NAME));
-    assertEquals(Integer.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
+    assertEquals(Long.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
     assertEquals(VIEW, iframeUrl.getQueryParameter("view"));
   }
 
@@ -181,7 +181,7 @@ public class DefaultUrlGeneratorTest extends GadgetTestFixture {
     assertEquals(IFR_BASE, iframeUrl.getPath());
     assertEquals(CONTAINER, iframeUrl.getQueryParameter("container"));
     assertEquals(UP_VALUE, iframeUrl.getQueryParameter("up_" + UP_NAME));
-    assertEquals(Integer.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
+    assertEquals(Long.toString(MODULE_ID), iframeUrl.getQueryParameter("mid"));
     assertEquals(VIEW, iframeUrl.getQueryParameter("view"));
   }
 

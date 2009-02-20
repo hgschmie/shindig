@@ -50,7 +50,7 @@ public class GadgetContext {
   /**
    * @return The module id for this request.
    */
-  public int getModuleId() {
+  public long getModuleId() {
     return 0;
   }
 

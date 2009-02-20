@@ -52,7 +52,7 @@ public class VariableSubstituter {
     substituter.addSubstitutions(Substitutions.Type.MESSAGE, bundle.getMessages());
     BidiSubstituter.addSubstitutions(substituter, dir);
     substituter.addSubstitution(Substitutions.Type.MODULE, "ID",
-        Integer.toString(context.getModuleId()));
+        Long.toString(context.getModuleId()));
     UserPrefSubstituter.addSubstitutions(substituter, spec, context.getUserPrefs());
 
     return spec.substitute(substituter);
