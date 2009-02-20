@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.uri.UriBuilder;
@@ -60,7 +61,8 @@ public class DefaultUrlGenerator implements UrlGenerator {
     iframeBaseUris = Maps.newHashMap();
     jsUriTemplates = Maps.newHashMap();
     for (String container : containerConfig.getContainers()) {
-      iframeBaseUris.put(container, Uri.parse(containerConfig.get(container, IFRAME_URI_PARAM)));
+      final String iframeUrlParam = containerConfig.get(container, IFRAME_URI_PARAM);
+      iframeBaseUris.put(container, StringUtils.isEmpty(iframeUrlParam) ? null : Uri.parse(iframeUrlParam));
       jsUriTemplates.put(container, containerConfig.get(container, JS_URI_PARAM));
     }
 
@@ -147,7 +149,7 @@ public class DefaultUrlGenerator implements UrlGenerator {
 
     uri.addQueryParameter("container", context.getContainer());
     if (context.getModuleId() != 0) {
-      uri.addQueryParameter("mid", Integer.toString(context.getModuleId()));
+      uri.addQueryParameter("mid", Long.toString(context.getModuleId()));
     }
     if (context.getIgnoreCache()) {
       uri.addQueryParameter("nocache", "1");
