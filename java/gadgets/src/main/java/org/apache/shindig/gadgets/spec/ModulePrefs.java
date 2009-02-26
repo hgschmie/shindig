@@ -434,19 +434,19 @@ public class ModulePrefs extends SpecElement {
       throw new SpecParserException("ModulePrefs@title must be set!");
     }
     if (!attrIsValidUri(ATTR_TITLE_URL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
+      throw new SpecParserException("Title URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_SCREENSHOT)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
+      throw new SpecParserException("Screenshot URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_THUMBNAIL)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
+      throw new SpecParserException("Thumbnail URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_PHOTO)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
+      throw new SpecParserException("Photo Author URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
     }
     if (!attrIsValidUri(ATTR_AUTHOR_LINK)) {
-      throw new SpecParserException("Messages URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
+      throw new SpecParserException("Author Link URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
     }
   }
 
