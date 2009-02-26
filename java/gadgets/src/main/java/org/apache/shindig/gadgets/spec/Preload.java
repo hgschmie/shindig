@@ -82,7 +82,7 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
   }
 
   public AuthType getAuthType() {
-    return AuthType.parse(attr(ATTR_AUTHZ));
+    return AuthType.parse(attr(ATTR_AUTHZ, true));
   }
 
   public boolean isSignOwner() {

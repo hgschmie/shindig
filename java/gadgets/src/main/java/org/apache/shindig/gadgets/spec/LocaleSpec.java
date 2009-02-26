@@ -61,15 +61,15 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
   }
 
   public String getLanguage() {
-    return attrDefault(ATTR_LANG, "all");
+    return attrDefault(ATTR_LANG, "all", true);
   }
 
   public String getCountry() {
-    return attrDefault(ATTR_COUNTRY, "ALL");
+    return attrDefault(ATTR_COUNTRY, "ALL", true);
   }
 
   public Direction getLanguageDirection() {
-    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION));
+    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION, true));
   }
 
   public Uri getMessages() {

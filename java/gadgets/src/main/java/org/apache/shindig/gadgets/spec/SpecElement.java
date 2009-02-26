@@ -182,6 +182,11 @@ public abstract class SpecElement {
     return attrs.get(key.toLowerCase());
   }
 
+  protected String attr(final String key, final boolean trim) {
+      final String value = attrs.get(key.toLowerCase());
+      return trim ? StringUtils.trimToNull(value) : value;
+    }
+
   protected String attrDefault(final String key) {
     return StringUtils.defaultString(attr(key));
   }
@@ -189,6 +194,10 @@ public abstract class SpecElement {
   protected String attrDefault(final String key, final String defaultValue) {
     return StringUtils.defaultString(attr(key), defaultValue);
   }
+
+  protected String attrDefault(final String key, final String defaultValue, final boolean trim) {
+      return StringUtils.defaultString(attr(key, trim), defaultValue);
+    }
 
   protected boolean attrBool(final String key) {
     return BooleanUtils.toBoolean(attr(key));

@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.collect.Maps;
 
 /**
@@ -83,7 +85,7 @@ public final class Uri {
    */
   public static Uri parse(String text) {
     try {
-      return fromJavaUri(new URI(text));
+      return fromJavaUri(new URI(StringUtils.trimToEmpty(text)));
     } catch (URISyntaxException e) {
       throw new IllegalArgumentException(e);
     }

@@ -220,4 +220,22 @@ public class ModulePrefsTest {
     ModulePrefs prefs = StaxTestUtils.parseElement(FULL_XML, new ModulePrefs.Parser(SPEC_URL));
     doAsserts(StaxTestUtils.parseElement(prefs.toString(), new ModulePrefs.Parser(SPEC_URL)));
   }
+
+  @Test
+  public void blanksInUrl() throws Exception {
+      ModulePrefs prefs = StaxTestUtils.parseElement("<ModulePrefs title='__MSG_msg1__' description='This is the description' "
+              + "thumbnail='   http://foo.bar.com/files/thumb.jpg' directory_title='__MSG_msg2__' "
+              + "screenshot=' http://baz.bar.com/screenshot.png    ' "
+              + "title_url='http://baz.bar.com/title.php ' author='someone' author_email='someone@bar.com' author_affiliation='Bigcorp, Inc.' author_location='Earth'>"
+              + "<Locale messages='   http://baz.bar.com/apps/nowplaying/locale/ALL_ALL.xml'/>"
+              + "<Locale lang='en' messages='                          http://baz.bar.com/apps/nowplaying/locale/ALL_ALL.xml'/>"
+              + "<Locale lang='pt' messages='http://baz.bar.com/apps/nowplaying/locale/pt_BR.xml'/>"
+              + "<Require feature='opensocial-0.7'/>"
+              + "<Require feature='dynamic-height'/>"
+              + "<Require feature='settitle'/>"
+              + "<Require feature='views'/>"
+              + "<Require feature='skins'/>"
+              + "</ModulePrefs>", new ModulePrefs.Parser(SPEC_URL));
+      assertFalse(prefs == null);
+  }
 }

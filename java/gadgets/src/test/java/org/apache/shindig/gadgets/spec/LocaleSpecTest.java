@@ -43,7 +43,22 @@ public class LocaleSpecTest {
     assertEquals("http://example.org/msgs.xml", locale.getMessages().toString());
   }
 
-  @Test
+    @Test
+    public void spacedLocale() throws Exception {
+      String xml = "<Locale" +
+                   " lang=\"   en \"" +
+                   " country=\"US   \"" +
+                   " language_direction=\"rtl    \"" +
+                   " messages=\"    http://example.org/msgs.xml  \"/>";
+
+    LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));
+    assertEquals("en", locale.getLanguage());
+    assertEquals("US", locale.getCountry());
+    assertEquals(MessageBundle.Direction.RTL, locale.getLanguageDirection());
+    assertEquals("http://example.org/msgs.xml", locale.getMessages().toString());
+  }
+
+    @Test
   public void relativeLocale() throws Exception {
     String xml = "<Locale messages=\"/test/msgs.xml\"/>";
     LocaleSpec locale = StaxTestUtils.parseElement(xml, new LocaleSpec.Parser(SPEC_URL));

@@ -57,7 +57,7 @@ public class Icon extends SpecElement {
   }
 
   public Mode getMode() {
-    return Mode.parse(attr(ATTR_MODE));
+    return Mode.parse(attr(ATTR_MODE, true));
   }
 
   public String getType() {

@@ -59,11 +59,11 @@ public abstract class OAuthElement extends SpecElement {
   }
 
   public Method getMethod() {
-    return Method.parse(attr(ATTR_METHOD));
+    return Method.parse(attr(ATTR_METHOD, true));
   }
 
   public Location getParamLocation() {
-    return Location.parse(attr(ATTR_PARAM_LOCATION));
+    return Location.parse(attr(ATTR_PARAM_LOCATION, true));
   }
 
   @Override

@@ -72,7 +72,7 @@ public class Content extends SpecElement {
   }
 
   public Type getType() {
-    return Type.parse(attr(ATTR_TYPE));
+    return Type.parse(attr(ATTR_TYPE, true));
   }
 
   public String getRawType() {
@@ -92,7 +92,7 @@ public class Content extends SpecElement {
   }
 
   public AuthType getAuthType() {
-    return AuthType.parse(attr(ATTR_AUTHZ));
+    return AuthType.parse(attr(ATTR_AUTHZ, true));
   }
 
   public boolean isQuirks() {
@@ -114,7 +114,7 @@ public class Content extends SpecElement {
 
   public Set<String> getViews() {
     return ImmutableSet.of(StringUtils.stripAll(StringUtils.split(StringUtils
-        .defaultString(attr(ATTR_VIEW), "default"), ',')));
+        .defaultString(attr(ATTR_VIEW, true), "default"), ',')));
   }
 
   private void addText(final String text) {

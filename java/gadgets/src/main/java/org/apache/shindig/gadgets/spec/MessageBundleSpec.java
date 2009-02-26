@@ -60,7 +60,7 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
   }
 
   public Direction getLanguageDirection() {
-    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION));
+    return Direction.parse(attr(ATTR_LANGUAGE_DIRECTION, true));
   }
 
   @Override
