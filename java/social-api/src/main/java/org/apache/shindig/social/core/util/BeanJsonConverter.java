@@ -50,15 +50,15 @@ import com.google.inject.Injector;
 public class BeanJsonConverter implements BeanConverter {
 
   private static final Object[] EMPTY_OBJECT = {};
-  private static final Set<String> EXCLUDED_FIELDS = Sets.newHashSet("class", "declaringclass");
-  private static final String GETTER_PREFIX  = "get";
-  private static final String SETTER_PREFIX = "set";
+  protected static final Set<String> EXCLUDED_FIELDS = Sets.newHashSet("class", "declaringclass");
+  protected static final String GETTER_PREFIX  = "get";
+  protected static final String SETTER_PREFIX = "set";
 
   // Only compute the filtered getters/setters once per-class
-  private static final ConcurrentHashMap<Class,List<MethodPair>> GETTER_METHODS = Maps.newConcurrentHashMap();
-  private static final ConcurrentHashMap<Class,List<MethodPair>> SETTER_METHODS = Maps.newConcurrentHashMap();
+  protected static final ConcurrentHashMap<Class<?>,List<MethodPair>> GETTER_METHODS = Maps.newConcurrentHashMap();
+  protected static final ConcurrentHashMap<Class<?>,List<MethodPair>> SETTER_METHODS = Maps.newConcurrentHashMap();
 
-  private Injector injector;
+  protected final Injector injector;
 
   @Inject
   public BeanJsonConverter(Injector injector) {
@@ -93,7 +93,7 @@ public class BeanJsonConverter implements BeanConverter {
     }
   }
 
-  private Object translateObjectToJson(Object val) throws JSONException {
+  protected Object translateObjectToJson(Object val) throws JSONException {
     if (val instanceof Object[]) {
       JSONArray array = new JSONArray();
       for (Object asd : (Object[]) val) {
@@ -140,7 +140,7 @@ public class BeanJsonConverter implements BeanConverter {
    * @param pojo The object to convert
    * @return A JSONObject representing this pojo
    */
-  private JSONObject convertMethodsToJson(Object pojo) {
+  protected JSONObject convertMethodsToJson(Object pojo) {
     List<MethodPair> availableGetters;
 
     availableGetters = GETTER_METHODS.get(pojo.getClass());
@@ -171,18 +171,18 @@ public class BeanJsonConverter implements BeanConverter {
     return toReturn;
   }
 
-  private static class MethodPair {
+  protected static class MethodPair {
     public Method method;
     public String fieldName;
 
-    private MethodPair(Method method, String fieldName) {
+    public MethodPair(Method method, String fieldName) {
       this.method = method;
       this.fieldName = fieldName;
     }
   }
 
 
-  private List<MethodPair> getMatchingMethods(Object pojo, String prefix) {
+  protected List<MethodPair> getMatchingMethods(Object pojo, String prefix) {
 
     List<MethodPair> availableGetters = Lists.newArrayList();
     Method[] methods = pojo.getClass().getMethods();
