@@ -45,36 +45,10 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating</developerConnection>
+    <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
+    <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig</developerConnection>
     <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating</url>
   </scm>
-
-  <issueManagement>
-    <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/SHINDIG</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>Hudson</system>
-    <url>http://hudson.zones.apache.org/hudson/job/Shindig/</url>
-  </ciManagement>
-
-  <!-- ====================================================================== -->
-  <!-- M A I L I N G   L I S T S                                              -->
-  <!-- ====================================================================== -->
-  <mailingLists>
-    <mailingList>
-      <name>Shindig Dev List</name>
-      <subscribe>shindig-dev-subscribe@incubator.apache.org</subscribe>
-      <unsubscribe>shindig-dev-unsubscribe@incubator.apache.org</unsubscribe>
-      <post>shindig-dev@incubator.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/incubator-shindig-dev/</archive>
-      <otherArchives>
-        <otherArchive>http://shindig-dev.markmail.org/</otherArchive>
-      </otherArchives>
-    </mailingList>
-  </mailingLists>
 
   <!-- ====================================================================== -->
   <!-- P E O P L E                                                            -->
@@ -437,50 +411,6 @@
           <url>${site.html.dir}</url>
         </site>
       </distributionManagement>
-    </profile>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <!-- We want to sign the artifact, the POM, and all attached artifacts -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <configuration>
-              <passphrase>${gpg.passphrase}</passphrase>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- We want to deploy the artifact to a staging location for perusal -->
-          <plugin>
-            <inherited>true</inherited>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <configuration>
-              <altDeploymentRepository>${deploy.altRepository}</altDeploymentRepository>
-              <updateReleaseInfo>true</updateReleaseInfo>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
 
     <profile>
