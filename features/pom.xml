@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.apache.shindig</groupId>
     <artifactId>shindig-parent</artifactId>
-    <version>ning-20090226.2-SNAPSHOT</version>
+    <version>ning-20090306.1</version>
     <relativePath>../java/pom.xml</relativePath>
   </parent>
 
