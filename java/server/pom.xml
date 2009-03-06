@@ -53,7 +53,7 @@ under the License.
             <resource>
               <!-- this is relative to the pom.xml directory -->
               <directory>${basedir}/../../javascript/</directory>
-              <targetPath>/gadgets/files</targetPath>
+              <targetPath>gadgets/files</targetPath>
               <includes>
                 <include>**/*.*</include>
               </includes>
@@ -83,7 +83,7 @@ under the License.
     <resources>
       <resource>
         <directory>${basedir}/../../javascript/</directory>
-        <targetPath>/gadgets/files</targetPath>
+        <targetPath>gadgets/files</targetPath>
         <includes>
           <include>**/*.*</include>
         </includes>
