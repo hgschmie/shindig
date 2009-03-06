@@ -34,9 +34,9 @@ under the License.
   <description>Provides Sample implementations of the SPI and API's inside the core of Shindig.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/trunk/java/samples</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/trunk/java/samples</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/trunk/java/samples</url>
+    <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
+    <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig/java/samples</developerConnection>
+    <url>http://github.com/hgschmie/shindig/tree/ning-shindig/java/samples</url>
   </scm>
 
   <repositories>

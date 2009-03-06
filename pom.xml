@@ -47,7 +47,7 @@
   <scm>
     <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
     <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating</url>
+    <url>http://github.com/hgschmie/shindig/tree/ning-shindig</url>
   </scm>
 
   <!-- ====================================================================== -->

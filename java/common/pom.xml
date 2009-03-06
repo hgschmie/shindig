@@ -34,9 +34,9 @@ under the License.
   <description>Common java code for Shindig</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/java/common</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/java/common</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating/java/common</url>
+    <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
+    <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig/java/common</developerConnection>
+    <url>http://github.com/hgschmie/shindig/tree/ning-shindig/java/common</url>
   </scm>
 
   <build>

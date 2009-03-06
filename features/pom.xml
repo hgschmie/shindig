@@ -17,9 +17,9 @@
   </description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/features</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/features</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating/features</url>
+    <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
+    <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig/features</developerConnection>
+    <url>http://github.com/hgschmie/shindig/tree/ning-shindig/features</url>
   </scm>
 
   <build>

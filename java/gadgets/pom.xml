@@ -35,9 +35,9 @@ under the License.
     all javascript required by the OpenSocial specification.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/java/gadgets</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/shindig/branches/1.0.x-incubating/java/gadgets</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/shindig/branches/1.0.x-incubating/java/gadgets</url>
+    <connection>scm:git:git://github.com/hgschmie/shindig.git</connection>
+    <developerConnection>scm:git:ssh://github.com/hgschmie/shindig/tree/ning-shindig/java/gadgets</developerConnection>
+    <url>http://github.com/hgschmie/shindig/tree/ning-shindig/java/gadgets</url>
   </scm>
 
   <build>
