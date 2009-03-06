@@ -134,7 +134,6 @@
     </plugins>
     <resources>
       <resource>
-        <targetPath>/</targetPath>
         <directory>${basedir}/src/main/javascript</directory>
       </resource>
       <resource>
