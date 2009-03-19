@@ -114,7 +114,13 @@ public class Substitutions {
         break;
       }
 
-      output.append(input.substring(lastPosition, i));
+      // If a pattern start with more than two '_' chars, move the
+      // superflous ones out.
+      do {
+          i++;
+      } while (input.substring(i).indexOf("__") == 0);
+
+      output.append(input.substring(lastPosition, --i));
       lastPosition = next + 2;
 
       String pattern = input.substring(i, lastPosition);
