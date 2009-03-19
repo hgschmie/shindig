@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.cache.Cache;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.SoftExpiringCache;
@@ -188,8 +189,8 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
     }
 
     try {
-      XMLStreamReader reader = factory.createXMLStreamReader(response
-          .getResponse());
+      final String encoding = StringUtils.defaultIfEmpty(response.getEncoding(), "ISO-8859-1"); // I hate the Internet.
+      final XMLStreamReader reader = factory.createXMLStreamReader(response.getResponse(), encoding);
       final MessageBundleSpec.Parser parser = new MessageBundleSpec.Parser(uri);
       MessageBundleSpec messageBundleSpec = null;
 
