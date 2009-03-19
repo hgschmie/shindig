@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -58,7 +59,7 @@ public class FeatureParam extends SpecElement {
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   private void addText(final String text) {

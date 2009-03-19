@@ -433,19 +433,19 @@ public class ModulePrefs extends SpecElement {
     if (attr(ATTR_TITLE) == null) {
       throw new SpecParserException("ModulePrefs@title must be set!");
     }
-    if (!attrIsValidUri(ATTR_TITLE_URL)) {
+    if (!attrUriBaseIsValid(ATTR_TITLE_URL)) {
       throw new SpecParserException("Title URI '" + attr(ATTR_TITLE_URL) + "' is invalid!");
     }
-    if (!attrIsValidUri(ATTR_SCREENSHOT)) {
+    if (!attrUriBaseIsValid(ATTR_SCREENSHOT)) {
       throw new SpecParserException("Screenshot URI '" + attr(ATTR_SCREENSHOT) + "' is invalid!");
     }
-    if (!attrIsValidUri(ATTR_THUMBNAIL)) {
+    if (!attrUriBaseIsValid(ATTR_THUMBNAIL)) {
       throw new SpecParserException("Thumbnail URI '" + attr(ATTR_THUMBNAIL) + "' is invalid!");
     }
-    if (!attrIsValidUri(ATTR_AUTHOR_PHOTO)) {
+    if (!attrUriBaseIsValid(ATTR_AUTHOR_PHOTO)) {
       throw new SpecParserException("Photo Author URI '" + attr(ATTR_AUTHOR_PHOTO) + "' is invalid!");
     }
-    if (!attrIsValidUri(ATTR_AUTHOR_LINK)) {
+    if (!attrUriBaseIsValid(ATTR_AUTHOR_LINK)) {
       throw new SpecParserException("Author Link URI '" + attr(ATTR_AUTHOR_LINK) + "' is invalid!");
     }
   }

@@ -109,7 +109,7 @@ public class Content extends SpecElement {
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   public Set<String> getViews() {

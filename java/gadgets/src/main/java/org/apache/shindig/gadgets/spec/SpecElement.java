@@ -237,8 +237,8 @@ public abstract class SpecElement {
       }
   }
 
-  protected boolean attrIsValidUri(final String key) {
-    return attr(key) == null || attrUriNull(key) != null;
+  protected boolean attrUriBaseIsValid(final String key) {
+    return attr(key) == null || attrUriBase(key) != null;
   }
 
   // ======================================================================================================================================

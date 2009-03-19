@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.MessageBundle.Direction;
@@ -65,7 +66,7 @@ public class MessageBundleSpec extends SpecElement implements MessageBundle.Mess
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   public Set<LocaleMsg> getLocaleMsgs() {

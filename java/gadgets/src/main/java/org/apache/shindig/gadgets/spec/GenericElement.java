@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.variables.Substitutions;
 
@@ -49,7 +50,7 @@ public class GenericElement extends SpecElement {
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   private void addText(final String text) {

@@ -66,7 +66,7 @@ public class Icon extends SpecElement {
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   private void addText(final String text) {

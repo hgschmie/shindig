@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.shindig.common.uri.Uri;
@@ -65,7 +66,7 @@ public class LocaleMsg extends SpecElement {
 
   @Override
   public String getText() {
-    return text.toString();
+    return StringUtils.trimToEmpty(text.toString());
   }
 
   private void addText(final String text) {
@@ -122,7 +123,7 @@ public class LocaleMsg extends SpecElement {
     public Parser(final Uri base) {
       this(ELEMENT_NAME, base);
     }
-    
+
     public Parser(final QName parent, final QName child, final Uri base) {
       this(buildChildName(parent, child, ELEMENT_NAME), base);
     }

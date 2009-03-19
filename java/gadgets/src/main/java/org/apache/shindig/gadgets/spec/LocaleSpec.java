@@ -116,7 +116,7 @@ public class LocaleSpec extends SpecElement implements MessageBundle.MessageBund
     if (getLanguageDirection() == null) {
       throw new SpecParserException("Direction '" + attr(ATTR_LANGUAGE_DIRECTION) + "' is invalid!");
     }
-    if (!attrIsValidUri(ATTR_MESSAGES)) {
+    if (!attrUriBaseIsValid(ATTR_MESSAGES)) {
       throw new SpecParserException("Messages URI '" + attr(ATTR_MESSAGES) + "' is invalid!");
     }
   }
