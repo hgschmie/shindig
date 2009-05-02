@@ -38,7 +38,7 @@ public class OAuthArguments {
   private static final String REQUEST_TOKEN_SECRET_PARAM = "OAUTH_REQUEST_TOKEN_SECRET";
   private static final String USE_TOKEN_PARAM = "OAUTH_USE_TOKEN";
   private static final String CLIENT_STATE_PARAM = "oauthState";
-  private static final String BYPASS_SPEC_CACHE_PARAM = "bypassSpecCache";
+  private static final String NO_CACHE_PARAM = "noCache";
   private static final String SIGN_OWNER_PARAM = "signOwner";
   private static final String SIGN_VIEWER_PARAM = "signViewer";
 
@@ -73,7 +73,7 @@ public class OAuthArguments {
   private String origClientState = null;
 
   /** Whether we should bypass the gadget spec cache */
-  private boolean bypassSpecCache = false;
+  private boolean noCache = false;
 
   /** Include information about the owner? */
   private boolean signOwner = false;
@@ -95,7 +95,7 @@ public class OAuthArguments {
     requestToken = getRequestParam(request, REQUEST_TOKEN_PARAM, null);
     requestTokenSecret = getRequestParam(request, REQUEST_TOKEN_SECRET_PARAM, null);
     origClientState = getRequestParam(request, CLIENT_STATE_PARAM, null);
-    bypassSpecCache = "1".equals(getRequestParam(request, BYPASS_SPEC_CACHE_PARAM, null));
+    noCache = "1".equals(getRequestParam(request, NO_CACHE_PARAM, null));
     signOwner = Boolean.parseBoolean(getRequestParam(request, SIGN_OWNER_PARAM, "true"));
     signViewer = Boolean.parseBoolean(getRequestParam(request, SIGN_VIEWER_PARAM, "true"));
   }
@@ -109,7 +109,7 @@ public class OAuthArguments {
     requestToken = getAuthInfoParam(attrs, REQUEST_TOKEN_PARAM, null);
     requestTokenSecret = getAuthInfoParam(attrs, REQUEST_TOKEN_SECRET_PARAM, null);
     origClientState = null;
-    bypassSpecCache = false;
+    noCache = false;
     signOwner = info.isSignOwner();
     signViewer = info.isSignViewer();
   }
@@ -186,7 +186,7 @@ public class OAuthArguments {
     requestToken = orig.requestToken;
     requestTokenSecret = orig.requestTokenSecret;
     origClientState = orig.origClientState;
-    bypassSpecCache = orig.bypassSpecCache;
+    noCache = orig.noCache;
     signOwner = orig.signOwner;
     signViewer = orig.signViewer;
   }
@@ -247,12 +247,12 @@ public class OAuthArguments {
     this.origClientState = origClientState;
   }
 
-  public boolean getBypassSpecCache() {
-    return bypassSpecCache;
+  public boolean isNoCache() {
+    return noCache;
   }
 
-  public void setBypassSpecCache(boolean bypassSpecCache) {
-    this.bypassSpecCache = bypassSpecCache;
+  public void setNoCache(boolean noCache) {
+    this.noCache = noCache;
   }
 
   public boolean getSignOwner() {

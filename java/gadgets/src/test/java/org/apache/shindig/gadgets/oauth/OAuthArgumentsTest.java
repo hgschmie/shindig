@@ -56,7 +56,7 @@ public class OAuthArgumentsTest {
     assertEquals("tokensecret", params.getRequestTokenSecret());
     assertEquals(UseToken.NEVER, params.getUseToken());
     assertNull(params.getOrigClientState());
-    assertFalse(params.getBypassSpecCache());
+    assertFalse(params.isNoCache());
   }
 
   private FakeHttpServletRequest makeDummyRequest() throws Exception {
@@ -67,7 +67,7 @@ public class OAuthArgumentsTest {
     req.setParameter("OAUTH_REQUEST_TOKEN", true, "reqtoken");
     req.setParameter("OAUTH_REQUEST_TOKEN_SECRET", true, "secret");
     req.setParameter("oauthState", true, "state");
-    req.setParameter("bypassSpecCache", true, "1");
+    req.setParameter("noCache", true, "1");
     req.setParameter("signOwner", true, "false");
     req.setParameter("signViewer", true, "false");
     return req;
@@ -84,7 +84,7 @@ public class OAuthArgumentsTest {
     assertEquals("reqtoken", args.getRequestToken());
     assertEquals("secret", args.getRequestTokenSecret());
     assertEquals("state", args.getOrigClientState());
-    assertEquals(true, args.getBypassSpecCache());
+    assertEquals(true, args.isNoCache());
     assertEquals(false, args.getSignOwner());
     assertEquals(false, args.getSignViewer());
   }
@@ -99,7 +99,7 @@ public class OAuthArgumentsTest {
     assertEquals(null, args.getRequestToken());
     assertEquals(null, args.getRequestTokenSecret());
     assertEquals(null, args.getOrigClientState());
-    assertEquals(false, args.getBypassSpecCache());
+    assertEquals(false, args.isNoCache());
     assertEquals(true, args.getSignOwner());
     assertEquals(true, args.getSignViewer());
   }
@@ -120,7 +120,7 @@ public class OAuthArgumentsTest {
     assertEquals(null, args.getRequestToken());
     assertEquals(null, args.getRequestTokenSecret());
     assertEquals(null, args.getOrigClientState());
-    assertEquals(false, args.getBypassSpecCache());
+    assertEquals(false, args.isNoCache());
     assertEquals(false, args.getSignOwner());
     assertEquals(false, args.getSignViewer());
   }
@@ -128,8 +128,8 @@ public class OAuthArgumentsTest {
   @Test
   public void testGetAndSet() throws Exception {
     OAuthArguments args = new OAuthArguments();
-    args.setBypassSpecCache(true);
-    assertEquals(true, args.getBypassSpecCache());
+    args.setNoCache(true);
+    assertEquals(true, args.isNoCache());
 
     args.setOrigClientState("thestate");
     assertEquals("thestate", args.getOrigClientState());
@@ -164,7 +164,7 @@ public class OAuthArgumentsTest {
     assertEquals("reqtoken", args.getRequestToken());
     assertEquals("secret", args.getRequestTokenSecret());
     assertEquals("state", args.getOrigClientState());
-    assertEquals(true, args.getBypassSpecCache());
+    assertEquals(true, args.isNoCache());
     assertEquals(false, args.getSignOwner());
     assertEquals(false, args.getSignViewer());
   }

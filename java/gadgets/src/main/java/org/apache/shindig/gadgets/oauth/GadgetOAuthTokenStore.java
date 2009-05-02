@@ -211,7 +211,7 @@ public class GadgetOAuthTokenStore {
     try {
       return specFactory.getGadgetSpec(
           new URI(securityToken.getAppUrl()),
-          arguments.getBypassSpecCache());
+          arguments.isNoCache());
     } catch (URISyntaxException e) {
       throw new UserVisibleOAuthException("could not fetch gadget spec, gadget URI invalid", e);
     } catch (XMLStreamException xse) {

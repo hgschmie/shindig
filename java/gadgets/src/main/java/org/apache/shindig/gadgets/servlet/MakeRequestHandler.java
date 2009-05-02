@@ -18,6 +18,7 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.shindig.auth.AuthInfo;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.uri.Uri;
@@ -133,7 +134,9 @@ public class MakeRequestHandler extends ProxyBase {
 
     removeUnsafeHeaders(req);
 
-    req.setIgnoreCache("1".equals(request.getParameter(NOCACHE_PARAM)));
+    // This allows to bypass the cache by setting the gadget to be uncacheable (then the value is passed in on the request) or
+    // by the requestor (by attaching ?nocache=true to the URL to fetch.
+    req.setIgnoreCache(BooleanUtils.toBoolean(request.getParameter(NOCACHE_PARAM)) || BooleanUtils.toBoolean(req.getUri().getQueryParameter(NOCACHE_PARAM)));
 
     if (request.getParameter(GADGET_PARAM) != null) {
       req.setGadget(Uri.parse(request.getParameter(GADGET_PARAM)));

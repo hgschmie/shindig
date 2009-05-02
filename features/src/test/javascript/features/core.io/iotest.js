@@ -97,7 +97,7 @@ IoTest.prototype.setStandardArgs = function(req, inBody) {
   this.setArg(req, inBody, "st", "");
   this.setArg(req, inBody, "contentType", "TEXT");
   this.setArg(req, inBody, "authz", "");
-  this.setArg(req, inBody, "bypassSpecCache", "");
+  this.setArg(req, inBody, "nocache", "");
   this.setArg(req, inBody, "signViewer", "true");
   this.setArg(req, inBody, "signOwner", "true");
   this.setArg(req, inBody, "getSummaries", "false");
