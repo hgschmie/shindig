@@ -20,8 +20,6 @@ package org.apache.shindig.gadgets.variables;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Locale;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.GadgetException;
@@ -31,9 +29,12 @@ import org.apache.shindig.gadgets.UserPrefs;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
+
 import org.junit.Test;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.ImmutableMap;
+
+import java.util.Locale;
 
 public class VariableSubstituterTest {
   private final FakeMessageBundleFactory messageBundleFactory = new FakeMessageBundleFactory();
@@ -86,7 +87,7 @@ public class VariableSubstituterTest {
     GadgetContext context = new GadgetContext() {
       @Override
       public UserPrefs getUserPrefs() {
-        return new UserPrefs(Maps.immutableMap("foo", "shindig"));
+        return new UserPrefs(ImmutableMap.of("foo", "shindig"));
       }
     };
 

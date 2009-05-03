@@ -17,6 +17,22 @@
  */
 package org.apache.shindig.social.core.util;
 
+import org.apache.shindig.social.core.model.EnumImpl;
+import org.apache.shindig.social.opensocial.model.Enum;
+import org.apache.shindig.social.opensocial.service.BeanConverter;
+
+import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.MapMaker;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,21 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.shindig.social.core.model.EnumImpl;
-import org.apache.shindig.social.opensocial.model.Enum;
-import org.apache.shindig.social.opensocial.service.BeanConverter;
-import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Converts pojos to json objects.
@@ -55,8 +57,8 @@ public class BeanJsonConverter implements BeanConverter {
   protected static final String SETTER_PREFIX = "set";
 
   // Only compute the filtered getters/setters once per-class
-  protected static final ConcurrentHashMap<Class<?>,List<MethodPair>> GETTER_METHODS = Maps.newConcurrentHashMap();
-  protected static final ConcurrentHashMap<Class<?>,List<MethodPair>> SETTER_METHODS = Maps.newConcurrentHashMap();
+  protected static final ConcurrentMap<Class<?>,List<MethodPair>> GETTER_METHODS = new MapMaker().makeMap();
+  protected static final ConcurrentMap<Class<?>,List<MethodPair>> SETTER_METHODS = new MapMaker().makeMap();
 
   protected final Injector injector;
 

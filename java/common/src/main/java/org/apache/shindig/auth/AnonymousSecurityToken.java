@@ -25,7 +25,14 @@ package org.apache.shindig.auth;
  */
 public class AnonymousSecurityToken implements SecurityToken {
 
-  public AnonymousSecurityToken() { }
+  private String container;
+
+  public AnonymousSecurityToken() {
+    this.container = "default";
+  }
+  public AnonymousSecurityToken(String container) {
+    this.container = container;
+  }
 
   public boolean isAnonymous() {
     return true;
@@ -49,6 +56,10 @@ public class AnonymousSecurityToken implements SecurityToken {
 
   public String getDomain() {
     return "";
+  }
+
+  public String getContainer() {
+    return this.container;
   }
 
   public String getAppUrl() {

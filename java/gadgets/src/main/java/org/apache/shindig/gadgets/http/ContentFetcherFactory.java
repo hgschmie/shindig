@@ -17,10 +17,12 @@
  */
 package org.apache.shindig.gadgets.http;
 
+import org.apache.shindig.common.util.Utf8UrlCoder;
 import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.oauth.OAuthFetcherFactory;
+import org.apache.shindig.gadgets.oauth.OAuthRequest;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 /**
@@ -34,27 +36,66 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class ContentFetcherFactory {
-  private final RemoteContentFetcherFactory remoteContentFetcherFactory;
-  private final OAuthFetcherFactory oauthFetcherFactory;
+
+  private final HttpFetcher httpFetcher;
+  private final HttpCache httpCache;
+  private final Provider<OAuthRequest> oauthRequestProvider;
 
   @Inject
-  public ContentFetcherFactory(RemoteContentFetcherFactory remoteContentFetcherFactory,
-      OAuthFetcherFactory oauthFetcherFactory) {
-    this.remoteContentFetcherFactory = remoteContentFetcherFactory;
-    this.oauthFetcherFactory = oauthFetcherFactory;
+  public ContentFetcherFactory(HttpFetcher httpFetcher,
+                               HttpCache httpCache,
+                               Provider<OAuthRequest> oauthRequestProvider)
+
+  {
+    this.httpFetcher = httpFetcher;
+    this.httpCache = httpCache;
+    this.oauthRequestProvider = oauthRequestProvider;
   }
 
-  public HttpResponse fetch(HttpRequest request) throws GadgetException {
+  public HttpResponse fetch(final HttpRequest request) throws GadgetException {
+    normalizeProtocol(request);
+
+    final HttpCacheKey cacheKey = new HttpCacheKey(request);
+    HttpResponse response = null;
+
+    if (!request.getIgnoreCache())
+    {
+        response = httpCache.getResponse(cacheKey, request);
+        if (response != null)
+        {
+            return response;
+        }
+    }
+
+    HttpResponse fetchedResponse = null;
     switch (request.getAuthType()) {
       case NONE:
-        return remoteContentFetcherFactory.get().fetch(request);
+        fetchedResponse = httpFetcher.fetch(request);
+        break;
       case SIGNED:
       case OAUTH:
-        // TODO: Why do we have to pass the request twice? This doesn't make sense...
-        return oauthFetcherFactory.getOAuthFetcher(remoteContentFetcherFactory.get(), request)
-            .fetch(request);
+        fetchedResponse = oauthRequestProvider.get().fetch(request);
+        break;
       default:
         return HttpResponse.error();
+    }
+
+    if (!request.getIgnoreCache() ) {
+      httpCache.addResponse(cacheKey, request, fetchedResponse);
+    }
+    return fetchedResponse;
+  }
+
+  public void normalizeProtocol(HttpRequest request) throws GadgetException {
+    // Normalize the protocol part of the URI
+    if (request.getUri().getScheme()== null) {
+      throw new GadgetException(GadgetException.Code.INVALID_PARAMETER,
+          "Url " + request.getUri().toString() + " does not include scheme");
+    } else if (!"http".equals(request.getUri().getScheme()) &&
+        !"https".equals(request.getUri().getScheme())) {
+      throw new GadgetException(GadgetException.Code.INVALID_PARAMETER,
+          "Invalid request url scheme in url: " + Utf8UrlCoder.encode(request.getUri().toString()) +
+            "; only \"http\" and \"https\" supported.");
     }
   }
 }

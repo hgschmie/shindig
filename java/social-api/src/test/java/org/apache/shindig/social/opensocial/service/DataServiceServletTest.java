@@ -17,11 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
-import com.google.common.collect.Maps;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Provider;
-
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.testing.FakeGadgetToken;
@@ -36,6 +31,11 @@ import org.apache.shindig.social.core.util.xstream.XStream081Configuration;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 
 import org.easymock.classextension.EasyMock;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -158,7 +158,7 @@ public class DataServiceServletTest extends TestCase {
     EasyMock.expect(handler.handleItem(EasyMock.isA(RequestItem.class)));
     EasyMock.expectLastCall().andReturn(ImmediateFuture.newInstance(jsonObject));
 
-    EasyMock.expect(jsonConverter.convertToString(Maps.immutableMap("entry", jsonObject)))
+    EasyMock.expect(jsonConverter.convertToString(ImmutableMap.of("entry", jsonObject)))
         .andReturn("{ 'entry' : " + jsonObject + " }");
 
     PrintWriter writerMock = EasyMock.createMock(PrintWriter.class);

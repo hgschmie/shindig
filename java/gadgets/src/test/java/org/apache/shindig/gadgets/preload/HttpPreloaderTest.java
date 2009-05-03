@@ -23,12 +23,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Callable;
-
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.testing.FakeGadgetToken;
 import org.apache.shindig.common.uri.Uri;
@@ -41,12 +35,19 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 /**
  * Tests for HttpPreloader.
@@ -57,11 +58,11 @@ public class HttpPreloaderTest {
   private static final String PRELOAD_CONTENT = "Preloaded data";
   private static final String CONTAINER = "some-container";
   private static final Uri GADGET_URL = Uri.parse("http://example.org/gadget.xml");
-  private static final Map<String, String> PRELOAD_METADATA = Maps.immutableMap("foo", "bar");
+  private static final Map<String, String> PRELOAD_METADATA = ImmutableMap.of("foo", "bar");
   private final RecordingHttpFetcher plainFetcher = new RecordingHttpFetcher();
   private final RecordingHttpFetcher oauthFetcher = new RecordingHttpFetcher();
 
-  private final ContentFetcherFactory fetchers = new ContentFetcherFactory(null, null) {
+  private final ContentFetcherFactory fetchers = new ContentFetcherFactory(null, null, null) {
     @Override
     public HttpResponse fetch(HttpRequest request) {
       if (request.getAuthType() == AuthType.NONE) {

@@ -15,25 +15,13 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.shindig.social.opensocial.service;
-
-import org.apache.shindig.auth.SecurityTokenDecoder;
-import org.apache.shindig.common.servlet.ParameterFetcher;
-
-import com.google.common.collect.ImmutableMap;
-
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+package org.apache.shindig.common;
 
 /**
- * Default implementation for the GadgetDataServlet parameter fetcher. Do not change unless you have
- * a compelling need to pass more parameters into the createResponse method.
+ * Utility class for creating Pair objects.
  */
-public class DataServiceServletFetcher implements ParameterFetcher {
-
-  public Map<String, String> fetch(HttpServletRequest req) {
-    return ImmutableMap.of(SecurityTokenDecoder.SECURITY_TOKEN_NAME, req.getParameter("st"));
+public class Pairs {
+  public static <T1, T2> Pair<T1, T2> newPair(T1 one, T2 two) {
+    return new Pair<T1, T2>(one, two);
   }
 }
-

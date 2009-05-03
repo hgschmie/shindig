@@ -40,4 +40,9 @@ public enum OAuthError {
    * The user is not the owner of the page.
    */
   NOT_OWNER,
+
+  /**
+   * The request cannot be completed because the request options were invalid.
+   */
+  INVALID_REQUEST,
 }

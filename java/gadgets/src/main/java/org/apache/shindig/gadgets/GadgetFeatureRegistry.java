@@ -19,7 +19,7 @@ package org.apache.shindig.gadgets;
 
 import org.apache.shindig.gadgets.http.HttpFetcher;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
@@ -48,7 +48,7 @@ public class GadgetFeatureRegistry {
   private final Map<String, GadgetFeature> core;
 
   // Caches the transitive dependencies to enable faster lookups.
-  final Map<Set<String>, Collection<GadgetFeature>> cache = Maps.newConcurrentHashMap();
+  final Map<Set<String>, Collection<GadgetFeature>> cache = new MapMaker().makeMap();
 
   private boolean graphComplete = false;
 

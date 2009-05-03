@@ -19,23 +19,33 @@
 
 package org.apache.shindig.gadgets.oauth.testing;
 
+import net.oauth.OAuth.Parameter;
+
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.CharsetUtil;
+import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
-import org.apache.shindig.gadgets.oauth.OAuthFetcher;
 import org.apache.shindig.gadgets.oauth.OAuthFetcherConfig;
+import org.apache.shindig.gadgets.oauth.OAuthRequest;
 import org.apache.shindig.gadgets.oauth.OAuthArguments.UseToken;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Test utility to emulate the requests sent via gadgets.io.makeRequest.  The simulation starts
- * at what arrives at OAuthFetcher.  Code above OAuthFetcher (MakeRequestHandler, preloads) are not
+ * at what arrives at OAuthRequest.  Code above OAuthRequest (MakeRequestHandler, preloads) are not
  * exercised here.
  */
 public class MakeRequestClient {
-  
+
   private final SecurityToken securityToken;
   private final OAuthFetcherConfig fetcherConfig;
   private final FakeOAuthServiceProvider serviceProvider;
@@ -44,13 +54,15 @@ public class MakeRequestClient {
   private String oauthState;
   private String approvalUrl;
   private boolean ignoreCache;
+  private Map<String, String> trustedParams = Maps.newHashMap();
+  private HttpFetcher nextFetcher;
 
   /**
    * Create a make request client with the given security token, sending requests through an
    * OAuth fetcher to an OAuth service provider.
-   * 
+   *
    * @param securityToken identity of the user.
-   * @param fetcherConfig configuration for the OAuthFetcher
+   * @param fetcherConfig configuration for the OAuthRequest
    * @param serviceProvider service provider being targeted.
    * @param serviceName nickname for the service being accessed.
    */
@@ -63,43 +75,81 @@ public class MakeRequestClient {
     this.baseArgs = makeNonSocialOAuthArguments();
     this.ignoreCache = false;
   }
-  
+
   /**
    * Set the arguments to the OAuth fetch.
    */
   public void setBaseArgs(OAuthArguments baseArgs) {
     this.baseArgs = baseArgs;
   }
-  
+
   public OAuthArguments getBaseArgs() {
     return baseArgs;
   }
-  
+
   public void setIgnoreCache(boolean ignoreCache) {
     this.ignoreCache = ignoreCache;
   }
-  
+
+  public void setNextFetcher(HttpFetcher nextFetcher) {
+    this.nextFetcher = nextFetcher;
+  }
+
+  public void setTrustedParam(String name, String value) {
+    trustedParams.put(name, value);
+  }
+
+  private OAuthRequest createRequest() {
+    HttpFetcher dest = serviceProvider;
+    if (nextFetcher != null) {
+      dest = nextFetcher;
+    }
+    if (trustedParams != null) {
+      List<Parameter> trusted = Lists.newArrayList();
+      for (Entry<String, String> e : trustedParams.entrySet()) {
+        trusted.add(new Parameter(e.getKey(), e.getValue()));
+      }
+      return new OAuthRequest(fetcherConfig, dest, trusted);
+    }
+    return new OAuthRequest(fetcherConfig, dest);
+  }
+
   /**
    * Send an OAuth GET request to the given URL.
    */
   public HttpResponse sendGet(String target) throws Exception {
     HttpRequest request = new HttpRequest(Uri.parse(target));
     request.setOAuthArguments(recallState());
-    OAuthFetcher dest = new OAuthFetcher(fetcherConfig, serviceProvider, request);
+    OAuthRequest dest = createRequest();
     request.setIgnoreCache(ignoreCache);
     request.setSecurityToken(securityToken);
     HttpResponse response = dest.fetch(request);
     saveState(response);
     return response;
   }
-  
+
+  // Yes, this is really allowed by the HTTP spec and supported by real servers.
+  public HttpResponse sendGetWithBody(String target, String type, byte[] body) {
+    HttpRequest request = new HttpRequest(Uri.parse(target));
+    request.setOAuthArguments(recallState());
+    OAuthRequest dest = createRequest();
+    if (type != null) {
+      request.setHeader("Content-Type", type);
+    }
+    request.setPostBody(body);
+    request.setSecurityToken(securityToken);
+    HttpResponse response = dest.fetch(request);
+    saveState(response);
+    return response;
+  }
+
   /**
    * Send an OAuth POST request to the given URL.
    */
   public HttpResponse sendFormPost(String target, String body) throws Exception {
     HttpRequest request = new HttpRequest(Uri.parse(target));
     request.setOAuthArguments(recallState());
-    OAuthFetcher dest = new OAuthFetcher(fetcherConfig, serviceProvider, request);
+    OAuthRequest dest = createRequest();
     request.setMethod("POST");
     request.setPostBody(CharsetUtil.getUtf8Bytes(body));
     request.setHeader("content-type", "application/x-www-form-urlencoded");
@@ -108,14 +158,14 @@ public class MakeRequestClient {
     saveState(response);
     return response;
   }
-  
+
   /**
    * Send an OAuth POST with binary data in the binary.
    */
   public HttpResponse sendRawPost(String target, String type, byte[] body) throws Exception {
     HttpRequest request = new HttpRequest(Uri.parse(target));
     request.setOAuthArguments(recallState());
-    OAuthFetcher dest = new OAuthFetcher(fetcherConfig, serviceProvider, request);
+    OAuthRequest dest = createRequest();
     request.setMethod("POST");
     if (type != null) {
       request.setHeader("Content-Type", type);
@@ -138,7 +188,7 @@ public class MakeRequestClient {
     params.setSignViewer(false);
     return params;
   }
-  
+
   /**
    * Create arguments simulating authz=SIGNED.
    */
@@ -149,7 +199,7 @@ public class MakeRequestClient {
     params.setSignViewer(true);
     return params;
   }
-   
+
   /**
    * Track state (see gadgets.io.makeRequest handling of the oauthState parameter).
    */
@@ -158,7 +208,7 @@ public class MakeRequestClient {
     params.setOrigClientState(oauthState);
     return params;
   }
-  
+
   /**
    * Track state (see gadgets.io.makeRequest handling of the oauthState parameter).
    */
@@ -171,12 +221,12 @@ public class MakeRequestClient {
       approvalUrl = response.getMetadata().get("oauthApprovalUrl");
     }
   }
-  
+
   /**
    * Simulate the user visiting the service provider and approved access to their data.
    */
   public void approveToken(String params) throws Exception {
     // This will throw if approvalUrl looks wrong.
-    serviceProvider.browserVisit(approvalUrl + "&" + params);
+    serviceProvider.browserVisit(approvalUrl + '&' + params);
   }
 }

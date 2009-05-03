@@ -18,11 +18,6 @@
  */
 package org.apache.shindig.social.sample.spi;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 import junit.framework.TestCase;
 
 import org.apache.shindig.auth.SecurityToken;
@@ -38,6 +33,11 @@ import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 import java.util.Collections;
 
@@ -111,7 +111,7 @@ public class JsonDbOpensocialServiceTest extends TestCase {
     options.setMax(20);
 
     RestfulCollection<Person> responseItem = db.getPeople(
-        Sets.newLinkedHashSet(JOHN_DOE, JANE_DOE), new GroupId(GroupId.Type.friends, null),
+        Sets.newHashSet(JOHN_DOE, JANE_DOE), new GroupId(GroupId.Type.friends, null),
        options, Collections.<String>emptySet(), token).get();
     assertNotNull(responseItem);
     assertEquals(responseItem.getTotalResults(), 4);
@@ -207,7 +207,7 @@ public class JsonDbOpensocialServiceTest extends TestCase {
   public void testUpdateExpectedAppData() throws Exception {
     // Delete the data
     db.updatePersonData(CANON_USER, SELF_GROUP, APP_ID,
-        null, Maps.immutableMap("count", "10", "newvalue", "20"), new FakeGadgetToken());
+        null, ImmutableMap.of("count", "10", "newvalue", "20"), new FakeGadgetToken());
 
     // Fetch the remaining and test
     DataCollection responseItem = db.getPersonData(

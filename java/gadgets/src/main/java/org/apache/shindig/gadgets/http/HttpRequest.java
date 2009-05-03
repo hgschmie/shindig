@@ -24,11 +24,12 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,6 +52,8 @@ public class HttpRequest {
   private String method = "GET";
   private Uri uri;
   private final Map<String, List<String>> headers = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+  private final Map<String, String> params = Maps.newHashMap();
+
   private byte[] postBody = ArrayUtils.EMPTY_BYTE_ARRAY;
 
   // TODO: It might be useful to refactor these into a simple map of objects and use sub classes
@@ -59,6 +62,9 @@ public class HttpRequest {
   // Cache control.
   private boolean ignoreCache;
   private int cacheTtl = -1;
+
+  // Sanitization
+  private boolean sanitizationRequested;
 
   // Whether to follow redirects
   private boolean followRedirects = true;
@@ -69,6 +75,8 @@ public class HttpRequest {
 
   // For signed fetch & OAuth
   private SecurityToken securityToken;
+
+  // TODO: Move this into OAuthRequest.
   private OAuthArguments oauthArguments;
   private AuthType authType;
 
@@ -195,6 +203,18 @@ public class HttpRequest {
       headers.put("Pragma", Lists.newArrayList("no-cache"));
     }
     return this;
+  }
+
+  /**
+   * Should content fetched in response to this request
+   * be sanitized based on the specified mime-type
+   */
+  public boolean isSanitizationRequested() {
+    return sanitizationRequested;
+  }
+
+  public void setSanitizationRequested(boolean sanitizationRequested) {
+    this.sanitizationRequested = sanitizationRequested;
   }
 
   /**
@@ -369,6 +389,26 @@ public class HttpRequest {
     return gadget;
   }
 
+  public String getParam(String paramName) {
+    return params.get(paramName);
+  }
+
+  public Integer getParamAsInteger(String paramName) {
+    String value = params.get(paramName);
+    if (value == null) {
+      return null;
+    }
+    return NumberUtils.createInteger(value);
+  }
+
+  public <T> void setParam(String paramName, T paramValue) {
+    params.put(paramName, String.valueOf(paramValue));
+  }
+
+  public Map<String, String> getParams() {
+    return params;
+  }
+
   /**
    * @return The container responsible for making this request.
    */
@@ -417,7 +457,7 @@ public class HttpRequest {
   public String toString() {
     StringBuilder buf = new StringBuilder(method);
     buf.append(' ').append(uri.getPath())
-       .append(uri.getQuery() == null ? "" : "?" + uri.getQuery()).append("\n\n");
+       .append(uri.getQuery() == null ? "" : '?' + uri.getQuery()).append("\n\n");
     buf.append("Host: ").append(uri.getAuthority()).append('\n');
     buf.append("X-Shindig-AuthType: ").append(authType).append('\n');
     for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
@@ -439,7 +479,7 @@ public class HttpRequest {
       HttpRequest req = (HttpRequest)obj;
       return method.equals(req.method) &&
              uri.equals(req.uri) &&
-             authType.equals(req.authType) &&
+             authType == req.authType &&
              Arrays.equals(postBody, req.postBody) &&
              headers.equals(req.headers);
              // TODO: Verify that other fields aren't meaningful. Especially important to check for
@@ -447,6 +487,8 @@ public class HttpRequest {
     }
     return false;
   }
+
+
 
 }
 

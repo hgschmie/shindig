@@ -17,13 +17,12 @@
  * under the License.
  */
 
-package org.apache.shindig.gadgets.oauth;
+package org.apache.shindig.auth;
 
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthException;
 import net.oauth.OAuthMessage;
-import net.oauth.OAuthProblemException;
 import net.oauth.OAuth.Parameter;
 
 import java.io.IOException;
@@ -53,16 +52,7 @@ public class OAuthUtil {
       throw new RuntimeException(e);
     }
   }
-  
-  public static void requireParameters(OAuthMessage message, String... names)
-      throws OAuthProblemException {
-    try {
-      message.requireParameters(names);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
+
   public static String formEncode(Iterable<? extends Entry<String, String>> parameters) {
     try {
       return OAuth.formEncode(parameters);
@@ -70,7 +60,7 @@ public class OAuthUtil {
       throw new RuntimeException(e);
     }
   }
-  
+
   public static String addParameters(String url, List<Entry<String, String>> parameters) {
     try {
       return OAuth.addParameters(url, parameters);
@@ -78,7 +68,7 @@ public class OAuthUtil {
       throw new RuntimeException(e);
     }
   }
-  
+
   public static OAuthMessage newRequestMessage(OAuthAccessor accessor, String method, String url,
       List<Parameter> parameters) throws OAuthException {
     try {
@@ -88,5 +78,25 @@ public class OAuthUtil {
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+  }
+  
+  public static enum SignatureType {
+    URL_ONLY,
+    URL_AND_FORM_PARAMS,
+    URL_AND_BODY_HASH,
+  }
+  
+  /**
+   * @param tokenEndpoint true if this is a request token or access token request.  We don't check
+   * oauth_body_hash on those.
+   */
+  public static SignatureType getSignatureType(boolean tokenEndpoint, String contentType) {
+    if (OAuth.isFormEncoded(contentType)) {
+      return SignatureType.URL_AND_FORM_PARAMS;
+    }
+    if (tokenEndpoint) {
+      return SignatureType.URL_ONLY;
+    }
+    return SignatureType.URL_AND_BODY_HASH;
   }
 }

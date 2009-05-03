@@ -20,9 +20,13 @@ package org.apache.shindig.gadgets.http;
 import org.apache.shindig.common.util.DateUtil;
 import org.apache.shindig.gadgets.encoding.EncodingDetector;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -38,8 +42,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Represents the results of an HTTP content retrieval operation.
@@ -96,7 +103,7 @@ public final class HttpResponse implements Externalizable {
   public static final int SC_HTTP_VERSION_NOT_SUPPORTED = 505;
 
   // These content types can always skip encoding detection.
-  private static final Collection<String> BINARY_CONTENT_TYPES = Sets.newHashSet(
+  private static final Set<String> BINARY_CONTENT_TYPES = ImmutableSet.of(
       "image/jpeg", "image/png", "image/gif", "image/jpg", "application/x-shockwave-flash",
       "application/octet-stream", "application/ogg", "application/zip", "audio/mpeg",
       "audio/x-ms-wma", "audio/vnd.rn-realaudio", "audio/x-wav", "video/mpeg", "video/mp4",
@@ -106,17 +113,17 @@ public final class HttpResponse implements Externalizable {
 
   // These HTTP status codes should always honor the HTTP status returned by the remote host. All
   // other error codes are treated as errors and will use the negativeCacheTtl value.
-  private static final Collection<Integer> NEGATIVE_CACHING_EXEMPT_STATUS
-      = Sets.newHashSet(SC_UNAUTHORIZED, SC_FORBIDDEN);
+  private static final Set<Integer> NEGATIVE_CACHING_EXEMPT_STATUS
+      = ImmutableSet.of(SC_UNAUTHORIZED, SC_FORBIDDEN);
 
   // TTL to use when an error response is fetched. This should be non-zero to
   // avoid high rates of requests to bad urls in high-traffic situations.
-  static final long DEFAULT_NEGATIVE_CACHE_TTL = 60 * 1000;
+  static final long DEFAULT_NEGATIVE_CACHE_TTL = 30 * 1000;
 
   // Default TTL for an entry in the cache that does not have any cache control headers.
-  static final long DEFAULT_TTL = 60L * 60L * 1000L;
+  static final long DEFAULT_TTL = 5L * 60L * 1000L;
 
-  static final String DEFAULT_ENCODING = "UTF-8";
+  static final Charset DEFAULT_ENCODING = Charset.forName("UTF-8");
 
   @Inject(optional = true) @Named("shindig.cache.http.negativeCacheTtl")
   private static long negativeCacheTtl = DEFAULT_NEGATIVE_CACHE_TTL;
@@ -128,15 +135,15 @@ public final class HttpResponse implements Externalizable {
   private static boolean fastEncodingDetection = true;
 
   // Holds character sets for fast conversion
-  private static final Map<String, Charset> encodingToCharset = Maps.newConcurrentHashMap();
+  private static final Map<String, Charset> encodingToCharset = new MapMaker().makeMap();
 
   private transient String responseString;
   private transient long date;
-  private transient String encoding;
+  private transient Charset encoding;
   private transient Map<String, String> metadata;
 
   private int httpStatusCode;
-  private Map<String, List<String>> headers;
+  private Multimap<String, String> headers;
   private byte[] responseBytes;
 
   /**
@@ -149,7 +156,7 @@ public final class HttpResponse implements Externalizable {
    */
   HttpResponse(HttpResponseBuilder builder) {
     httpStatusCode = builder.getHttpStatusCode();
-    Map<String, List<String>> headerCopy = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+    Multimap<String, String> headerCopy = HttpResponse.newHeaderMultimap();
     headerCopy.putAll(builder.getHeaders());
 
     // Always safe, HttpResponseBuilder won't modify the body.
@@ -162,7 +169,7 @@ public final class HttpResponse implements Externalizable {
     // have been set. This allows us to avoid these expensive calculations from the cache.
     date = getAndUpdateDate(headerCopy);
     encoding = getAndUpdateEncoding(headerCopy, responseBytes);
-    headers = Collections.unmodifiableMap(headerCopy);
+    headers = Multimaps.unmodifiableMultimap(headerCopy);
   }
 
   private HttpResponse(int httpStatusCode, String body) {
@@ -202,7 +209,7 @@ public final class HttpResponse implements Externalizable {
    * @return The encoding of the response body, if we're able to determine it.
    */
   public String getEncoding() {
-    return encoding;
+    return encoding.name();
   }
 
   /**
@@ -228,12 +235,7 @@ public final class HttpResponse implements Externalizable {
    */
   public String getResponseAsString() {
     if (responseString == null) {
-      Charset charset = encodingToCharset.get(encoding);
-      if (charset == null) {
-        charset = Charset.forName(encoding);
-        encodingToCharset.put(encoding, charset);
-      }
-      responseString = charset.decode(ByteBuffer.wrap(responseBytes)).toString();
+      responseString = encoding.decode(ByteBuffer.wrap(responseBytes)).toString();
 
       // Strip BOM if present
       if (responseString.length() > 0 && responseString.codePointAt(0) == 0xFEFF) {
@@ -246,7 +248,7 @@ public final class HttpResponse implements Externalizable {
   /**
    * @return All headers for this object.
    */
-  public Map<String, List<String>> getHeaders() {
+  public Multimap<String, String> getHeaders() {
     return headers;
   }
 
@@ -254,13 +256,8 @@ public final class HttpResponse implements Externalizable {
    * @return All headers with the given name. If no headers are set for the given name, an empty
    * collection will be returned.
    */
-  public List<String> getHeaders(String name) {
-    List<String> ret = headers.get(name);
-    if (ret == null) {
-      return Collections.emptyList();
-    } else {
-      return ret;
-    }
+  public Collection<String> getHeaders(String name) {
+    return headers.get(name);
   }
 
   /**
@@ -268,11 +265,11 @@ public final class HttpResponse implements Externalizable {
    *         values for the header, use getHeaders().
    */
   public String getHeader(String name) {
-    List<String> headerList = getHeaders(name);
+    Collection<String> headerList = getHeaders(name);
     if (headerList.isEmpty()) {
       return null;
     } else {
-      return headerList.get(0);
+      return headerList.iterator().next();
     }
   }
 
@@ -322,9 +319,19 @@ public final class HttpResponse implements Externalizable {
   }
 
   /**
+   * @return True if this result is stale.
+   */
+  public boolean isStale() {
+    return getCacheTtl() <= 0;
+  }
+
+  /**
    * @return true if a strict no-cache header is set in Cache-Control or Pragma
    */
   public boolean isStrictNoCache() {
+    if (isError() && !NEGATIVE_CACHING_EXEMPT_STATUS.contains(httpStatusCode)) {
+      return false;
+    }
     String cacheControl = getHeader("Cache-Control");
     if (cacheControl != null) {
       String[] directives = cacheControl.split(",");
@@ -352,7 +359,7 @@ public final class HttpResponse implements Externalizable {
   private long getExpiresTime() {
     String expires = getHeader("Expires");
     if (expires != null) {
-      Date expiresDate = DateUtil.parseDate(expires);
+      Date expiresDate = DateUtil.parseRfc1123Date(expires);
       if (expiresDate != null) {
         return expiresDate.getTime();
       }
@@ -389,20 +396,20 @@ public final class HttpResponse implements Externalizable {
    *
    * @return The value of the date header, in milliseconds, or -1 if no Date could be determined.
    */
-  private static long getAndUpdateDate(Map<String, List<String>> headers) {
+  private static long getAndUpdateDate(Multimap<String, String> headers) {
     // Validate the Date header. Must conform to the HTTP date format.
     long timestamp = -1;
-    List<String> dates = headers.get("Date");
-    String dateStr = dates == null ? null : dates.isEmpty() ? null : dates.get(0);
-    if (dateStr != null) {
-      Date d = DateUtil.parseDate(dateStr);
+    Collection<String> dates = headers.get("Date");
+
+    if (!dates.isEmpty()) {
+      Date d = DateUtil.parseRfc1123Date(dates.iterator().next());
       if (d != null) {
         timestamp = d.getTime();
       }
     }
     if (timestamp == -1) {
       timestamp = System.currentTimeMillis();
-      headers.put("Date", Lists.newArrayList(DateUtil.formatDate(timestamp)));
+      headers.put("Date", DateUtil.formatRfc1123Date(timestamp));
     }
     return timestamp;
   }
@@ -413,14 +420,14 @@ public final class HttpResponse implements Externalizable {
    *
    * @return The detected encoding or DEFAULT_ENCODING.
    */
-  private static String getAndUpdateEncoding(Map<String, List<String>> headers, byte[] body) {
+  private static Charset getAndUpdateEncoding(Multimap<String, String> headers, byte[] body) {
     if (body == null || body.length == 0) {
       return DEFAULT_ENCODING;
     }
 
-    List<String> values = headers.get("Content-Type");
-    String contentType = values == null ? null : values.isEmpty() ? null : values.get(0);
-    if (contentType != null) {
+    Collection<String> values = headers.get("Content-Type");
+    if (!values.isEmpty()) {
+      String contentType = values.iterator().next();
       String[] parts = contentType.split(";");
       if (BINARY_CONTENT_TYPES.contains(parts[0])) {
         return DEFAULT_ENCODING;
@@ -434,19 +441,40 @@ public final class HttpResponse implements Externalizable {
           if (charset.charAt(0) == '"') {
             charset = charset.substring(1, charset.length() - 1);
           }
-          return charset;
+
+          try {
+            return charsetForName(charset);
+          } catch (IllegalArgumentException e) {
+            // fall through to detection
+          }
         }
       }
-      String encoding = EncodingDetector.detectEncoding(body, fastEncodingDetection);
+      Charset encoding = EncodingDetector.detectEncoding(body, fastEncodingDetection);
       // Record the charset in the content-type header so that its value can be cached
       // and re-used. This is a BIG performance win.
-      headers.put("Content-Type", Lists.newArrayList(contentType + "; charset=" + encoding));
+      values.clear();
+      values.add(contentType + "; charset=" + encoding.name());
+
       return encoding;
     } else {
       // If no content type was specified, we'll assume an unknown binary type.
-      contentType = "application/octet-stream";
       return DEFAULT_ENCODING;
     }
+  }
+
+  /**
+   * Cover for Charset.forName() that caches results.
+   * @return the charset
+   * @throws IllegalArgumentException if the encoding is invalid
+   */
+  private static Charset charsetForName(String encoding) {
+    Charset charset = encodingToCharset.get(encoding);
+    if (charset == null) {
+      charset = Charset.forName(encoding);
+      encodingToCharset.put(encoding, charset);
+    }
+
+    return charset;
   }
 
   @Override
@@ -464,11 +492,8 @@ public final class HttpResponse implements Externalizable {
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder("HTTP/1.1 ").append(httpStatusCode).append("\r\n\r\n");
-    for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
-      String name = entry.getKey();
-      for (String value : entry.getValue()) {
-        buf.append(name).append(": ").append(value).append('\n');
-      }
+    for (Map.Entry<String,String> entry : headers.entries()) {
+      buf.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
     }
     buf.append("\r\n").append(getResponseAsString()).append("\r\n");
     return buf.toString();
@@ -493,21 +518,56 @@ public final class HttpResponse implements Externalizable {
   @SuppressWarnings("unchecked")
   public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     httpStatusCode = in.readInt();
-    Map<String, List<String>> headerCopy = (Map<String, List<String>>)in.readObject();
+
+    // We store the multimap as a Map<String,List<String>> to insulate us from google-collections API churn
+    // And to remain backwards compatible
+
+    Map<String, List<String>> headerCopyMap = (Map<String, List<String>>)in.readObject();
+    Multimap headerCopy = newHeaderMultimap();
+
+    for (Map.Entry<String,List<String>> entry : headerCopyMap.entrySet()) {
+      headerCopy.putAll(entry.getKey(), entry.getValue());
+    }
+
     int bodyLength = in.readInt();
     responseBytes = new byte[bodyLength];
-    in.read(responseBytes, 0, bodyLength);
+    int cnt, offset = 0;
+    while ((cnt = in.read(responseBytes, offset, bodyLength)) > 0) {
+   	 offset += cnt;
+   	 bodyLength -= cnt;
+    }
+    if (offset != responseBytes.length) {
+    	throw new IOException("Invalid body! Expected length = " + responseBytes.length + ", bytes readed = " + offset + '.');
+    }
 
     date = getAndUpdateDate(headerCopy);
     encoding = getAndUpdateEncoding(headerCopy, responseBytes);
-    headers = Collections.unmodifiableMap(headerCopy);
+    headers = Multimaps.unmodifiableMultimap(headerCopy);
     metadata = Collections.emptyMap();
   }
 
   public void writeExternal(ObjectOutput out) throws IOException {
     out.writeInt(httpStatusCode);
-    out.writeObject(headers);
+    // Write out multimap as a map (see above)
+    Map<String,List<String>> map = Maps.newHashMap();
+    for (String key : headers.keySet()) {
+      map.put(key, Lists.newArrayList(headers.get(key)));
+    }
+    out.writeObject(Maps.newHashMap(map));
     out.writeInt(responseBytes.length);
     out.write(responseBytes);
+  }
+
+
+  private static final Supplier<Collection<String>> HEADER_COLLECTION_SUPPLIER = new HeaderCollectionSupplier();
+
+  private static class HeaderCollectionSupplier implements Supplier<Collection<String>> {
+    public Collection<String> get() {
+      return new LinkedList<String>();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+  }
+  public static Multimap<String,String> newHeaderMultimap() {
+    TreeMap<String,Collection<String>> map = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+    return Multimaps.newMultimap(map, HEADER_COLLECTION_SUPPLIER);
   }
 }

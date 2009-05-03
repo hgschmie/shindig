@@ -67,7 +67,7 @@ public class DefaultHttpCacheTest extends TestCase {
 
   private HttpResponse createExpiresResponse(int statusCode, long expiration) {
     Date newExpiry = new Date(expiration);
-    return createResponse(statusCode, "Expires", DateUtil.formatDate(newExpiry));
+    return createResponse(statusCode, "Expires", DateUtil.formatRfc1123Date(newExpiry));
   }
 
   private HttpResponse createMaxAgeResponse(int statusCode, long age) {

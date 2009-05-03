@@ -17,15 +17,14 @@
 
 package org.apache.shindig.gadgets.oauth;
 
+import org.apache.shindig.common.crypto.BlobCrypter;
+import org.apache.shindig.common.util.TimeSource;
+
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import org.apache.shindig.common.crypto.BlobCrypter;
-import org.apache.shindig.common.util.TimeSource;
-import org.apache.shindig.gadgets.http.HttpCache;
-
 /**
- * Configuration parameters for an OAuthFetcher
+ * Configuration parameters for an OAuthRequest
  */
 public class OAuthFetcherConfig {
   
@@ -33,18 +32,15 @@ public class OAuthFetcherConfig {
   
   private final BlobCrypter stateCrypter;
   private final GadgetOAuthTokenStore tokenStore;
-  private final HttpCache httpCache;
   private final TimeSource clock;
   
   @Inject
   public OAuthFetcherConfig(
       @Named(OAUTH_STATE_CRYPTER) BlobCrypter stateCrypter,
       GadgetOAuthTokenStore tokenStore,
-      HttpCache httpCache,
       TimeSource clock) {
     this.stateCrypter = stateCrypter;
     this.tokenStore = tokenStore;
-    this.httpCache = httpCache;
     this.clock = clock;
   }
   
@@ -60,13 +56,6 @@ public class OAuthFetcherConfig {
    */
   public GadgetOAuthTokenStore getTokenStore() {
     return tokenStore;
-  }
-  
-  /**
-   * Cache for OAuth responses.
-   */
-  public HttpCache getHttpCache() {
-    return httpCache;
   }
   
   /**

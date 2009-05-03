@@ -35,17 +35,17 @@ import org.apache.shindig.social.opensocial.spi.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
 
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
-
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -378,7 +378,7 @@ public class JsonDbOpensocialService implements ActivityService, PersonService, 
     String userId = user.getUserId(token);
 
     if (group == null) {
-      return Sets.newLinkedHashSet(userId);
+      return Sets.newHashSet(userId);
     }
 
     Set<String> returnVal = Sets.newLinkedHashSet();

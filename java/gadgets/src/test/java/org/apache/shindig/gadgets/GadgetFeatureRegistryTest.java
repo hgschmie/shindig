@@ -23,6 +23,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,12 +39,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 public class GadgetFeatureRegistryTest {
   private GadgetFeatureRegistry registry;
@@ -101,8 +102,8 @@ public class GadgetFeatureRegistryTest {
     registry.register(makeFeature("feat0", CONTENT, DEP_NAME));
     registry.register(makeFeature("feat1", CONTENT, DEP_NAME));
 
-    Set<String> setKeys = Sets.immutableSortedSet("feat0", "feat1");
-    List<String> listKeys = Lists.newLinkedList("feat0", "feat1");
+    Set<String> setKeys = ImmutableSortedSet.of("feat0", "feat1");
+    List<String> listKeys = ImmutableList.of("feat0", "feat1");
     Collection<String> collectKeys
         = Collections.unmodifiableCollection(Lists.newArrayList("feat0", "feat1"));
 

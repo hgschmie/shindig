@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shindig.common.servlet.InjectedServlet;
+import org.apache.shindig.common.util.BooleanConvertUtils;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.render.Renderer;
@@ -91,7 +92,7 @@ public class GadgetRenderingServlet extends InjectedServlet {
     // not modified. This is because when there actually is a change,
     // cache busting should occur.
     if (req.getHeader("If-Modified-Since") != null &&
-        !"1".equals(req.getParameter("nocache")) &&
+        !BooleanConvertUtils.toBoolean(req.getParameter("nocache")) &&
         req.getParameter("v") != null) {
       resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
       return;

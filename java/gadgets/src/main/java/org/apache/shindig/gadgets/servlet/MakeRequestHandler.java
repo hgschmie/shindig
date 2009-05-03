@@ -18,10 +18,10 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.shindig.auth.AuthInfo;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.BooleanConvertUtils;
 import org.apache.shindig.common.util.Utf8UrlCoder;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.FeedProcessor;
@@ -33,11 +33,11 @@ import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.oauth.OAuthArguments;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.io.IOException;
 
@@ -136,7 +136,7 @@ public class MakeRequestHandler extends ProxyBase {
 
     // This allows to bypass the cache by setting the gadget to be uncacheable (then the value is passed in on the request) or
     // by the requestor (by attaching ?nocache=true to the URL to fetch.
-    req.setIgnoreCache(BooleanUtils.toBoolean(request.getParameter(NOCACHE_PARAM)) || BooleanUtils.toBoolean(req.getUri().getQueryParameter(NOCACHE_PARAM)));
+    req.setIgnoreCache(BooleanConvertUtils.toBoolean(request.getParameter(NOCACHE_PARAM)) || BooleanConvertUtils.toBoolean(req.getUri().getQueryParameter(NOCACHE_PARAM)));
 
     if (request.getParameter(GADGET_PARAM) != null) {
       req.setGadget(Uri.parse(request.getParameter(GADGET_PARAM)));

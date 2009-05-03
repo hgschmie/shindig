@@ -136,12 +136,12 @@ under the License.
     </dependency>
     <dependency>
       <groupId>net.oauth</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>oauth-core</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.code.google-collections</groupId>
-      <artifactId>google-collect</artifactId>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.code.guice</groupId>

@@ -26,17 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.shindig.auth.DefaultSecurityTokenDecoder;
 import org.apache.shindig.auth.SecurityTokenDecoder;
 import org.apache.shindig.common.ContainerConfig;
@@ -66,6 +55,7 @@ import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.LocaleSpec;
 import org.apache.shindig.gadgets.spec.MessageBundle;
 import org.apache.shindig.gadgets.spec.View;
+
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.json.JSONException;
@@ -74,6 +64,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.caja.util.Join;
+import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -83,6 +74,17 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Tests for RenderingContentRewriter.
@@ -281,7 +283,7 @@ public class RenderingContentRewriterTest {
     String rewritten = rewrite(gadget, "");
 
     Set<String> actual = getInjectedScript(rewritten);
-    Set<String> expected = Sets.immutableSortedSet("foo", "bar", "baz");
+    Set<String> expected = ImmutableSortedSet.of("foo", "bar", "baz");
     assertEquals(expected, actual);
   }
 
@@ -334,7 +336,7 @@ public class RenderingContentRewriterTest {
     String rewritten = rewrite(gadget, "");
 
     Set<String> actual = getInjectedScript(rewritten);
-    Set<String> expected = Sets.immutableSortedSet("bar", "baz");
+    Set<String> expected = ImmutableSortedSet.of("bar", "baz");
     assertEquals(expected, actual);
     assertTrue("Requested scripts not inlined.", rewritten.contains("foo_content();"));
   }
@@ -421,7 +423,7 @@ public class RenderingContentRewriterTest {
     String rewritten = rewrite(gadget, "");
 
     Set<String> actual = getInjectedScript(rewritten);
-    Set<String> expected = Sets.immutableSortedSet("baz");
+    Set<String> expected = ImmutableSortedSet.of("baz");
     assertEquals(expected, actual);
     assertTrue("Requested scripts not inlined.", rewritten.contains("foo_content();"));
     assertTrue("Forced external file not forced.",
@@ -673,7 +675,7 @@ public class RenderingContentRewriterTest {
         throw new PreloadException("broken");
       }
       public Set<String> getKeys() {
-        return Sets.immutableSortedSet("foo");
+        return ImmutableSortedSet.of("foo");
       }
     };
 

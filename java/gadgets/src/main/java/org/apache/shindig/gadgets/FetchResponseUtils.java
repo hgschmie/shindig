@@ -19,11 +19,12 @@
 package org.apache.shindig.gadgets;
 
 import org.apache.shindig.gadgets.http.HttpResponse;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -33,12 +34,12 @@ public class FetchResponseUtils {
 
   /**
    * Convert a response to a JSON object.
-   * 
+   *
    * The returned JSON object contains the following values:
    * rc: integer response code
    * body: string response body
    * headers: object, keys are header names, values are lists of header values
-   * 
+   *
    * @param response the response body
    * @param body string to use as the body of the response.
    * @return a JSONObject representation of the response body.
@@ -58,13 +59,13 @@ public class FetchResponseUtils {
     }
     return resp;
   }
-  
+
   private static void addHeaders(JSONObject headers, HttpResponse response, String headerName)
       throws JSONException {
-    List<String> values = response.getHeaders(headerName);
+    Collection<String> values = response.getHeaders(headerName);
     if (!values.isEmpty()) {
       headers.put(headerName.toLowerCase(), new JSONArray(values));
     }
   }
-  
+
 }

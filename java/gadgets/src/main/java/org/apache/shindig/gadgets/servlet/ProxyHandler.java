@@ -26,15 +26,14 @@ import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 
+import org.apache.commons.io.IOUtils;
+
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -134,12 +133,10 @@ public class ProxyHandler extends ProxyBase {
 
     setResponseHeaders(request, response, results);
 
-    for (Map.Entry<String, List<String>> entry : results.getHeaders().entrySet()) {
+    for (Map.Entry<String, String> entry : results.getHeaders().entries()) {
       String name = entry.getKey();
       if (!DISALLOWED_RESPONSE_HEADERS.contains(name.toLowerCase())) {
-        for (String value : entry.getValue()) {
-          response.addHeader(name, value);
-        }
+          response.addHeader(name, entry.getValue());
       }
     }
 

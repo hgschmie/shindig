@@ -22,8 +22,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.shindig.common.testing.FakeHttpServletRequest;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
@@ -31,7 +29,11 @@ import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.StaxTestUtils;
 import org.apache.shindig.gadgets.oauth.OAuthArguments.UseToken;
 import org.apache.shindig.gadgets.spec.Preload;
+
+import org.junit.Assert;
 import org.junit.Test;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Tests parameter parsing
@@ -46,9 +48,10 @@ public class OAuthArgumentsTest {
     		"OAUTH_REQuest_token='requesttoken' " +
     		"oauth_request_token_secret='tokensecret' " +
     		"OAUTH_USE_TOKEN='never' " +
+    		"random='stuff'" +
     		"/>";
 
-    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri.parse("http://www.example.com/")));
+    Preload preload = StaxTestUtils.parseElement(xml, new Preload.Parser(Uri.EMPTY_URI));
     OAuthArguments params = new OAuthArguments(preload);
     assertEquals("service", params.getServiceName());
     assertEquals("token", params.getTokenName());
@@ -57,6 +60,7 @@ public class OAuthArgumentsTest {
     assertEquals(UseToken.NEVER, params.getUseToken());
     assertNull(params.getOrigClientState());
     assertFalse(params.isNoCache());
+    assertEquals("stuff", params.getRequestOption("random"));
   }
 
   private FakeHttpServletRequest makeDummyRequest() throws Exception {
@@ -67,9 +71,10 @@ public class OAuthArgumentsTest {
     req.setParameter("OAUTH_REQUEST_TOKEN", true, "reqtoken");
     req.setParameter("OAUTH_REQUEST_TOKEN_SECRET", true, "secret");
     req.setParameter("oauthState", true, "state");
-    req.setParameter("noCache", true, "1");
+    req.setParameter("bypassSpecCache", true, "1");
     req.setParameter("signOwner", true, "false");
     req.setParameter("signViewer", true, "false");
+    req.setParameter("random", true, "stuff");
     return req;
   }
 
@@ -84,9 +89,11 @@ public class OAuthArgumentsTest {
     assertEquals("reqtoken", args.getRequestToken());
     assertEquals("secret", args.getRequestTokenSecret());
     assertEquals("state", args.getOrigClientState());
-    assertEquals(true, args.isNoCache());
-    assertEquals(false, args.getSignOwner());
-    assertEquals(false, args.getSignViewer());
+    Assert.assertTrue(args.isNoCache());
+    Assert.assertFalse(args.getSignOwner());
+    Assert.assertFalse(args.getSignViewer());
+    assertEquals("stuff", args.getRequestOption("random"));
+    assertEquals("stuff", args.getRequestOption("rAnDoM"));
   }
 
   @Test
@@ -96,12 +103,13 @@ public class OAuthArgumentsTest {
     assertEquals(UseToken.NEVER, args.getUseToken());
     assertEquals("", args.getServiceName());
     assertEquals("", args.getTokenName());
-    assertEquals(null, args.getRequestToken());
-    assertEquals(null, args.getRequestTokenSecret());
-    assertEquals(null, args.getOrigClientState());
-    assertEquals(false, args.isNoCache());
-    assertEquals(true, args.getSignOwner());
-    assertEquals(true, args.getSignViewer());
+    Assert.assertNull(args.getRequestToken());
+    Assert.assertNull(args.getRequestTokenSecret());
+    Assert.assertNull(args.getOrigClientState());
+    Assert.assertFalse(args.isNoCache());
+    Assert.assertTrue(args.getSignOwner());
+    Assert.assertTrue(args.getSignViewer());
+    assertNull(args.getRequestOption("random"));
   }
 
   @Test
@@ -117,19 +125,19 @@ public class OAuthArgumentsTest {
     assertEquals(UseToken.ALWAYS, args.getUseToken());
     assertEquals("", args.getServiceName());
     assertEquals("", args.getTokenName());
-    assertEquals(null, args.getRequestToken());
-    assertEquals(null, args.getRequestTokenSecret());
-    assertEquals(null, args.getOrigClientState());
-    assertEquals(false, args.isNoCache());
-    assertEquals(false, args.getSignOwner());
-    assertEquals(false, args.getSignViewer());
+    Assert.assertNull(args.getRequestToken());
+    Assert.assertNull(args.getRequestTokenSecret());
+    Assert.assertNull(args.getOrigClientState());
+    Assert.assertFalse(args.isNoCache());
+    Assert.assertFalse(args.getSignOwner());
+    Assert.assertFalse(args.getSignViewer());
   }
 
   @Test
   public void testGetAndSet() throws Exception {
     OAuthArguments args = new OAuthArguments();
     args.setNoCache(true);
-    assertEquals(true, args.isNoCache());
+    Assert.assertTrue(args.isNoCache());
 
     args.setOrigClientState("thestate");
     assertEquals("thestate", args.getOrigClientState());
@@ -144,13 +152,18 @@ public class OAuthArgumentsTest {
     assertEquals("s", args.getServiceName());
 
     args.setSignOwner(true);
-    assertEquals(true, args.getSignOwner());
+    Assert.assertTrue(args.getSignOwner());
 
     args.setSignViewer(true);
-    assertEquals(true, args.getSignViewer());
+    Assert.assertTrue(args.getSignViewer());
 
     args.setUseToken(UseToken.IF_AVAILABLE);
     assertEquals(UseToken.IF_AVAILABLE, args.getUseToken());
+
+    args.setRequestOption("foo", "bar");
+    assertEquals("bar", args.getRequestOption("foo"));
+    args.removeRequestOption("foo");
+    assertNull(args.getRequestOption("foo"));
   }
 
   @Test
@@ -164,9 +177,21 @@ public class OAuthArgumentsTest {
     assertEquals("reqtoken", args.getRequestToken());
     assertEquals("secret", args.getRequestTokenSecret());
     assertEquals("state", args.getOrigClientState());
-    assertEquals(true, args.isNoCache());
-    assertEquals(false, args.getSignOwner());
-    assertEquals(false, args.getSignViewer());
+    Assert.assertTrue(args.isNoCache());
+    Assert.assertFalse(args.getSignOwner());
+    Assert.assertFalse(args.getSignViewer());
+  }
+
+  @Test
+  public void testCopyConstructor_options() throws Exception {
+    HttpServletRequest req = makeDummyRequest();
+    OAuthArguments args = new OAuthArguments(AuthType.OAUTH, req);
+    args = new OAuthArguments(args);
+
+    args.setRequestOption("foo", "bar");
+    args.setRequestOption("quux", "baz");
+    assertEquals("bar", args.getRequestOption("foo"));
+    assertEquals("baz", args.getRequestOption("quux"));
   }
 
   @Test

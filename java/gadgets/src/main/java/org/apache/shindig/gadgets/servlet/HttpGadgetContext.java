@@ -21,6 +21,7 @@ package org.apache.shindig.gadgets.servlet;
 
 import org.apache.shindig.auth.AuthInfo;
 import org.apache.shindig.auth.SecurityToken;
+import org.apache.shindig.common.util.BooleanConvertUtils;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.RenderingContext;
 import org.apache.shindig.gadgets.UserPrefs;
@@ -201,10 +202,9 @@ public class HttpGadgetContext extends GadgetContext {
     String ignoreCache = req.getParameter("nocache");
     if (ignoreCache == null) {
       return null;
-    } else if ("0".equals(ignoreCache)) {
-      return Boolean.FALSE;
+    } else {
+      return BooleanConvertUtils.toBoolean(ignoreCache);
     }
-    return Boolean.TRUE;
   }
 
   /**

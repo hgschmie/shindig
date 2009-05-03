@@ -154,7 +154,7 @@ public class HtmlRendererTest {
     private final Map<Uri, HttpResponse> oauthResponses = Maps.newHashMap();
 
     public FakeContentFetcherFactory() {
-      super(null, null);
+      super(null, null, null);
     }
 
     @Override

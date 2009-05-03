@@ -18,15 +18,19 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.shindig.common.util.BooleanConvertUtils;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetException;
 import org.apache.shindig.gadgets.spec.RequestAuthenticationInfo;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.common.collect.Maps;
+
+import java.util.Enumeration;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Arguments to an OAuth fetch sent by the client.
@@ -38,9 +42,19 @@ public class OAuthArguments {
   private static final String REQUEST_TOKEN_SECRET_PARAM = "OAUTH_REQUEST_TOKEN_SECRET";
   private static final String USE_TOKEN_PARAM = "OAUTH_USE_TOKEN";
   private static final String CLIENT_STATE_PARAM = "oauthState";
-  private static final String NO_CACHE_PARAM = "noCache";
+  private static final String NO_CACHE_PARAM = "nocache";
   private static final String SIGN_OWNER_PARAM = "signOwner";
   private static final String SIGN_VIEWER_PARAM = "signViewer";
+
+  // Experimental support for configuring OAuth without special parameters in the spec XML.
+  public static final String PROGRAMMATIC_CONFIG_PARAM = "OAUTH_PROGRAMMATIC_CONFIG";
+  public static final String REQUEST_METHOD_PARAM = "OAUTH_REQUEST_METHOD";
+  public static final String PARAM_LOCATION_PARAM = "OAUTH_PARAM_LOCATION";
+  public static final String REQUEST_TOKEN_URL_PARAM = "OAUTH_REQUEST_TOKEN_URL";
+  public static final String ACCESS_TOKEN_URL_PARAM = "OAUTH_ACCESS_TOKEN_URL";
+  public static final String AUTHORIZATION_URL_PARAM = "OAUTH_AUTHORIZATION_URL";
+
+
 
   /**
    * Should the OAuth access token be used?
@@ -81,6 +95,12 @@ public class OAuthArguments {
   /** Include information about the viewer? */
   private boolean signViewer = false;
 
+  /** Arbitrary name/value pairs associated with the request */
+  private final Map<String, String> requestOptions = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+
+  /** Whether the request is one for proxied content */
+  private boolean proxiedContentRequest = false;
+
   /**
    * Parse OAuthArguments from parameters to the makeRequest servlet.
    *
@@ -95,26 +115,51 @@ public class OAuthArguments {
     requestToken = getRequestParam(request, REQUEST_TOKEN_PARAM, null);
     requestTokenSecret = getRequestParam(request, REQUEST_TOKEN_SECRET_PARAM, null);
     origClientState = getRequestParam(request, CLIENT_STATE_PARAM, null);
-    noCache = "1".equals(getRequestParam(request, NO_CACHE_PARAM, null));
+    noCache = BooleanConvertUtils.toBoolean(getRequestParam(request, NO_CACHE_PARAM, null));
+
     signOwner = Boolean.parseBoolean(getRequestParam(request, SIGN_OWNER_PARAM, "true"));
     signViewer = Boolean.parseBoolean(getRequestParam(request, SIGN_VIEWER_PARAM, "true"));
+
+     Enumeration<String> params = getParameterNames(request);
+     while (params.hasMoreElements()) {
+       String name = params.nextElement();
+       requestOptions.put(name, request.getParameter(name));
+     }
   }
 
+   @SuppressWarnings("unchecked")
+   private Enumeration<String> getParameterNames(HttpServletRequest request) {
+    return request.getParameterNames();
+   }
+
   public OAuthArguments(RequestAuthenticationInfo info) throws GadgetException {
-    Map<String, String> attrs = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
-    attrs.putAll(info.getOAuthAttributes());
-    useToken = parseUseToken(info.getAuthType(), getAuthInfoParam(attrs, USE_TOKEN_PARAM, ""));
-    serviceName = getAuthInfoParam(attrs, SERVICE_PARAM, "");
-    tokenName = getAuthInfoParam(attrs, TOKEN_PARAM, "");
-    requestToken = getAuthInfoParam(attrs, REQUEST_TOKEN_PARAM, null);
-    requestTokenSecret = getAuthInfoParam(attrs, REQUEST_TOKEN_SECRET_PARAM, null);
-    origClientState = null;
-    noCache = false;
+    this(info.getAuthType(), info.getOAuthAttributes());
+
+    origClientState = null;  // Client has no state for declarative calls
+    noCache = false;         // too much trouble to copy nocache=1 from the request context to here.
+
     signOwner = info.isSignOwner();
     signViewer = info.isSignViewer();
   }
 
   /**
+   * Parse OAuthArguments from a Map of settings
+   */
+  public OAuthArguments(AuthType auth,  Map<String, String> map) throws GadgetException {
+    requestOptions.putAll(map);
+    useToken = parseUseToken(auth, getAuthInfoParam(requestOptions, USE_TOKEN_PARAM, ""));
+    serviceName = getAuthInfoParam(requestOptions, SERVICE_PARAM, "");
+    tokenName = getAuthInfoParam(requestOptions, TOKEN_PARAM, "");
+    requestToken = getAuthInfoParam(requestOptions, REQUEST_TOKEN_PARAM, null);
+    requestTokenSecret = getAuthInfoParam(requestOptions, REQUEST_TOKEN_SECRET_PARAM, null);
+    origClientState = getAuthInfoParam(requestOptions, CLIENT_STATE_PARAM, null);
+    noCache = BooleanConvertUtils.toBoolean(getAuthInfoParam(requestOptions, NO_CACHE_PARAM, null));
+
+    signOwner =  Boolean.parseBoolean(getAuthInfoParam(requestOptions, SIGN_OWNER_PARAM, "true"));
+    signViewer = Boolean.parseBoolean(getAuthInfoParam(requestOptions, SIGN_VIEWER_PARAM, "true"));
+  }
+
+  /*
    * @return the named attribute from the Preload tag attributes, or default if the attribute is
    * not present.
    */
@@ -189,6 +234,8 @@ public class OAuthArguments {
     noCache = orig.noCache;
     signOwner = orig.signOwner;
     signViewer = orig.signViewer;
+    requestOptions.putAll(orig.requestOptions);
+    proxiedContentRequest = orig.proxiedContentRequest;
   }
 
   public boolean mustUseToken() {
@@ -269,5 +316,69 @@ public class OAuthArguments {
 
   public void setSignViewer(boolean signViewer) {
     this.signViewer = signViewer;
+  }
+
+  public void setRequestOption(String name, String value) {
+    requestOptions.put(name, value);
+  }
+
+  public void removeRequestOption(String name) {
+    requestOptions.remove(name);
+  }
+
+  public String getRequestOption(String name) {
+    return requestOptions.get(name);
+  }
+
+  public String getRequestOption(String name, String def) {
+    String val = requestOptions.get(name);
+    return (val != null ? val : def);
+  }
+
+  public boolean isProxiedContentRequest() {
+    return proxiedContentRequest;
+  }
+
+  public void setProxiedContentRequest(boolean proxiedContentRequest) {
+    this.proxiedContentRequest = proxiedContentRequest;
+  }
+
+  public boolean programmaticConfig() {
+    return Boolean.parseBoolean(requestOptions.get(PROGRAMMATIC_CONFIG_PARAM));
+  }
+
+  @Override
+  public int hashCode() {
+    int result = (noCache ? 1231 : 1237);
+    result = 31 * result + ((origClientState == null) ? 0 : origClientState.hashCode());
+    result = 31 * result + (proxiedContentRequest ? 1231 : 1237);
+    result = 31 * result + ((requestToken == null) ? 0 : requestToken.hashCode());
+    result = 31 * result + ((requestTokenSecret == null) ? 0 : requestTokenSecret.hashCode());
+    result = 31 * result + ((serviceName == null) ? 0 : serviceName.hashCode());
+    result = 31 * result + (signOwner ? 1231 : 1237);
+    result = 31 * result + (signViewer ? 1231 : 1237);
+    result = 31 * result + ((tokenName == null) ? 0 : tokenName.hashCode());
+    result = 31 * result + ((useToken == null) ? 0 : useToken.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+
+    if (!(obj instanceof OAuthArguments)) {
+      return false;
+    }
+
+    OAuthArguments other = (OAuthArguments) obj;
+    return (noCache == other.noCache
+        && StringUtils.equals(origClientState, other.origClientState)
+        && proxiedContentRequest == other.proxiedContentRequest
+        && StringUtils.equals(requestToken, other.requestToken)
+        && StringUtils.equals(requestTokenSecret, other.requestTokenSecret)
+        && StringUtils.equals(tokenName, other.tokenName)
+        && signViewer == other.signViewer
+        && useToken == other.useToken);
   }
 }

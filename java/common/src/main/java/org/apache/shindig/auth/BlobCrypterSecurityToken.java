@@ -18,18 +18,18 @@
  */
 package org.apache.shindig.auth;
 
-import com.google.common.collect.Maps;
-
 import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypterException;
+
+import com.google.common.collect.Maps;
 
 import java.util.Map;
 
 /**
  * Authentication based on a provided BlobCrypter.
- * 
- * Wire format is "<container>:<encrypted-and-signed-token>"
- * 
+ *
+ * Wire format is "&lt;container&gt;:&lt;encrypted-and-signed-token&gt;"
+ *
  * Container is included so different containers can use different security tokens if necessary.
  */
 public class BlobCrypterSecurityToken implements SecurityToken {
@@ -113,7 +113,7 @@ public class BlobCrypterSecurityToken implements SecurityToken {
     if (trustedJson != null) {
       values.put(TRUSTED_JSON_KEY, trustedJson);
     }
-    return container + ":" + crypter.wrap(values);
+    return container + ':' + crypter.wrap(values);
   }
   
   // Legacy value for signed fetch, opensocial 0.8 prefers opensocial_app_url
@@ -128,7 +128,11 @@ public class BlobCrypterSecurityToken implements SecurityToken {
   public void setAppUrl(String appUrl) {
     this.appUrl = appUrl;
   }
-  
+
+  public String getContainer() {
+    return container;
+  }
+
   // Used for oauth_consumer_key for signed fetch with default key.  This is a weird spot for this.
   public String getDomain() {
     return domain;

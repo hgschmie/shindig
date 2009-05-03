@@ -17,10 +17,6 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.TestCase;
 
 import org.apache.shindig.common.testing.FakeGadgetToken;
@@ -34,11 +30,16 @@ import org.apache.shindig.social.opensocial.spi.PersonService;
 import org.apache.shindig.social.opensocial.spi.RestfulCollection;
 import org.apache.shindig.social.opensocial.spi.SocialSpiException;
 import org.apache.shindig.social.opensocial.spi.UserId;
+
 import org.easymock.classextension.EasyMock;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PersonHandlerTest extends TestCase {
   private PersonService personService;
@@ -163,7 +164,7 @@ public class PersonHandlerTest extends TestCase {
     EasyMock.expect(personService.getPeople(
         JOHN_DOE,
         new GroupId(GroupId.Type.friends, null), options,
-        Sets.newLinkedHashSet("money", "fame", "fortune"), token))
+        Sets.newHashSet("money", "fame", "fortune"), token))
         .andReturn(ImmediateFuture.newInstance(data));
 
     replay();

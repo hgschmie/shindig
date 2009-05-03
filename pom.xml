@@ -851,27 +851,27 @@
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-features</artifactId>
-        <version>ning-20090501.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-common</artifactId>
-        <version>ning-20090501.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-gadgets</artifactId>
-        <version>ning-20090501.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-server</artifactId>
-        <version>ning-20090501.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.shindig</groupId>
         <artifactId>shindig-social-api</artifactId>
-        <version>ning-20090501.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- external dependencies -->
@@ -881,9 +881,9 @@
         <version>1.0</version>
       </dependency>
       <dependency>
-        <groupId>com.google.code.google-collections</groupId>
-        <artifactId>google-collect</artifactId>
-        <version>snapshot-20080321</version>
+        <groupId>com.google.collections</groupId>
+        <artifactId>google-collections</artifactId>
+        <version>0.9</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -914,14 +914,14 @@
       </dependency>
       <dependency>
         <groupId>net.oauth</groupId>
-        <artifactId>core</artifactId>
-        <version>20080621</version>
+        <artifactId>oauth-core</artifactId>
+        <version>20090315</version>
         <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
-        <version>2.3</version>
+        <version>2.4</version>
         <scope>compile</scope>
       </dependency>
       <dependency>
@@ -943,12 +943,12 @@
       <dependency>
         <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty</artifactId>
-        <version>6.1.9</version>
+        <version>6.1.15</version>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
-        <version>1.5.2</version>
+        <version>1.6</version>
       </dependency>
       <dependency>
         <groupId>rome</groupId>

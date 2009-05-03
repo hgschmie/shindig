@@ -19,9 +19,12 @@ package org.apache.shindig.gadgets.http;
 
 import org.apache.shindig.common.util.DateUtil;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertNotNull;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,14 +32,17 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
-public class HttpResponseTest extends TestCase {
-  private static final byte[] UTF8_DATA = new byte[] {
+import static junitx.framework.Assert.assertEquals;
+import static junitx.framework.Assert.assertFalse;
+
+public class HttpResponseTest {
+  private static final byte[] UTF8_DATA = {
     (byte)0xEF, (byte)0xBB, (byte)0xBF, 'h', 'e', 'l', 'l', 'o'
   };
   private static final String UTF8_STRING = "hello";
 
   // A large string is needed for accurate charset detection.
-  private static final byte[] LATIN1_DATA = new byte[] {
+  private static final byte[] LATIN1_DATA = {
     'G', 'a', 'm', 'e', 's', ',', ' ', 'H', 'Q', ',', ' ', 'M', 'a', 'n', 'g', (byte)0xE1, ',', ' ',
     'A', 'n', 'i', 'm', 'e', ' ', 'e', ' ', 't', 'u', 'd', 'o', ' ', 'q', 'u', 'e', ' ', 'u', 'm',
     ' ', 'b', 'o', 'm', ' ', 'n', 'e', 'r', 'd', ' ', 'a', 'm', 'a'
@@ -44,7 +50,7 @@ public class HttpResponseTest extends TestCase {
   private static final String LATIN1_STRING
       = "Games, HQ, Mang\u00E1, Anime e tudo que um bom nerd ama";
 
-  private static final byte[] BIG5_DATA = new byte[] {
+  private static final byte[] BIG5_DATA = {
     (byte)0xa7, (byte)0x41, (byte)0xa6, (byte)0x6e
   };
 
@@ -55,30 +61,17 @@ public class HttpResponseTest extends TestCase {
     return (int)(ts / 1000);
   }
 
-  public void testGetEncoding() throws Exception {
-    HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Content-Type", "text/plain; charset=TEST-CHARACTER-SET")
-        .setResponse(new byte[] {'j', 'u', 'n', 'k'})
-        .create();
-    assertEquals("TEST-CHARACTER-SET", response.getEncoding());
-  }
-
-  public void testGetEncodingQuotes() throws Exception {
-    HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Content-Type", "text/plain; charset=\"TEST-CHARACTER-SET\"")
-        .setResponse(new byte[] {'j', 'u', 'n', 'k'})
-        .create();
-    assertEquals("TEST-CHARACTER-SET", response.getEncoding());
-  }
-
+  @Test
   public void testEncodingDetectionUtf8WithBom() throws Exception {
      HttpResponse response = new HttpResponseBuilder()
          .addHeader("Content-Type", "text/plain; charset=UTF-8")
          .setResponse(UTF8_DATA)
          .create();
     assertEquals(UTF8_STRING, response.getResponseAsString());
+    assertEquals("UTF-8", response.getEncoding());
   }
 
+  @Test
   public void testEncodingDetectionLatin1() throws Exception {
     // Input is a basic latin-1 string with 1 non-UTF8 compatible char.
     HttpResponse response = new HttpResponseBuilder()
@@ -88,6 +81,39 @@ public class HttpResponseTest extends TestCase {
     assertEquals(LATIN1_STRING, response.getResponseAsString());
   }
 
+  @Test
+  public void testEncodingDetectionLatin1withIncorrectCharset() throws Exception {
+    // Input is a basic latin-1 string with 1 non-UTF8 compatible char.
+    HttpResponse response = new HttpResponseBuilder()
+        .addHeader("Content-Type", "text/plain; charset=iso-88859-1")
+        .setResponse(LATIN1_DATA)
+        .create();
+    assertEquals(LATIN1_STRING, response.getResponseAsString());
+    assertEquals("ISO-8859-1", response.getEncoding());
+  }
+
+  @Test
+  public void testEncodingDetectionUtf8WithBomAndIncorrectCharset() throws Exception {
+     HttpResponse response = new HttpResponseBuilder()
+         .addHeader("Content-Type", "text/plain; charset=UTTFF-88")
+         .setResponse(UTF8_DATA)
+         .create();
+    assertEquals(UTF8_STRING, response.getResponseAsString());
+    assertEquals("UTF-8", response.getEncoding());
+  }
+
+  @Test
+  public void testEncodingDetectionUtf8WithBomAndInvalidCharset() throws Exception {
+     HttpResponse response = new HttpResponseBuilder()
+         // Use a charset that will generate an IllegalCharsetNameException
+         .addHeader("Content-Type", "text/plain; charset=.UTF-8")
+         .setResponse(UTF8_DATA)
+         .create();
+    assertEquals(UTF8_STRING, response.getResponseAsString());
+    assertEquals("UTF-8", response.getEncoding());
+  }
+
+  @Test
   public void testEncodingDetectionBig5() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Content-Type", "text/plain; charset=BIG5")
@@ -96,6 +122,16 @@ public class HttpResponseTest extends TestCase {
     assertEquals(BIG5_STRING, response.getResponseAsString());
   }
 
+  @Test
+  public void testEncodingDetectionBig5WithQuotes() throws Exception {
+    HttpResponse response = new HttpResponseBuilder()
+        .addHeader("Content-Type", "text/plain; charset=\"BIG5\"")
+        .setResponse(BIG5_DATA)
+        .create();
+    assertEquals(BIG5_STRING, response.getResponseAsString());
+  }
+
+  @Test
   public void testEncodingDetectionUtf8WithBomNoCharsetSpecified() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Content-Type", "text/plain")
@@ -105,6 +141,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals(UTF8_STRING, response.getResponseAsString());
   }
 
+  @Test
   public void testEncodingDetectionLatin1NoCharsetSpecified() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Content-Type", "text/plain;")
@@ -114,6 +151,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals(LATIN1_STRING, response.getResponseAsString());
   }
 
+  @Test
   public void testEncodingDetectionUtf8WithBomNoContentHeader() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .setResponse(UTF8_DATA)
@@ -122,31 +160,35 @@ public class HttpResponseTest extends TestCase {
     assertEquals(UTF8_STRING, response.getResponseAsString());
   }
 
+  @Test
   public void testEncodingDetectionLatin1NoContentHeader() throws Exception {
      HttpResponse response = new HttpResponseBuilder()
         .setResponse(LATIN1_DATA)
         .create();
-    assertEquals(HttpResponse.DEFAULT_ENCODING, response.getEncoding());
+    assertEquals(HttpResponse.DEFAULT_ENCODING.name(), response.getEncoding());
   }
 
+  @Test
   public void testGetEncodingForImageContentType() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .setResponse(LATIN1_DATA)
         .addHeader("Content-Type", "image/png; charset=iso-8859-1")
         .create();
-    assertEquals(HttpResponse.DEFAULT_ENCODING, response.getEncoding().toUpperCase());
+    assertEquals(HttpResponse.DEFAULT_ENCODING.name(), response.getEncoding().toUpperCase());
   }
 
+  @Test
   public void testGetEncodingForFlashContentType() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .setResponse(LATIN1_DATA)
         .addHeader("Content-Type", "application/x-shockwave-flash; charset=iso-8859-1")
         .create();
-    assertEquals(HttpResponse.DEFAULT_ENCODING, response.getEncoding().toUpperCase());
+    assertEquals(HttpResponse.DEFAULT_ENCODING.name(), response.getEncoding().toUpperCase());
   }
 
+  @Test
   public void testPreserveBinaryData() throws Exception {
-    byte[] data = new byte[] {
+    byte[] data = {
         (byte)0x00, (byte)0xDE, (byte)0xEA, (byte)0xDB, (byte)0xEE, (byte)0xF0
     };
     HttpResponse response = new HttpResponseBuilder()
@@ -162,6 +204,7 @@ public class HttpResponseTest extends TestCase {
     assertTrue(Arrays.equals(data, out));
   }
 
+  @Test
   public void testStrictCacheControlNoCache() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Cache-Control", "no-cache")
@@ -171,6 +214,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals(-1, response.getCacheTtl());
   }
 
+  @Test
   public void testStrictPragmaNoCache() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Pragma", "no-cache")
@@ -180,6 +224,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals(-1, response.getCacheTtl());
   }
 
+  @Test
   public void testStrictPragmaJunk() throws Exception {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader("Pragma", "junk")
@@ -190,6 +235,27 @@ public class HttpResponseTest extends TestCase {
     assertEquals(expected, expires);
     assertTrue(response.getCacheTtl() <= HttpResponse.DEFAULT_TTL && response.getCacheTtl() > 0);
   }
+  
+  @Test
+  public void testCachingHeadersIgnoredOnError() throws Exception {
+    HttpResponse response = new HttpResponseBuilder()
+        .addHeader("Cache-Control", "no-cache")
+        .setHttpStatusCode(404)
+        .create();
+    assertFalse(response.isStrictNoCache());
+
+    response = new HttpResponseBuilder()
+        .addHeader("Cache-Control", "no-cache")
+        .setHttpStatusCode(403)
+        .create();
+    assertTrue(response.isStrictNoCache());
+
+    response = new HttpResponseBuilder()
+        .addHeader("Cache-Control", "no-cache")
+        .setHttpStatusCode(401)
+        .create();
+    assertTrue(response.isStrictNoCache());
+  }
 
   /**
    * Verifies that the cache TTL is within acceptable ranges.
@@ -199,17 +265,19 @@ public class HttpResponseTest extends TestCase {
     assertEquals(maxAge - 1, roundToSeconds(response.getCacheTtl() - 1));
   }
 
+  @Test
   public void testExpires() throws Exception {
     int maxAge = 10;
     int time = roundToSeconds(System.currentTimeMillis()) + maxAge;
     HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Expires", DateUtil.formatDate(1000L * time))
+        .addHeader("Expires", DateUtil.formatRfc1123Date(1000L * time))
         .create();
     assertEquals(time, roundToSeconds(response.getCacheExpiration()));
     // Second rounding makes this n-1.
     assertTtlOk(maxAge, response);
   }
 
+  @Test
   public void testMaxAgeNoDate() throws Exception {
     int maxAge = 10;
     // Guess time.
@@ -223,6 +291,7 @@ public class HttpResponseTest extends TestCase {
     assertTtlOk(maxAge, response);
   }
 
+  @Test
   public void testMaxAgeInvalidDate() throws Exception {
     int maxAge = 10;
     // Guess time.
@@ -238,11 +307,12 @@ public class HttpResponseTest extends TestCase {
     assertTtlOk(maxAge, response);
   }
 
+  @Test
   public void testMaxAgeWithDate() throws Exception {
     int maxAge = 10;
     int now = roundToSeconds(System.currentTimeMillis());
     HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Date", DateUtil.formatDate(1000L * now))
+        .addHeader("Date", DateUtil.formatRfc1123Date(1000L * now))
         .addHeader("Cache-Control", "public, max-age=" + maxAge)
         .create();
 
@@ -250,16 +320,18 @@ public class HttpResponseTest extends TestCase {
     assertTtlOk(maxAge, response);
   }
 
+  @Test
   public void testFixedDate() throws Exception {
     int time = roundToSeconds(System.currentTimeMillis());
     HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Date", DateUtil.formatDate(1000L * time))
+        .addHeader("Date", DateUtil.formatRfc1123Date(1000L * time))
         .create();
     assertEquals(time + roundToSeconds(HttpResponse.DEFAULT_TTL),
         roundToSeconds(response.getCacheExpiration()));
     assertTtlOk(roundToSeconds(HttpResponse.DEFAULT_TTL), response);
   }
 
+  @Test
   public void testNegativeCaching() {
     assertTrue("Bad HTTP responses must be cacheable!",
         HttpResponse.error().getCacheExpiration() > System.currentTimeMillis());
@@ -290,6 +362,7 @@ public class HttpResponseTest extends TestCase {
     assertTrue(ttl <= HttpResponse.DEFAULT_TTL && ttl > 0);
   }
 
+  @Test
   public void testStrictNoCacheAndNegativeCaching() {
     assertDoesNotAllowNegativeCaching(HttpResponse.SC_UNAUTHORIZED);
     assertDoesNotAllowNegativeCaching(HttpResponse.SC_FORBIDDEN);
@@ -299,10 +372,11 @@ public class HttpResponseTest extends TestCase {
     assertAllowsNegativeCaching(HttpResponse.SC_GATEWAY_TIMEOUT);
   }
 
+  @Test
   public void testSetNoCache() {
     int time = roundToSeconds(System.currentTimeMillis());
     HttpResponse response = new HttpResponseBuilder()
-        .addHeader("Expires", DateUtil.formatDate(1000L * time))
+        .addHeader("Expires", DateUtil.formatRfc1123Date(1000L * time))
         .setStrictNoCache()
         .create();
     assertNull(response.getHeader("Expires"));
@@ -310,6 +384,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals("no-cache", response.getHeader("Cache-Control"));
   }
 
+  @Test
   public void testNullHeaderNamesStripped() {
     HttpResponse response = new HttpResponseBuilder()
         .addHeader(null, "dummy")
@@ -319,6 +394,7 @@ public class HttpResponseTest extends TestCase {
     }
   }
 
+  @Test
   public void testIsError() {
     // These aren't all valid status codes, but they're reserved in these blocks. Changes
     // would be required to the HTTP standard anyway before this test would be invalid.
@@ -337,6 +413,7 @@ public class HttpResponseTest extends TestCase {
     }
   }
 
+  @Test
   public void testSerialization() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -359,6 +436,7 @@ public class HttpResponseTest extends TestCase {
     assertEquals(response, deserialized);
   }
 
+  @Test
   public void testSerializationWithTransientFields() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     ObjectOutputStream out = new ObjectOutputStream(baos);
@@ -369,7 +447,7 @@ public class HttpResponseTest extends TestCase {
         .addHeader("Foo", "bar")
         .addHeader("Foo", "baz")
         .addHeader("Blah", "blah")
-        .addHeader("Date", DateUtil.formatDate(now))
+        .addHeader("Date", DateUtil.formatRfc1123Date(now))
         .setHttpStatusCode(204)
         .setResponseString("This is the response string")
         .setMetadata("foo", "bar")
@@ -386,7 +464,7 @@ public class HttpResponseTest extends TestCase {
         .addHeader("Foo", "bar")
         .addHeader("Foo", "baz")
         .addHeader("Blah", "blah")
-        .addHeader("Date", DateUtil.formatDate(now))
+        .addHeader("Date", DateUtil.formatRfc1123Date(now))
         .setHttpStatusCode(204)
         .setResponseString("This is the response string")
         .create();

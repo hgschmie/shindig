@@ -45,6 +45,11 @@ public interface SecurityToken {
   public String getDomain();
 
   /**
+   * @return The container.
+   */
+  public String getContainer();
+
+  /**
    * @return the URL of the application
    */
   public String getAppUrl();

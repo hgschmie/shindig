@@ -15,27 +15,18 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.shindig.gadgets.http;
+package org.apache.shindig.common;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Factory for HttpFetcher's that retrieve remote content
- *
- * TODO: Remove this.
- */
-public class RemoteContentFetcherFactory implements Provider<HttpFetcher> {
+import org.junit.Test;
 
-  private HttpFetcher fetcher;
+public class PairTest {
 
-  @Inject
-  public RemoteContentFetcherFactory(HttpFetcher fetcher) {
-    this.fetcher = fetcher;
-  }
-
-  public HttpFetcher get() {
-    return fetcher;
+  @Test
+  public void testPair() {
+    Pair<String, Integer> p = Pairs.newPair("one", new Integer(1));
+    assertEquals("one", p.one);
+    assertEquals(new Integer(1), p.two);
   }
 }
-
