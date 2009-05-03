@@ -205,6 +205,10 @@ gadgets.io = function() {
       params, processResponseFunction, opt_contentType) {
     var xhr = makeXhr();
 
+    if (proxyUrl.indexOf('//') == 0) {
+      proxyUrl = document.location.protocol + proxyUrl;
+    }
+    
     xhr.open(method, proxyUrl, true);
     if (callback) {
       xhr.onreadystatechange = gadgets.util.makeClosure(
@@ -264,7 +268,7 @@ gadgets.io = function() {
    * @private
    */
   function init (configuration) {
-    config = configuration["core.io"];
+    config = configuration["core.io"] || {};
   }
 
   var requiredConfig = {
@@ -475,6 +479,7 @@ gadgets.io.RequestParameters = gadgets.util.makeEnum([
   "GET_SUMMARIES",
   "REFRESH_INTERVAL",
   "OAUTH_SERVICE_NAME",
+  "OAUTH_USE_TOKEN",
   "OAUTH_TOKEN_NAME",
   "OAUTH_REQUEST_TOKEN",
   "OAUTH_REQUEST_TOKEN_SECRET"
