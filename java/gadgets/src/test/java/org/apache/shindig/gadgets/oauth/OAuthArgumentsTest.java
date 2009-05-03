@@ -71,7 +71,7 @@ public class OAuthArgumentsTest {
     req.setParameter("OAUTH_REQUEST_TOKEN", true, "reqtoken");
     req.setParameter("OAUTH_REQUEST_TOKEN_SECRET", true, "secret");
     req.setParameter("oauthState", true, "state");
-    req.setParameter("bypassSpecCache", true, "1");
+    req.setParameter("nocache", true, "1");
     req.setParameter("signOwner", true, "false");
     req.setParameter("signViewer", true, "false");
     req.setParameter("random", true, "stuff");

@@ -21,19 +21,23 @@ package org.apache.shindig.gadgets.spec;
  *
  */
 
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.Pair;
+import org.apache.shindig.gadgets.AuthType;
+import org.apache.shindig.gadgets.variables.Substitutions;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.AuthType;
-import org.apache.shindig.gadgets.variables.Substitutions;
-
-import com.google.common.collect.ImmutableSet;
 
 public class Preload extends SpecElement implements RequestAuthenticationInfo {
 
@@ -171,8 +175,19 @@ public class Preload extends SpecElement implements RequestAuthenticationInfo {
     }
   }
 
+  /**
+   * Returns the attributes as an OAuth source. The Shindig code requires all
+   * attributes to be returned, not just the canonical ones.
+   */
   public Map<String, String> getOAuthAttributes() {
-    return attributes();
+
+      final Map<String, String> oauthAttributes = Maps.newHashMap(attributes());
+
+      for (final Pair<QName, String> pair : otherAttrs().values()) {
+          oauthAttributes.put(pair.getKey().getLocalPart(), pair.getValue());
+      }
+
+      return Collections.unmodifiableMap(oauthAttributes);
   }
 
   public static class Parser extends SpecElement.Parser<Preload> {

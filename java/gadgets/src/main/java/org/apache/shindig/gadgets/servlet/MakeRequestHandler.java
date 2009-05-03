@@ -36,10 +36,12 @@ import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,6 +67,8 @@ public class MakeRequestHandler extends ProxyBase {
 
   private final ContentFetcherFactory contentFetcherFactory;
   private final ContentRewriterRegistry contentRewriterRegistry;
+
+  private static final Set<String> BAD_HEADERS = ImmutableSet.of("HOST", "ACCEPT", "ACCEPT-ENCODING");
 
   @Inject
   public MakeRequestHandler(ContentFetcherFactory contentFetcherFactory,
@@ -128,11 +132,17 @@ public class MakeRequestHandler extends ProxyBase {
           throw new GadgetException(GadgetException.Code.INTERNAL_SERVER_ERROR,
               "Malformed header specified,");
         }
-        req.addHeader(Utf8UrlCoder.decode(parts[0]), Utf8UrlCoder.decode(parts[1]));
+        String headerName = Utf8UrlCoder.decode(parts[0]);
+        if (!BAD_HEADERS.contains(headerName.toUpperCase())) {
+          req.addHeader(headerName, Utf8UrlCoder.decode(parts[1]));
+        }
       }
     }
 
-    removeUnsafeHeaders(req);
+    // Set the default content type  for post requests when a content type is not specified
+    if ("POST".equals(req.getMethod()) && req.getHeader("Content-Type")==null) {
+      req.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
 
     // This allows to bypass the cache by setting the gadget to be uncacheable (then the value is passed in on the request) or
     // by the requestor (by attaching ?nocache=true to the URL to fetch.
@@ -142,6 +152,16 @@ public class MakeRequestHandler extends ProxyBase {
       req.setGadget(Uri.parse(request.getParameter(GADGET_PARAM)));
     }
 
+    // If the proxy request specifies a refresh param then we want to force the min TTL for
+    // the retrieved entry in the cache regardless of the headers on the content when it
+    // is fetched from the original source.
+    if (request.getParameter(REFRESH_PARAM) != null) {
+      try {
+        req.setCacheTtl(Integer.parseInt(request.getParameter(REFRESH_PARAM)));
+      } catch (NumberFormatException nfe) {
+        // Ignore
+      }
+    }
     // Allow the rewriter to use an externally forced mime type. This is needed
     // allows proper rewriting of <script src="x"/> where x is returned with
     // a content type like text/html which unfortunately happens all too often
@@ -158,21 +178,6 @@ public class MakeRequestHandler extends ProxyBase {
   }
 
   /**
-   * Removes unsafe headers from the header set.
-   */
-  private void removeUnsafeHeaders(HttpRequest request) {
-    // Host must be removed.
-    final String[] badHeaders = new String[] {
-        // No legitimate reason to over ride these.
-        // TODO: We probably need to test variations as well.
-        "Host", "Accept", "Accept-Encoding"
-    };
-    for (String bad : badHeaders) {
-      request.removeHeader(bad);
-    }
-  }
-
-  /**
    * Format a response as JSON, including additional JSON inserted by
    * chained content fetchers.
    */
@@ -180,7 +185,6 @@ public class MakeRequestHandler extends ProxyBase {
       HttpResponse results) throws GadgetException {
     try {
       String originalUrl = request.getParameter(ProxyBase.URL_PARAM);
-
       String body = "";
       if (results.getHttpStatusCode() == 200) {
         body = results.getResponseAsString();
@@ -189,7 +193,6 @@ public class MakeRequestHandler extends ProxyBase {
           body = processFeed(originalUrl, request, body);
         }
       }
-
       JSONObject resp = FetchResponseUtils.getResponseAsJson(results, body);
 
       if (authToken != null) {

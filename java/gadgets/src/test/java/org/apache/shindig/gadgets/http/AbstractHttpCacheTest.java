@@ -20,11 +20,12 @@ package org.apache.shindig.gadgets.http;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.replay;
 
-import org.easymock.classextension.EasyMock;
-
 import junit.framework.TestCase;
 
-import java.util.HashMap;
+import org.easymock.classextension.EasyMock;
+
+import com.google.common.collect.Maps;
+
 import java.util.Map;
 
 /**
@@ -57,11 +58,10 @@ public class AbstractHttpCacheTest extends TestCase {
   }
 
   private static class TestHttpCache extends AbstractHttpCache {
-    private final Map<String, HttpResponse> map;
+    protected final Map<String, HttpResponse> map;
 
     public TestHttpCache() {
-      super();
-      map = new HashMap<String, HttpResponse>();
+      map = Maps.newHashMap();
     }
 
     @Override

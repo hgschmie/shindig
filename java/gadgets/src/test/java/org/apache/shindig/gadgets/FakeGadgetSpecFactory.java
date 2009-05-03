@@ -18,13 +18,13 @@
  */
 package org.apache.shindig.gadgets;
 
-import java.net.URI;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.oauth.GadgetTokenStoreTest;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
+
+import java.net.URI;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Fakes out a gadget spec factory
@@ -33,9 +33,35 @@ public class FakeGadgetSpecFactory implements GadgetSpecFactory {
   public static final String SERVICE_NAME = "testservice";
   public static final String SERVICE_NAME_NO_KEY = "nokey";
 
-  public GadgetSpec getGadgetSpec(GadgetContext context) {
-    // we don't need this one yet
-    return null;
+  public GadgetSpec getGadgetSpec(GadgetContext context) throws GadgetException, XMLStreamException {
+    URI uri = context.getUrl();
+    String gadget = uri.toString();
+    String baseSpec = GadgetTokenStoreTest.GADGET_SPEC;
+
+    if (gadget.contains("nokey")) {
+      // For testing key lookup failures
+      String nokeySpec = baseSpec.replace(SERVICE_NAME, SERVICE_NAME_NO_KEY);
+      return StaxTestUtils.parseSpec(nokeySpec, Uri.fromJavaUri(uri));
+    } else if (gadget.contains("header")) {
+      // For testing oauth data in header
+      String headerSpec = baseSpec.replace("uri-query", "auth-header");
+      return StaxTestUtils.parseSpec(headerSpec, Uri.fromJavaUri(uri));
+    } else if (gadget.contains("body")) {
+      // For testing oauth data in body
+      String bodySpec = baseSpec.replace("uri-query", "post-body");
+      bodySpec = bodySpec.replace("'GET'", "'POST'");
+      return StaxTestUtils.parseSpec(bodySpec, Uri.fromJavaUri(uri));
+    } else if (gadget.contains("badoauthurl")) {
+      String spec = baseSpec.replace("/request?param=foo", "/echo?mary_had_a_little_lamb");
+      spec = spec.replace("/access", "/echo?add_oauth_token=with_fleece_as_white_as_snow");
+      spec = spec.replace("uri-query", "auth-header");
+      return StaxTestUtils.parseSpec(spec, Uri.fromJavaUri(uri));
+    } else if (gadget.contains("approvalparams")) {
+      String spec = baseSpec.replace("/authorize", "/authorize?oauth_callback=foo");
+      return StaxTestUtils.parseSpec(spec, Uri.fromJavaUri(uri));
+    } else {
+      return StaxTestUtils.parseSpec(baseSpec, Uri.fromJavaUri(uri));
+    }
   }
 
   public GadgetSpec getGadgetSpec(URI gadgetUri, boolean ignoreCache) throws GadgetException, XMLStreamException {

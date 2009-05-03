@@ -15,18 +15,13 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.apache.shindig.common;
+package org.apache.shindig.common.util;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
-public class PairTest {
-
-  @Test
-  public void testPair() {
-    Pair<String, Integer> p = Pairs.newPair("one", new Integer(1));
-    assertEquals("one", p.one);
-    assertEquals(new Integer(1), p.two);
+/**
+ * Utility class for creating Pair objects.
+ */
+public class Pairs {
+  public static <T1, T2> Pair<T1, T2> newPair(T1 one, T2 two) {
+    return new Pair<T1, T2>(one, two);
   }
 }

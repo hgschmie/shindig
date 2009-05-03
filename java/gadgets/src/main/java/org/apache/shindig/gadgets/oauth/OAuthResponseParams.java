@@ -19,17 +19,17 @@
 
 package org.apache.shindig.gadgets.oauth;
 
-import com.google.common.collect.Lists;
-import com.google.common.base.Preconditions;
-
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.common.Pair;
-import org.apache.shindig.common.Pairs;
 import org.apache.shindig.common.crypto.BlobCrypter;
 import org.apache.shindig.common.crypto.BlobCrypterException;
+import org.apache.shindig.common.util.Pair;
+import org.apache.shindig.common.util.Pairs;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
  * Container for OAuth specific data to include in the response to the client.
  */
 public class OAuthResponseParams {
-  
+
   private static final Logger logger = Logger.getLogger(OAuthResponseParams.class.getName());
 
   // Finds the values of sensitive response params: oauth_token_secret and oauth_session_handle
@@ -53,7 +53,7 @@ public class OAuthResponseParams {
   public static final String APPROVAL_URL = "oauthApprovalUrl";
   public static final String ERROR_CODE = "oauthError";
   public static final String ERROR_TEXT = "oauthErrorText";
-  
+
   /**
    * Transient state we want to cache client side.
    */
@@ -73,22 +73,22 @@ public class OAuthResponseParams {
    * Request/response pairs we sent onward.
    */
   private final List<Pair<HttpRequest, HttpResponse>> requestTrace = Lists.newArrayList();
-  
+
   /**
    * Authorization URL for the client.
    */
   private String aznUrl;
-  
+
   /**
    * Error code for the client.
    */
   private String error;
-  
+
   /**
    * Error text for the client.
    */
   private String errorText;
-  
+
   /**
    * Whether we should include the request trace in the response to the application.
    *
@@ -106,7 +106,7 @@ public class OAuthResponseParams {
     this.originalRequest = originalRequest;
     newClientState = new OAuthClientState(stateCrypter);
   }
-  
+
   /**
    * Log a warning message that includes the details of the request.
    */
@@ -120,7 +120,7 @@ public class OAuthResponseParams {
   public void logDetailedWarning(String note, Throwable cause) {
     logger.log(Level.WARNING, note + '\n' + getDetails(), cause);
   }
-  
+
   public void logDetailedInfo(String note, Throwable cause) {
     logger.log(Level.INFO, note + '\n' + getDetails(), cause);
   }
@@ -137,7 +137,7 @@ public class OAuthResponseParams {
    */
   public boolean sawErrorResponse() {
     for (Pair<HttpRequest, HttpResponse> event : requestTrace) {
-      if (event.two == null || event.two.isError()) {
+      if (event.getValue() == null || event.getValue().isError()) {
         return true;
       }
     }
@@ -157,12 +157,12 @@ public class OAuthResponseParams {
     int i = 1;
     for (Pair<HttpRequest, HttpResponse> event : requestTrace) {
       trace.append("\n==== Sent request " + i + ":\n");
-      if (event.one != null) {
-        trace.append(filterSecrets(event.one.toString()));
+      if (event.getKey() != null) {
+        trace.append(filterSecrets(event.getKey().toString()));
       }
       trace.append("\n==== Received response " + i + ":\n");
-      if (event.two != null) {
-        trace.append(filterSecrets(event.two.toString()));
+      if (event.getValue() != null) {
+        trace.append(filterSecrets(event.getValue().toString()));
       }
       trace.append("\n====");
       ++i;
@@ -278,7 +278,7 @@ public class OAuthResponseParams {
     private OAuthRequestException(String message) {
       super(message);
   }
-  
+
     private OAuthRequestException(String message, Throwable cause) {
       super(message, cause);
     }

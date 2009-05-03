@@ -27,11 +27,33 @@ import org.apache.shindig.gadgets.GadgetContext;
 import java.util.Locale;
 
 public class HttpGadgetContextTest extends ServletTestFixture {
-  public void testIgnoreCacheParam() {
-    expect(request.getParameter("nocache")).andReturn(Integer.toString(Integer.MAX_VALUE));
+
+  public void testIgnoreCacheParam1() {
+    expect(request.getParameter("nocache")).andReturn("0");
     replay();
     GadgetContext context = new HttpGadgetContext(request);
-    assertEquals(true, context.getIgnoreCache());
+    assertFalse(context.getIgnoreCache());
+  }
+
+  public void testIgnoreCacheParam2() {
+    expect(request.getParameter("nocache")).andReturn("1");
+    replay();
+    GadgetContext context = new HttpGadgetContext(request);
+    assertTrue(context.getIgnoreCache());
+  }
+
+  public void testIgnoreCacheParam3() {
+    expect(request.getParameter("nocache")).andReturn("false");
+    replay();
+    GadgetContext context = new HttpGadgetContext(request);
+    assertFalse(context.getIgnoreCache());
+  }
+
+  public void testIgnoreCacheParam4() {
+    expect(request.getParameter("nocache")).andReturn("true");
+    replay();
+    GadgetContext context = new HttpGadgetContext(request);
+    assertTrue(context.getIgnoreCache());
   }
 
   public void testLocale() {

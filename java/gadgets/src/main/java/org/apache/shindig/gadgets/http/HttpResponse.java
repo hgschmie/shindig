@@ -27,6 +27,7 @@ import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -42,7 +43,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -559,15 +560,15 @@ public final class HttpResponse implements Externalizable {
   }
 
 
-  private static final Supplier<Collection<String>> HEADER_COLLECTION_SUPPLIER = new HeaderCollectionSupplier();
+  private static final Supplier<Set<String>> HEADER_COLLECTION_SUPPLIER = new HeaderCollectionSupplier();
 
-  private static class HeaderCollectionSupplier implements Supplier<Collection<String>> {
-    public Collection<String> get() {
-      return new LinkedList<String>();  //To change body of implemented methods use File | Settings | File Templates.
+  private static class HeaderCollectionSupplier implements Supplier<Set<String>> {
+    public Set<String> get() {
+      return new LinkedHashSet<String>();
     }
   }
   public static Multimap<String,String> newHeaderMultimap() {
-    TreeMap<String,Collection<String>> map = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
+    TreeMap<String, Collection<String>> map = Maps.newTreeMap(String.CASE_INSENSITIVE_ORDER);
     return Multimaps.newMultimap(map, HEADER_COLLECTION_SUPPLIER);
   }
 }

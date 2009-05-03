@@ -144,5 +144,11 @@ under the License.
         <artifactId>wstx-asl</artifactId>
         <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.shindig</groupId>
+      <artifactId>shindig-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

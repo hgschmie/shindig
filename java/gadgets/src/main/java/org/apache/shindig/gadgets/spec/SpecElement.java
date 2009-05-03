@@ -251,7 +251,7 @@ public abstract class SpecElement {
     return Collections.unmodifiableMap(nsAttrs);
   }
 
-  private Map<String, Pair<QName, String>> otherAttrs() {
+  protected Map<String, Pair<QName, String>> otherAttrs() {
     return Collections.unmodifiableMap(otherAttrs);
   }
 
