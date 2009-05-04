@@ -17,30 +17,40 @@
  */
 package org.apache.shindig.social.opensocial.service;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.util.JsonConversionUtil;
+import org.apache.shindig.common.util.Pair;
 import org.apache.shindig.social.ResponseError;
 import org.apache.shindig.social.opensocial.spi.DataCollection;
 import org.apache.shindig.social.opensocial.spi.RestfulCollection;
-
-import com.google.common.collect.Lists;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.Future;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.collect.Lists;
 
 /**
  * JSON-RPC handler servlet.
  */
 public class JsonRpcServlet extends ApiServlet {
+
+    private final Logger log = Logger.getLogger(JsonRpcServlet.class.getName());
+
+    private AtomicInteger inFlight = new AtomicInteger(0);
 
   @Override
   protected void doGet(HttpServletRequest servletRequest,
@@ -92,46 +102,62 @@ public class JsonRpcServlet extends ApiServlet {
 
   protected void dispatchBatch(JSONArray batch, HttpServletRequest servletRequest,
       HttpServletResponse servletResponse, SecurityToken token) throws JSONException, IOException {
-    // Use linked hash map to preserve order
-    List<Future<?>> responses = Lists.newArrayListWithExpectedSize(batch.length());
 
-    // Gather all Futures.  We do this up front so that
-    // the first call to get() comes after all futures are created,
-    // which allows for implementations that batch multiple Futures
-    // into single requests.
-    for (int i = 0; i < batch.length(); i++) {
-      JSONObject batchObj = batch.getJSONObject(i);
-      RpcRequestItem requestItem = new RpcRequestItem(batchObj, token, jsonConverter);
-      responses.add(handleRequestItem(requestItem, servletRequest));
-    }
+      final Pair<String, StopWatch> state = startInFlight(batch.length());
 
-    // Resolve each Future into a response.
-    // TODO: should use shared deadline across each request
-    JSONArray result = new JSONArray();
-    for (int i = 0; i < batch.length(); i++) {
-      JSONObject batchObj = batch.getJSONObject(i);
-      String key = null;
-      if (batchObj.has("id")) {
-        key = batchObj.getString("id");
+      try {
+          // Use linked hash map to preserve order
+          List<Future<?>> responses = Lists.newArrayListWithExpectedSize(batch.length());
+
+          // Gather all Futures.  We do this up front so that
+          // the first call to get() comes after all futures are created,
+          // which allows for implementations that batch multiple Futures
+          // into single requests.
+          for (int i = 0; i < batch.length(); i++) {
+              JSONObject batchObj = batch.getJSONObject(i);
+              RpcRequestItem requestItem = new RpcRequestItem(batchObj, token, jsonConverter);
+              responses.add(handleRequestItem(requestItem, servletRequest));
+          }
+
+          splitInFlight(state, "Batching requests done");
+
+          // Resolve each Future into a response.
+          // TODO: should use shared deadline across each request
+          JSONArray result = new JSONArray();
+          for (int i = 0; i < batch.length(); i++) {
+              JSONObject batchObj = batch.getJSONObject(i);
+              String key = null;
+              if (batchObj.has("id")) {
+                  key = batchObj.getString("id");
+              }
+              result.put(getJSONResponse(key, getResponseItem(responses.get(i))));
+          }
+          servletResponse.getWriter().write(result.toString());
+      } finally {
+          stopInFlight(state, batch.length());
       }
-      result.put(getJSONResponse(key, getResponseItem(responses.get(i))));
-    }
-    servletResponse.getWriter().write(result.toString());
   }
 
   protected void dispatch(JSONObject request, HttpServletRequest servletRequest,
       HttpServletResponse servletResponse, SecurityToken token) throws JSONException, IOException {
-    String key = null;
-    if (request.has("id")) {
-      key = request.getString("id");
-    }
-    RpcRequestItem requestItem = new RpcRequestItem(request, token, jsonConverter);
 
-    // Resolve each Future into a response.
-    // TODO: should use shared deadline across each request
-    ResponseItem response = getResponseItem(handleRequestItem(requestItem, servletRequest));
-    JSONObject result = getJSONResponse(key, response);
-    servletResponse.getWriter().write(result.toString());
+      final Pair<String, StopWatch> state = startInFlight(1);
+
+      try {
+          String key = null;
+          if (request.has("id")) {
+              key = request.getString("id");
+          }
+          RpcRequestItem requestItem = new RpcRequestItem(request, token, jsonConverter);
+
+          // Resolve each Future into a response.
+          // TODO: should use shared deadline across each request
+          ResponseItem response = getResponseItem(handleRequestItem(requestItem, servletRequest));
+          JSONObject result = getJSONResponse(key, response);
+          servletResponse.getWriter().write(result.toString());
+      } finally {
+          stopInFlight(state, 1);
+      }
   }
 
   private JSONObject getJSONResponse(String key, ResponseItem responseItem) throws JSONException {
@@ -192,4 +218,30 @@ public class JsonRpcServlet extends ApiServlet {
     sendError(response, new ResponseItem(ResponseError.BAD_REQUEST,
         "Invalid batch - " + t.getMessage()));
   }
+
+    protected Pair<String, StopWatch> startInFlight(int nofReq) {
+        final String id = UUID.randomUUID().toString();
+        final StopWatch timer = new StopWatch();
+        final int curr  = inFlight.addAndGet(nofReq);
+        log.info(String.format("%s: Adds %d, now %d in flight", id, nofReq, curr));
+        timer.start();
+        return new Pair<String, StopWatch>(id, timer);
+    }
+
+    protected void stopInFlight(final Pair<String, StopWatch> state, final int nofReq) {
+        final String id = state.getKey();
+        final StopWatch timer = state.getValue();
+        timer.stop();
+        final int curr  = inFlight.addAndGet(-nofReq);
+        log.info(String.format("%s: Removes %d after %d sec, now %d in flight", id, nofReq, timer.getTime() / 1000, curr));
+    }
+
+    protected void splitInFlight(final Pair<String, StopWatch> state, final String msg) {
+        final String id = state.getKey();
+        final StopWatch timer = state.getValue();
+        final int curr  = inFlight.get();
+        timer.split();
+        log.info(String.format("%s: %s after %d sec, now %d in flight", id, msg, timer.getTime() / 1000, curr));
+        timer.unsplit();
+    }
 }

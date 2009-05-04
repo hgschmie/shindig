@@ -38,7 +38,7 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.SoftExpiringCache;
 import org.apache.shindig.common.cache.SoftExpiringCache.CachedObject;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
@@ -60,12 +60,12 @@ public class ShindigMessageBundleFactory implements MessageBundleFactory {
 
   private final XMLInputFactory factory;
 
-  private final HttpFetcher fetcher;
+  private final ContentFetcherFactory fetcher;
   private final SoftExpiringCache<String, MessageBundle> cache;
   private final long refresh;
 
   @Inject
-  public ShindigMessageBundleFactory(final HttpFetcher fetcher,
+  public ShindigMessageBundleFactory(final ContentFetcherFactory fetcher,
       final CacheProvider cacheProvider,
       @Named("shindig.cache.xml.refreshInterval")
       final long refresh) {

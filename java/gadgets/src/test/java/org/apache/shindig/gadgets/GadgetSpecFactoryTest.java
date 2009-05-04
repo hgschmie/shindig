@@ -18,23 +18,24 @@
  */
 package org.apache.shindig.gadgets;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.net.URI;
 
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
 import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.http.BasicContentFetcherFactory;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.easymock.EasyMock;
 import org.junit.Test;
-
-import static org.easymock.EasyMock.expect;
-import static org.easymock.classextension.EasyMock.replay;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 /**
  * Tests for GadgetSpecFactory
@@ -73,7 +74,7 @@ public class GadgetSpecFactoryTest {
 
   private static final int MAX_AGE = 10000;
 
-  private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
+  private final ContentFetcherFactory fetcher = EasyMock.createNiceMock(ContentFetcherFactory.class);
 
   private final CacheProvider cacheProvider = new LruCacheProvider(5);
 
@@ -243,7 +244,7 @@ public class GadgetSpecFactoryTest {
     specFactory.getGadgetSpec(SPEC_URL.toJavaUri(), true);
   }
 
-  private static class CapturingFetcher implements HttpFetcher {
+  private static class CapturingFetcher implements ContentFetcherFactory {
     HttpRequest request;
 
     public HttpResponse fetch(HttpRequest request) {

@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.HashUtil;
-import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
 import org.apache.shindig.gadgets.spec.ShindigGadgetSpec;
 import org.apache.shindig.gadgets.spec.SpecParserException;
@@ -43,7 +43,7 @@ public class ShindigGadgetSpecFactory extends AbstractGadgetSpecFactory implemen
     private final StaxSupport staxSupport;
 
     @Inject
-    public ShindigGadgetSpecFactory(final HttpFetcher fetcher,
+    public ShindigGadgetSpecFactory(final ContentFetcherFactory fetcher,
             final CacheProvider cacheProvider,
             final StaxSupport staxSupport,
             final@Named("shindig.cache.xml.refreshInterval") long refresh) {

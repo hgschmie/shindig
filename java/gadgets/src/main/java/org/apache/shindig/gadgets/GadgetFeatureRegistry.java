@@ -17,13 +17,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import org.apache.shindig.gadgets.http.HttpFetcher;
-
-import com.google.common.collect.MapMaker;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
+
+import com.google.common.collect.MapMaker;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 
 /**
  * Maintains a registry of all {@code GadgetFeature} types supported by
@@ -64,7 +64,7 @@ public class GadgetFeatureRegistry {
    */
   @Inject
   public GadgetFeatureRegistry(@Named("shindig.features.default") String featureFiles,
-      HttpFetcher httpFetcher) throws GadgetException {
+      ContentFetcherFactory httpFetcher) throws GadgetException {
     features = new HashMap<String, GadgetFeature>();
     core = new HashMap<String, GadgetFeature>();
     if (featureFiles != null) {

@@ -18,20 +18,6 @@
  */
 package org.apache.shindig.gadgets.servlet;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.GadgetException;
-import org.apache.shindig.gadgets.LockedDomainService;
-import org.apache.shindig.gadgets.http.HttpFetcher;
-import org.apache.shindig.gadgets.http.HttpRequest;
-import org.apache.shindig.gadgets.http.HttpResponse;
-import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
@@ -39,6 +25,19 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.GadgetException;
+import org.apache.shindig.gadgets.LockedDomainService;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
+import org.apache.shindig.gadgets.http.HttpRequest;
+import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
+
+import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * Handles open proxy requests.
@@ -52,12 +51,12 @@ public class ProxyHandler extends ProxyBase {
       "vary", "expires", "date", "pragma", "cache-control"
   );
 
-  private final HttpFetcher fetcher;
+  private final ContentFetcherFactory fetcher;
   private final LockedDomainService lockedDomainService;
   private final ContentRewriterRegistry contentRewriterRegistry;
 
   @Inject
-  public ProxyHandler(HttpFetcher fetcher,
+  public ProxyHandler(ContentFetcherFactory fetcher,
                       LockedDomainService lockedDomainService,
                       ContentRewriterRegistry contentRewriterRegistry) {
     this.fetcher = fetcher;

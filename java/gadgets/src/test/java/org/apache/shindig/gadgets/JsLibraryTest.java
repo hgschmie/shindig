@@ -17,17 +17,19 @@
  */
 package org.apache.shindig.gadgets;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.gadgets.http.HttpFetcher;
-import org.apache.shindig.gadgets.http.HttpRequest;
-import org.apache.shindig.gadgets.http.HttpResponse;
-import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.gadgets.http.BasicContentFetcherFactory;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
+import org.apache.shindig.gadgets.http.HttpRequest;
+import org.apache.shindig.gadgets.http.HttpResponse;
+import org.apache.shindig.gadgets.http.HttpResponseBuilder;
 
 public class JsLibraryTest extends EasyMockTestCase {
   private final static String INLINE_JS = "var hello = 'world'; alert(hello);";
@@ -78,7 +80,7 @@ public class JsLibraryTest extends EasyMockTestCase {
   }
 
   public void testUrl() throws Exception {
-    HttpFetcher mockFetcher = mock(HttpFetcher.class);
+    ContentFetcherFactory mockFetcher = mock(ContentFetcherFactory.class);
     Uri location = Uri.parse("http://example.org/file.js");
     HttpRequest request = new HttpRequest(location);
     HttpResponse response = new HttpResponseBuilder()

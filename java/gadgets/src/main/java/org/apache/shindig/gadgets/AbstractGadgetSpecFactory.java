@@ -26,7 +26,7 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.SoftExpiringCache;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.Check;
-import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.spec.GadgetSpec;
@@ -44,11 +44,11 @@ public abstract class AbstractGadgetSpecFactory implements GadgetSpecFactory {
 
     private static final Logger LOG = Logger.getLogger(AbstractGadgetSpecFactory.class.getName());
 
-    private final HttpFetcher fetcher;
+    private final ContentFetcherFactory fetcher;
     private final SoftExpiringCache<Uri, GadgetSpec> cache;
     private final long refresh;
 
-    protected AbstractGadgetSpecFactory(final HttpFetcher fetcher,
+    protected AbstractGadgetSpecFactory(final ContentFetcherFactory fetcher,
             final CacheProvider cacheProvider,
             final long refresh)
     {

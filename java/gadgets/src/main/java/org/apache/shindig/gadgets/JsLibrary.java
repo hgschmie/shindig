@@ -17,16 +17,16 @@
  */
 package org.apache.shindig.gadgets;
 
-import org.apache.shindig.common.uri.Uri;
-import org.apache.shindig.common.util.ResourceLoader;
-import org.apache.shindig.gadgets.http.HttpFetcher;
-import org.apache.shindig.gadgets.http.HttpRequest;
-import org.apache.shindig.gadgets.http.HttpResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.shindig.common.uri.Uri;
+import org.apache.shindig.common.util.ResourceLoader;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
+import org.apache.shindig.gadgets.http.HttpRequest;
+import org.apache.shindig.gadgets.http.HttpResponse;
 
 /**
  * Represents a javascript library, either as an external resource (url)
@@ -116,7 +116,7 @@ public final class JsLibrary {
    * @throws GadgetException
    */
   public static JsLibrary create(Type type, String content, String feature,
-      HttpFetcher fetcher) throws GadgetException {
+      ContentFetcherFactory fetcher) throws GadgetException {
     String optimizedContent = null;
     String debugContent;
     switch (type) {
@@ -171,7 +171,7 @@ public final class JsLibrary {
    * @return The contents of the JS file, or null if it can't be fetched.
    * @throws GadgetException
    */
-  private static String loadDataFromUrl(String url, HttpFetcher fetcher) throws GadgetException {
+  private static String loadDataFromUrl(String url, ContentFetcherFactory fetcher) throws GadgetException {
     try {
       logger.info("Attempting to load js from: " + url);
       Uri uri = Uri.parse(url);

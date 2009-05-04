@@ -33,7 +33,8 @@ import org.apache.shindig.common.cache.CacheProvider;
 import org.apache.shindig.common.cache.LruCacheProvider;
 import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.common.util.TimeSource;
-import org.apache.shindig.gadgets.http.HttpFetcher;
+import org.apache.shindig.gadgets.http.BasicContentFetcherFactory;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpRequest;
 import org.apache.shindig.gadgets.http.HttpResponse;
 import org.apache.shindig.gadgets.http.HttpResponseBuilder;
@@ -85,7 +86,7 @@ public class MessageBundleFactoryTest {
 
   private static final int MAX_AGE = 10000;
 
-  private final HttpFetcher fetcher = EasyMock.createNiceMock(HttpFetcher.class);
+  private final ContentFetcherFactory fetcher = EasyMock.createNiceMock(ContentFetcherFactory.class);
   private final CacheProvider cacheProvider = new LruCacheProvider(10);
   private final Cache<String, MessageBundle> cache
       = cacheProvider.createCache(ShindigMessageBundleFactory.CACHE_NAME);
@@ -215,7 +216,7 @@ public class MessageBundleFactoryTest {
     assertEquals(MAX_AGE / 1000, capturingFetcher.request.getCacheTtl());
   }
 
-  private static class CapturingFetcher implements HttpFetcher {
+  private static class CapturingFetcher implements ContentFetcherFactory {
     HttpRequest request;
 
     public HttpResponse fetch(HttpRequest request) {

@@ -17,16 +17,6 @@
  */
 package org.apache.shindig.gadgets;
 
-import org.apache.shindig.common.ContainerConfig;
-import org.apache.shindig.common.util.ResourceLoader;
-import org.apache.shindig.common.xml.XmlException;
-import org.apache.shindig.common.xml.XmlUtil;
-import org.apache.shindig.gadgets.http.HttpFetcher;
-
-import org.apache.commons.lang.StringUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +26,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.shindig.common.ContainerConfig;
+import org.apache.shindig.common.util.ResourceLoader;
+import org.apache.shindig.common.xml.XmlException;
+import org.apache.shindig.common.xml.XmlUtil;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Provides a mechanism for loading a group of js features from a directory.
@@ -53,7 +52,7 @@ public class JsFeatureLoader {
 
   public final static char FILE_SEPARATOR = ',';
 
-  private final HttpFetcher fetcher;
+  private final ContentFetcherFactory fetcher;
 
   private static final Logger logger
       = Logger.getLogger("org.apache.shindig.gadgets");
@@ -301,7 +300,7 @@ public class JsFeatureLoader {
   /**
    * @param fetcher
    */
-  public JsFeatureLoader(HttpFetcher fetcher) {
+  public JsFeatureLoader(ContentFetcherFactory fetcher) {
     this.fetcher = fetcher;
   }
 }

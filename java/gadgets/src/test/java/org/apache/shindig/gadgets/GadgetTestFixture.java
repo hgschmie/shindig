@@ -19,16 +19,15 @@
 
 package org.apache.shindig.gadgets;
 
+import java.util.Arrays;
+
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.util.FakeTimeSource;
 import org.apache.shindig.gadgets.http.ContentFetcherFactory;
-import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.rewrite.CaptureRewriter;
 import org.apache.shindig.gadgets.rewrite.ContentRewriter;
 import org.apache.shindig.gadgets.rewrite.ContentRewriterRegistry;
 import org.apache.shindig.gadgets.rewrite.DefaultContentRewriterRegistry;
-
-import java.util.Arrays;
 
 // DO NOT ADD ANYTHING ELSE TO THIS CLASS. IT IS GOING AWAY SOON!!!
 public abstract class GadgetTestFixture extends EasyMockTestCase {
@@ -36,7 +35,7 @@ public abstract class GadgetTestFixture extends EasyMockTestCase {
   // DO NOT ADD ANYTHING ELSE TO THIS CLASS. IT IS GOING AWAY SOON!!!
   public final ContentFetcherFactory fetcherFactory = mock(ContentFetcherFactory.class);
   // DO NOT ADD ANYTHING ELSE TO THIS CLASS. IT IS GOING AWAY SOON!!!
-  public final HttpFetcher fetcher = mock(HttpFetcher.class);
+  public final ContentFetcherFactory fetcher = mock(ContentFetcherFactory.class);
   // DO NOT ADD ANYTHING ELSE TO THIS CLASS. IT IS GOING AWAY SOON!!!
   public final GadgetFeatureRegistry registry;
   // DO NOT ADD ANYTHING ELSE TO THIS CLASS. IT IS GOING AWAY SOON!!!

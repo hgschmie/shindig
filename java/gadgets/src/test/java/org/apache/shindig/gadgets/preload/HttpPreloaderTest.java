@@ -29,6 +29,7 @@ import org.apache.shindig.common.uri.Uri;
 import org.apache.shindig.gadgets.AuthType;
 import org.apache.shindig.gadgets.GadgetContext;
 import org.apache.shindig.gadgets.StaxTestUtils;
+import org.apache.shindig.gadgets.http.BasicContentFetcherFactory;
 import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.HttpFetcher;
 import org.apache.shindig.gadgets.http.HttpRequest;
@@ -62,7 +63,7 @@ public class HttpPreloaderTest {
   private final RecordingHttpFetcher plainFetcher = new RecordingHttpFetcher();
   private final RecordingHttpFetcher oauthFetcher = new RecordingHttpFetcher();
 
-  private final ContentFetcherFactory fetchers = new ContentFetcherFactory(null, null, null) {
+  private final ContentFetcherFactory fetchers = new BasicContentFetcherFactory(null, null, null) {
     @Override
     public HttpResponse fetch(HttpRequest request) {
       if (request.getAuthType() == AuthType.NONE) {

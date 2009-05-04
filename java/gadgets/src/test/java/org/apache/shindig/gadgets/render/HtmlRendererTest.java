@@ -148,16 +148,11 @@ public class HtmlRendererTest {
     assertTrue("Rewriting not performed.", rewriter.wasRewritten);
   }
 
-  private static class FakeContentFetcherFactory extends ContentFetcherFactory {
+  private static class FakeContentFetcherFactory implements  ContentFetcherFactory {
     private final Map<Uri, HttpResponse> plainResponses = Maps.newHashMap();
     private final Map<Uri, HttpResponse> signedResponses = Maps.newHashMap();
     private final Map<Uri, HttpResponse> oauthResponses = Maps.newHashMap();
 
-    public FakeContentFetcherFactory() {
-      super(null, null, null);
-    }
-
-    @Override
     public HttpResponse fetch(HttpRequest request) throws GadgetException {
       if (request.getGadget() == null) {
         throw new GadgetException(GadgetException.Code.FAILED_TO_RETRIEVE_CONTENT,

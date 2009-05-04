@@ -24,7 +24,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.shindig.common.util.ArrayListProvider;
+import org.apache.shindig.gadgets.http.BasicContentFetcherFactory;
 import org.apache.shindig.gadgets.http.BasicHttpFetcher;
+import org.apache.shindig.gadgets.http.ContentFetcherFactory;
 import org.apache.shindig.gadgets.http.DefaultHttpCache;
 import org.apache.shindig.gadgets.http.HttpCache;
 import org.apache.shindig.gadgets.http.HttpFetcher;
@@ -67,6 +69,7 @@ public class DefaultGuiceModule extends AbstractModule {
     // Bind the configurable stuff
     bind(HttpCache.class).to(DefaultHttpCache.class);
     bind(HttpFetcher.class).to(BasicHttpFetcher.class);
+    bind(ContentFetcherFactory.class).to(BasicContentFetcherFactory.class);
     bind(PreloaderService.class).to(ConcurrentPreloaderService.class);
     bind(ContentRewriterRegistry.class).to(DefaultContentRewriterRegistry.class);
     bind(GadgetBlacklist.class).to(BasicGadgetBlacklist.class);
