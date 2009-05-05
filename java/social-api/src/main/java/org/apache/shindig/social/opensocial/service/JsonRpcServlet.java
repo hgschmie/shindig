@@ -223,7 +223,7 @@ public class JsonRpcServlet extends ApiServlet {
         final String id = UUID.randomUUID().toString();
         final StopWatch timer = new StopWatch();
         final int curr  = inFlight.addAndGet(nofReq);
-        log.info(String.format("%s: Adds %d, now %d in flight", id, nofReq, curr));
+        log.fine(String.format("%s: Adds %d, now %d in flight", id, nofReq, curr));
         timer.start();
         return new Pair<String, StopWatch>(id, timer);
     }
@@ -233,7 +233,7 @@ public class JsonRpcServlet extends ApiServlet {
         final StopWatch timer = state.getValue();
         timer.stop();
         final int curr  = inFlight.addAndGet(-nofReq);
-        log.info(String.format("%s: Removes %d after %d sec, now %d in flight", id, nofReq, timer.getTime() / 1000, curr));
+        log.fine(String.format("%s: Removes %d after %d sec, now %d in flight", id, nofReq, timer.getTime() / 1000, curr));
     }
 
     protected void splitInFlight(final Pair<String, StopWatch> state, final String msg) {
@@ -241,7 +241,7 @@ public class JsonRpcServlet extends ApiServlet {
         final StopWatch timer = state.getValue();
         final int curr  = inFlight.get();
         timer.split();
-        log.info(String.format("%s: %s after %d sec, now %d in flight", id, msg, timer.getTime() / 1000, curr));
+        log.fine(String.format("%s: %s after %d sec, now %d in flight", id, msg, timer.getTime() / 1000, curr));
         timer.unsplit();
     }
 }
