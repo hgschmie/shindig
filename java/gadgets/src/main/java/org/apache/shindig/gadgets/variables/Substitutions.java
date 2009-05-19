@@ -120,7 +120,7 @@ public class Substitutions {
         break;
       }
 
-      output.append(input.substring(lastPosition, --i));
+      output.append(input.substring(lastPosition, i));
       lastPosition = next + 2;
 
       String pattern = input.substring(i, lastPosition);
