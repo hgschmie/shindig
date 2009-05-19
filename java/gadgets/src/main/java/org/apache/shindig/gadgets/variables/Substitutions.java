@@ -108,17 +108,17 @@ public class Substitutions {
   private void performSubstitutions(String input, StringBuilder output, boolean isNested) {
     int lastPosition = 0, i;
     while ((i = input.indexOf("__", lastPosition)) != -1) {
+      // If a pattern start with more than two '_' chars, move the
+      // superflous ones out.
+      while (input.substring(i+1).indexOf("__") == 0) {
+        i++;
+      }
+
       int next = input.indexOf("__", i + 2);
       if (next == -1) {
         // No matches, we're done.
         break;
       }
-
-      // If a pattern start with more than two '_' chars, move the
-      // superflous ones out.
-      do {
-          i++;
-      } while (input.substring(i).indexOf("__") == 0);
 
       output.append(input.substring(lastPosition, --i));
       lastPosition = next + 2;
