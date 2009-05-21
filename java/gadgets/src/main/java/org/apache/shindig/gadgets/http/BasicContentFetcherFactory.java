@@ -58,35 +58,37 @@ public class BasicContentFetcherFactory implements ContentFetcherFactory {
 public HttpResponse fetch(final HttpRequest request) throws GadgetException {
     normalizeProtocol(request);
 
-    final HttpCacheKey cacheKey = new HttpCacheKey(request);
-    HttpResponse response = null;
-
-    if (!request.getIgnoreCache())
-    {
-        response = httpCache.getResponse(cacheKey, request);
-        if (response != null)
-        {
-            return response;
-        }
-    }
-
-    HttpResponse fetchedResponse = null;
     switch (request.getAuthType()) {
       case NONE:
-        fetchedResponse = httpFetcher.fetch(request);
-        break;
+        // Unauthenticated requests can be cached unless explicitly denied.
+        final HttpCacheKey cacheKey = new HttpCacheKey(request);
+        HttpResponse response = null;
+
+        if (!request.getIgnoreCache())
+        {
+          response = httpCache.getResponse(cacheKey, request);
+          if (response != null && !response.isStale())
+          {
+            return response;
+          }
+        }
+
+
+        final HttpResponse fetchedResponse = httpFetcher.fetch(request);
+
+        if (!request.getIgnoreCache() && !fetchedResponse.isStrictNoCache()) {
+          httpCache.addResponse(cacheKey, request, fetchedResponse);
+        }
+
+        return fetchedResponse;
+
       case SIGNED:
       case OAUTH:
-        fetchedResponse = oauthRequestProvider.get().fetch(request);
-        break;
+        return oauthRequestProvider.get().fetch(request);
+
       default:
         return HttpResponse.error();
     }
-
-    if (!request.getIgnoreCache() ) {
-      httpCache.addResponse(cacheKey, request, fetchedResponse);
-    }
-    return fetchedResponse;
   }
 
   public void normalizeProtocol(HttpRequest request) throws GadgetException {
