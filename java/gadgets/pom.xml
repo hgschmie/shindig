@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.shindig</groupId>
     <artifactId>shindig-parent</artifactId>
-    <version>ning-20090519.2-SNAPSHOT</version>
+    <version>20090520.1-ning</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
