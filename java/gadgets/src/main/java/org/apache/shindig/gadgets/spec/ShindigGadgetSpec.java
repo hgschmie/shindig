@@ -44,7 +44,7 @@ public class ShindigGadgetSpec extends SpecElement implements GadgetSpec {
 
   private final String checksum;
 
-  private Multimap<String, Content> viewMap = new LinkedListMultimap<String, Content>();
+  private Multimap<String, Content> viewMap = LinkedListMultimap.create();
 
   private ConcurrentHashMap<String, View> views = new ConcurrentHashMap<String, View>();
 

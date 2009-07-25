@@ -17,21 +17,23 @@
  */
 package org.apache.shindig.gadgets.http;
 
-import com.google.common.base.Join;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.google.caja.util.Join;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests for HttpResponseBuilder.
@@ -61,7 +63,7 @@ public class HttpResponseBuilderTest {
 
   @Test
   public void addHeadersMap() {
-    Map<String, String> headers = ImmutableMap.of("foo", "bar", "blah", "blah");    
+    Map<String, String> headers = ImmutableMap.of("foo", "bar", "blah", "blah");
 
     HttpResponseBuilder builder = new HttpResponseBuilder()
         .addHeaders(headers);
@@ -145,7 +147,7 @@ public class HttpResponseBuilderTest {
     HttpResponse resp = b.create();
 
     // Insure that headers are stored in the order they are added
-    assertEquals(Join.join(",",resp.getHeaders("Soup")), Join.join(",", soupList));
+    assertEquals(Joiner.on(",").join(resp.getHeaders("Soup")), Joiner.on(",").join(soupList));
 
   }
 }

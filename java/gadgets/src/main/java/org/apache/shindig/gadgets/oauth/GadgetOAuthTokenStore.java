@@ -17,8 +17,13 @@
  */
 package org.apache.shindig.gadgets.oauth;
 
+import java.net.URI;
+
+import javax.xml.stream.XMLStreamException;
+
 import net.oauth.OAuthServiceProvider;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.common.ContainerConfig;
 import org.apache.shindig.common.uri.Uri;
@@ -36,14 +41,7 @@ import org.apache.shindig.gadgets.spec.OAuthSpec;
 import org.apache.shindig.gadgets.spec.OAuthElement.Location;
 import org.apache.shindig.gadgets.spec.OAuthElement.Method;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.google.common.base.Objects;
 import com.google.inject.Inject;
-
-import java.net.URI;
-
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Higher-level interface that allows callers to store and retrieve
@@ -283,8 +281,7 @@ public class GadgetOAuthTokenStore {
       GadgetContext context = new GadgetContext() {
         @Override
         public String getContainer() {
-          return Objects.firstNonNull(securityToken.getContainer(),
-              ContainerConfig.DEFAULT_CONTAINER);
+          return StringUtils.defaultString(securityToken.getContainer(), ContainerConfig.DEFAULT_CONTAINER);
         }
 
         @Override
