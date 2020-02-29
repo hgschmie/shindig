@@ -54,7 +54,7 @@ public class Crypto {
   /**
    * Encryption algorithm to use
    */
-  private final static String CIPHER_TYPE = "AES/CBC/PKCS5Padding";
+  private final static String CIPHER_TYPE = "AES/CFB/PKCS5Padding";
   
   private final static String CIPHER_KEY_TYPE = "AES";
   
